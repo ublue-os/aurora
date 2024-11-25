@@ -4,10 +4,10 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+
 # Patched shell
-rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+dnf5 -y swap \
+    --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
         kf6-kio-doc \
         kf6-kio-widgets-libs \
         kf6-kio-core-libs \
@@ -16,29 +16,24 @@ rpm-ostree override replace \
         kf6-kio-core \
         kf6-kio-gui
 
+
 # Fix for ID in fwupd
-rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-        fwupd \
-        fwupd-plugin-flashrom \
-        fwupd-plugin-modem-manager \
-        fwupd-plugin-uefi-capsule-data
+dnf5 -y swap \
+    --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+        fwupd fwupd
 
 # Switcheroo patch
-rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
-        switcheroo-control
+dnf5 -y swap \
+    --repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
+        switcheroo-control switcheroo-control
 
-rm /etc/yum.repos.d/_copr_sentry-switcheroo-control_discrete.repo
+dnf5 -y copr remove sentry/switcheroo-control_discrete
 
 # TODO: Fedora 41 specific -- re-evaluate with Fedora 42
 # negativo's libheif is broken somehow on older Intel machines
 # https://github.com/ublue-os/aurora/issues/8
-rpm-ostree override replace \
-    --experimental \
-    --from repo=fedora \
+dnf5 -y swap \
+    --repo=fedora \
         libheif heif-pixbuf-loader
 
 # Starship Shell Prompt
@@ -55,7 +50,7 @@ curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcal
 pip install --prefix=/usr topgrade
 
 # Install ublue-update -- breaks with packages.json due to missing topgrade
-rpm-ostree install ublue-update
+dnf5 -y install ublue-update
 
 # Consolidate Just Files
 find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just

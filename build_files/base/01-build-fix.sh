@@ -19,32 +19,9 @@ for repo in "${repos[@]}"; do
     fi
 done
 
-rpm-ostree override replace \
-    --experimental \
-    --from repo=updates \
-    glib2 \
-    || true
 
-rpm-ostree override replace \
-    --experimental \
-    --from repo=updates \
-    glibc \
-    glibc-common \
-    glibc-all-langpacks \
-    glibc-gconv-extra \
-    || true
-
-rpm-ostree override replace \
-    --experimental \
-    --from repo=updates \
-    libX11 \
-    libX11-common \
-    libX11-xcb \
-    || true
-
-rpm-ostree override replace \
-    --experimental \
-    --from repo=updates \
+dnf5 -y upgrade \
+    --repo=updates \
     elfutils-libelf \
     elfutils-libs \
     qt6-qtbase \
