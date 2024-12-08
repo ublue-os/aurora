@@ -39,7 +39,7 @@ sudo mokutil --import public_key.der
 
 ## Repobeats
 
-![Alt](https://repobeats.axiom.co/api/embed/40b85b252bf6ea25eb90539d1adcea013ccae69a.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/c86e98a6654e55f789375ff210dd4eb95f757906.svg "Repobeats analytics image")
 
 ## Star History
 
