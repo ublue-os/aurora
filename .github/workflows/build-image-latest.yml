@@ -15,12 +15,10 @@ on:
     inputs:
       brand_name:
         description: "Image Brand to Build"
-        default: '["bluefin"]'
+        default: '["aurora"]'
         type: choice
         options:
-          - '["bluefin"]'
           - '["aurora"]'
-          - '["bluefin", "aurora"]'
 
 jobs:
   build-image-latest:
@@ -30,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        brand_name: ${{ fromJson(inputs.brand_name || '["bluefin", "aurora"]') }}
+        brand_name: ${{ fromJson(inputs.brand_name || '["aurora"]') }}
     with:
       image_flavors: '["main", "nvidia", "hwe", "hwe-nvidia"]'
       brand_name: ${{ matrix.brand_name }}
