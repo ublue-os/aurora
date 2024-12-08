@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        brand_name: ["bluefin", "aurora"]
+        brand_name: ["aurora"]
     with:
       image_flavors: '["main", "nvidia", "hwe", "hwe-nvidia"]'
       brand_name: ${{ matrix.brand_name }}
@@ -40,6 +40,6 @@ jobs:
     name: Build Latest ISOs
     needs: [build-image-latest]
     if: github.event.schedule == '40 4 * * 0'
-    
+
     secrets: inherit
     uses: ./.github/workflows/build-iso-latest.yml

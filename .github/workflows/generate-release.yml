@@ -14,8 +14,6 @@ on:
         required: true
         type: choice
         options:
-          - '["gts", "stable"]'
-          - '["gts"]'
           - '["stable"]'
 
 permissions:
