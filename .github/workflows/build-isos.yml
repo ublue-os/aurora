@@ -8,9 +8,6 @@ permissions:
     id-token: write
 
 jobs:
-    build-iso-gts:
-        uses: ./.github/workflows/build-iso-gts.yml
-        secrets: inherit
     build-iso-stable:
         uses: ./.github/workflows/build-iso-stable.yml
         secrets: inherit
