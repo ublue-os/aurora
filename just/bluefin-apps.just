@@ -209,13 +209,11 @@ setup-sunshine ACTION="":
       OPTION=$(Choose "Install Sunshine" "Remove Sunshine" "Toggle Autostart")
     fi
     if [[ "${OPTION,,}" =~ ^install ]]; then
-      systemctl enable sunshine-workaround.service
       ublue-update --wait
       dnf5 copr enable -y lizardbyte/beta
       rpm-ostree install --apply-live -y Sunshine
       echo "Sunshine is installed!"
     elif [[ "${OPTION,,}" =~ ^(remove|uninstall) ]]; then
-      systemctl disable sunshine-workaround.service
       ublue-update --wait
       rpm-ostree remove -y Sunshine
       dnf5 copr disable lizardbyte/beta
