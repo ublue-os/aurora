@@ -88,8 +88,6 @@
 				"kdenetwork-filesharing",
 				"kdeplasma-addons",
 				"kdialog",
-				"libadwaita-qt5",
-				"libadwaita-qt6",
 				"plasma-wallpapers-dynamic",
 				"skanpage"
 			],
