@@ -16,16 +16,16 @@ benchmark:
     @echo 'Running a 1 minute benchmark ...'
     stress-ng --matrix 0 -t 1m --times
 
-# Configure Bluefin-CLI Terminal Experience with Brew
+# Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
-bluefin-cli:
+aurora-cli:
     @/usr/libexec/ublue-bling.sh
 
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
 
-# Toggle between Bluefin and the Developer Experience
+# Toggle between Aurora and the Developer Experience
 [group('System')]
 toggle-devmode:
     #!/usr/bin/env bash
@@ -33,7 +33,7 @@ toggle-devmode:
     CURRENT_IMAGE=$(rpm-ostree status -b --json | jq -r '.deployments[0]."container-image-reference"')
     if grep -q "/var/ublue-os/image" <<< $CURRENT_IMAGE ; then
         cat <<EOF
-    Before we can switch to the Bluefin Developer Experience
+    Before we can switch to the Aurora Developer Experience
     the current system needs an update. Please run 'ujust update'
     and reboot your system when the update is finished
     EOF
