@@ -7,7 +7,7 @@ USER_SETUP_VER_RAN=$(cat "$USER_SETUP_VER_FILE")
 
 mkdir -p "$(dirname "$USER_SETUP_VER_FILE")" || exit 1
 
-USER_SETUP_VER_FILE_V1="$HOME/.bluefin-vscode-configured"
+USER_SETUP_VER_FILE_V1="$HOME/.aurora-vscode-configured"
 # Upgrade from v1 to v2 changes only the location of the USER_SETUP_VER.
 # Exit if v1 file is present.
 if [[ -f $USER_SETUP_VER_FILE_V1 ]]; then

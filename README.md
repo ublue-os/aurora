@@ -4,7 +4,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2503a44c1105456483517f793af75ee7)](https://app.codacy.com/gh/ublue-os/bluefin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-[![GTS Images](https://github.com/ublue-os/bluefin/actions/workflows/build-image-gts.yml/badge.svg)](https://github.com/ublue-os/bluefin/actions/workflows/build-image-gts.yml)[![Stable Images](https://github.com/ublue-os/bluefin/actions/workflows/build-image-stable.yml/badge.svg)](https://github.com/ublue-os/bluefin/actions/workflows/build-image-stable.yml)[![Latest Images](https://github.com/ublue-os/bluefin/actions/workflows/build-image-latest.yml/badge.svg)](https://github.com/ublue-os/bluefin/actions/workflows/build-image-latest.yml)[![Beta Images](https://github.com/ublue-os/bluefin/actions/workflows/build-image-beta.yml/badge.svg)](https://github.com/ublue-os/bluefin/actions/workflows/build-image-beta.yml)
+[![Stable Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-stable.yml/badge.svg)](https://github.com/ublue-os/bluefin/actions/workflows/build-image-stable.yml)[![Latest Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest.yml)[![Beta Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-beta.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-beta.yml)
 
 ![aurora](https://github.com/user-attachments/assets/5d16c9fd-cdfa-49a0-bc03-b28026f8c6df)
 
@@ -15,8 +15,8 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 
 ## Documentation
 
-1. [Discussions and Announcements](https://universal-blue.discourse.group/c/bluefin/6) - strongly recommended!
-2. [Documentation](https://docs.projectbluefin.io/)
+1. [Discussions and Announcements](https://universal-blue.discourse.group/c/aurora/11) - strongly recommended!
+2. [Documentation](https://docs.getaurora.dev/)
 3. [Contributing Guide](https://docs.projectbluefin.io/contributing)
 
 ### Secure Boot
@@ -46,7 +46,7 @@ sudo mokutil --import public_key.der
 
 ## Star History
 
-<a href="https://star-history.com/#ublue-os/bluefin&Date">
+<a href="https://star-history.com/#ublue-os/aurora&Date">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ublue-os/aurora&type=Date&theme=dark" />
     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ublue-os/aurora&type=Date" />

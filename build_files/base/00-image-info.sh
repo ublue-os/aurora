@@ -2,22 +2,16 @@
 
 set -ouex pipefail
 
-IMAGE_PRETTY_NAME="Bluefin"
+IMAGE_PRETTY_NAME="Aurora"
 IMAGE_LIKE="fedora"
-HOME_URL="https://projectbluefin.io"
-DOCUMENTATION_URL="https://docs.projectbluefin.io"
-SUPPORT_URL="https://github.com/ublue-os/bluefin/issues/"
-BUG_SUPPORT_URL="https://github.com/ublue-os/bluefin/issues/"
+HOME_URL="https://getaurora.dev/"
+DOCUMENTATION_URL="https://docs.getaurora.dev"
+SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
+BUG_SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
 CODE_NAME="Archaeopteryx"
 
 IMAGE_INFO="/usr/share/ublue-os/image-info.json"
 IMAGE_REF="ostree-image-signed:docker://ghcr.io/$IMAGE_VENDOR/$IMAGE_NAME"
-
-# Aurora
-if [[ "${BASE_IMAGE_NAME}" =~ kinoite ]]; then
-  IMAGE_PRETTY_NAME="Aurora"
-  HOME_URL="https://getaurora.dev/"
-fi
 
 # Image Flavor
 image_flavor="main"

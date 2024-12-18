@@ -2,14 +2,8 @@
 
 set -eoux pipefail
 
-# Patched shells
-if [[ "${BASE_IMAGE_NAME}" =~ silverblue ]]; then
-    rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-        gnome-shell
-elif [[ "${BASE_IMAGE_NAME}" =~ kinoite ]]; then
-    rpm-ostree override replace \
+# Patched shell
+rpm-ostree override replace \
     --experimental \
     --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
         kf6-kio-doc \
@@ -19,16 +13,6 @@ elif [[ "${BASE_IMAGE_NAME}" =~ kinoite ]]; then
         kf6-kio-file-widgets \
         kf6-kio-core \
         kf6-kio-gui
-fi
-
-# GNOME Triple Buffering
-if [[ "${BASE_IMAGE_NAME}" =~ silverblue && "${FEDORA_MAJOR_VERSION}" -lt "41" ]]; then
-    rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-        mutter \
-        mutter-common
-fi
 
 # Fix for ID in fwupd
 rpm-ostree override replace \

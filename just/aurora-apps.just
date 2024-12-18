@@ -1,6 +1,6 @@
 # vim: set ft=make :
 ########################
-### bluefin-apps.just
+### aurora-apps.just
 ########################
 ## Standardized verbs
 # configure- = configure something that is pre-installed on the image
@@ -116,7 +116,7 @@ install-incus:
         exit
     fi
     echo 'Installing and configuring Incus.'
-    /usr/libexec/bluefin-incus
+    /usr/libexec/aurora-incus
 
 # Install Kubernetes CLI dev tools
 [group('Apps')]

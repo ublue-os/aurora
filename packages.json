@@ -62,27 +62,6 @@
 				"wl-clipboard",
 				"zsh"
 			],
-			"silverblue": [
-				"cryfs",
-				"gnome-shell-extension-appindicator",
-				"gnome-shell-extension-blur-my-shell",
-				"gnome-shell-extension-caffeine",
-				"gnome-shell-extension-dash-to-dock",
-				"gnome-shell-extension-gsconnect",
-				"gnome-shell-extension-logo-menu",
-				"gnome-shell-extension-search-light",
-				"gnome-shell-extension-tailscale-gnome-qs",
-				"libgda",
-				"libgda-sqlite",
-				"libratbag-ratbagd",
-				"nautilus-gsconnect",
-				"nautilus-open-any-terminal",
-				"openssh-askpass",
-				"simple-scan",
-				"yaru-theme",
-				"zenity"
-				
-			],
 			"kinoite": [
 				"kde-runtime-docs",
 				"kdenetwork-filesharing",
@@ -171,12 +150,6 @@
 				"podman-docker",
 				"ublue-os-update-services"
 			],
-			"silverblue": [
-				"gnome-extensions-app",
-				"gnome-shell-extension-background-logo",
-				"gnome-software-rpm-ostree",
-				"gnome-terminal-nautilus"
-			],
 			"kinoite": [
 				"krfb",
 				"krfb-libs",
@@ -190,7 +163,6 @@
 			"all": [
 				"ptyxis"
 			],
-			"silverblue": [],
 			"dx": [
 				"lxd-agent",
 				"lxd"
@@ -198,7 +170,6 @@
 		},
 		"exclude": {
 			"all": [],
-			"silverblue": [],
 			"kinoite": [],
 			"dx": []
 		}
@@ -210,12 +181,10 @@
 			],
 			"kinoite": [
 				"ptyxis"
-			],
-			"silverblue": []
+			]
 		},
 		"exclude": {
 			"all": [],
-			"silverblue": [],
 			"kinoite": [
 				"plasma-welcome",
 				"plasma-welcome-fedora"
