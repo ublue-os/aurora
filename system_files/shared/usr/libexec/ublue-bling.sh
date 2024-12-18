@@ -9,7 +9,7 @@ source /usr/lib/ujust/ujust.sh
 # Exit Handling
 function Exiting(){
     printf "%s%sExiting...%s\n" "${red}" "${bold}" "${normal}"
-    printf "Rerun script with %s%sujust bluefin-cli%s\n" "${blue}" "${bold}" "${normal}"
+    printf "Rerun script with %s%sujust aurora-cli%s\n" "${blue}" "${bold}" "${normal}"
     exit 0
 }
 
