@@ -4,8 +4,6 @@ iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.2.3"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
-    [bluefin]=bluefin
-    [bluefin-dx]=bluefin-dx
 )'
 flavors := '(
     [main]=main
@@ -18,7 +16,6 @@ flavors := '(
     [surface-nvidia]=surface-nvidia
 )'
 tags := '(
-    [gts]=gts
     [stable]=stable
     [latest]=latest
     [beta]=beta
@@ -132,7 +129,7 @@ sudoif command *args:
 
 # Build Image
 [group('Image')]
-build image="bluefin" tag="latest" flavor="main" rechunk="0" ghcr="0" pipeline="0" kernel_pin="":
+build image="aurora" tag="latest" flavor="main" rechunk="0" ghcr="0" pipeline="0" kernel_pin="":
     #!/usr/bin/bash
     set -eoux pipefail
     image={{ image }}
@@ -146,11 +143,7 @@ build image="bluefin" tag="latest" flavor="main" rechunk="0" ghcr="0" pipeline="
     image_name=$(just image_name {{ image }} {{ tag }} {{ flavor }})
 
     # Base Image
-    if [[ "${image}" =~ bluefin ]]; then
-        base_image_name="silverblue"
-    elif [[ "${image}" =~ aurora ]]; then
-        base_image_name="kinoite"
-    fi
+    base_image_name="kinoite"
 
     # Target
     if [[ "${image}" =~ dx ]]; then
@@ -245,12 +238,12 @@ build image="bluefin" tag="latest" flavor="main" rechunk="0" ghcr="0" pipeline="
 
 # Build Image and Rechunk
 [group('Image')]
-build-rechunk image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-rechunk image="aurora" tag="latest" flavor="main" kernel_pin="":
     @just build {{ image }} {{ tag }} {{ flavor }} 1 0 0 {{ kernel_pin }}
 
 # Build Image with GHCR Flag
 [group('Image')]
-build-ghcr image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-ghcr image="aurora" tag="latest" flavor="main" kernel_pin="":
     #!/usr/bin/bash
     if [[ "${UID}" -gt "0" ]]; then
         echo "Must Run with sudo or as root..."
@@ -260,7 +253,7 @@ build-ghcr image="bluefin" tag="latest" flavor="main" kernel_pin="":
 
 # Build Image for Pipeline:
 [group('Image')]
-build-pipeline image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
     #!/usr/bin/bash
     if [[ "${UID}" -gt "0" ]]; then
         echo "Must Run with sudo or as root..."
@@ -271,7 +264,7 @@ build-pipeline image="bluefin" tag="latest" flavor="main" kernel_pin="":
 # Rechunk Image
 [group('Image')]
 [private]
-rechunk image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
+rechunk image="aurora" tag="latest" flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/bash
     set -eoux pipefail
 
@@ -315,11 +308,7 @@ rechunk image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
 
     # Cleanup Space during Github Action
     if [[ "{{ ghcr }}" == "1" ]]; then
-        if [[ "${image_name}" =~ bluefin ]]; then
-            base_image_name=silverblue-main
-        elif [[ "${image_name}" =~ aurora ]]; then
-            base_image_name=kinoite-main
-        fi
+        base_image_name=kinoite-main
         if [[ "${tag}" =~ stable ]]; then
             tag="stable-daily"
         fi
@@ -405,7 +394,7 @@ rechunk image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
 
 # Load OCI into Podman Store
 [group('Image')]
-load-rechunk image="bluefin" tag="latest" flavor="main":
+load-rechunk image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eou pipefail
 
@@ -426,7 +415,7 @@ load-rechunk image="bluefin" tag="latest" flavor="main":
 
 # Run Container
 [group('Image')]
-run image="bluefin" tag="latest" flavor="main":
+run image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eoux pipefail
     image={{ image }}
@@ -450,7 +439,7 @@ run image="bluefin" tag="latest" flavor="main":
 
 # Build ISO
 [group('ISO')]
-build-iso image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
+build-iso image="aurora" tag="latest" flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/bash
     set -eoux pipefail
     image={{ image }}
@@ -493,12 +482,8 @@ build-iso image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
         just sudoif podman image scp "${UID}"@localhost::"${IMAGE_FULL}" root@localhost::"${IMAGE_FULL}"
     fi
 
-    # Flatpak list for bluefin/aurora
-    if [[ "${image_name}" =~ bluefin ]]; then
-        FLATPAK_DIR_SHORTNAME="bluefin_flatpaks"
-    elif [[ "${image_name}" =~ aurora ]]; then
-        FLATPAK_DIR_SHORTNAME="aurora_flatpaks"
-    fi
+    # Flatpaks list for aurora
+    FLATPAK_DIR_SHORTNAME="aurora_flatpaks"
 
     # Generate Flatpak List
     TEMP_FLATPAK_INSTALL_DIR="$(mktemp -d -p /tmp flatpak-XXXXX)"
@@ -570,11 +555,7 @@ build-iso image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
     iso_build_args+=(IMAGE_TAG="${tag}")
     iso_build_args+=(ISO_NAME="/github/workspace/${build_dir}/${image_name}-${tag}.iso")
     iso_build_args+=(SECURE_BOOT_KEY_URL="https://github.com/ublue-os/akmods/raw/main/certs/public_key.der")
-    if [[ "${image_name}" =~ bluefin ]]; then
-        iso_build_args+=(VARIANT="Silverblue")
-    else
-        iso_build_args+=(VARIANT="Kinoite")
-    fi
+    iso_build_args+=(VARIANT="Kinoite")
     iso_build_args+=(VERSION="${FEDORA_VERSION}")
     iso_build_args+=(WEB_UI="false")
 
@@ -588,12 +569,12 @@ build-iso image="bluefin" tag="latest" flavor="main" ghcr="0" pipeline="0":
 
 # Build ISO using GHCR Image
 [group('ISO')]
-build-iso-ghcr image="bluefin" tag="latest" flavor="main":
+build-iso-ghcr image="aurora" tag="latest" flavor="main":
     @just build-iso {{ image }} {{ tag }} {{ flavor }} 1
 
 # Run ISO
 [group('ISO')]
-run-iso image="bluefin" tag="latest" flavor="main":
+run-iso image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eoux pipefail
     image={{ image }}
@@ -677,7 +658,7 @@ verify-container container="" registry="ghcr.io/ublue-os" key="":
 
 # Secureboot Check
 [group('Utility')]
-secureboot image="bluefin" tag="latest" flavor="main":
+secureboot image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eoux pipefail
     image={{ image }}
@@ -732,7 +713,7 @@ secureboot image="bluefin" tag="latest" flavor="main":
 # Get Fedora Version of an image
 [group('Utility')]
 [private]
-fedora_version image="bluefin" tag="latest" flavor="main" $kernel_pin="":
+fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     #!/usr/bin/bash
     set -eou pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
@@ -753,7 +734,7 @@ fedora_version image="bluefin" tag="latest" flavor="main" $kernel_pin="":
 # Image Name
 [group('Utility')]
 [private]
-image_name image="bluefin" tag="latest" flavor="main":
+image_name image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eou pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
@@ -766,7 +747,7 @@ image_name image="bluefin" tag="latest" flavor="main":
 
 # Generate Tags
 [group('Utility')]
-generate-build-tags image="bluefin" tag="latest" flavor="main" kernel_pin="" ghcr="0" $version="" github_event="" github_number="":
+generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr="0" $version="" github_event="" github_number="":
     #!/usr/bin/bash
     set -eou pipefail
 
