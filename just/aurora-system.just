@@ -1,6 +1,6 @@
 # vim: set ft=make :
 ########################
-### bluefin-system.just
+### aurora-system.just
 ########################
 ## Standardized verbs
 # configure- = configure something that is pre-installed on the image
@@ -16,16 +16,16 @@ benchmark:
     @echo 'Running a 1 minute benchmark ...'
     stress-ng --matrix 0 -t 1m --times
 
-# Configure Bluefin-CLI Terminal Experience with Brew
+# Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
-bluefin-cli:
+aurora-cli:
     @/usr/libexec/ublue-bling.sh
 
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
 
-# Toggle between Bluefin and the Developer Experience
+# Toggle between Aurora and the Developer Experience
 [group('System')]
 toggle-devmode:
     #!/usr/bin/env bash
@@ -33,7 +33,7 @@ toggle-devmode:
     CURRENT_IMAGE=$(rpm-ostree status -b --json | jq -r '.deployments[0]."container-image-reference"')
     if grep -q "/var/ublue-os/image" <<< $CURRENT_IMAGE ; then
         cat <<EOF
-    Before we can switch to the Bluefin Developer Experience
+    Before we can switch to the Aurora Developer Experience
     the current system needs an update. Please run 'ujust update'
     and reboot your system when the update is finished
     EOF
@@ -53,11 +53,7 @@ toggle-devmode:
             exit 0
         fi
         echo "Rebasing to a developer image"
-        if [[ "${CURRENT_IMAGE}" =~ "bluefin" ]]; then
-            NEW_IMAGE=$(sed "s/bluefin/bluefin-dx/" <<< $CURRENT_IMAGE)
-        elif [[ "${CURRENT_IMAGE}" =~ "aurora" ]]; then
-            NEW_IMAGE=$(sed "s/aurora/aurora-dx/" <<< $CURRENT_IMAGE)
-        fi
+        NEW_IMAGE=$(sed "s/aurora/aurora-dx/" <<< $CURRENT_IMAGE)
         rpm-ostree rebase $NEW_IMAGE
         echo -e "\nUse `ujust dx-group` to add your user to the correct groups and complete the installation"
     fi
@@ -211,7 +207,7 @@ configure-vfio ACTION="":
             $VFIO_IDS_KARG
         fi
     elif [[ "${OPTION,,}" =~ kvmfr ]]; then
-        sudo /usr/libexec/bluefin-dx-kvmfr-setup
+        sudo /usr/libexec/aurora-dx-kvmfr-setup
     fi
 
 # Install system flatpaks for rebasers
@@ -221,12 +217,8 @@ install-system-flatpaks:
     #!/usr/bin/bash
     IMAGE_INFO="/usr/share/ublue-os/image-info.json"
     BASE_IMAGE_NAME=$(jq -r '."base-image-name"' < $IMAGE_INFO)
-    if [[ ${BASE_IMAGE_NAME} == 'silverblue' ]]; then
-        FLATPAKS="bluefin_flatpaks/flatpaks"
-    elif [[ ${BASE_IMAGE_NAME} == 'kinoite' ]]; then
-        FLATPAKS="aurora_flatpaks/flatpaks"
-    fi
-    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/bluefin/main/${FLATPAKS} | tr '\n' ' ')"
+    FLATPAKS="aurora_flatpaks/flatpaks"
+    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/${FLATPAKS} | tr '\n' ' ')"
     flatpak --system -y install --or-update ${FLATPAK_LIST}
 
 # Configure grub bootmenu visibility
@@ -266,22 +258,6 @@ toggle-tailscale:
     if [ "$TAILSCALED" == "Installed" ]; then
         echo "Enable or disable Tailscale?"
         TS_OPTION=$(Choose Enable Disable)
-
-        # gnome-extensions is only available on Bluefin (Gnome)
-        if [ "$VARIANT" == "Silverblue" ]; then
-            TAILSCALE_QS="$(gnome-extensions list | grep -q "tailscale@joaophi.github.com"; echo $?)"
-            if [ "$TAILSCALE_QS" == 0 ]; then
-                TAILSCALE_QS="Installed"
-            else
-                echo "The Tailscale QS extension for Gnome is not installed. Please install it and then run this script again."
-            fi
-
-            if [[ "${TS_OPTION,,}" =~ ^enable ]]; then
-                gnome-extensions enable tailscale@joaophi.github.com
-            elif [[ "${TS_OPTION,,}" =~ ^disable ]]; then
-                gnome-extensions disable tailscale@joaophi.github.com
-            fi
-        fi
 
         if [ "$TS_OPTION" = "Enable" ]; then
             systemctl enable --now tailscaled
