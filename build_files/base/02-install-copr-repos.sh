@@ -15,4 +15,4 @@ curl --retry 3 -Lo /etc/yum.repos.d/_copr_sentry-switcheroo-control_discrete.rep
 curl --retry 3 -Lo /etc/yum.repos.d/_copr_che-nerd-fonts-"$(rpm -E %fedora)".repo https://copr.fedorainfracloud.org/coprs/che/nerd-fonts/repo/fedora-"$(rpm -E %fedora)"/che-nerd-fonts-fedora-"$(rpm -E %fedora)".repo
 
 # Add openrazer repo
-curl -Lo /etc/yum.repos.d/hardware:razer-"${FEDORA_MAJOR_VERSION}".repo https://download.opensuse.org/repositories/hardware:/razer/Fedora_"${FEDORA_MAJOR_VERSION}"/hardware:razer.repo
+curl -Lo /etc/yum.repos.d/hardware:razer.repo https://openrazer.github.io/hardware:razer.repo
