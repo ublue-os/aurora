@@ -26,7 +26,6 @@ if [[ "${BASE_IMAGE_NAME}" = "kinoite" ]]; then
     sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxis.desktop
     sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gnome.Ptyxis.desktop
     cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/org.kde.konsole.desktop
 
     # Rebrand to Aurora
     sed -i 's@Bluefin@Aurora@g' /usr/share/applications/system-update.desktop
@@ -34,7 +33,6 @@ if [[ "${BASE_IMAGE_NAME}" = "kinoite" ]]; then
     sed -i 's@Bluefin@Aurora@g' /usr/libexec/ublue-flatpak-manager
 
     rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
-    rm -f /usr/share/kglobalaccel/org.kde.konsole.desktop
     systemctl enable kde-sysmonitor-workaround.service
 
     # Get Default Font since font fallback doesn't work
