@@ -10,17 +10,10 @@ REGISTRY = "docker://ghcr.io/ublue-os/"
 
 IMAGE_MATRIX_LATEST = {
     "experience": ["base", "dx"],
-    "de": ["kde", "gnome"],
     "image_flavor": ["main", "nvidia", "hwe", "hwe-nvidia"],
-}
-IMAGE_MATRIX_GTS = {
-    "experience": ["base", "dx"],
-    "de": ["gnome"],
-    "image_flavor": ["main", "nvidia"],
 }
 IMAGE_MATRIX = {
     "experience": ["base", "dx"],
-    "de": ["kde", "gnome"],
     "image_flavor": ["main", "nvidia"],
 }
 
@@ -39,13 +32,12 @@ OTHER_NAMES = {
     "base": "### Base Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "dx": "### [Dev Experience Images](https://docs.projectbluefin.io/bluefin-dx)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "kde": "### [Aurora Images](https://getaurora.dev/)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "gnome": "### [Bluefin Images](https://projectbluefin.io/)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "nvidia": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "hwe": "### HWE Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
 }
 
 COMMITS_FORMAT = "### Commits\n| Hash | Subject |\n| --- | --- |{commits}\n\n"
-COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/bluefin/commit/{githash})** | {subject} |"
+COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/aurora/commit/{githash})** | {subject} |"
 
 CHANGELOG_TITLE = "{tag}: {pretty}"
 CHANGELOG_FORMAT = """\
@@ -57,7 +49,6 @@ From previous `{target}` version `{prev}` there have been the following changes.
 | Name | Version |
 | --- | --- |
 | **Kernel** | {pkgrel:kernel} |
-| **Gnome** | {pkgrel:gnome-control-center-filesystem} |
 | **KDE** | {pkgrel:plasma-desktop} |
 | **Mesa** | {pkgrel:mesa-filesystem} |
 | **Podman** | {pkgrel:podman} |
@@ -94,7 +85,6 @@ This is an automatically generated changelog for release `{curr}`."""
 
 BLACKLIST_VERSIONS = [
     "kernel",
-    "gnome-control-center-filesystem",
     "plasma-desktop",
     "mesa-filesystem",
     "podman",
@@ -108,18 +98,11 @@ BLACKLIST_VERSIONS = [
 def get_images(target: str):
     if "latest" in target:
         matrix = IMAGE_MATRIX_LATEST
-    elif "gts" in target:
-        matrix = IMAGE_MATRIX_GTS
     else:
         matrix = IMAGE_MATRIX
 
-    for experience, de, image_flavor in product(*matrix.values()):
-        img = ""
-        if de == "gnome":
-            img += "bluefin"
-        elif de == "kde":
-            img += "aurora"
-
+    for experience, image_flavor in product(*matrix.values()):
+        img = "aurora"
         if experience == "dx":
             img += "-dx"
 
@@ -127,13 +110,13 @@ def get_images(target: str):
             img += "-"
             img += image_flavor
 
-        yield img, experience, de, image_flavor
+        yield img, experience, image_flavor
 
 
 def get_manifests(target: str):
     out = {}
     imgs = list(get_images(target))
-    for j, (img, _, _, _) in enumerate(imgs):
+    for j, (img, _, _) in enumerate(imgs):
         output = None
         print(f"Getting {img}:{target} manifest ({j+1}/{len(imgs)}).")
         for i in range(RETRIES):
@@ -205,7 +188,7 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
 
     # Find common packages
     first = True
-    for img, experience, de, image_flavor in get_images(target):
+    for img, experience, image_flavor in get_images(target):
         if img not in pkg:
             continue
 
@@ -222,17 +205,13 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
     # Find other packages
     for t, other in others.items():
         first = True
-        for img, experience, de, image_flavor in get_images(target):
+        for img, experience, image_flavor in get_images(target):
             if img not in pkg:
                 continue
 
             if t == "hwe" and "hwe" not in image_flavor:
                 continue
             if t == "nvidia" and "nvidia" not in image_flavor:
-                continue
-            if t == "kde" and de != "kde":
-                continue
-            if t == "gnome" and de != "gnome":
                 continue
             if t == "base" and experience != "base":
                 continue
