@@ -100,10 +100,6 @@ validate image="" tag="" flavor="":
         echo "Invalid flavor..."
         exit 1
     fi
-    if [[ "$checktag" =~ gts && "$checkimage" =~ aurora ]]; then
-        echo "Aurora Does not build GTS..."
-        exit 1
-    fi
     if [[ ! "$checktag" =~ latest && "$checkflavor" =~ hwe|asus|surface ]]; then
         echo "HWE images are only built on latest..."
         exit 1
@@ -155,7 +151,7 @@ build image="aurora" tag="latest" flavor="main" rechunk="0" ghcr="0" pipeline="0
     # AKMODS Flavor and Kernel Version
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
-    elif [[ "${tag}" =~ stable|gts ]]; then
+    elif [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
