@@ -41,6 +41,10 @@ echo 'eval "$(starship init bash)"' >> /etc/bashrc
 # Bash Prexec
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
 
+# xdg-terminal-exec
+curl --retry 3 -Lo /usr/bin/xdg-terminal-exec https://raw.githubusercontent.com/Vladimir-csp/xdg-terminal-exec/refs/tags/v0.12.0/xdg-terminal-exec
+chmod 0644 /usr/bin/xdg-terminal-exec
+
 # Topgrade Install
 pip install --prefix=/usr topgrade
 
