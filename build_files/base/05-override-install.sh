@@ -56,3 +56,6 @@ mv -f /tmp/ublue-update.toml /usr/etc/ublue-update/ublue-update.toml
 # Register Fonts
 fc-cache -f /usr/share/fonts/ubuntu
 fc-cache -f /usr/share/fonts/inter
+
+# Caps
+setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
