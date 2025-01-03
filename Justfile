@@ -209,9 +209,9 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "org.opencontainers.image.title=${image_name}")
     LABELS+=("--label" "org.opencontainers.image.version=${ver}")
     LABELS+=("--label" "ostree.linux=${kernel_release}")
-    LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/bluefin/bluefin/README.md")
+    LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/README.md")
     LABELS+=("--label" "io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4")
-    LABELS+=("--label" "org.opencontainers.image.description=An interpretation of the Ubuntu spirit built on Fedora technology")
+    LABELS+=("--label" "org.opencontainers.image.description=The ultimate productivity workstation")
 
     # Build Image
     podman build \
@@ -352,7 +352,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --env REPO=/var/ostree/repo \
         --env PREV_REF=ghcr.io/ublue-os/"${image_name}":"${tag}" \
         --env OUT_NAME="$OUT_NAME" \
-        --env LABELS="org.opencontainers.image.title=${image_name}$'\n''io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/bluefin/refs/heads/main/README.md'$'\n''io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4'$'\n'" \
+        --env LABELS="org.opencontainers.image.title=${image_name}$'\n''io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/README.md'$'\n''io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4'$'\n'" \
         --env "DESCRIPTION='An interpretation of the Ubuntu spirit built on Fedora technology'" \
         --env "VERSION=${VERSION}" \
         --env VERSION_FN=/workspace/version.txt \
