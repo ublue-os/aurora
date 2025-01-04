@@ -8,7 +8,6 @@ HOME_URL="https://getaurora.dev/"
 DOCUMENTATION_URL="https://docs.getaurora.dev"
 SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
 BUG_SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
-CODE_NAME="Archaeopteryx"
 
 IMAGE_INFO="/usr/share/ublue-os/image-info.json"
 IMAGE_REF="ostree-image-signed:docker://ghcr.io/$IMAGE_VENDOR/$IMAGE_NAME"
@@ -43,7 +42,6 @@ sed -i "s|^CPE_NAME=\"cpe:/o:fedoraproject:fedora|CPE_NAME=\"cpe:/o:universal-bl
 sed -i "s/^DEFAULT_HOSTNAME=.*/DEFAULT_HOSTNAME=\"${IMAGE_PRETTY_NAME,}\"/" /usr/lib/os-release
 sed -i "s/^ID=fedora/ID=${IMAGE_PRETTY_NAME,}\nID_LIKE=\"${IMAGE_LIKE}\"/" /usr/lib/os-release
 sed -i "/^REDHAT_BUGZILLA_PRODUCT=/d; /^REDHAT_BUGZILLA_PRODUCT_VERSION=/d; /^REDHAT_SUPPORT_PRODUCT=/d; /^REDHAT_SUPPORT_PRODUCT_VERSION=/d" /usr/lib/os-release
-sed -i "s|^VERSION_CODENAME=.*|VERSION_CODENAME=\"$CODE_NAME\"|" /usr/lib/os-release
 
 if [[ -n "${SHA_HEAD_SHORT:-}" ]]; then
   echo "BUILD_ID=\"$SHA_HEAD_SHORT\"" >> /usr/lib/os-release
