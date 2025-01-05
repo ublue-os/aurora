@@ -351,7 +351,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     LABELS=()
     LABELS+=("org.opencontainers.image.created=$CREATED_DATE")
-    LABELS+=("org.opencontainers.image.description=An interpretation of the Ubuntu spirit built on Fedora technology")
+    LABELS+=("org.opencontainers.image.description='An interpretation of the Ubuntu spirit built on Fedora technology'")
     LABELS+=("org.opencontainers.image.documentation=https://getaurora.dev")
     LABELS+=("org.opencontainers.image.source=https://github.com/ublue-os/aurora/blob/main/Containerfile")
     LABELS+=("org.opencontainers.image.title=bluefin")
