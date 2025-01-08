@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=System Update
-Comment=Update Bluefin, Flatpaks, Distrobox containers, and more
+Comment=Update Aurora, Flatpaks, Distrobox containers, and more
 Icon=ublue-update
 Categories=ConsoleOnly;System;
 Terminal=true

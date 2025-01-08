@@ -1,6 +1,6 @@
 # vim: set ft=make :
 ########################
-### bluefin-apps.just
+### aurora-apps.just
 ########################
 ## Standardized verbs
 # configure- = configure something that is pre-installed on the image
@@ -116,7 +116,7 @@ install-incus:
         exit
     fi
     echo 'Installing and configuring Incus.'
-    /usr/libexec/bluefin-incus
+    /usr/libexec/aurora-incus
 
 # Install Kubernetes CLI dev tools
 [group('Apps')]
@@ -124,6 +124,19 @@ install-k8s-dev-tools:
     #!/usr/bin/bash
     echo "Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+
+[group('Apps')]
+install-gaming-flatpaks:
+    #!/usr/bin/env bash
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak --system -y install --or-update app/com.valvesoftware.Steam/x86_64/stable \
+                                            app/com.heroicgameslauncher.hgl/x86_64/stable \
+                                            app/net.lutris.Lutris/x86_64/stable \
+                                            app/net.davidotek.pupgui2/x86_64/stable \
+                                            runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08 \
+                                            runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08 \
+                                            runtime/com.obsproject.Studio.Plugin.OBSVkCapture/x86_64/stable \
+                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08
 
 # Set up command-not-found for Homebrew
 [group('Apps')]

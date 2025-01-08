@@ -6,10 +6,8 @@ systemctl enable docker.socket
 systemctl enable podman.socket
 systemctl enable swtpm-workaround.service
 systemctl enable libvirt-workaround.service
-systemctl enable bluefin-dx-groups.service
-systemctl enable --global bluefin-dx-user-vscode.service
-systemctl disable pmie.service
-systemctl disable pmlogger.service
+systemctl enable aurora-dx-groups.service
+systemctl enable --global aurora-dx-user-vscode.service
 
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/ublue-os-staging-fedora-"${FEDORA_MAJOR_VERSION}".repo
 if [[ -f /etc/yum.repos.d/ganto-lxc4-fedora-"${FEDORA_MAJOR_VERSION}".repo ]]; then

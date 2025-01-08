@@ -9,7 +9,7 @@ source /usr/lib/ujust/ujust.sh
 # Exit Handling
 function Exiting(){
     printf "%s%sExiting...%s\n" "${red}" "${bold}" "${normal}"
-    printf "Rerun script with %s%sujust bluefin-cli%s\n" "${blue}" "${bold}" "${normal}"
+    printf "Rerun script with %s%sujust aurora-cli%s\n" "${blue}" "${bold}" "${normal}"
     exit 0
 }
 
@@ -22,14 +22,14 @@ function ctrl_c(){
 # Brew Bundle Install
 function brew-bundle(){
 echo 'Installing bling from Homebrew 🍻🍻🍻'
-brew bundle --file /usr/share/ublue-os/homebrew/bluefin-cli.Brewfile --no-lock
+brew bundle --file /usr/share/ublue-os/homebrew/aurora-cli.Brewfile --no-lock
 }
 
 # Check if bling is already sourced
 function check-bling() {
 shell="$1"
 if [[ "${shell}" == "fish" ]]; then
-    line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.fish" \
+    line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.fish" \
         "${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish" \
         | grep -Eo '^[^:]+')
     if [[ -n "${line}" ]]; then
@@ -37,7 +37,7 @@ if [[ "${shell}" == "fish" ]]; then
     fi
     return 0;
 elif [[ "${shell}" == "zsh" ]]; then
-    line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.sh" \
+    line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.sh" \
         "${ZDOTDIR:-$HOME}/.zshrc" \
         | grep -Eo '^[^:]+')
     if [[ -n "${line}" ]]; then
@@ -45,7 +45,7 @@ elif [[ "${shell}" == "zsh" ]]; then
     fi
     return 0;
 elif [[ "${shell}" == "bash" ]]; then
-    line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.sh" \
+    line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.sh" \
         "${HOME}/.bashrc" \
         | grep -Eo '^[^:]+')
     if [[ -n "${line}" ]]; then
@@ -69,21 +69,21 @@ if [[ "${shell}" == "fish" ]]; then
     echo 'Adding bling to your config.fish 🐟🐟🐟'
     cat<<-EOF >> "${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish"
 ### bling.fish source start
-test -f /usr/share/ublue-os/bluefin-cli/bling.fish && source /usr/share/ublue-os/bluefin-cli/bling.fish
+test -f /usr/share/ublue-os/aurora-cli/bling.fish && source /usr/share/ublue-os/aurora-cli/bling.fish
 ### bling.fish source end
 EOF
 elif [[ "${shell}" == "zsh" ]]; then
     echo 'Adding bling to your .zshrc 💤💤💤'
     cat<<-EOF >> "${ZDOTDIR:-$HOME}/.zshrc"
 ### bling.sh source start
-test -f /usr/share/ublue-os/bluefin-cli/bling.sh && source /usr/share/ublue-os/bluefin-cli/bling.sh
+test -f /usr/share/ublue-os/aurora-cli/bling.sh && source /usr/share/ublue-os/aurora-cli/bling.sh
 ### bling.sh source end
 EOF
 elif [[ "${shell}" == "bash" ]]; then
     echo 'Adding bling to your .bashrc 💥💥💥'
     cat<<-EOF >> "${HOME}/.bashrc"
 ### bling.sh source start
-test -f /usr/share/ublue-os/bluefin-cli/bling.sh && source /usr/share/ublue-os/bluefin-cli/bling.sh
+test -f /usr/share/ublue-os/aurora-cli/bling.sh && source /usr/share/ublue-os/aurora-cli/bling.sh
 ### bling.sh source end
 EOF
 else
@@ -98,7 +98,7 @@ if [[ "${shell}" == "fish" ]]; then
     sed -i '/### bling.fish source start/,/### bling.fish source end/d' \
         "${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish" \
         || \
-        line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.fish" \
+        line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.fish" \
         "${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish" \
         | grep -Eo '^[^:]+') && sed -i "${line}"d \
         "${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish"
@@ -106,7 +106,7 @@ elif [[ "${shell}" == "zsh" ]]; then
     sed -i '/### bling.sh source start/,/### bling.sh source end/d' \
         "${ZDOTDIR:-$HOME}/.zshrc" \
         || \
-        line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.sh" \
+        line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.sh" \
         "${ZDOTDIR:-$HOME}/.zshrc" \
         | grep -Eo '^[^:]+') && sed -i "${line}"d \
         "${ZDOTDIR:-$HOME}/.zshrc"
@@ -114,7 +114,7 @@ elif [[ "${shell}" == "bash" ]]; then
     sed -i '/### bling.sh source start/,/### bling.sh source end/d' \
         "${HOME}/.bashrc" \
         || \
-        line=$(grep -n "source /usr/share/ublue-os/bluefin-cli/bling.sh" \
+        line=$(grep -n "source /usr/share/ublue-os/aurora-cli/bling.sh" \
         "${HOME}/.bashrc" \
         | grep -Eo '^[^:]+') && sed -i "${line}"d \
         "${HOME}/.bashrc"

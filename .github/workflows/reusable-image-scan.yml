@@ -57,7 +57,7 @@ jobs:
 
       - name: Scan SBOM
         id: scan
-        uses: anchore/scan-action@abae793926ec39a78ab18002bc7fc45bbbd94342 # v5
+        uses: anchore/scan-action@abae793926ec39a78ab18002bc7fc45bbbd94342 # v6
         with:
           sbom: sbom.json
           output-format: json
@@ -71,7 +71,7 @@ jobs:
           echo "name=$(echo ${IMAGE} | awk -F'/' '{print $NF}' | sed 's/:/-/g')" >> $GITHUB_OUTPUT
 
       - name: Upload scan results
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4
         with:
           name: security-${{ steps.artifact-name.outputs.name }}
           if-no-files-found: error
