@@ -19,7 +19,7 @@ benchmark:
 # Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
 aurora-cli:
-    @/usr/libexec/ublue-bling.sh
+    @/usr/libexec/ublue-bling
 
 # alias for toggle-devmode
 devmode:

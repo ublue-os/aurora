@@ -7,6 +7,10 @@ if [[ -f /usr/bin/ld.bfd ]]; then
     ln -sf /usr/bin/ld.bfd /etc/alternatives/ld && ln -sf /etc/alternatives/ld /usr/bin/ld
 fi
 
+# Current aurora systems have the bling.sh and bling.fish in their default locations
+mkdir -p /usr/share/ublue-os/aurora-cli
+cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/aurora-cli
+
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
 # Remember to leave a note with rationale/link to issue for each pin!
