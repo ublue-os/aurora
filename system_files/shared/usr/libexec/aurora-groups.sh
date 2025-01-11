@@ -24,7 +24,7 @@ append_group() {
 append_group plugdev
 
 wheelarray=($(getent group wheel | cut -d ":" -f 4 | tr  ',' '\n'))
-for user in $wheelarray
+for user in "${wheelarray[@]}"
 do
   usermod -aG plugdev $user
 done
