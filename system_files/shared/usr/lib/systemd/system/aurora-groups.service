@@ -2,7 +2,7 @@
 Description=Add plugdev groups
 [Service]
 Type=oneshot
-ExecStart=/usr/libexec/aurora-groups
+ExecStart=/usr/libexec/aurora-groups.sh
 Restart=on-failure
 RestartSec=30
 StartLimitInterval=0
