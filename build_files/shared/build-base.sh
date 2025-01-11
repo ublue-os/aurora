@@ -36,9 +36,6 @@ echo "::endgroup::"
 # Generate image-info.json
 /ctx/build_files/base/00-image-info.sh
 
-# Build Fix - Fix known skew offenders
-/ctx/build_files/base/01-build-fix.sh
-
 # Get COPR Repos
 /ctx/build_files/base/02-install-copr-repos.sh
 
