@@ -59,6 +59,8 @@
 				"tailscale",
 				"tmux",
 				"usbmuxd",
+				"ublue-bling",
+				"ublue-fastfetch",
 				"wireguard-tools",
 				"xprop",
 				"wl-clipboard",
