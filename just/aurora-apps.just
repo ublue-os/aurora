@@ -99,10 +99,50 @@ install-jetbrains-toolbox:
     echo "Launching JetBrains Toolbox"
     ./jetbrains-toolbox-"${BUILD_VERSION}"/jetbrains-toolbox
 
+# Install GUI apps for openrazer
+[group('Apps')]
+install-razer-frontend:
+    #!/usr/bin/env bash
+    source /usr/lib/ujust/ujust.sh
+    RAZER_CONFIGURATOR_APP="None"
+    echo "${bold}Select OpenRazer Frontend Apps${normal}"
+    OPTION=$(Choose "Razer Genie" "Polychromatic" "Close")
+    if [[ "${OPTION,,}" =~ ^razer[[:space:]]genie ]]; then
+        echo "Installing Razer Genie"
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak --system install -y flathub xyz.z3ntu.razergenie
+        RAZER_CONFIGURATOR_APP="Razer Genie"
+    elif [[ "${OPTION,,}" =~ ^polychromatic ]]; then
+        echo "Installing Polychromatic"
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak --system install -y flathub app.polychromatic.controller
+        RAZER_CONFIGURATOR_APP="Polychromatic"
+    else
+        echo "Not Selecting GUI Frontend"
+    fi
+    echo "$RAZER_CONFIGURATOR_APP is installed"
+
+
 # alias for install-incus
 [group('Apps')]
 incus:
     @ujust install-incus
+
+# Install opentabletdriver
+[group('Apps')]
+install-opentabletdriver:
+    #!/usr/bin/bash
+    source /usr/lib/ujust/ujust.sh
+    if grep -qvz "arch" <<< $(distrobox list); then \
+      Assemble noconfirmcreate "" "arch"; \
+    fi && \
+    distrobox enter -n arch -- bash -c 'paru -Syu --noconfirm && paru -S opentabletdriver --noconfirm' && \
+    mkdir -p ~/.config/systemd/user/ && \
+    rm -f ~/.config/systemd/user/arch-opentabletdriver.service && \
+    wget https://raw.githubusercontent.com/ublue-os/bazzite/main/post_install_files/OpenTabletDriver/opentabletdriver.service -O ~/.config/systemd/user/arch-opentabletdriver.service && \
+    systemctl --user daemon-reload && \
+    systemctl enable --user --now arch-opentabletdriver.service && \
+    distrobox enter -n arch -- bash -c 'distrobox-export --app otd-gui'
 
 # Install and configure Incus
 [group('Apps')]
