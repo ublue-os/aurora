@@ -61,6 +61,7 @@
 				"usbmuxd",
 				"ublue-bling",
 				"ublue-brew",
+				"ublue-motd",
 				"ublue-fastfetch",
 				"wireguard-tools",
 				"xprop",
