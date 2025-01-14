@@ -86,7 +86,7 @@ ptyxis-transparency opacity="0.95":
         printf "Value must be greater than 0 and less than or equal to 1: %s.\n" "{{ opacity }}"
     fi
 
-# Configure docker,incus-admin,lxd,libvirt container manager permissions
+# Configure docker,incus-admin,libvirt container manager permissions
 [group('System')]
 dx-group:
     #!/usr/bin/env bash
@@ -98,14 +98,14 @@ dx-group:
         fi
     }
 
-    GROUPS_ADD=("docker" "incus-admin" "lxd" "libvirt")
+    GROUPS_ADD=("docker" "incus-admin" "libvirt")
 
     for GROUP_ADD in "${GROUPS_ADD[@]}" ; do
         append_group $GROUP_ADD
         pkexec usermod -aG $GROUP_ADD $USER
     done
 
-    echo "Reboot system and log back in to use docker, incus-admin, lxd, libvirt."
+    echo "Reboot system and log back in to use docker, incus-admin, libvirt."
 
 # alias for configure-vfio
 [group('System')]
