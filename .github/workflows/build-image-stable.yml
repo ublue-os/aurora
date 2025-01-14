@@ -23,7 +23,9 @@ jobs:
       matrix:
         brand_name: ["aurora"]
     with:
-      kernel_pin: 6.11.11-300.fc41.x86_64 ## See https://github.com/ublue-os/aurora/issues/82
+      # See https://github.com/ublue-os/aurora/issues/82
+      #  +  https://github.com/ublue-os/aurora/issues/120
+      kernel_pin: 6.11.8-300.fc41.x86_64
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
 
