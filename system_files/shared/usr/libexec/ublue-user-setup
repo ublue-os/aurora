@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # SCRIPT VERSION
-USER_SETUP_VER=7
+USER_SETUP_VER=8
 USER_SETUP_VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/user-setup"
 USER_SETUP_VER_RAN=$(cat "$USER_SETUP_VER_FILE")
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
@@ -56,6 +56,10 @@ if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
     touch "$UBLUE_CONFIG_DIR/framework-initialized"
   fi
 fi
+
+# More consistent Qt/GTK themes for Flatpaks
+flatpak override --env=QT_QPA_PLATFORMTHEME=kde
+flatpak override --filesystem=xdg-config/gtk-4.0:ro
 
 # Handle privileged tasks
 pkexec /usr/libexec/ublue-privileged-user-setup

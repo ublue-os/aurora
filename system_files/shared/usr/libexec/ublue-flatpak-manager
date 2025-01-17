@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Script Version
-VER=3
+VER=2
 VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/flatpak_manager_version"
 VER_RAN=$(cat "$VER_FILE")
 
@@ -13,8 +13,6 @@ if [[ -f $VER_FILE && $VER = "$VER_RAN" ]]; then
 	exit 0
 fi
 
-flatpak override --env=QT_QPA_PLATFORMTHEME=kde
-
 # Set up Firefox default configuration
 mkdir -p /var/lib/flatpak/extension/org.mozilla.firefox.systemconfig/$(arch)/stable/defaults/pref
 rm -f /var/lib/flatpak/extension/org.mozilla.firefox.systemconfig/$(arch)/stable/defaults/pref/*aurora*.js
@@ -23,8 +21,6 @@ rm -f /var/lib/flatpak/extension/org.mozilla.firefox.systemconfig/$(arch)/stable
 # Use until yafti rework is done
 flatpak --system update -y
 
-if [[ -z $VER_RAN ]]; then
-	notify-send "Welcome to Aurora" "Your computer is ready!" --app-name="Flatpak Manager Service" -u NORMAL
-fi
+notify-send "Welcome to Aurora" "Your computer is ready!" --app-name="Flatpak Manager Service" -u NORMAL
 
 echo $VER >"$VER_FILE"
