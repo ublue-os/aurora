@@ -14,6 +14,7 @@ systemctl enable brew-setup.service
 systemctl enable brew-upgrade.timer
 systemctl enable brew-update.timer
 systemctl enable aurora-groups.service
+systemctl enable usr-share-sddm-themes.mount
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
