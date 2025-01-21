@@ -2,8 +2,8 @@ repo_organization := "ublue-os"
 rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.0.1"
 iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.2.3"
 images := '(
-    [bluefin]=bluefin
-    [bluefin-dx]=bluefin-dx
+    [aurora]=aurora
+    [aurora-dx]=aurora-dx
 )'
 flavors := '(
     [main]=main
@@ -20,7 +20,6 @@ flavors := '(
     [surface-nvidia-open]=surface-nvidia-open
 )'
 tags := '(
-    [gts]=gts
     [stable]=stable
     [latest]=latest
     [beta]=beta
@@ -106,7 +105,7 @@ validate $image $tag $flavor:
 
 # Build Image
 [group('Image')]
-build $image="bluefin" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline="0" $kernel_pin="":
+build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline="0" $kernel_pin="":
     #!/usr/bin/bash
 
     echo "::group:: Build Prep"
@@ -131,8 +130,6 @@ build $image="bluefin" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipelin
     # AKMODS Flavor and Kernel Version
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
-    elif [[ "${tag}" =~ stable|gts ]]; then
-        akmods_flavor="coreos-stable"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
     else
@@ -207,17 +204,17 @@ build $image="bluefin" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipelin
     LABELS+=("--label" "org.opencontainers.image.title=${image_name}")
     LABELS+=("--label" "org.opencontainers.image.version=${ver}")
     LABELS+=("--label" "ostree.linux=${kernel_release}")
-    LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/bluefin/refs/heads/main/README.md")
+    LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/README.md")
     LABELS+=("--label" "io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4")
     LABELS+=("--label" "org.opencontainers.image.description=An interpretation of the Ubuntu spirit built on Fedora technology")
     LABELS+=("--label" "containers.bootc=1")
     LABELS+=("--label" "org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)")
-    LABELS+=("--label" "org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/bluefin/refs/heads/main/Containerfile")
-    LABELS+=("--label" "org.opencontainers.image.url=https://projectbluefin.io")
+    LABELS+=("--label" "org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/Containerfile")
+    LABELS+=("--label" "org.opencontainers.image.url=https://getaurora.dev")
     LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
     LABELS+=("--label" "io.artifacthub.package.category=bootc-images")
     LABELS+=("--label" "io.artifacthub.package.deprecated=false")
-    LABELS+=("--label" "io.artifacthub.package.keywords=bootc,fedora,bluefin,ublue,universal-blue")
+    LABELS+=("--label" "io.artifacthub.package.keywords=bootc,fedora,aurora,ublue,universal-blue")
     LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"castrojo\", \"email\": \"jorge.castro@gmail.com\"}]")
 
     echo "::endgroup::"
@@ -244,12 +241,12 @@ build $image="bluefin" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipelin
 
 # Build Image and Rechunk
 [group('Image')]
-build-rechunk image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-rechunk image="aurora" tag="latest" flavor="main" kernel_pin="":
     @just build {{ image }} {{ tag }} {{ flavor }} 1 0 0 {{ kernel_pin }}
 
 # Build Image with GHCR Flag
 [group('Image')]
-build-ghcr image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-ghcr image="aurora" tag="latest" flavor="main" kernel_pin="":
     #!/usr/bin/bash
     if [[ "${UID}" -gt "0" ]]; then
         echo "Must Run with sudo or as root..."
@@ -259,14 +256,14 @@ build-ghcr image="bluefin" tag="latest" flavor="main" kernel_pin="":
 
 # Build Image for Pipeline:
 [group('Image')]
-build-pipeline image="bluefin" tag="latest" flavor="main" kernel_pin="":
+build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
     #!/usr/bin/bash
     ${SUDOIF} just build {{ image }} {{ tag }} {{ flavor }} 1 1 1 {{ kernel_pin }}
 
 # Rechunk Image
 [group('Image')]
 [private]
-rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
+rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/bash
 
     echo "::group:: Rechunk Prep"
@@ -314,15 +311,15 @@ rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     LABELS="
         io.artifacthub.package.category=bootc-images
         io.artifacthub.package.deprecated=false
-        io.artifacthub.package.keywords=bootc,fedora,bluefin,ublue,universal-blue
+        io.artifacthub.package.keywords=bootc,fedora,aurora,ublue,universal-blue
         io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4
         io.artifacthub.package.maintainers=[{\"name\": \"castrojo\", \"email\": \"jorge.castro@gmail.com\"}]
-        io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/bluefin/refs/heads/main/README.md
+        io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/README.md
         org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)
         org.opencontainers.image.license=Apache-2.0
-        org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/bluefin/refs/heads/main/Containerfile
+        org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/Containerfile
         org.opencontainers.image.title=${image_name}
-        org.opencontainers.image.url=https://projectbluefin.io
+        org.opencontainers.image.url=https://getaurora.dev
         org.opencontainers.image.vendor={{ repo_organization }}
         ostree.linux=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Config.Labels["ostree.linux"]')
         containers.bootc=1
@@ -423,7 +420,7 @@ rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
 # Load OCI into Podman Store
 [group('Image')]
-load-rechunk image="bluefin" tag="latest" flavor="main":
+load-rechunk image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eou pipefail
 
@@ -444,7 +441,7 @@ load-rechunk image="bluefin" tag="latest" flavor="main":
 
 # Run Container
 [group('Image')]
-run $image="bluefin" $tag="latest" $flavor="main":
+run $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
     set -eoux pipefail
 
@@ -465,7 +462,7 @@ run $image="bluefin" $tag="latest" $flavor="main":
 
 # Build ISO
 [group('ISO')]
-build-iso $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
+build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/bash
     set -eoux pipefail
 
@@ -507,7 +504,7 @@ build-iso $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         rm -rf "${COPYTMP}"
     fi
 
-    FLATPAK_DIR_SHORTNAME="bluefin_flatpaks"
+    FLATPAK_DIR_SHORTNAME="aurora_flatpaks"
 
     # Generate Flatpak List
     TEMP_FLATPAK_INSTALL_DIR="$(mktemp -d -p /tmp flatpak-XXXXX)"
@@ -593,12 +590,12 @@ build-iso $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
 # Build ISO using GHCR Image
 [group('ISO')]
-build-iso-ghcr image="bluefin" tag="latest" flavor="main":
+build-iso-ghcr image="aurora" tag="latest" flavor="main":
     @just build-iso {{ image }} {{ tag }} {{ flavor }} 1
 
 # Run ISO
 [group('ISO')]
-run-iso $image="bluefin" $tag="latest" $flavor="main":
+run-iso $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
     set -eoux pipefail
 
@@ -679,7 +676,7 @@ verify-container container="" registry="ghcr.io/ublue-os" key="":
 
 # Secureboot Check
 [group('Utility')]
-secureboot $image="bluefin" $tag="latest" $flavor="main":
+secureboot $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
     set -eou pipefail
 
@@ -731,7 +728,7 @@ secureboot $image="bluefin" $tag="latest" $flavor="main":
 # Get Fedora Version of an image
 [group('Utility')]
 [private]
-fedora_version image="bluefin" tag="latest" flavor="main" $kernel_pin="":
+fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     #!/usr/bin/bash
     set -eou pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
@@ -752,7 +749,7 @@ fedora_version image="bluefin" tag="latest" flavor="main" $kernel_pin="":
 # Image Name
 [group('Utility')]
 [private]
-image_name image="bluefin" tag="latest" flavor="main":
+image_name image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
     set -eou pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
@@ -765,7 +762,7 @@ image_name image="bluefin" tag="latest" flavor="main":
 
 # Generate Tags
 [group('Utility')]
-generate-build-tags image="bluefin" tag="latest" flavor="main" kernel_pin="" ghcr="0" $version="" github_event="" github_number="":
+generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr="0" $version="" github_event="" github_number="":
     #!/usr/bin/bash
     set -eou pipefail
 
