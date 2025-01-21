@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+echo "::group:: ===$(basename "$0")==="
+
 set -eoux pipefail
 
 if [[ "${IMAGE_NAME}" =~ hwe ]]; then
@@ -69,3 +71,4 @@ surface_hid
 surface_kbd
 EOF
 
+echo "::endgroup::"

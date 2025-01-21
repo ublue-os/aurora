@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+echo "::group:: ===$(basename "$0")==="
+
 set -ouex pipefail
 
 # Restore x11 for Nvidia Images
@@ -42,3 +44,5 @@ glib-compile-schemas /usr/share/glib-2.0/schemas &>/dev/null
 
 # Watermark for Plymouth
 cp /usr/share/plymouth/themes/spinner/{"$BASE_IMAGE_NAME"-,}watermark.png
+
+echo "::endgroup::"
