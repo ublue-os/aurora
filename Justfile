@@ -351,10 +351,10 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     LABELS=()
     LABELS+=("org.opencontainers.image.created=$CREATED_DATE")
-    LABELS+=("org.opencontainers.image.description='An interpretation of the Ubuntu spirit built on Fedora technology'")
+    LABELS+=("org.opencontainers.image.description='The ultimate productivity workstation'")
     LABELS+=("org.opencontainers.image.documentation=https://getaurora.dev")
     LABELS+=("org.opencontainers.image.source=https://github.com/ublue-os/aurora/blob/main/Containerfile")
-    LABELS+=("org.opencontainers.image.title=bluefin")
+    LABELS+=("org.opencontainers.image.title=aurora")
     LABELS+=("org.opencontainers.image.url=https://getaurora.dev")
     LABELS+=("org.opencontainers.image.vendor=ublue-os")
     LABELS+=("org.opencontainers.image.version=$fedora_version")
@@ -381,7 +381,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --env PREV_REF=ghcr.io/ublue-os/"${image_name}":"${tag}" \
         --env OUT_NAME="$OUT_NAME" \
         --env "LABELS=$FINAL_LABELS" \
-        --env "DESCRIPTION='An interpretation of the Ubuntu spirit built on Fedora technology'" \
+        --env "DESCRIPTION='The ultimate productivity workstation'" \
         --env "VERSION=${VERSION}" \
         --env VERSION_FN=/workspace/version.txt \
         --env OUT_REF="oci:$OUT_NAME" \
