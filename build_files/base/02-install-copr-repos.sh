@@ -1,5 +1,6 @@
-
 #!/usr/bin/bash
+
+echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
@@ -16,3 +17,5 @@ curl --retry 3 -Lo /etc/yum.repos.d/_copr_che-nerd-fonts-"$(rpm -E %fedora)".rep
 
 # Add openrazer repo
 curl -Lo /etc/yum.repos.d/hardware:razer.repo https://openrazer.github.io/hardware:razer.repo
+
+echo "::endgroup::"

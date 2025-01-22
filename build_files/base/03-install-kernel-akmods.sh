@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+echo "::group:: ===$(basename "$0")==="
+
 set -eoux pipefail
 
 # Remove Existing Kernel
@@ -90,3 +92,5 @@ if [[ ${AKMODS_FLAVOR} =~ coreos ]]; then
     depmod -a -v "${KERNEL}"
     echo "zfs" > /usr/lib/modules-load.d/zfs.conf
 fi
+
+echo "::endgroup::"

@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+echo "::group:: ===$(basename "$0")==="
+
 set -eoux pipefail
 
 # Patched shell
@@ -59,3 +61,5 @@ fc-cache -f /usr/share/fonts/inter
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
+
+echo "::endgroup::"
