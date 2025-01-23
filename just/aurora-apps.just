@@ -226,3 +226,10 @@ setup-brew-not-found ACTION="":
         pkexec rm -f "${FILES_TO_BE_REMOVED[@]}"
       echo "Brew command-not-found has been ${b}${red}disabled${n}"
     fi
+
+# List installed RPM packages of currently booted system
+[group('Apps')]
+list-installed-rpms:
+    #!/usr/bin/env bash
+    deployment=$(rpm-ostree status --json | jq '.deployments[] | select(.booted == true) | .checksum' | sed 's/"//g')
+    rpm-ostree db list $deployment
