@@ -858,10 +858,10 @@ tag-images image_name="" default_tag="" tags="":
         asus_name="${image_name/hwe/asus}"
         surface_name="${image_name/hwe/surface}"
 
-        for tag in {{ tags }}; do
+    for tag in {{ tags }}; do
             ${PODMAN} tag "${IMAGE}" "${asus_name}":${tag}
             ${PODMAN} tag "${IMAGE}" "${surface_name}":${tag}
-        done
+    done
     fi
 
     # Show Images
