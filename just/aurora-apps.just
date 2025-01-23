@@ -122,7 +122,6 @@ install-openrazer-frontend:
     fi
     echo "$OPENRAZER_CONFIGURATOR_APP is installed"
 
-
 # alias for install-incus
 [group('Apps')]
 incus:
