@@ -1,0 +1,29 @@
+name: Validate Justfiles
+
+on:
+  pull_request:
+    paths:
+      - "Justfile"
+      - "just/*"
+  push:
+    branches:
+      - main
+    paths:
+      - "Justfile"
+      - "just/*"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install Just
+        shell: bash
+        run: bash .github/workflows/shared/install-just.sh
+        
+      - name: Check Just Syntax
+        shell: bash
+        run: |
+          just check
