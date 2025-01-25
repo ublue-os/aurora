@@ -43,7 +43,7 @@ jobs:
 
       - name: Check Just Syntax
         shell: bash
-        run: |$
+        run: |
           just check
 
       - name: Free Disk Space (Ubuntu)
