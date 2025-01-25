@@ -130,6 +130,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # AKMODS Flavor and Kernel Version
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
+    elif [[ "${tag}" =~ stable ]]; then
+        akmods_flavor="coreos-stable"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
     else
