@@ -43,7 +43,7 @@ jobs:
 
       - name: Check Just Syntax
         shell: bash
-        run: |
+        run: |$
           just check
 
       - name: Free Disk Space (Ubuntu)
@@ -78,22 +78,6 @@ jobs:
           retention-days: 0
           compression-level: 0
           overwrite: true
-        
-      - name: HWE ISO rename
-        if: contains(matrix.image_flavor, 'hwe')
-        shell: bash
-        run: |
-          set -eoux pipefail
-          iso_name="${{ env.ISO_NAME }}"
-          asus_name="${iso_name/hwe/asus}"
-          surface_name="${iso_name/hwe/surface}"
-          mv "${{ steps.upload-directory.outputs.iso-upload-dir }}/${iso_name}" "${{ steps.upload-directory.outputs.iso-upload-dir}}/${asus_name}"
-          mv "${{ steps.upload-directory.outputs.iso-upload-dir }}/${iso_name}-CHECKSUM" "${{ steps.upload-directory.outputs.iso-upload-dir}}/${asus_name}-CHECKSUM"
-          sed -i -e 's/-hwe/-asus/' "${{ steps.upload-directory.outputs.iso-upload-dir}}/${asus_name}-CHECKSUM"
-          cp "${{ steps.upload-directory.outputs.iso-upload-dir }}/${asus_name}" "${{ steps.upload-directory.outputs.iso-upload-dir}}/${surface_name}"
-          cp "${{ steps.upload-directory.outputs.iso-upload-dir }}/${asus_name}-CHECKSUM" "${{ steps.upload-directory.outputs.iso-upload-dir}}/${surface_name}-CHECKSUM"
-          sed -i -e 's/-asus/-surface/' "${{ steps.upload-directory.outputs.iso-upload-dir}}/${surface_name}-CHECKSUM"
-          tree "${{ steps.upload-directory.outputs.iso-upload-dir }}"
 
       - name: Upload ISOs and Checksum to R2 to Aurora Bucket
         if: github.ref_name == 'main' && contains(matrix.base_name,'aurora')
