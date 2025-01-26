@@ -38,7 +38,7 @@ rm /etc/yum.repos.d/_copr_sentry-switcheroo-control_discrete.repo
 # https://github.com/ublue-os/aurora/issues/8
 rpm-ostree override replace \
     --experimental \
-    --from repo=updates \
+    --from repo=fedora \
         libheif heif-pixbuf-loader
 
 # Starship Shell Prompt
