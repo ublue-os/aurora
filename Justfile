@@ -876,13 +876,13 @@ tag-images image_name="" default_tag="" tags="":
 # Set $GITHUB_USERNAME and $GITHUB_PAT variables
 # Used on Jan 28 2025 to fix NVIDIA regression
 #   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
-#
+
 [group('Admin')]
 retag-stable-daily-nvidia-on-ghcr working_tag="" dry_run="1":
     #!/bin/bash
     set -euxo pipefail
     skopeo="echo === skopeo"
-    if [[ "{{dry_run }}" -ne 1 ]]; then
+    if [[ "{{ dry_run }}" -ne 1 ]]; then
         echo "$GITHUB_PAT" | podman login -u $GITHUB_USERNAME --password-stdin ghcr.io
         skopeo="skopeo"
     fi
