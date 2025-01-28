@@ -871,12 +871,13 @@ tag-images image_name="" default_tag="" tags="":
     ${PODMAN} images
 
 # TODO: generalize this
+# Used on Jan 28 2025 to fix NVIDIA regression
+#   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
 #
 # Need to generate a PAT with package write access (https://github.com/settings/tokens)
 # Set $GITHUB_USERNAME and $GITHUB_PAT variables
-# Used on Jan 28 2025 to fix NVIDIA regression
-#   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
 
+# Retag images on GHCR
 [group('Admin')]
 retag-stable-daily-nvidia-on-ghcr working_tag="" dry_run="1":
     #!/bin/bash
