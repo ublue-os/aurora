@@ -131,7 +131,10 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
     elif [[ "${tag}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
+        # TODO: revert this to "coreos-stable" once 6.12.9 kernel is released for coreos-stable images
+        # https://github.com/ublue-os/aurora/issues/158
+        # akmods_flavor="coreos-stable"
+        akmods_flavor="coreos-testing"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
     else
