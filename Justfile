@@ -25,8 +25,8 @@ tags := '(
     [beta]=beta
 )'
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
-export SUDOIF := if `id -u` == "0" { "" } else { if SUDO_DISPLAY == "true" { "sudo --askpass" } else { "sudo" } }
-export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/usr/bin/podman") } else { if path_exists("/usr/bin/docker") == "true" { env("PODMAN", "docker") } else { env("PODMAN", "exit 1 ; ") } }
+export SUDOIF := if `id -u` == "0" { "" } else if SUDO_DISPLAY == "true" { "sudo --askpass" } else { "sudo" }
+export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/usr/bin/podman") } else if path_exists("/usr/bin/docker") == "true" { env("PODMAN", "docker") } else { env("PODMAN", "exit 1 ; ") }
 export PULL_POLICY := if PODMAN =~ "docker" { "missing" } else { "newer" }
 
 [private]
@@ -130,6 +130,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # AKMODS Flavor and Kernel Version
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
+    elif [[ "${tag}" =~ stable ]]; then
+        # TODO: revert this to "coreos-stable" once 6.12.9 kernel is released for coreos-stable images
+        # https://github.com/ublue-os/aurora/issues/158
+        # akmods_flavor="coreos-stable"
+        akmods_flavor="coreos-testing"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
     else
@@ -212,7 +217,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/Containerfile")
     LABELS+=("--label" "org.opencontainers.image.url=https://getaurora.dev")
     LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
-    LABELS+=("--label" "io.artifacthub.package.category=bootc-images")
     LABELS+=("--label" "io.artifacthub.package.deprecated=false")
     LABELS+=("--label" "io.artifacthub.package.keywords=bootc,fedora,aurora,ublue,universal-blue")
     LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"castrojo\", \"email\": \"jorge.castro@gmail.com\"}]")
@@ -309,7 +313,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     # Rest of Labels
     LABELS="
-        io.artifacthub.package.category=bootc-images
         io.artifacthub.package.deprecated=false
         io.artifacthub.package.keywords=bootc,fedora,aurora,ublue,universal-blue
         io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4

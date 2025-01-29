@@ -22,6 +22,29 @@ done
 rpm-ostree override replace \
     --experimental \
     --from repo=updates \
+    glib2 \
+    || true
+
+rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+    glibc \
+    glibc-common \
+    glibc-all-langpacks \
+    glibc-gconv-extra \
+    || true
+
+rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+    libX11 \
+    libX11-common \
+    libX11-xcb \
+    || true
+
+rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
     elfutils-libelf \
     elfutils-libs \
     qt6-qtbase \
@@ -29,5 +52,9 @@ rpm-ostree override replace \
     qt6-qtbase-mysql \
     qt6-qtbase-gui ||
     true
+
+rpm-ostree override remove \
+    glibc32 \
+    || true
 
     echo "::endgroup::"
