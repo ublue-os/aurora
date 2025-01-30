@@ -48,7 +48,6 @@
 				"samba-winbind-modules",
 				"samba",
 				"setools-console",
-				"solaar",
 				"sssd-ad",
 				"sssd-ipa",
 				"sssd-krb5",

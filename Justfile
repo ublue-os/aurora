@@ -130,6 +130,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # AKMODS Flavor and Kernel Version
     if [[ "${flavor}" =~ hwe ]]; then
         akmods_flavor="bazzite"
+    elif [[ "${tag}" =~ stable ]]; then
+        # TODO: revert this to "coreos-stable" once 6.12.9 kernel is released for coreos-stable images
+        # https://github.com/ublue-os/aurora/issues/158
+        # akmods_flavor="coreos-stable"
+        akmods_flavor="coreos-testing"
     elif [[ "${tag}" =~ beta ]]; then
         akmods_flavor="coreos-testing"
     else
@@ -864,3 +869,24 @@ tag-images image_name="" default_tag="" tags="":
 
     # Show Images
     ${PODMAN} images
+
+# TODO: generalize this
+# Used on Jan 28 2025 to fix NVIDIA regression
+#   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
+#
+# Need to generate a PAT with package write access (https://github.com/settings/tokens)
+# Set $GITHUB_USERNAME and $GITHUB_PAT variables
+
+# Retag images on GHCR
+[group('Admin')]
+retag-stable-daily-nvidia-on-ghcr working_tag="" dry_run="1":
+    #!/bin/bash
+    set -euxo pipefail
+    skopeo="echo === skopeo"
+    if [[ "{{ dry_run }}" -ne 1 ]]; then
+        echo "$GITHUB_PAT" | podman login -u $GITHUB_USERNAME --password-stdin ghcr.io
+        skopeo="skopeo"
+    fi
+    for image in aurora-nvidia-open aurora-nvidia aurora-dx-nvidia aurora-dx-nvidia-open; do
+      $skopeo copy docker://ghcr.io/ublue-os/${image}:{{ working_tag }} docker://ghcr.io/ublue-os/${image}:stable-daily
+    done
