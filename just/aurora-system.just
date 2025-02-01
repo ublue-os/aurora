@@ -229,8 +229,10 @@ install-system-flatpaks CURR_LIST_FILE="":
 
     if [[ -n ${CURR_LIST_FILE} ]]; then
         CURRENT_FLATPAK_LIST=$(cat "${CURR_LIST_FILE} 2>/dev/null")
-        if [[ ${FLATPAK_LIST} != ${CURRENT_FLATPAK_LIST} ]]; then
-            flatpak --system -y install --or-update ${FLATPAK_LIST}
+        # get flatpaks that are in FLATPAK_LIST but not in CURRENT_FLATPAK_LIST
+        NEW_FLATPAKS=$(comm -23 <(sort "${FLATPAK_LIST}") <(sort "${CURRENT_FLATPAK_LIST}"))
+        if [[ -n ${NEW_FLATPAKS} ]]; then
+            flatpak --system -y install --or-update ${NEW_FLATPAKS}
             echo "${FLATPAK_LIST}" > "${CURR_LIST_FILE}"
         fi
     else
