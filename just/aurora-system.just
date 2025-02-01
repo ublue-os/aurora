@@ -215,13 +215,27 @@ configure-vfio ACTION="":
 # Install system flatpaks for rebasers
 [group('System')]
 [private]
-install-system-flatpaks:
+install-system-flatpaks CURR_LIST_FILE="":
     #!/usr/bin/bash
-    IMAGE_INFO="/usr/share/ublue-os/image-info.json"
-    BASE_IMAGE_NAME=$(jq -r '."base-image-name"' < $IMAGE_INFO)
-    FLATPAKS="aurora_flatpaks/flatpaks"
-    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/${FLATPAKS} | tr '\n' ' ')"
+    CURR_LIST_FILE={{ CURR_LIST_FILE }}
+    IMAGE_NAME=$(jq -r '."image-name"' < "/usr/share/ublue-os/image-info.json")
+    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks | tr '\n' ' ')"
     flatpak --system -y install --or-update ${FLATPAK_LIST}
+
+    if [[ ${IMAGE_NAME} =~ "dx" ]]; then
+        DX_FLATPAKS="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks | tr '\n' ' ')"
+        FLATPAK_LIST="${FLATPAK_LIST} ${DX_FLATPAKS}"
+    fi
+
+    if [[ -n ${CURR_LIST_FILE} ]]; then
+        CURRENT_FLATPAK_LIST=$(cat "${CURR_LIST_FILE} 2>/dev/null")
+        if [[ ${FLATPAK_LIST} != ${CURRENT_FLATPAK_LIST} ]]; then
+            flatpak --system -y install --or-update ${FLATPAK_LIST}
+            echo "${FLATPAK_LIST}" > "${CURR_LIST_FILE}"
+        fi
+    else
+        flatpak --system -y install --or-update ${FLATPAK_LIST}
+    fi
 
 # Configure grub bootmenu visibility
 [group('System')]
