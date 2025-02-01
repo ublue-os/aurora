@@ -17,3 +17,4 @@ app/io.missioncenter.MissionCenter/x86_64/stable
 app/org.gnome.DejaDup/x86_64/stable
 app/org.gnome.World.PikaBackup/x86_64/stable
 runtime/org.gtk.Gtk3theme.Breeze/x86_64/3.22
+app/io.github.pwr_solaar.solaar/x86_64/stable
