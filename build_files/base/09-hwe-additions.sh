@@ -36,6 +36,12 @@ dnf5 -y install \
     "${ASUS_PACKAGES[@]}" \
     "${SURFACE_PACKAGES[@]}"
 
+dnf5 -y swap \
+    libwacom-data libwacom-surface-data
+
+dnf5 -y swap \
+    libwacom libwacom-surface
+
 tee /usr/lib/modules-load.d/ublue-surface.conf << EOF
 # Only on AMD models
 pinctrl_amd
