@@ -218,14 +218,9 @@ configure-vfio ACTION="":
 install-system-flatpaks CURR_LIST_FILE="":
     #!/usr/bin/env bash
     CURR_LIST_FILE={{ CURR_LIST_FILE }}
-    IMAGE_NAME=$(jq -r '."image-name"' < "/usr/share/ublue-os/image-info.json")
-    FLATPAK_LIST=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks))
-
-    if [[ ${IMAGE_NAME} =~ "dx" ]]; then
-        FLATPAK_LIST+=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks))
-    fi
 
     if [[ -n ${CURR_LIST_FILE} ]]; then
+        FLATPAK_LIST=($(cat /usr/share/ublue-os/flatpak_list))
         if [[ -f "${CURR_LIST_FILE}" ]]; then
             mapfile -t CURRENT_FLATPAK_LIST < "${CURR_LIST_FILE}"
             # convert arrays to sorted newline-separated strings to compare lists and get new flatpaks
@@ -240,6 +235,12 @@ install-system-flatpaks CURR_LIST_FILE="":
             flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
         fi
     else
+        IMAGE_NAME=$(jq -r '."image-name"' < "/usr/share/ublue-os/image-info.json")
+        FLATPAK_LIST=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks))
+
+        if [[ ${IMAGE_NAME} =~ "dx" ]]; then
+            FLATPAK_LIST+=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks))
+        fi
         flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
     fi
 
