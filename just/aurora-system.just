@@ -216,27 +216,31 @@ configure-vfio ACTION="":
 [group('System')]
 [private]
 install-system-flatpaks CURR_LIST_FILE="":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     CURR_LIST_FILE={{ CURR_LIST_FILE }}
     IMAGE_NAME=$(jq -r '."image-name"' < "/usr/share/ublue-os/image-info.json")
-    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks | tr '\n' ' ')"
-    flatpak --system -y install --or-update ${FLATPAK_LIST}
+    FLATPAK_LIST=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks))
 
     if [[ ${IMAGE_NAME} =~ "dx" ]]; then
-        DX_FLATPAKS="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks | tr '\n' ' ')"
-        FLATPAK_LIST="${FLATPAK_LIST} ${DX_FLATPAKS}"
+        FLATPAK_LIST+=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks))
     fi
 
     if [[ -n ${CURR_LIST_FILE} ]]; then
-        CURRENT_FLATPAK_LIST=$(cat "${CURR_LIST_FILE} 2>/dev/null")
-        # get flatpaks that are in FLATPAK_LIST but not in CURRENT_FLATPAK_LIST
-        NEW_FLATPAKS=$(comm -23 <(sort "${FLATPAK_LIST}") <(sort "${CURRENT_FLATPAK_LIST}"))
-        if [[ -n ${NEW_FLATPAKS} ]]; then
-            flatpak --system -y install --or-update ${NEW_FLATPAKS}
-            echo "${FLATPAK_LIST}" > "${CURR_LIST_FILE}"
+        if [[ -f "${CURR_LIST_FILE}" ]]; then
+            mapfile -t CURRENT_FLATPAK_LIST < "${CURR_LIST_FILE}"
+            # convert arrays to sorted newline-separated strings to compare lists and get new flatpaks
+            NEW_FLATPAKS=($(comm -23 <(printf "%s\n" "${FLATPAK_LIST[@]}" | sort) <(printf "%s\n" "${CURRENT_FLATPAK_LIST[@]}" | sort)))
+            if [[ ${#NEW_FLATPAKS[@]} -gt 0 ]]; then
+                flatpak --system -y install --or-update "${NEW_FLATPAKS[@]}"
+                printf "%s\n" "${FLATPAK_LIST[@]}" > "${CURR_LIST_FILE}"
+                notify-send "Welcome to Aurora" "New flatpak apps have been installed!" --app-name="Flatpak Manager Service" -u NORMAL
+            fi
+        else
+            printf "%s\n" "${FLATPAK_LIST[@]}" > "${CURR_LIST_FILE}"
+            flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
         fi
     else
-        flatpak --system -y install --or-update ${FLATPAK_LIST}
+        flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
     fi
 
 # Configure grub bootmenu visibility
