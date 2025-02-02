@@ -2,10 +2,14 @@
 
 # Script Version
 VER=2
-VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/flatpak_manager_version"
+LOCAL_UBLUE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/ublue"
+VER_FILE="${LOCAL_UBLUE_DIR}/flatpak_manager_version"
 VER_RAN=$(cat "$VER_FILE")
 
-mkdir -p "$(dirname "$VER_FILE")" || exit 1
+mkdir -p "${LOCAL_UBLUE_DIR}" || exit 1
+
+# Install flatpaks if the list has been updated
+ujust install-system-flatpaks CURR_LIST_FILE="${LOCAL_UBLUE_DIR}/flatpak_current_list"
 
 # Run script if updated
 if [[ -f $VER_FILE && $VER = "$VER_RAN" ]]; then
