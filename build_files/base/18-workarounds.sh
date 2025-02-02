@@ -24,10 +24,9 @@ mkdir -p /usr/share/ublue-os/aurora-cli
 cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/aurora-cli
 
 # Copy flatpak list on image to compare against it on boot wo/ requiring curl to gh
-TOP_LEVEL_DIR=$(git rev-parse --show-toplevel)
-FLATPAK_LIST=($(cat ${TOP_LEVEL_DIR}/aurora_flatpaks/flatpaks))
+FLATPAK_LIST=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks))
 if [[ ${IMAGE_NAME} =~ "dx" ]]; then
-    FLATPAK_LIST+=($(cat ${TOP_LEVEL_DIR}/dx_flatpaks/flatpaks))
+    FLATPAK_LIST+=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks))
 fi
 printf "%s\n" "${FLATPAK_LIST[@]}" > /usr/share/ublue-os/flatpak_list
 
