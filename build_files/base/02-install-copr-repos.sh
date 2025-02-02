@@ -18,4 +18,7 @@ curl --retry 3 -Lo /etc/yum.repos.d/_copr_che-nerd-fonts-"$(rpm -E %fedora)".rep
 # Add openrazer repo
 curl -Lo /etc/yum.repos.d/hardware:razer.repo https://openrazer.github.io/hardware:razer.repo
 
+# TODO: remove when kcm_ublue is built in the ublue copr
+curl --retry 3 -Lo /etc/yum.repos.d/_copr_ledif-kcm_ublue-"$(rpm -E %fedora)".repo https://copr.fedorainfracloud.org/coprs/ledif/kcm_ublue/repo/fedora-"$(rpm -E %fedora)"/ledif-kcm_ublue-fedora-"$(rpm -E %fedora)".repo
+
 echo "::endgroup::"
