@@ -22,6 +22,15 @@ done
 rpm-ostree override replace \
     --experimental \
     --from repo=updates \
+    qt6-qtbase \
+    qt6-qtbase-common \
+    qt6-qtbase-mysql \
+    qt6-qtbase-gui ||
+    true
+
+rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
     glib2 \
     || true
 
@@ -43,15 +52,25 @@ rpm-ostree override replace \
     || true
 
 rpm-ostree override replace \
-    --experimental \
-    --from repo=updates \
-    elfutils-libelf \
-    elfutils-libs \
-    qt6-qtbase \
-    qt6-qtbase-common \
-    qt6-qtbase-mysql \
-    qt6-qtbase-gui ||
-    true
+	--experimental \
+	--from repo=updates \
+	elfutils-libelf \
+	elfutils-libs ||
+	true
+
+rpm-ostree override replace \
+	--experimental \
+	--from repo=fedora-multimedia \
+	mesa-filesystem \
+	mesa-libEGL \
+	mesa-dri-drivers \
+	mesa-dri-drivers.i686 \
+	mesa-libgbm \
+	mesa-libglapi \
+	mesa-libGL \
+	mesa-va-drivers \
+	mesa-vulkan-drivers ||
+	true
 
 rpm-ostree override remove \
     glibc32 \
