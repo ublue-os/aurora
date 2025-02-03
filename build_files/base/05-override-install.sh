@@ -28,7 +28,11 @@ dnf5 -y copr remove sentry/switcheroo-control_discrete
 # https://github.com/ublue-os/aurora/issues/8
 dnf5 -y swap \
     --repo=fedora \
-        libheif heif-pixbuf-loader
+        libheif libheif
+        
+dnf5 -y swap \
+    --repo=fedora \
+        heif-pixbuf-loader heif-pixbuf-loader
 
 # Starship Shell Prompt
 curl --retry 3 -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz"
