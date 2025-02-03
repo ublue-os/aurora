@@ -8,7 +8,7 @@ set -eoux pipefail
 # Patched shell
 dnf5 -y swap \
     --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-        kf6-kio-core kf6-kio-core
+        kf6-kio kf6-kio
 
 
 # Fix for ID in fwupd
