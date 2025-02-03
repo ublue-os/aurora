@@ -59,7 +59,7 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
 
     # Install Nvidia RPMs
 	curl -Lo /etc/yum.repos.d/fedora-nvidia.repo https://negativo17.org/repos/fedora-nvidia.repo
-    curl -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/hwe/main/nvidia-install.sh
+    curl -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/hwe/71bf347b434c498621ae7c059989cbe192702604/nvidia-install.sh
     chmod +x /tmp/nvidia-install.sh
     IMAGE_NAME="${BASE_IMAGE_NAME}" RPMFUSION_MIRROR="" /tmp/nvidia-install.sh
     rm -f /usr/share/vulkan/icd.d/nouveau_icd.*.json
