@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Script Version
-VER=3
+VER=2
 LOCAL_UBLUE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/ublue"
 VER_FILE="${LOCAL_UBLUE_DIR}/flatpak_manager_version"
 VER_RAN=$(cat "$VER_FILE")
