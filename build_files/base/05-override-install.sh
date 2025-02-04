@@ -16,6 +16,15 @@ rpm-ostree override replace \
         kf6-kio-core \
         kf6-kio-gui
 
+# Make sure KDE Frameworks and our kf6-kio are on the same version
+kf6_version=$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+kf6_kio_version=$(rpm -qi kf6-kio-core | awk '/^Version/ {print $3}')
+
+if [[ "$kf6_version" != "$kf6_kio_version" ]]; then
+    echo "Mismatched kf6-kio version $kf6_kio_version. Bump ublue-os/packages kf6-kio to $kf6_version"
+    exit 1
+fi
+
 # Fix for ID in fwupd
 rpm-ostree override replace \
     --experimental \
