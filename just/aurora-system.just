@@ -215,13 +215,34 @@ configure-vfio ACTION="":
 # Install system flatpaks for rebasers
 [group('System')]
 [private]
-install-system-flatpaks:
-    #!/usr/bin/bash
-    IMAGE_INFO="/usr/share/ublue-os/image-info.json"
-    BASE_IMAGE_NAME=$(jq -r '."base-image-name"' < $IMAGE_INFO)
-    FLATPAKS="aurora_flatpaks/flatpaks"
-    FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/aurora/main/${FLATPAKS} | tr '\n' ' ')"
-    flatpak --system -y install --or-update ${FLATPAK_LIST}
+install-system-flatpaks CURR_LIST_FILE="":
+    #!/usr/bin/env bash
+    CURR_LIST_FILE={{ CURR_LIST_FILE }}
+
+    if [[ -n ${CURR_LIST_FILE} ]]; then
+        FLATPAK_LIST=($(cat /usr/share/ublue-os/flatpak_list))
+        if [[ -f "${CURR_LIST_FILE}" ]]; then
+            mapfile -t CURRENT_FLATPAK_LIST < "${CURR_LIST_FILE}"
+            # convert arrays to sorted newline-separated strings to compare lists and get new flatpaks
+            NEW_FLATPAKS=($(comm -23 <(printf "%s\n" "${FLATPAK_LIST[@]}" | sort) <(printf "%s\n" "${CURRENT_FLATPAK_LIST[@]}" | sort)))
+            if [[ ${#NEW_FLATPAKS[@]} -gt 0 ]]; then
+                flatpak --system -y install --or-update "${NEW_FLATPAKS[@]}"
+                printf "%s\n" "${FLATPAK_LIST[@]}" > "${CURR_LIST_FILE}"
+                notify-send "Welcome to Aurora" "New flatpak apps have been installed!" --app-name="Flatpak Manager Service" -u NORMAL
+            fi
+        else
+            printf "%s\n" "${FLATPAK_LIST[@]}" > "${CURR_LIST_FILE}"
+            flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
+        fi
+    else
+        IMAGE_NAME=$(jq -r '."image-name"' < "/usr/share/ublue-os/image-info.json")
+        FLATPAK_LIST=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/aurora_flatpaks/flatpaks))
+
+        if [[ ${IMAGE_NAME} =~ "dx" ]]; then
+            FLATPAK_LIST+=($(curl https://raw.githubusercontent.com/ublue-os/aurora/main/dx_flatpaks/flatpaks))
+        fi
+        flatpak --system -y install --or-update "${FLATPAK_LIST[@]}"
+    fi
 
 # Configure grub bootmenu visibility
 [group('System')]
