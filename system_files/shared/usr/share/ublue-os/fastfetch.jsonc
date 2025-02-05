@@ -4,7 +4,10 @@
     "type": "file",
     "source": "/usr/share/ublue-os/aurora-logo.txt",
     "color": {
-        "1": "white",
+        "1": "94",
+        "2": "95",
+        "3": "91",
+        "4": "97",
     }
   },
   "display": {
