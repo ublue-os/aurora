@@ -4,9 +4,12 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
-# Restore x11 for Nvidia Images
-if [[ "${FEDORA_MAJOR_VERSION}" -eq "40" ]]; then
-    rpm-ostree install plasma-workspace-x11
+# Remove desktop entries
+if [[ -f /usr/share/applications/gnome-system-monitor.desktop ]]; then
+    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/gnome-system-monitor.desktop
+fi
+if [[ -f /usr/share/applications/org.gnome.SystemMonitor.desktop ]]; then
+    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/org.gnome.SystemMonitor.desktop
 fi
 
 # Branding for Images
