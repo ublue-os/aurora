@@ -58,11 +58,11 @@ if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
 fi
 
 # More consistent Qt/GTK themes for Flatpaks
-flatpak override --env=QT_QPA_PLATFORMTHEME=kde
-flatpak override --filesystem=xdg-config/gtk-4.0:ro
+flatpak override --user --env=QT_QPA_PLATFORMTHEME=kde
+flatpak override --user --filesystem=xdg-config/gtk-4.0:ro
 
 # smaller cursor on GTK apps - should be fixed by F42 with GTK 4.17
-flatpak override --env=USE_POINTER_VIEWPORT=1
+flatpak override --user --env=USE_POINTER_VIEWPORT=1
 
 # Handle privileged tasks
 pkexec /usr/libexec/ublue-privileged-user-setup
