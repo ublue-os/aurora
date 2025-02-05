@@ -54,6 +54,7 @@
 				"sssd-krb5",
 				"sssd-nfs-idmap",
 				"stress-ng",
+				"scx-scheds",
 				"tailscale",
 				"tmux",
 				"topgrade",
