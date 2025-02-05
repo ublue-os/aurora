@@ -17,6 +17,9 @@ if [[ -f $VER_FILE && $VER = "$VER_RAN" ]]; then
 	exit 0
 fi
 
+# smaller cursor on GTK apps - should be fixed by F42 with GTK 4.17
+flatpak override --env=USE_POINTER_VIEWPORT=1
+
 # Set up Firefox default configuration
 mkdir -p /var/lib/flatpak/extension/org.mozilla.firefox.systemconfig/$(arch)/stable/defaults/pref
 rm -f /var/lib/flatpak/extension/org.mozilla.firefox.systemconfig/$(arch)/stable/defaults/pref/*aurora*.js
