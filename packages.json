@@ -54,6 +54,7 @@
 				"sssd-krb5",
 				"sssd-nfs-idmap",
 				"stress-ng",
+				"scx-scheds",
 				"tailscale",
 				"tmux",
 				"topgrade",
@@ -153,8 +154,7 @@
 			"all": [
 				"firefox-langpacks",
 				"firefox",
-				"podman-docker",
-				"ublue-os-update-services"
+				"podman-docker"
 			],
 			"kinoite": [
 				"krfb",
