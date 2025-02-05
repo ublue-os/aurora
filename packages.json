@@ -153,8 +153,7 @@
 			"all": [
 				"firefox-langpacks",
 				"firefox",
-				"podman-docker",
-				"ublue-os-update-services"
+				"podman-docker"
 			],
 			"kinoite": [
 				"krfb",
