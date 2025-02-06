@@ -16,5 +16,8 @@ curl -Lo /etc/yum.repos.d/hardware:razer.repo https://openrazer.github.io/hardwa
 # Enable Nerd fonts repo
 dnf5 -y copr enable che/nerd-fonts
 
+# Enable repo for scx-scheds
+dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
+
 
 echo "::endgroup::"
