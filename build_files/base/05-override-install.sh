@@ -43,12 +43,6 @@ dnf5 -y swap \
     --repo=fedora \
         heif-pixbuf-loader heif-pixbuf-loader
 
-# Make sure the newest scx-scheds is installed
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons \
-        scx-scheds scx-scheds
-
-dnf5 -y copr remove bieszczaders/kernel-cachyos-addons
 
 # Starship Shell Prompt
 curl --retry 3 -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz"
