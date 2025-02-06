@@ -19,5 +19,8 @@ dnf5 -y copr enable che/nerd-fonts
 # Enable repo for scx-scheds
 dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 
+# Enable fw-fanctrl repo
+dnf5 -y copr enable tulilirockz/fw-fanctrl
+
 
 echo "::endgroup::"
