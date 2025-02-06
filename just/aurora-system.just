@@ -226,7 +226,7 @@ install-system-flatpaks CURR_LIST_FILE="":
             # convert arrays to sorted newline-separated strings to compare lists and get new flatpaks
             NEW_FLATPAKS=($(comm -23 <(printf "%s\n" "${FLATPAK_LIST[@]}" | sort) <(printf "%s\n" "${CURRENT_FLATPAK_LIST[@]}" | sort)))
             if [[ ${#NEW_FLATPAKS[@]} -gt 0 ]]; then
-                flatpak --system -y install --or-update "${NEW_FLATPAKS[@]}"
+                flatpak --system -y install --reinstall --or-update "${NEW_FLATPAKS[@]}"
                 printf "%s\n" "${FLATPAK_LIST[@]}" > "${CURR_LIST_FILE}"
                 notify-send "Welcome to Aurora" "New flatpak apps have been installed!" --app-name="Flatpak Manager Service" -u NORMAL
             fi
