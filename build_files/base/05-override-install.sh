@@ -45,7 +45,7 @@ dnf5 -y swap \
 
 # Make sure the newest scx-scheds is installed
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:bieszczaders:/kernel-cachyos-addons \
+    --repo=copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons \
         scx-scheds scx-scheds
 
 dnf5 -y copr remove bieszczaders/kernel-cachyos-addons
