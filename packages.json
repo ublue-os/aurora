@@ -42,6 +42,7 @@
 				"pulseaudio-utils",
 				"powertop",
 				"python3-pip",
+				"ptyxis",
 				"rclone",
 				"restic",
 				"samba-dcerpc",
@@ -61,11 +62,9 @@
 				"topgrade",
 				"ublue-fastfetch",
 				"ublue-motd",
-				"usbmuxd",
 				"ublue-bling",
 				"ublue-brew",
-				"ublue-motd",
-				"ublue-fastfetch",
+				"usbmuxd",
 				"wireguard-tools",
 				"xprop",
 				"wl-clipboard",
@@ -167,9 +166,7 @@
 	},
 	"40": {
 		"include": {
-			"all": [
-				"ptyxis"
-			],
+			"all": [],
 			"dx": [
 				"lxd-agent",
 				"lxd"
@@ -186,9 +183,7 @@
 			"all": [
 				"google-noto-fonts-all"
 			],
-			"kinoite": [
-				"ptyxis"
-			]
+			"kinoite": []
 		},
 		"exclude": {
 			"all": [],
