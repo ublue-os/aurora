@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source /usr/lib/ujust/ujust.sh
-# Yes this is cursed, you are welcome
+# Get the image name based on the filename
 IMAGE_NAME=$(basename "$0" | sed -E 's/(-dx|)-kvmfr-setup//')
 
 # Required disclaimer and where to report issues first
