@@ -7,6 +7,9 @@ set -eoux pipefail
 # Add Staging repo
 dnf5 -y copr enable ublue-os/staging
 
+# Fonts
+dnf5 -y copr enable atim/ubuntu-fonts
+
 # Add Switcheroo Repo
 dnf5 -y copr enable sentry/switcheroo-control_discrete
 
