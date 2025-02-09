@@ -197,7 +197,7 @@ install-gaming-flatpaks:
                                             runtime/com.obsproject.Studio.Plugin.OBSVkCapture/x86_64/stable \
                                             runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08 \
                                             # required for Lutris and Heroic
-                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08 \
+                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08
 
 # Set up command-not-found for Homebrew
 [group('Apps')]
