@@ -28,7 +28,6 @@ sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applica
 sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/htop.desktop
 sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/nvtop.desktop
 
-
 # Disable all COPRs and RPM Fusion Repos
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/negativo17-fedora-multimedia.repo
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/tailscale.repo
@@ -38,7 +37,7 @@ dnf5 -y copr disable che/nerd-fonts
 dnf5 -y copr disable phracek/PyCharm
 dnf5 -y copr disable bieszczaders/kernel-cachyos-addons
 dnf5 -y copr disable tulilirockz/fw-fanctrl
-dnf5 -y copr disable atim/ubuntu-fonts
+
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-cisco-openh264.repo
