@@ -9,7 +9,7 @@ VER_RAN=$(cat "$VER_FILE")
 mkdir -p "${LOCAL_UBLUE_DIR}" || exit 1
 
 # Install flatpaks if the list has been updated
-ujust install-system-flatpaks CURR_LIST_FILE="${LOCAL_UBLUE_DIR}/flatpak_current_list"
+ujust install-system-flatpaks "${LOCAL_UBLUE_DIR}/flatpak_current_list"
 
 # Run script if updated
 if [[ -f $VER_FILE && $VER = "$VER_RAN" ]]; then
