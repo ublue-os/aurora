@@ -10,7 +10,7 @@ dnf5 -y copr enable ublue-os/staging
 # Add Switcheroo Repo
 dnf5 -y copr enable sentry/switcheroo-control_discrete
 
-# Add openrazer repo
+# Add OpenRazer repo
 curl -Lo /etc/yum.repos.d/hardware:razer.repo https://openrazer.github.io/hardware:razer.repo
 
 # Enable Nerd fonts repo

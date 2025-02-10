@@ -159,8 +159,6 @@ install-opentabletdriver:
         echo "Have a good day :)!"
     fi
 
-
-
 # Install and configure Incus
 [group('Apps')]
 install-incus:
@@ -190,6 +188,7 @@ install-gaming-flatpaks:
                                             app/com.heroicgameslauncher.hgl/x86_64/stable \
                                             app/net.lutris.Lutris/x86_64/stable \
                                             app/net.davidotek.pupgui2/x86_64/stable \
+                                            app/com.dec05eba.gpu_screen_recorder/x86_64/stable \
                                             runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08 \
                                             # 23.08 needed for Lutris/heroic
                                             runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08 \
