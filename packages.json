@@ -160,8 +160,7 @@
 			],
 			"kinoite": [
 				"krfb",
-				"krfb-libs",
-				"plasma-welcome"
+				"krfb-libs"
 			],
 			"dx": []
 		}
@@ -189,10 +188,7 @@
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [
-				"plasma-welcome",
-				"plasma-welcome-fedora"
-			],
+			"kinoite": [],
 			"dx": []
 		}
 	}
