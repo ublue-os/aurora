@@ -82,6 +82,7 @@
 			"dx": [
 				"adobe-source-code-pro-fonts",
 				"android-tools",
+				"alsa-lib-devel",
 				"bcc",
 				"bpftop",
 				"bpftrace",
@@ -114,6 +115,8 @@
 				"kcli",
 				"libvirt",
 				"libvirt-nss",
+				"libX11-devel",
+				"libxkbcommon-devel",
 				"intel-one-mono-fonts",
 				"lxc",
 				"mozilla-fira-mono-fonts",
@@ -149,6 +152,7 @@
 				"virt-manager",
 				"virt-viewer",
 				"virt-v2v",
+				"wayland-devel",
 				"ydotool"
 			]
 		},
