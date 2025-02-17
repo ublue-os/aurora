@@ -27,7 +27,7 @@ dnf5 -y swap \
 
 # Switcheroo patch
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
+    --repo=terra-extras \
         switcheroo-control switcheroo-control
 
 dnf5 -y copr remove sentry/switcheroo-control_discrete
