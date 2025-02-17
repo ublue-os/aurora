@@ -7,7 +7,7 @@ set -eoux pipefail
 
 # Patched shell
 dnf5 -y swap \
-  --repo terra-extras \
+  --repo=terra-extras \
         kf6-kio kf6-kio
 
 
