@@ -7,8 +7,8 @@ set -eoux pipefail
 
 # Patched shell
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-        kf6-kio kf6-kio
+        --repo terra-extras \
+            kf6-kio kf6-kio
 
 
 # Make sure KDE Frameworks and our kf6-kio are on the same version
