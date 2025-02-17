@@ -23,7 +23,7 @@ dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 dnf5 -y copr enable tulilirockz/fw-fanctrl
 
 # Enable Terra repo
-dnf5 install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
 
 
 echo "::endgroup::"
