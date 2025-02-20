@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # SCRIPT VERSION
-USER_SETUP_VER=9
+USER_SETUP_VER=10
 USER_SETUP_VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/user-setup"
 USER_SETUP_VER_RAN=$(cat "$USER_SETUP_VER_FILE")
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
@@ -58,8 +58,13 @@ if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
 fi
 
 # More consistent Qt/GTK themes for Flatpaks
-flatpak override --user --env=QT_QPA_PLATFORMTHEME=kde
 flatpak override --user --filesystem=xdg-config/gtk-4.0:ro
+
+# TODO: re-evaluate with Fedora 42
+# Setting this variable to anything other than `xdgdesktopportal`
+# will break the XDG Desktop Portal inside the sandbox
+# See https://github.com/ublue-os/aurora/issues/224
+flatpak override --user --unset-env=QT_QPA_PLATFORMTHEME
 
 # smaller cursor on GTK apps - should be fixed by F42 with GTK 4.17
 flatpak override --user --env=USE_POINTER_VIEWPORT=1
