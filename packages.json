@@ -26,6 +26,10 @@
 				"kcm_ublue",
 				"krb5-workstation",
 				"ifuse",
+				"fcitx5-mozc",
+				"fcitx5-chinese-addons",
+				"fcitx5-hangul",
+				"kcm-fcitx5",
 				"input-remapper",
 				"jetbrains-mono-fonts-all",
 				"libimobiledevice",
@@ -160,8 +164,7 @@
 			],
 			"kinoite": [
 				"krfb",
-				"krfb-libs",
-				"plasma-welcome"
+				"krfb-libs"
 			],
 			"dx": []
 		}
@@ -189,10 +192,7 @@
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [
-				"plasma-welcome",
-				"plasma-welcome-fedora"
-			],
+			"kinoite": [],
 			"dx": []
 		}
 	}
