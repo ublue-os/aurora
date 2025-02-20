@@ -7,7 +7,7 @@ set -eoux pipefail
 
 # Patched shell
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+  --repo=terra-extras \
         kf6-kio kf6-kio
 
 
@@ -16,7 +16,7 @@ kf6_version=$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
 kf6_kio_version=$(rpm -qi kf6-kio-core | awk '/^Version/ {print $3}')
 
 if [[ "$kf6_version" != "$kf6_kio_version" ]]; then
-    echo "Mismatched kf6-kio version $kf6_kio_version. Bump ublue-os/packages kf6-kio to $kf6_version"
+    echo "Mismatched kf6-kio version $kf6_kio_version. Check Terra's kf6-kio for $kf6_version"
     exit 1
 fi
 
@@ -27,10 +27,8 @@ dnf5 -y swap \
 
 # Switcheroo patch
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
+    --repo=terra-extras \
         switcheroo-control switcheroo-control
-
-dnf5 -y copr remove sentry/switcheroo-control_discrete
 
 # TODO: Fedora 41 specific -- re-evaluate with Fedora 42
 # negativo's libheif is broken somehow on older Intel machines
