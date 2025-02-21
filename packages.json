@@ -30,6 +30,10 @@
 				"fcitx5-chinese-addons",
 				"fcitx5-hangul",
 				"kcm-fcitx5",
+				"kde-runtime-docs",
+				"kdenetwork-filesharing",
+				"kdeplasma-addons",
+				"kdialog",
 				"input-remapper",
 				"jetbrains-mono-fonts-all",
 				"libimobiledevice",
@@ -42,6 +46,7 @@
 				"oddjob-mkhomedir",
 				"opendyslexic-fonts",
 				"openrazer-daemon",
+				"plasma-wallpapers-dynamic",
 				"printer-driver-brlaser",
 				"pulseaudio-utils",
 				"powertop",
@@ -50,6 +55,7 @@
 				"rclone",
 				"restic",
 				"rsms-inter-fonts",
+				"skanpage",
 				"samba-dcerpc",
 				"samba-ldb-ldap-modules",
 				"samba-winbind-clients",
@@ -75,14 +81,7 @@
 				"wl-clipboard",
 				"zsh"
 			],
-			"kinoite": [
-				"kde-runtime-docs",
-				"kdenetwork-filesharing",
-				"kdeplasma-addons",
-				"kdialog",
-				"plasma-wallpapers-dynamic",
-				"skanpage"
-			],
+			"kinoite": [],
 			"dx": [
 				"adobe-source-code-pro-fonts",
 				"android-tools",
@@ -160,12 +159,11 @@
 			"all": [
 				"firefox-langpacks",
 				"firefox",
-				"podman-docker"
-			],
-			"kinoite": [
+				"podman-docker",
 				"krfb",
 				"krfb-libs"
 			],
+			"kinoite": [],
 			"dx": []
 		}
 	},
