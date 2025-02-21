@@ -57,10 +57,6 @@ curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcal
 # Consolidate Just Files
 find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
 
-# Register Fonts
-fc-cache -f /usr/share/fonts/ubuntu
-fc-cache -f /usr/share/fonts/inter
-
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
 
