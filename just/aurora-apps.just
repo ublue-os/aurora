@@ -180,6 +180,8 @@ install-k8s-dev-tools:
     echo "Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
 
+# Install gaming flatpaks
+# 23.08 runtime versions are needed for Heroic/Lutris
 [group('Apps')]
 install-gaming-flatpaks:
     #!/usr/bin/env bash
