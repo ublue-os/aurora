@@ -43,7 +43,7 @@
 				"lm_sensors",
 				"make",
 				"mesa-libGLU",
-				"nerd-fonts",
+				"nerdfontssymbolsonly-nerd-fonts",
 				"oddjob-mkhomedir",
 				"opendyslexic-fonts",
 				"openrazer-daemon",
