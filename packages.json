@@ -68,6 +68,7 @@
 				"sssd-ipa",
 				"sssd-krb5",
 				"sssd-nfs-idmap",
+				"starship",
 				"stress-ng",
 				"scx-scheds",
 				"tailscale",
