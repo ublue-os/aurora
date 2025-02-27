@@ -32,10 +32,14 @@ sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applica
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/negativo17-fedora-multimedia.repo
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/tailscale.repo
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/charm.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra-mesa.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra-extras.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra-nvidia.repo
+
+# Disable terra repos with dnf
+dnf5 -y config-manager setopt "terra".enabled=false
+dnf5 -y config-manager setopt "terra-mesa".enabled=false
+dnf5 -y config-manager setopt "terra-extras".enabled=false
+dnf5 -y config-manager setopt "terra-nvidia".enabled=false
+
+# Disable coprs
 dnf5 -y copr disable ublue-os/staging
 dnf5 -y copr disable ublue-os/packages
 dnf5 -y copr disable phracek/PyCharm
