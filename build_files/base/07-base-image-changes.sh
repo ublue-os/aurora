@@ -30,12 +30,6 @@ cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
-# Get Default Font since font fallback doesn't work
-curl --retry 3 --output-dir /tmp -LO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip
-mkdir -p /usr/share/fonts/fira-nf
-unzip /tmp/FiraCode.zip -d /usr/share/fonts/fira-nf
-fc-cache -f /usr/share/fonts/fira-nf
-
 # Test aurora gschema override for errors. If there are no errors, proceed with compiling aurora gschema, which includes setting overrides.
 mkdir -p /tmp/aurora-schema-test
 find /usr/share/glib-2.0/schemas/ -type f ! -name "*.gschema.override" -exec cp {} /tmp/aurora-schema-test/ \;
