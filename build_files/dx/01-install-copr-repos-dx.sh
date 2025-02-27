@@ -28,8 +28,9 @@ dnf5 -y copr enable hikariknight/looking-glass-kvmfr
 # Podman-bootc
 dnf5 -y copr enable gmaglione/podman-bootc
 
-# Enable Terra repo
-dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
-
+# Enable Terra repos
+sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/terra-mesa.repo
+sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/terra-extras.repo
+sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/terra-nvidia.repo
 
 echo "::endgroup::"
