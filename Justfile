@@ -871,15 +871,18 @@ tag-images image_name="" default_tag="" tags="":
     # Show Images
     ${PODMAN} images
 
-# Log of uses:
-#   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
+# # Examples:
+#   > just retag-nvidia-on-ghcr stable-daily stable-daily-41.20250126.3 0
 #   > just retag-nvidia-on-ghcr latest latest-41.20250228.1 0
 #
-# Need to generate a PAT with package write access (https://github.com/settings/tokens)
-# Set $GITHUB_USERNAME and $GITHUB_PAT variables
-# Retag images on GHCR
+# working_tag: The tag of the most recent known good image (e.g., stable-daily-41.20250126.3)
+# stream:      One of latest, stable-daily, stable or gts
+# dry_run:     Only print the skopeo commands instead of running them
+#
+# First generate a PAT with package write access (https://github.com/settings/tokens)
+# and set $GITHUB_USERNAME and $GITHUB_PAT environment variables
 
-# stream is latest or stable-daily
+# Retag images on GHCR
 [group('Admin')]
 retag-nvidia-on-ghcr working_tag="" stream="" dry_run="1":
     #!/bin/bash
