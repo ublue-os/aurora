@@ -8,7 +8,7 @@ set -eoux pipefail
 # Patched shell
 dnf5 -y swap \
   --repo=terra-extras \
-        kf6-kio kf6-kio
+        kf6-kio kf6-kio.switcheroo
 
 
 # Make sure KDE Frameworks and our kf6-kio are on the same version
