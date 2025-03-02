@@ -871,16 +871,20 @@ tag-images image_name="" default_tag="" tags="":
     # Show Images
     ${PODMAN} images
 
-# TODO: generalize this
-# Used on Jan 28 2025 to fix NVIDIA regression
-#   > just retag-stable-daily-nvidia-on-ghcr stable-daily-41.20250126.3 0
+# # Examples:
+#   > just retag-nvidia-on-ghcr stable-daily stable-daily-41.20250126.3 0
+#   > just retag-nvidia-on-ghcr latest latest-41.20250228.1 0
 #
-# Need to generate a PAT with package write access (https://github.com/settings/tokens)
-# Set $GITHUB_USERNAME and $GITHUB_PAT variables
+# working_tag: The tag of the most recent known good image (e.g., stable-daily-41.20250126.3)
+# stream:      One of latest, stable-daily, stable or gts
+# dry_run:     Only print the skopeo commands instead of running them
+#
+# First generate a PAT with package write access (https://github.com/settings/tokens)
+# and set $GITHUB_USERNAME and $GITHUB_PAT environment variables
 
 # Retag images on GHCR
 [group('Admin')]
-retag-stable-daily-nvidia-on-ghcr working_tag="" dry_run="1":
+retag-nvidia-on-ghcr working_tag="" stream="" dry_run="1":
     #!/bin/bash
     set -euxo pipefail
     skopeo="echo === skopeo"
@@ -889,5 +893,5 @@ retag-stable-daily-nvidia-on-ghcr working_tag="" dry_run="1":
         skopeo="skopeo"
     fi
     for image in aurora-nvidia-open aurora-nvidia aurora-dx-nvidia aurora-dx-nvidia-open; do
-      $skopeo copy docker://ghcr.io/ublue-os/${image}:{{ working_tag }} docker://ghcr.io/ublue-os/${image}:stable-daily
+      $skopeo copy docker://ghcr.io/ublue-os/${image}:{{ working_tag }} docker://ghcr.io/ublue-os/${image}:{{ stream }}
     done
