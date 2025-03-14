@@ -1,3 +1,0 @@
-#!/usr/bin/bash
-echo -e "ERROR: Hello stargazers looks like you are trying to use YUM on Aurora, please \e]8;;https://docs.getaurora.dev/guides/software/\aread our documentation here\e]8;;\a\n\e]8;;https://docs.getaurora.dev/guides/software/\ahttps://docs.getaurora.dev/guides/software/\e]8;;\a\n"
-exit 1
