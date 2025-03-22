@@ -107,10 +107,6 @@
 				"containerd.io",
 				"dbus-x11",
 				"devpod",
-				"docker-ce",
-				"docker-ce-cli",
-				"docker-buildx-plugin",
-				"docker-compose-plugin",
 				"edk2-ovmf",
 				"flatpak-builder",
 				"genisoimage",
@@ -179,7 +175,11 @@
 			"all": [],
 			"dx": [
 				"lxd-agent",
-				"lxd"
+				"lxd",
+				"docker-ce",
+				"docker-ce-cli",
+				"docker-buildx-plugin",
+				"docker-compose-plugin"
 			]
 		},
 		"exclude": {
@@ -194,6 +194,24 @@
 				"google-noto-fonts-all"
 			],
 			"kinoite": []
+			"dx": [
+				"docker-ce",
+				"docker-ce-cli",
+				"docker-buildx-plugin",
+				"docker-compose-plugin"
+			]
+		},
+		"exclude": {
+			"all": [],
+			"kinoite": [],
+			"dx": []
+		}
+	},
+	"42": {
+		"include": {
+			"all": [],
+			"kinoite": [],
+			"dx": []
 		},
 		"exclude": {
 			"all": [],
