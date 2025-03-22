@@ -31,6 +31,7 @@ dnf5 -y swap \
     --repo=fedora \
         heif-pixbuf-loader heif-pixbuf-loader
 
+dnf5 -y copr remove sentry/switcheroo-control_discrete
 
 # Starship Shell Prompt
 # shellcheck disable=SC2016
