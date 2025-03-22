@@ -31,7 +31,6 @@ dnf5 -y swap \
     --repo=fedora \
         heif-pixbuf-loader heif-pixbuf-loader
 
-
 # Starship Shell Prompt
 # shellcheck disable=SC2016
 echo 'eval "$(starship init bash)"' >> /etc/bashrc
