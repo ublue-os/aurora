@@ -58,11 +58,9 @@ dnf5 -y install \
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     dnf5 -y install \
         v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm || true
-        broadcom-wl /tmp/akmods/kmods/*wl*.rpm || true
 else
     dnf5 -y install \
         v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
-        broadcom-wl /tmp/akmods/kmods/*wl*.rpm
 fi
 
 dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
