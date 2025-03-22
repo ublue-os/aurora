@@ -17,7 +17,6 @@
         "foo2zjs",
         "freeipa-client",
         "fuse-encfs",
-        "fw-fanctrl",
         "gcc",
         "git-credential-libsecret",
         "glow",
@@ -190,7 +189,7 @@
   },
   "41": {
     "include": {
-      "all": ["google-noto-fonts-all"],
+      "all": ["google-noto-fonts-all", "fw-fanctrl"],
       "kinoite": [],
       "dx": [
         "docker-ce",
