@@ -38,7 +38,6 @@ dnf5 -y copr remove sentry/switcheroo-control_discrete
 # shellcheck disable=SC2016
 echo 'eval "$(starship init bash)"' >>/etc/bashrc
 
-<<<<<<< HEAD
 # Bash Prexec
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
 
