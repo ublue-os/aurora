@@ -193,7 +193,7 @@
 			"all": [
 				"google-noto-fonts-all"
 			],
-			"kinoite": []
+			"kinoite": [],§
 			"dx": [
 				"docker-ce",
 				"docker-ce-cli",
