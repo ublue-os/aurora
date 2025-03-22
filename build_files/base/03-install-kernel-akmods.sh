@@ -79,14 +79,20 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
     tar -xvzf /tmp/akmods-rpms/"$NVIDIA_TARGZ" -C /tmp/
     mv /tmp/rpms/* /tmp/akmods-rpms/
 
-    # Install Nvidia RPMs
-    curl -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/hwe/main/nvidia-install.sh # Change when nvidia-install.sh updates
-    if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+   # Exclude the Golang Nvidia Container Toolkit in Fedora Repo
+    # Exclude for non-beta.... doesn't appear to exist for F42 yet?
+    if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
+        dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
+    else
+        # Monkey patch right now...
         if ! grep -q negativo17 <(rpm -qi mesa-dri-drivers); then
             dnf5 -y swap --repo=updates-testing \
                 mesa-dri-drivers mesa-dri-drivers
         fi
     fi
+
+    # Install Nvidia RPMs
+    curl -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/hwe/main/nvidia-install.sh # Change when nvidia-install.sh updates
     chmod +x /tmp/nvidia-install.sh
     IMAGE_NAME="${BASE_IMAGE_NAME}" RPMFUSION_MIRROR="" /tmp/nvidia-install.sh
     rm -f /usr/share/vulkan/icd.d/nouveau_icd.*.json
