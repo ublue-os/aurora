@@ -11,14 +11,15 @@ dnf5 -y swap \
         kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
 
 # Fix for ID in fwupd
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+    dnf5 -y swap \
+        --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
         fwupd fwupd
 
+<<<<<<< HEAD
 # Switcheroo patch
 dnf5 -y swap \
     --repo=terra-extras \
-        switcheroo-control switcheroo-control
+       switcheroo-control switcheroo-control
 
 # TODO: Fedora 41 specific -- re-evaluate with Fedora 42
 # negativo's libheif is broken somehow on older Intel machines
@@ -35,13 +36,14 @@ dnf5 -y copr remove sentry/switcheroo-control_discrete
 
 # Starship Shell Prompt
 # shellcheck disable=SC2016
-echo 'eval "$(starship init bash)"' >> /etc/bashrc
+echo 'eval "$(starship init bash)"' >>/etc/bashrc
 
+<<<<<<< HEAD
 # Bash Prexec
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
 
 # Consolidate Just Files
-find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper

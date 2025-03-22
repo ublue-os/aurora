@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 
 set -eou pipefail
+
+mkdir -p /var/roothome
+
 echo "::group:: Copy Files"
 
 # Copy Files to Image
@@ -35,7 +38,7 @@ echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/defau
 # Clean Up
 echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
-mkdir -p /var/tmp && \
-chmod -R 1777 /var/tmp
+mkdir -p /var/tmp &&
+    chmod -R 1777 /var/tmp
 ostree container commit
 echo "::endgroup::"
