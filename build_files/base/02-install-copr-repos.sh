@@ -16,11 +16,7 @@ dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardw
 # Enable repo for scx-scheds
 dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 
-# Enable fw-fanctrl repo
-dnf5 -y copr enable tulilirockz/fw-fanctrl
-
 # Enable Terra repo
 dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
-
 
 echo "::endgroup::"
