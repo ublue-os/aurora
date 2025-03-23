@@ -8,8 +8,7 @@ set -eoux pipefail
 # Patched shell
 dnf5 -y swap \
     --repo=terra-extras \
-        kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
-
+        kf6-kio-core kf6-kio.switcheroo-core-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
 
 # Fix for ID in fwupd
     dnf5 -y swap \
