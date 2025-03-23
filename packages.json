@@ -49,7 +49,6 @@
         "nerdfontssymbolsonly-nerd-fonts",
         "oddjob-mkhomedir",
         "opendyslexic-fonts",
-        "openrazer-daemon",
         "plasma-wallpapers-dynamic",
         "printer-driver-brlaser",
         "pulseaudio-utils",
@@ -189,7 +188,10 @@
   },
   "41": {
     "include": {
-      "all": ["google-noto-fonts-all"],
+      "all": [
+        "google-noto-fonts-all",
+        "openrazer-daemon"
+      ],
       "kinoite": [],
       "dx": [
         "docker-ce",
