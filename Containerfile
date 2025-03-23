@@ -7,6 +7,8 @@ FROM scratch AS ctx
 COPY /system_files /system_files
 COPY /build_files /build_files
 COPY /just /just
+COPY /aurora_flatpaks /aurora_flatpaks
+COPY /dx_flatpaks /dx_flatpaks
 COPY packages.json /
 
 ## aurora image section
