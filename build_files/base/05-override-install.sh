@@ -4,7 +4,7 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 # Patched shell
 dnf5 -y swap \
     --repo=terra-extras \
@@ -30,6 +30,7 @@ dnf5 -y swap \
 dnf5 -y swap \
     --repo=fedora \
         heif-pixbuf-loader heif-pixbuf-loader
+fi
 
 # Starship Shell Prompt
 # shellcheck disable=SC2016
