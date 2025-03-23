@@ -17,8 +17,6 @@ else
     dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
 fi
 
-
-
 # Enable repo for scx-scheds
 dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 

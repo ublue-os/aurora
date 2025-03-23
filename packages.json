@@ -49,6 +49,7 @@
         "nerdfontssymbolsonly-nerd-fonts",
         "oddjob-mkhomedir",
         "opendyslexic-fonts",
+        "openrazer-daemon",
         "plasma-wallpapers-dynamic",
         "printer-driver-brlaser",
         "pulseaudio-utils",
@@ -189,8 +190,7 @@
   "41": {
     "include": {
       "all": [
-        "google-noto-fonts-all",
-        "openrazer-daemon"
+        "google-noto-fonts-all"
       ],
       "kinoite": [],
       "dx": [
@@ -201,21 +201,21 @@
       ]
     },
     "exclude": {
-      "all": [],
-      "kinoite": [],
-      "dx": []
-    }
-  },
-  "42": {
-    "include": {
-      "all": [],
-      "kinoite": [],
-      "dx": []
-    },
-    "exclude": {
-      "all": [],
-      "kinoite": [],
-      "dx": []
-    }
-  }
+			"all": [],
+			"silverblue": [],
+			"dx": []
+		}
+	},
+	"42": {
+		"include": {
+			"all": [],
+			"silverblue": [],
+			"dx": []
+		},
+		"exclude": {
+			"all": [],
+			"silverblue": [],
+			"dx": []
+		}
+	}
 }
