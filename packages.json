@@ -202,19 +202,19 @@
     },
     "exclude": {
 			"all": [],
-			"silverblue": [],
+			"kinoite": [],
 			"dx": []
 		}
 	},
 	"42": {
 		"include": {
 			"all": [],
-			"silverblue": [],
+			"kinoite": [],
 			"dx": []
 		},
 		"exclude": {
 			"all": [],
-			"silverblue": [],
+			"kinoite"": [],
 			"dx": []
 		}
 	}
