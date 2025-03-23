@@ -11,9 +11,7 @@ dnf5 -y copr enable ublue-os/staging
 dnf5 -y copr enable ublue-os/packages
 
 # Add OpenRazer repo
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-    echo "not enabling the openrazer repo for beta"
-else
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
     dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
 fi
 
