@@ -40,7 +40,7 @@ sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     dnf5 -y install /tmp/akmods/kmods/*xone*.rpm || true
     dnf5 -y install /tmp/akmods/kmods/*xpadneo*.rpm || true
-    #dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true #once openrazer is f42 ready this can be enabled
+    dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true 
     dnf5 -y install /tmp/akmods/kmods/*framework-laptop*.rpm || true
 else
     dnf5 -y install \
