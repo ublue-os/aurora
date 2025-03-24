@@ -29,7 +29,7 @@ sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gno
 cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
 
 # Plasma Discover
-sed -i 's|^Exec=plasma-discover %F$|Exec=plasma-discover --backends flatpak-backend %F|' /usr/share/applications/org.kde.discover.desktop
+sed -i 's/^Exec=plasma-discover/& --backends flatpak-backend/' /usr/share/applications/org.kde.discover.desktop
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
