@@ -226,6 +226,16 @@ install-system-flatpaks CURR_LIST_FILE="":
     #!/usr/bin/env bash
     CURR_LIST_FILE={{ CURR_LIST_FILE }}
 
+    # Add Flathub remote if it does not exist
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+    # Disable Fedora Flatpak remotes
+    for remote in fedora fedora-testing; do
+        if flatpak remote-list | grep -q "$remote"; then
+            flatpak remote-delete "$remote"
+        fi
+    done
+
     if [[ -n ${CURR_LIST_FILE} ]]; then
         FLATPAK_LIST=($(cat /usr/share/ublue-os/flatpak_list))
         if [[ -f "${CURR_LIST_FILE}" ]]; then
