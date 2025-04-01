@@ -167,6 +167,7 @@
 				"firefox-langpacks",
 				"krfb",
 				"krfb-libs",
+				"plasma-welcome-fedora",
 				"podman-docker"
 			],
 			"kinoite": [],
