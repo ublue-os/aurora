@@ -22,6 +22,8 @@ systemctl enable usr-share-sddm-themes.mount
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
+systemctl enable flatpak-add-aurora-repos.service
+systemctl list-unit-files | grep -q "flatpak-add-fedora-repos.service" && systemctl disable flatpak-add-fedora-repos.service
 
 # Hide Desktop Files. Hidden removes mime associations
 for file in fish htop nvtop; do
