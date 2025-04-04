@@ -1,0 +1,15 @@
+[Unit]
+Description=Add Official flatpak flathub repository
+ConditionPathExists=!/var/lib/flatpak/.aurora-initialized
+Before=flatpak-system-helper.service
+Wants=network-online.target
+After=network-online.target
+ 
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+ExecStartPost=/usr/bin/touch /var/lib/flatpak/.aurora-initialized
+ 
+[Install]
+WantedBy=multi-user.target
