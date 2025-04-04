@@ -221,7 +221,6 @@ configure-vfio ACTION="":
 
 # Install system flatpaks for rebasers
 [group('System')]
-[private]
 install-system-flatpaks CURR_LIST_FILE="":
     #!/usr/bin/env bash
     CURR_LIST_FILE={{ CURR_LIST_FILE }}
