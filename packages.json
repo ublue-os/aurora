@@ -88,7 +88,6 @@
 				"xprop",
 				"zsh"
 			],
-			"kinoite": [],
 			"dx": [
 				"adobe-source-code-pro-fonts",
 				"android-tools",
@@ -105,7 +104,6 @@
 				"cockpit-storaged",
 				"cockpit-system",
 				"code",
-				"containerd.io",
 				"dbus-x11",
 				"devpod",
 				"docker-buildx-plugin",
@@ -172,7 +170,6 @@
 				"plasma-welcome-fedora",
 				"podman-docker"
 			],
-			"kinoite": [],
 			"dx": []
 		}
 	},
@@ -186,7 +183,6 @@
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [],
 			"dx": []
 		}
 	},
@@ -194,12 +190,10 @@
 		"include": {
 			"all": [
 				"google-noto-fonts-all"
-			],
-			"kinoite": []
+			]
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [],
 			"dx": []
 		}
 	}
