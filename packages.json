@@ -10,8 +10,6 @@
 				"bootc",
 				"borgbackup",
 				"ddcutil",
-				"epson-inkjet-printer-escpr",
-				"epson-inkjet-printer-escpr2",
 				"evtest",
 				"fastfetch",
 				"fcitx5-chinese-addons",
@@ -190,6 +188,8 @@
 	"41": {
 		"include": {
 			"all": [
+				"epson-inkjet-printer-escpr",
+				"epson-inkjet-printer-escpr2",
 				"google-noto-fonts-all"
 			]
 		},
