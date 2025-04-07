@@ -99,14 +99,9 @@
 				"cockpit-selinux",
 				"cockpit-storaged",
 				"cockpit-system",
-				"containerd.io",
 				"code",
 				"dbus-x11",
 				"devpod",
-				"docker-buildx-plugin",
-				"docker-ce",
-				"docker-ce-cli",
-				"docker-compose-plugin",
 				"edk2-ovmf",
 				"flatpak-builder",
 				"genisoimage",
@@ -121,7 +116,6 @@
 				"libvirt",
 				"libvirt-nss",
 				"lxc",
-				"monaspace-nerd-fonts",
 				"mozilla-fira-mono-fonts",
 				"nicstat",
 				"numactl",
@@ -189,6 +183,14 @@
 				"epson-inkjet-printer-escpr",
 				"epson-inkjet-printer-escpr2",
 				"google-noto-fonts-all"
+			],
+			"dx":[
+				"containerd.io",
+				"docker-buildx-plugin",
+				"docker-ce",
+				"docker-ce-cli",
+				"monaspace-nerd-fonts",
+				"docker-compose-plugin"
 			]
 		},
 		"exclude": {
