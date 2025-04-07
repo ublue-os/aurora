@@ -103,6 +103,7 @@
 				"cockpit-selinux",
 				"cockpit-storaged",
 				"cockpit-system",
+				"containerd.io",
 				"code",
 				"dbus-x11",
 				"devpod",
