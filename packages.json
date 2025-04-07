@@ -197,5 +197,15 @@
 			"all": [],
 			"dx": []
 		}
+	},
+	"42": {
+		"include": {
+			"all": ["google-noto-fonts-all"],
+			"dx": []
+		},
+		"exclude": {
+			"all": [],
+			"dx": []
+		}
 	}
 }
