@@ -71,7 +71,6 @@
 				"sssd-krb5",
 				"sssd-nfs-idmap",
 				"starship",
-				"stress-ng",
 				"tailscale",
 				"tmux",
 				"topgrade",
