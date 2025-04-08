@@ -3,13 +3,13 @@
 		"include": {
 			"all": [
 				"adcli",
+				"aurora-cli-logos",
+				"aurora-fastfetch",
 				"bash-color-prompt",
 				"bcache-tools",
 				"bootc",
 				"borgbackup",
 				"ddcutil",
-				"epson-inkjet-printer-escpr",
-				"epson-inkjet-printer-escpr2",
 				"evtest",
 				"fastfetch",
 				"fcitx5-chinese-addons",
@@ -86,7 +86,6 @@
 				"xprop",
 				"zsh"
 			],
-			"kinoite": [],
 			"dx": [
 				"adobe-source-code-pro-fonts",
 				"android-tools",
@@ -103,13 +102,8 @@
 				"cockpit-storaged",
 				"cockpit-system",
 				"code",
-				"containerd.io",
 				"dbus-x11",
 				"devpod",
-				"docker-buildx-plugin",
-				"docker-ce",
-				"docker-ce-cli",
-				"docker-compose-plugin",
 				"edk2-ovmf",
 				"flatpak-builder",
 				"genisoimage",
@@ -124,7 +118,6 @@
 				"libvirt",
 				"libvirt-nss",
 				"lxc",
-				"monaspace-nerd-fonts",
 				"mozilla-fira-mono-fonts",
 				"nicstat",
 				"numactl",
@@ -170,7 +163,6 @@
 				"plasma-welcome-fedora",
 				"podman-docker"
 			],
-			"kinoite": [],
 			"dx": []
 		}
 	},
@@ -184,20 +176,37 @@
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [],
 			"dx": []
 		}
 	},
 	"41": {
 		"include": {
 			"all": [
+				"epson-inkjet-printer-escpr",
+				"epson-inkjet-printer-escpr2",
 				"google-noto-fonts-all"
 			],
-			"kinoite": []
+			"dx":[
+				"containerd.io",
+				"docker-buildx-plugin",
+				"docker-ce",
+				"docker-ce-cli",
+				"monaspace-nerd-fonts",
+				"docker-compose-plugin"
+			]
 		},
 		"exclude": {
 			"all": [],
-			"kinoite": [],
+			"dx": []
+		}
+	},
+	"42": {
+		"include": {
+			"all": ["google-noto-fonts-all"],
+			"dx": []
+		},
+		"exclude": {
+			"all": [],
 			"dx": []
 		}
 	}
