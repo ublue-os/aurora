@@ -46,7 +46,7 @@ dnf5 -y install "${AKMODS[@]}"
 
 # RPMFUSION Dependent AKMODS
 # need to be changed back to mirrors.rpmfusion.org once rpmfusion is fixed
-  dnf5 -y install \
+dnf5 -y install \
     https://ftp.fi.muni.cz/pub/linux/rpmfusion/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
     https://ftp.fi.muni.cz/pub/linux/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
 
