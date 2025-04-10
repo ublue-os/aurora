@@ -43,7 +43,12 @@ curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcal
 dnf5 -y swap fedora-logos aurora-logos
 
 # Consolidate Just Files
+<<<<<<< HEAD
 find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+=======
+
+find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just
+>>>>>>> 15c29c3 (chore: switch from ublue-update to uupd as default automatic updater (#2136))
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
