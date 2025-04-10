@@ -36,30 +36,46 @@ dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
 sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
-AKMODS=(
-    /tmp/akmods/kmods/*xone*.rpm
-    /tmp/akmods/kmods/*xpadneo*.rpm
-    /tmp/akmods/kmods/*framework-laptop*.rpm
-    /tmp/akmods/kmods/*openrazer*.rpm
-)
-dnf5 -y install "${AKMODS[@]}"
-
-# RPMFUSION Dependent AKMODS
-# hack until rpmfusion gets its mirrors fixed
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-  dnf5 -y install \
-    https://mirrors.ocf.berkeley.edu/rpmfusion/free/fedora/development/42/Everything/x86_64/os/Packages/r/rpmfusion-free-release-42-1.noarch.rpm \
-    https://mirrors.ocf.berkeley.edu/rpmfusion/nonfree/fedora/development/42/Everything/x86_64/os/Packages/r/rpmfusion-nonfree-release-42-1.noarch.rpm
+    dnf5 -y install /tmp/akmods/kmods/*xone*.rpm || true
+    dnf5 -y install /tmp/akmods/kmods/*xpadneo*.rpm || true
+    dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true
+    dnf5 -y install /tmp/akmods/kmods/*framework-laptop*.rpm || true
 else
-  dnf5 -y install \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
+    dnf5 -y install \
+        /tmp/akmods/kmods/*xone*.rpm \
+        /tmp/akmods/kmods/*xpadneo*.rpm \
+        /tmp/akmods/kmods/*openrazer*.rpm \
+        /tmp/akmods/kmods/*framework-laptop*.rpm
 fi
 
-dnf5 -y install \
-    v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
+# RPMFUSION Dependent AKMODS
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 -y install \
+        https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm || true
+    dnf5 -y install \
+        https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm || true
+else
+    dnf5 -y install \
+        https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
+        https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
+fi
 
-dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 -y install \
+        v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm || true
+else
+    dnf5 -y install \
+        v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
+fi
+
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 -y remove rpmfusion-free-release || true
+    dnf5 -y remove rpmfusion-nonfree-release || true
+else
+    dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
+fi
+
 
 # Nvidia AKMODS
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
