@@ -45,16 +45,10 @@ AKMODS=(
 dnf5 -y install "${AKMODS[@]}"
 
 # RPMFUSION Dependent AKMODS
-# if statement needs to be removed once rpmfusion has fixed its mirrors
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+# need to be changed back to mirrors.rpmfusion.org once rpmfusion is fixed
   dnf5 -y install \
     https://ftp.fi.muni.cz/pub/linux/rpmfusion/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
     https://ftp.fi.muni.cz/pub/linux/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
-else
-  dnf5 -y install \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
-fi
 
 dnf5 -y install \
     v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
