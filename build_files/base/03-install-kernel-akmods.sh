@@ -45,11 +45,11 @@ AKMODS=(
 dnf5 -y install "${AKMODS[@]}"
 
 # RPMFUSION Dependent AKMODS
-# hack until rpmfusion gets its mirrors fixed
+# if statement needs to be removed once rpmfusion has fixed its mirrors
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
   dnf5 -y install \
-    https://mirrors.ocf.berkeley.edu/rpmfusion/free/fedora/development/42/Everything/x86_64/os/Packages/r/rpmfusion-free-release-42-1.noarch.rpm \
-    https://mirrors.ocf.berkeley.edu/rpmfusion/nonfree/fedora/development/42/Everything/x86_64/os/Packages/r/rpmfusion-nonfree-release-42-1.noarch.rpm
+    https://ftp.fi.muni.cz/pub/linux/rpmfusion/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
+    https://ftp.fi.muni.cz/pub/linux/rpmfusion/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
 else
   dnf5 -y install \
     https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
