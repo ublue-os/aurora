@@ -191,6 +191,7 @@ install-gaming-flatpaks:
                                             app/net.lutris.Lutris/x86_64/stable \
                                             app/net.davidotek.pupgui2/x86_64/stable \
                                             app/com.dec05eba.gpu_screen_recorder/x86_64/stable \
+                                            app/io.github.ilya_zlobintsev.LACT/x86_64/stable \
                                             runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08 \
                                             runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08 \
                                             runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08 \
