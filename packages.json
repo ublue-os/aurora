@@ -3,8 +3,6 @@
 		"include": {
 			"all": [
 				"adcli",
-				"aurora-cli-logos",
-				"aurora-fastfetch",
 				"bash-color-prompt",
 				"bcache-tools",
 				"bootc",
@@ -203,7 +201,10 @@
 	},
 	"42": {
 		"include": {
-			"all": ["google-noto-fonts-all"],
+			"all": [
+        "google-noto-fonts-all",
+        "uupd"
+      ],
 			"dx": []
 		},
 		"exclude": {
