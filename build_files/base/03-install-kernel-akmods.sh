@@ -50,7 +50,7 @@ else
 fi
 
 # Install v4l2loopback from terra or gracefully fail
-dnf5 -y install --repo="terra*" /tmp/akmods/kmods/*v4l2loopback*.rpm || true
+dnf5 -y install --repo="terra" /tmp/akmods/kmods/*v4l2loopback*.rpm || true
 
 # Nvidia AKMODS
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
