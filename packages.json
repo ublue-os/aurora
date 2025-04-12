@@ -3,6 +3,8 @@
 		"include": {
 			"all": [
 				"adcli",
+				"aurora-cli-logos",
+				"aurora-fastfetch",
 				"bash-color-prompt",
 				"bcache-tools",
 				"bootc",
