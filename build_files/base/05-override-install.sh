@@ -11,6 +11,7 @@ if [[ "$(rpm -E %fedora)" -eq "41" ]]; then
       --repo=terra-extras \
       kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
   dnf5 versionlock add kf6-kio.switcheroo
+# Patched switcheroo-control
   dnf5 -y swap \
       --repo=terra-extras \
       switcheroo-control switcheroo-control
