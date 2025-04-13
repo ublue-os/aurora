@@ -25,4 +25,7 @@ if [[ ${IMAGE_NAME} =~ "dx" ]]; then
 fi
 printf "%s\n" "${FLATPAK_LIST[@]}" > /usr/share/ublue-os/flatpak_list
 
+# Try removing just docs (is it actually promblematic?)
+rm -rf /usr/share/doc/just/README.*.md
+
 echo "::endgroup::"
