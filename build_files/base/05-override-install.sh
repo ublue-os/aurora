@@ -4,7 +4,7 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-dnf5 versionlock delete kf6-kio.switcheroo
+dnf5 versionlock clear
 
 # Patched shell
   dnf5 -y swap \
