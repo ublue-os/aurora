@@ -35,7 +35,7 @@ if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
         fwupd fwupd
 fi
 
-# TODO: Fedora 41 specific -- re-evaluate with Fedora 42
+# TODO: Fedora 42 specific -- re-evaluate with Fedora 43
 # negativo's libheif is broken somehow on older Intel machines
 # https://github.com/ublue-os/aurora/issues/8
 dnf5 -y swap \
