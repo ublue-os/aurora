@@ -4,25 +4,25 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-
 # Patched shell
-if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
+if [[ "$(rpm -E %fedora)" -eq "41" ]]; then
   dnf5 -y swap \
-      --repo=terra-extras \
-          kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
-
-  # Fix for ID in fwupd
+      --repo="terra-extras" \
+      kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+# Patched switcheroo-control
   dnf5 -y swap \
-      --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-          fwupd fwupd
-
-  # Switcheroo patch
-  dnf5 -y swap \
-      --repo=terra-extras \
-          switcheroo-control switcheroo-control
+      --repo="terra-extras" \
+      switcheroo-control switcheroo-control
 fi
 
-# TODO: Fedora 41 specific -- re-evaluate with Fedora 42
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
+    # Fix for ID in fwupd
+    dnf5 -y swap \
+        --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+        fwupd fwupd
+fi
+
+# TODO: Fedora 42 specific -- re-evaluate with Fedora 43
 # negativo's libheif is broken somehow on older Intel machines
 # https://github.com/ublue-os/aurora/issues/8
 dnf5 -y swap \
