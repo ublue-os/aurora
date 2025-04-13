@@ -6,20 +6,28 @@ set -eoux pipefail
 
 
 # Patched shell
+if [[ "$(rpm -E %fedora)" -eq "41" ]]; then
+  dnf5 -y swap \
+      --repo="terra-extras" \
+      kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+  dnf5 versionlock add kf6-kio.switcheroo
+# Patched switcheroo-control
+  dnf5 -y swap \
+      --repo="terra-extras" \
+      switcheroo-control switcheroo-control
+  dnf5 versionlock add switcheroo-control
+elif [[ "$(rpm -E %fedora)" -eq "42" ]]; then
+  dnf5 -y swap \
+      --repo="terra-extras" \
+      kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+  dnf5 versionlock add kf6-kio.switcheroo
+fi
+
 if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
-  dnf5 -y swap \
-      --repo=terra-extras \
-          kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
-
-  # Fix for ID in fwupd
-  dnf5 -y swap \
-      --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-          fwupd fwupd
-
-  # Switcheroo patch
-  dnf5 -y swap \
-      --repo=terra-extras \
-          switcheroo-control switcheroo-control
+    # Fix for ID in fwupd
+    dnf5 -y swap \
+        --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+        fwupd fwupd
 fi
 
 # TODO: Fedora 41 specific -- re-evaluate with Fedora 42
