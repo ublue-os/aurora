@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+dnf5 versionlock delete kf6-kio.switcheroo
+dnf5 versionlock delete switcheroo-control
+
 # Beta Updates Testing Repo...
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
   dnf5 config-manager setopt updates-testing.enabled=1
