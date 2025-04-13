@@ -4,6 +4,8 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+dnf5 versionlock delete kf6-kio.switcheroo
+
 # Patched shell
   dnf5 -y swap \
       --repo="terra-extras" \
