@@ -14,9 +14,9 @@ fi
 
 # Branding for Images
 ln -sf ../places/distributor-logo.svg /usr/share/icons/hicolor/scalable/apps/start-here.svg
-ln -sf /usr/share/wallpapers/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default.png
-ln -sf /usr/share/wallpapers/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default-dark.png
-ln -sf aurora.xml /usr/share/backgrounds/default.xml
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default-dark.png
+ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.xml
 
 # Favorites in Kickoff
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
@@ -29,7 +29,7 @@ sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gno
 cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
 
 # Plasma Discover
-sed -i 's|^Exec=plasma-discover %F$|Exec=plasma-discover --backends flatpak-backend %F|' /usr/share/applications/org.kde.discover.desktop
+sed -i 's/^Exec=plasma-discover/& --backends flatpak-backend/' /usr/share/applications/org.kde.discover.desktop
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
