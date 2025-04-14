@@ -21,12 +21,10 @@ elif [[ "$(rpm -E %fedora)" -eq "42" ]]; then
         switcheroo-control switcheroo-control
 fi
 
-if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
     # Fix for ID in fwupd
     dnf5 -y swap \
         --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
         fwupd fwupd
-fi
 
 # TODO: Fedora 42 specific -- re-evaluate with Fedora 43
 # negativo's libheif is broken somehow on older Intel machines
