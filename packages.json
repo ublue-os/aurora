@@ -3,6 +3,7 @@
 		"include": {
 			"all": [
 				"adcli",
+				"aurora-backgrounds",
 				"aurora-cli-logos",
 				"aurora-fastfetch",
 				"aurora-schemas",
