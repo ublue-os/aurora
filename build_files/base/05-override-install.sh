@@ -7,17 +7,17 @@ set -eoux pipefail
 # Patched shell and switcheroo-control
 if [[ "$(rpm -E %fedora)" -eq "41" ]]; then
   dnf5 -y swap \
-      --repo="terra-extras" \
+      --repo="terra*" \
       kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
   dnf5 -y swap \
-      --repo="terra-extras" \
+      --repo="terra*" \
       switcheroo-control switcheroo-control
 elif [[ "$(rpm -E %fedora)" -eq "42" ]]; then
     dnf5 -y swap \
-        --repo="terra-extras" \
+        --repo="terra*" \
       kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
     dnf5 -y swap \
-        --repo="terra-extras" \
+        --repo="terra*" \
         switcheroo-control switcheroo-control
 fi
 
