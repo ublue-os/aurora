@@ -166,19 +166,6 @@
 			"dx": []
 		}
 	},
-	"40": {
-		"include": {
-			"all": [],
-			"dx": [
-				"lxd",
-				"lxd-agent"
-			]
-		},
-		"exclude": {
-			"all": [],
-			"dx": []
-		}
-	},
 	"41": {
 		"include": {
 			"all": [
@@ -201,8 +188,8 @@
 	"42": {
 		"include": {
 			"all": [
-        		"google-noto-fonts-all",
-        		"uupd"
+        			"google-noto-fonts-all",
+        			"uupd"
       		],
 			"dx": []
 		},
