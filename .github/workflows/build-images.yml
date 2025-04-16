@@ -14,9 +14,10 @@ jobs:
     build-image-latest-main:
         uses: ./.github/workflows/build-image-latest-main.yml
         secrets: inherit
-    build-image-latest-hwe:
-        uses: ./.github/workflows/build-image-latest-hwe.yml
-        secrets: inherit
+   # Disable HWE for the time being
+   # build-image-latest-hwe:
+   #     uses: ./.github/workflows/build-image-latest-hwe.yml
+   #     secrets: inherit
     build-image-beta:
         uses: ./.github/workflows/build-image-beta.yml
         secrets: inherit
