@@ -73,6 +73,7 @@
 				"sssd-krb5",
 				"sssd-nfs-idmap",
 				"starship",
+				"sunshine",
 				"tailscale",
 				"tmux",
 				"ublue-bling",
