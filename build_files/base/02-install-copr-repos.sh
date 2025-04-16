@@ -19,4 +19,7 @@ dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 # Enable Terra repo
 dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
 
+# Enable sunshine repo
+dnf5 -y copr enable lizardbyte/beta
+
 echo "::endgroup::"
