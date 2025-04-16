@@ -20,6 +20,9 @@ systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
 
+# disable sunshine service
+systemctl --global disable sunshine.service
+
 # Updater
 if systemctl cat -- uupd.timer &> /dev/null; then
     systemctl enable uupd.timer
