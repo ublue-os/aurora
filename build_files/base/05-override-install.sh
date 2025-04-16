@@ -6,10 +6,10 @@ set -eoux pipefail
 
 # Patched shell and switcheroo-control
   dnf5 -y swap \
-      --repo="terra*" \
-          kf6-kio kf6-kio.switcheroo-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+      --repo="terra-extras" \
+          kf6-kio kf6-kio-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
   dnf5 -y swap \
-      --repo="terra*" \
+      --repo="terra-extras" \
           switcheroo-control switcheroo-control
 
 # Fix for ID in fwupd
