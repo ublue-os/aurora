@@ -36,18 +36,11 @@ dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
 sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-    dnf5 -y install /tmp/akmods/kmods/*xone*.rpm || true
-    dnf5 -y install /tmp/akmods/kmods/*xpadneo*.rpm || true
-    dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true
-    dnf5 -y install /tmp/akmods/kmods/*framework-laptop*.rpm || true
-else
-    dnf5 -y install \
-        /tmp/akmods/kmods/*xone*.rpm \
-        /tmp/akmods/kmods/*xpadneo*.rpm \
-        /tmp/akmods/kmods/*openrazer*.rpm \
-        /tmp/akmods/kmods/*framework-laptop*.rpm
-fi
+dnf5 -y install \
+    /tmp/akmods/kmods/*xone*.rpm \
+    /tmp/akmods/kmods/*xpadneo*.rpm \
+    /tmp/akmods/kmods/*openrazer*.rpm \
+    /tmp/akmods/kmods/*framework-laptop*.rpm
 
 # Install v4l2loopback from terra or gracefully fail
 dnf5 -y install --repo="terra" /tmp/akmods/kmods/*v4l2loopback*.rpm || true
