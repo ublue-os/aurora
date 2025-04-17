@@ -188,8 +188,8 @@
 	"42": {
 		"include": {
 			"all": [
-        		"google-noto-fonts-all",
-        		"uupd",
+				"google-noto-fonts-all",
+				"uupd",
 				"fw-fanctrl"
       		],
 			"dx": []
