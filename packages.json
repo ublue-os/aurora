@@ -68,7 +68,6 @@
 				"samba-winbind-modules",
 				"scx-scheds",
 				"setools-console",
-				"skanpage",
 				"sssd-ad",
 				"sssd-ipa",
 				"sssd-krb5",
