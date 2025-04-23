@@ -20,6 +20,9 @@ image_flavor="main"
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
   image_flavor="nvidia"
 fi
+if [[ "${IMAGE_NAME}" =~ nvidia-open ]]; then
+  image_flavor="nvidia-open"
+fi
 
 cat >$IMAGE_INFO <<EOF
 {
