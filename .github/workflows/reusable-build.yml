@@ -9,6 +9,7 @@ on:
       brand_name:
         description: "The Brand Name: aurora"
         required: true
+        default: aurora
         type: string
       stream_name:
         description: "The Fedora Version: stable, or latest"
@@ -30,8 +31,6 @@ jobs:
     name: image
     runs-on: ubuntu-24.04
     continue-on-error: false
-    outputs:
-      image_full: ${{ steps.generate-outputs.outputs.image }}
     strategy:
       fail-fast: false
       matrix:
@@ -76,10 +75,33 @@ jobs:
         id: build-image
         shell: bash
         run: |
-          sudo just build-ghcr "${{ matrix.base_name }}" \
-                               "${{ matrix.stream_name }}" \
-                               "${{ matrix.image_flavor }}" \
-                               "${{ inputs.kernel_pin }}"
+          sudo just repo_organization="${{ github.repository_owner }}" \
+                  build-ghcr "${{ matrix.base_name }}" \
+                             "${{ matrix.stream_name }}" \
+                             "${{ matrix.image_flavor }}" \
+                             "${{ inputs.kernel_pin }}"
+
+      - name: Setup Syft
+        id: setup-syft
+        if: false
+        uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0
+        with:
+          syft-version: v1.20.0
+
+      - name: Generate SBOM
+        if: false
+        id: generate-sbom
+        env:
+          IMAGE: ${{ env.IMAGE_NAME }}
+          STREAM_NAME: ${{ matrix.stream_name }}
+          SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
+        run: |
+          sudo systemctl start podman.socket
+
+          OUTPUT_PATH="$(mktemp -d)/sbom.json"
+          export SYFT_PARALLELISM=$(($(nproc)*2))
+          sudo $SYFT_CMD ${IMAGE}:${STREAM_NAME} -o spdx-json=${OUTPUT_PATH}
+          echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
 
       - name: Rechunk Image
         id: rechunk-image
@@ -177,6 +199,10 @@ jobs:
 
             echo "digest=${digest}" >> $GITHUB_OUTPUT
 
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
+        if: github.event_name != 'pull_request'
+
       - name: Sign container image
         if: github.event_name != 'pull_request'
         run: |
@@ -200,24 +226,20 @@ jobs:
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
 
-      - name: Generate file containing outputs
-        if: github.event_name != 'pull_request'
+      - name: Add SBOM Attestation
+        if: false
         env:
+          IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           DIGEST: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
-          IMAGE_REGISTRY: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          FEDORA_VERSION: ${{ matrix.stream_name }}
-        run: echo "${IMAGE_REGISTRY}@${DIGEST}" > "${IMAGE_NAME}-${FEDORA_VERSION}.txt"
-
-      - name: Upload artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: image-${{ env.IMAGE_NAME }}-${{ matrix.stream_name }}
-          retention-days: 1
-          if-no-files-found: error
-          path: |
-            ${{ env.IMAGE_NAME }}-${{ matrix.stream_name }}.txt
+          COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
+          SBOM_OUTPUT: ${{ steps.generate-sbom.outputs.OUTPUT_PATH }}
+        run: |
+          cd "$(dirname "$SBOM_OUTPUT")"
+          cosign attest -y \
+            --predicate ./sbom.json \
+            --type spdxjson \
+            --key env://COSIGN_PRIVATE_KEY \
+            "${IMAGE}@${DIGEST}"
 
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
