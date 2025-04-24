@@ -40,7 +40,6 @@ for file in fish htop nvtop; do
 done
 
 #Add the Flathub Flatpak remote and remove the Fedora Flatpak remote
-flatpak remote-delete --system fedora
 flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 systemctl disable flatpak-add-fedora-repos.service
 
