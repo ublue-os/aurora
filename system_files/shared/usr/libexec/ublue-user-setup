@@ -69,7 +69,7 @@ flatpak override --user --unset-env=QT_QPA_PLATFORMTHEME
 # smaller cursor on GTK apps - should be fixed by F42 with GTK 4.17
 flatpak override --user --env=USE_POINTER_VIEWPORT=1
 
-# webkit2gtk override to devpod for nvidia users
+# webkit override to devpod for nvidia users
 flatpak override --user --env=WEBKIT_DISABLE_COMPOSITING_MODE=1 sh.loft.devpod
 
 # Handle privileged tasks
