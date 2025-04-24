@@ -150,11 +150,6 @@ install-openrazer-frontend:
     fi
     echo "$OPENRAZER_CONFIGURATOR_APP is installed"
 
-# alias for install-incus
-[group('Apps')]
-incus:
-    @ujust install-incus
-
 # Install OpenTabletDriver, an open source, cross-platform, user-mode tablet driver
 [group('Apps')]
 install-opentabletdriver:
