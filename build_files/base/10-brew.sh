@@ -17,4 +17,8 @@ chmod +x /tmp/brew-install
 /tmp/brew-install
 tar --zstd -cvf /usr/share/homebrew.tar.zst /home/linuxbrew/.linuxbrew
 
+# This blows up local/non-rechunked builds otherwise
+# as the booted system is recognized as a container
+rm /.dockerenv
+
 echo "::endgroup::"
