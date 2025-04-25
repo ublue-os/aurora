@@ -23,9 +23,10 @@ function rebase_helper(){
     echo "Which Tag would you like to rebase to?"
 
     if [[ "$composefs_enabled" == "true" ]]; then
-        CHANNELS=(latest stable stable-daily)
-        echo "The default selection is latest, stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
-        echo "Note: Since you are on Fedora 42+, you will not be (currently) able to rollback to the stable stream."
+        #CHANNELS=(latest stable stable-daily)
+        #need to change this when stable gets F42
+        CHANNELS=(latest)
+        echo "Since you are on Fedora 42+, you will not be (currently) able to rollback to the stable stream."
     elif [[ "$composefs_enabled" == "false" ]]; then
         CHANNELS=(latest stable stable-daily)
         echo "The default selection is stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
