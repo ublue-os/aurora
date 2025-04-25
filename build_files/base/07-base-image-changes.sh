@@ -42,9 +42,6 @@ glib-compile-schemas --strict /tmp/aurora-schema-test
 echo "Compiling gschema to include aurora setting overrides"
 glib-compile-schemas /usr/share/glib-2.0/schemas &>/dev/null
 
-# Watermark for Plymouth
-cp /usr/share/plymouth/themes/spinner/{"$BASE_IMAGE_NAME"-,}watermark.png
-
 # Make Samba usershares work OOTB
 mkdir -p /var/lib/samba/usershares
 chown -R root:usershares /var/lib/samba/usershares
