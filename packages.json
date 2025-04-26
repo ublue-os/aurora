@@ -57,6 +57,7 @@
 				"printer-driver-brlaser",
 				"ptyxis",
 				"pulseaudio-utils",
+				"python-tkinter",
 				"python3-pip",
 				"rclone",
 				"restic",
