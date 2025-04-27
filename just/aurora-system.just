@@ -14,15 +14,38 @@
 [group('System')]
 benchmark:
     #!/usr/bin/env bash
-    echo 'Running a 1 minute benchmark ...'
-    trap popd EXIT
-    pushd $(mktemp -d)
-    stress-ng --matrix 0 -t 1m --times
+    source /usr/lib/ujust/ujust.sh
+    if ! type -P "stress-ng" &>/dev/null ; then
+        if gum confirm "Stress does not seem to be on your path, do you wish to install it?" ; then
+            set -eu
+            brew install stress-ng
+            brew link stress-ng
+            set +eu
+        else
+            exit 0
+        fi
+    fi
+
+
 
 # Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
 aurora-cli:
     @/usr/libexec/ublue-bling
+
+# Install fonts from brew
+[group('System')]
+install-fonts:
+    #!/usr/bin/bash
+    echo "Installing extra fonts..."
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-fonts.Brewfile
+
+# Install Kubernetes CLI dev tools
+[group('System')]
+install-k8s-dev-tools:
+    #!/usr/bin/bash
+    echo "Adding Kubernetes command line tools..."
+    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
 
 # alias for toggle-devmode
 devmode:

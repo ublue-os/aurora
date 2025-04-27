@@ -7,6 +7,13 @@ IMAGE_NAME=$(jq -r '."image-name"' < $IMAGE_INFO)
 IMAGE_TAG=$(jq -r '."image-tag"' < $IMAGE_INFO)
 FEDORA_VERSION=$(jq -r '."fedora-version"' < $IMAGE_INFO)
 
+#Check if composefs is enabled
+if findmnt / | grep -q 'composefs' && findmnt / | grep -q 'overlay'; then
+  composefs_enabled=true
+else
+  composefs_enabled=false
+fi
+
 function list_tags(){
     skopeo list-tags docker://ghcr.io/ublue-os/"${IMAGE_NAME}" | grep -E --color=never -- "$FEDORA_VERSION-([0-9]+)" | sort -rV | head -n 31
 }
@@ -14,8 +21,18 @@ function list_tags(){
 function rebase_helper(){
     base_image="ghcr.io/ublue-os/${IMAGE_NAME}"
     echo "Which Tag would you like to rebase to?"
-    CHANNELS=(latest stable stable-daily)
-    echo "The default selection is stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
+
+    if [[ "$composefs_enabled" == "true" ]]; then
+        #CHANNELS=(latest stable stable-daily)
+        #need to change this when stable gets F42
+        CHANNELS=(latest)
+        echo "Since you are on Fedora 42+, you will not be (currently) able to rollback to the stable stream."
+    elif [[ "$composefs_enabled" == "false" ]]; then
+        CHANNELS=(latest stable stable-daily)
+        echo "The default selection is stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
+        echo "Note: if you rebase to latest (F42) now you won't be able to rebase back to stable until it is based on Fedora F42"
+        fi
+
     choose_target=$(Choose date "${CHANNELS[@]}" cancel)
     if [[ "$choose_target" != "date" && "$choose_target" != "cancel" ]]; then
         rebase_target="${base_image}:${choose_target}"
@@ -30,9 +47,11 @@ function rebase_helper(){
         else
             return 1
         fi
+
     else
         return 1
     fi
+
     echo "Rebase Target is ${rebase_target}"
     echo "Confirm Rebase"
     if [[ $(Confirm) -ne "0" ]]; then
