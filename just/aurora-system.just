@@ -33,6 +33,20 @@ benchmark:
 aurora-cli:
     @/usr/libexec/ublue-bling
 
+# Install fonts from brew
+[group('System')]
+install-fonts:
+    #!/usr/bin/bash
+    echo "Installing extra fonts..."
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-fonts.Brewfile
+
+# Install Kubernetes CLI dev tools
+[group('System')]
+install-k8s-dev-tools:
+    #!/usr/bin/bash
+    echo "Adding Kubernetes command line tools..."
+    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
