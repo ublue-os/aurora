@@ -249,7 +249,7 @@ install-system-flatpaks CURR_LIST_FILE="":
     CURR_LIST_FILE={{ CURR_LIST_FILE }}
 
     # Add Flathub remote if it does not exist
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
 
     # Disable Fedora Flatpak remotes
     for remote in fedora fedora-testing; do
