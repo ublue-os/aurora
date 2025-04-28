@@ -17,6 +17,10 @@ set -eoux pipefail
       --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
           fwupd fwupd
 
+# Offline Aurora documentation
+curl --retry 3 -Lo /tmp/aurora.pdf https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf
+install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
+
 # TODO: Fedora 42 specific -- re-evaluate with Fedora 43
 # negativo's libheif is broken somehow on older Intel machines
 # https://github.com/ublue-os/aurora/issues/8
