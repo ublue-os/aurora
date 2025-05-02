@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# disable uupd from updating distroboxes
+sed -i 's|uupd|& --disable-module-distrobox|' /usr/lib/systemd/system/uupd.service
+
 # Setup Systemd
 systemctl enable rpm-ostree-countme.service
 systemctl enable tailscaled.service
