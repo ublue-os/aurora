@@ -5,7 +5,9 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 # disable uupd from updating distroboxes
+if [[ "$(rpm -E %fedora)" -eq "42" ]]; then
 sed -i 's|uupd|& --disable-module-distrobox|' /usr/lib/systemd/system/uupd.service
+fi
 
 # Setup Systemd
 systemctl enable rpm-ostree-countme.service
