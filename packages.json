@@ -162,6 +162,9 @@
 		},
 		"exclude": {
 			"all": [
+				"fedora-bookmarks",
+				"fedora-chromium-config",
+				"fedora-chromium-config-kde",
 				"firefox",
 				"firefox-langpacks",
 				"kcharselect",
