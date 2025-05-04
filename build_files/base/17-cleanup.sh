@@ -28,13 +28,7 @@ systemctl enable check-sb-key.service
 systemctl --global disable sunshine.service
 
 # Updater
-if systemctl cat -- uupd.timer &> /dev/null; then
-    systemctl enable uupd.timer
-else
-    systemctl enable rpm-ostreed-automatic.timer
-    systemctl enable flatpak-system-update.timer
-    systemctl --global enable flatpak-user-update.timer
-fi
+systemctl enable uupd.timer
 
 # Hide Desktop Files. Hidden removes mime associations
 for file in fish htop nvtop; do
