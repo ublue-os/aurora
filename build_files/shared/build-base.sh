@@ -40,9 +40,6 @@ echo "::endgroup::"
 
 ## late stage changes
 
-# Make sure Bootc works
-/ctx/build_files/base/16-bootc.sh
-
 # Systemd and Remove Items
 /ctx/build_files/base/17-cleanup.sh
 
