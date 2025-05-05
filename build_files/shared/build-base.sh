@@ -11,7 +11,6 @@ fi
 cp -r /ctx/just /tmp/just
 cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/shared/ /
-rsync -rvK /ctx/system_files/"${BASE_IMAGE_NAME}"/ /
 echo "::endgroup::"
 
 # Generate image-info.json
