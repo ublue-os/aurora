@@ -13,6 +13,7 @@ systemctl enable libvirt-workaround.service
 systemctl enable aurora-dx-groups.service
 systemctl enable --global aurora-dx-user-vscode.service
 
+
 dnf5 -y copr disable ublue-os/staging
 dnf5 -y copr disable ublue-os/packages
 if [[ "${FEDORA_MAJOR_VERSION}" -lt "42" ]]; then
