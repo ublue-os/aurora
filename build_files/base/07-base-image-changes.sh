@@ -28,7 +28,7 @@ sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxi
 sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
 
-# Remove KNewStuff and fwupd from Discover
+# Remove KNewStuff from Discover
 rm -f /usr/lib64/qt6/plugins/discover/kns-backend.so
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
