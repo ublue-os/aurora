@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       image_flavors:
-        description: "JSON string of flavors to build, '[main, nvidia, hwe, hwe-nvidia]'"
+        description: "JSON string of flavors to build, '[main, nvidia]'"
         default: "['main', 'nvidia-open']"
         type: string
       brand_name:
@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         image_flavor: ${{ fromJson(inputs.image_flavors) }}
-        base_name: ["${{ inputs.brand_name }}", "${{ inputs.brand_name }}-dx"]
+        base_name: ["${{ inputs.brand_name }}"]
         stream_name: ["${{ inputs.stream_name }}"]
 
     steps:
