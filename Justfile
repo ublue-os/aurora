@@ -3,6 +3,7 @@ rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.2"
 iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.3.0"
 images := '(
     [aurora]=aurora
+    [aurora-dx]=aurora-dx
 )'
 flavors := '(
     [main]=main
