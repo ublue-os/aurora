@@ -45,6 +45,4 @@ sudo mokutil --import public_key.der
 
 ## Star History
 
-## Star History
-
 [![Star History Chart](https://api.star-history.com/svg?repos=ublue-os/aurora&type=Date)](https://www.star-history.com/#ublue-os/aurora&Date)
