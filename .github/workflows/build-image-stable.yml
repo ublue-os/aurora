@@ -33,10 +33,3 @@ jobs:
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["stable", "stable-daily"]'
-
-  build-iso-stable:
-    name: Build Stable ISOs
-    needs: [build-image-stable]
-    if: github.event.schedule == '45 5 * * 0'
-    secrets: inherit
-    uses: ./.github/workflows/build-iso-stable.yml

@@ -1,24 +1,11 @@
-name: Stable ISO
+name: Anaconda Stable ISO
 on:
-  workflow_call:
   workflow_dispatch:
-    inputs:
-      brand_name:
-        description: "Image Brand to Build"
-        default: '["aurora"]'
-        type: choice
-        options:
-          - '["aurora"]'
 
 jobs:
   build-iso-stable:
     name: Build Stable ISOs
     uses: ./.github/workflows/reusable-build-iso.yml
     secrets: inherit
-    strategy:
-      fail-fast: false
-      matrix:
-        brand_name: ${{ fromJson(inputs.brand_name || '["aurora"]') }}
     with:
-      brand_name: ${{ matrix.brand_name }}
       stream_name: stable
