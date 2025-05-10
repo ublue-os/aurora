@@ -572,7 +572,7 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fi
     iso_build_args+=("--volume=${PWD}:/github/workspace/")
     iso_build_args+=("{{ iso_builder_image }}")
-    iso_build_args+=(ARCH="$(uname -m)")
+    iso_build_args+=(ARCH="x86_64")
     iso_build_args+=(ENROLLMENT_PASSWORD="universalblue")
     iso_build_args+=(FLATPAK_REMOTE_REFS_DIR="/github/workspace/${build_dir}")
     iso_build_args+=(IMAGE_NAME="${image_name}")
@@ -582,7 +582,7 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     	iso_build_args+=(IMAGE_SRC="containers-storage:${IMAGE_FULL}")
     fi
     iso_build_args+=(IMAGE_TAG="${tag}")
-    iso_build_args+=(ISO_NAME="/github/workspace/${build_dir}/${image_name}-${tag}-$(uname -m).iso")
+    iso_build_args+=(ISO_NAME="/github/workspace/${build_dir}/${image_name}-${tag}.iso")
     iso_build_args+=(SECURE_BOOT_KEY_URL="https://github.com/ublue-os/akmods/raw/main/certs/public_key.der")
     iso_build_args+=(VARIANT="Kinoite")
     iso_build_args+=(VERSION="${FEDORA_VERSION}")
