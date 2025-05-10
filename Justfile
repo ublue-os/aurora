@@ -1,6 +1,6 @@
 repo_organization := "ublue-os"
-rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.1"
-iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.2.3"
+rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.2"
+iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.3.0"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -499,7 +499,8 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fi
 
     # Fedora Version
-    FEDORA_VERSION=$(${PODMAN} inspect ${IMAGE_FULL} | jq -r '.[]["Config"]["Labels"]["ostree.linux"]' | grep -oP 'fc\K[0-9]+')
+    # FEDORA_VERSION=$(${PODMAN} inspect ${IMAGE_FULL} | jq -r '.[]["Config"]["Labels"]["ostree.linux"]' | grep -oP 'fc\K[0-9]+')
+    FEDORA_VERSION=41
 
     # Load Image into rootful podman
     if [[ "${UID}" -gt 0 && {{ ghcr }} == "0" && ! "${PODMAN}" =~ docker ]]; then

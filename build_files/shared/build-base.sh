@@ -11,7 +11,6 @@ fi
 cp -r /ctx/just /tmp/just
 cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/shared/ /
-rsync -rvK /ctx/system_files/"${BASE_IMAGE_NAME}"/ /
 echo "::endgroup::"
 
 # Generate image-info.json
@@ -39,9 +38,6 @@ echo "::endgroup::"
 /ctx/build_files/base/09-hwe-additions.sh
 
 ## late stage changes
-
-# Make sure Bootc works
-/ctx/build_files/base/16-bootc.sh
 
 # Systemd and Remove Items
 /ctx/build_files/base/17-cleanup.sh

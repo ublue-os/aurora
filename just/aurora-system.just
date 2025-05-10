@@ -128,7 +128,7 @@ dx-group:
 
     for GROUP_ADD in "${GROUPS_ADD[@]}" ; do
         append_group $GROUP_ADD
-        pkexec usermod -aG $GROUP_ADD $USER
+        pkexec usermod -aG $GROUP_ADD {{ `id -un` }}
     done
 
     echo "Reboot system and log back in to use docker, incus-admin, libvirt."
