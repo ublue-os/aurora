@@ -6,10 +6,6 @@ on:
         description: "JSON string of flavors to build, '[main, nvidia]'"
         default: "['main', 'nvidia-open']"
         type: string
-      brand_name:
-        description: "The Brand Name: aurora"
-        required: true
-        type: string
       stream_name:
         description: "The Fedora Version: stable, or latest"
         required: true
@@ -30,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         image_flavor: ${{ fromJson(inputs.image_flavors) }}
-        base_name: ["${{ inputs.brand_name }}"]
+        base_name: ["aurora"]
         stream_name: ["${{ inputs.stream_name }}"]
 
     steps:
@@ -46,14 +42,16 @@ jobs:
         run: |
           just check
 
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+      - name: Maximize build space
+        uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
+        with:
+          remove-codeql: true
 
       - name: Build ISO
         shell: bash
         run: |
           image_name="$(just image_name ${{ matrix.base_name }} ${{ matrix.stream_name }} ${{ matrix.image_flavor }})"
-          just build-iso "${{ matrix.base_name }}" "${{ matrix.stream_name }}" "${{ matrix.image_flavor }}" "1" "1"
+          sudo $(command -v just) build-iso "${{ matrix.base_name }}" "${{ matrix.stream_name }}" "${{ matrix.image_flavor }}" "1" "1"
           echo "IMAGE_NAME=${image_name}" >> $GITHUB_ENV
           echo "ISO_BUILD_DIR=${{ github.workspace }}/${image_name}_build" >> $GITHUB_ENV
           echo "ISO_NAME=${image_name}-${{ matrix.stream_name }}.iso" >> $GITHUB_ENV
