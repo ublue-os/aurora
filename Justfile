@@ -570,9 +570,12 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
             "--volume=/var/lib/containers/storage:/var/lib/containers/storage"
         )
     fi
+
+    curl -Lo iso_files/aurora.repo https://copr.fedorainfracloud.org/coprs/ublue-os/aurora/repo/fedora-${FEDORA_VERSION}/ublue-os-aurora-fedora-${FEDORA_VERSION}.repo
     iso_build_args+=("--volume=${PWD}:/github/workspace/")
     iso_build_args+=("{{ iso_builder_image }}")
     iso_build_args+=(ARCH="x86_64")
+    iso_build_args+=(REPOS="/github/workspace/iso_files/aurora.repo /etc/yum.repos.d/fedora.repo /etc/yum.repos.d/fedora-updates.repo")
     iso_build_args+=(ENROLLMENT_PASSWORD="universalblue")
     iso_build_args+=(FLATPAK_REMOTE_REFS_DIR="/github/workspace/${build_dir}")
     iso_build_args+=(IMAGE_NAME="${image_name}")
