@@ -16,7 +16,7 @@ app/io.missioncenter.MissionCenter
 app/org.gnome.DejaDup
 app/org.gnome.World.PikaBackup
 app/io.github.input_leap.input-leap
-runtime/org.gtk.Gtk3theme.Breeze/x86_64/3.22
+runtime/org.gtk.Gtk3theme.Breeze
 app/io.github.pwr_solaar.solaar
 app/org.gustavoperedo.FontDownloader
 app/org.kde.skanpage
