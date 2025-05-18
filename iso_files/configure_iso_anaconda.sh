@@ -49,15 +49,17 @@ systemctl --global disable ublue-user-setup.service
 
 # Install Anaconda, Webui if >= F42
 SPECS=(
+    "libblockdev-btrfs"
     "libblockdev-lvm"
     "libblockdev-dm"
 )
 if [[ "$IMAGE_TAG" =~ lts ]]; then
     SPECS+=("anaconda-liveinst")
+    dnf install -y centos-release-hyperscale
+    dnf config-manager --set-enabled crb
 else
     SPECS+=(
         "anaconda-live"
-        "libblockdev-btrfs"
     )
     if [[ "$(rpm -E %fedora)" -ge 42 ]]; then
         SPECS+=("anaconda-webui")
@@ -67,9 +69,15 @@ dnf install -y "${SPECS[@]}"
 
 # Anaconda Profile Detection
 
+<<<<<<< HEAD
 # Aurora Stable
 tee /etc/anaconda/profile.d/aurora.conf <<'EOF'
 # Anaconda configuration file for Aurora Stable
+=======
+# Bluefin GTS/Stable
+tee /etc/anaconda/profile.d/bluefin.conf <<'EOF'
+# Anaconda configuration file for Bluefin
+>>>>>>> 829e40e (figure out how to get libblockdev-btrfs on lts)
 
 [Profile]
 # Define the profile.
@@ -100,11 +108,21 @@ hidden_spokes =
     NetworkSpoke
     PasswordSpoke
     UserSpoke
+hidden_webui_pages =
+    anaconda-screen-accounts
 
 [Localization]
 use_geolocation = False
 EOF
 
+<<<<<<< HEAD
+=======
+if [[ "${IMAGE_TAG}" =~ lts ]]; then
+    sed -i 's/^ID=.*/ID=bluefin/' /usr/lib/os-release
+    echo "VARIANT_ID=bluefin" >>/usr/lib/os-release
+fi
+
+>>>>>>> 829e40e (figure out how to get libblockdev-btrfs on lts)
 # Configure
 . /etc/os-release
 if [[ "$IMAGE_TAG" =~ gts|lts ]]; then
@@ -114,6 +132,8 @@ else
 fi
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
 sed -i 's|^Icon=.*|Icon=/usr/shre/pixmaps/fedora-logo-icon.png|' /usr/share/applications/anaconda.desktop || true
+sed -i 's| Fedora| Bluefin|' /usr/share/anaconda/gnome/fedora-welcome || true
+sed -i 's|Activities|in the dock|' /usr/share/anaconda/gnome/fedora-welcome || true
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
