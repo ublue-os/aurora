@@ -10,6 +10,24 @@ sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 
 # Configure Live Environment
 
+<<<<<<< HEAD
+=======
+# Setup dock
+tee /usr/share/glib-2.0/schemas/zz2-org.gnome.shell.gschema.override <<EOF
+[org.gnome.shell]
+welcome-dialog-last-shown-version='4294967295'
+favorite-apps = ['anaconda.desktop', 'documentation.desktop', 'discourse.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop']
+EOF
+
+# don't autostart gnome-software session service
+rm -f /etc/xdg/autostart/org.gnome.Software.desktop
+
+# disable the gnome-software shell search provider
+tee /usr/share/gnome-shell/search-providers/org.gnome.Software-search-provider.ini <<EOF
+DefaultDisabled=true
+EOF
+
+>>>>>>> abea734 (desktop icon, don't constantly rebuild images)
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
 systemctl disable rpm-ostree-countme.service
@@ -95,6 +113,7 @@ else
     echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 fi
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
+sed -i 's|^Icon=.*|Icon=/usr/shre/pixmaps/fedora-logo-icon.png|' /usr/share/applications/anaconda.desktop || true
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages

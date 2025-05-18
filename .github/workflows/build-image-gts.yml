@@ -1,6 +1,5 @@
-name: Latest Images HWE
+name: GTS Images
 on:
-  merge_group:
   pull_request:
     branches:
       - main
@@ -8,31 +7,32 @@ on:
     paths-ignore:
       - "**.md"
       - "iso_files/**"
-      - "aurora_flatpaks/**"
+      - "bluefin_flatpaks/**"
       - "dx_flatpaks/**"
       - ".github/workflows/*iso*"
-  workflow_call:
+  schedule:
+    - cron: "50 5 * * 0" # 5:50 UTC Weekly on Sundays
   workflow_dispatch:
+  workflow_call:
 
 jobs:
-  build-image-latest:
-    name: Build Latest Images
+  build-image-gts:
+    name: Build GTS Images
     uses: ./.github/workflows/reusable-build.yml
     secrets: inherit
     strategy:
       fail-fast: false
       matrix:
-        brand_name: ["aurora"]
+        brand_name: [bluefin]
     with:
-      image_flavors: '["hwe", "hwe-nvidia", "hwe-nvidia-open"]'
+      #     kernel_pin: 6.13.8-200.fc41.x86_64     ## This is where kernels get pinned.
       brand_name: ${{ matrix.brand_name }}
-      stream_name: latest
-      #kernel_pin: 6.12.12-207.bazzite.fc41.x86_64
+      stream_name: gts
 
-  generate-release:
+  generate_release:
     name: Generate Release
-    needs: [build-image-latest]
+    needs: [build-image-gts]
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
-      stream_name: '["latest"]'
+      stream_name: '["gts"]'
