@@ -79,12 +79,6 @@ default_partitioning =
 
 [User Interface]
 custom_styleshee = /usr/share/anaconda/pixmaps/fedora.css
-hidden_spokes =
-    NetworkSpoke
-    PasswordSpoke
-    UserSpoke
-hidden_webui_pages =
-    anaconda-screen-accounts
 
 [Localization]
 use_geolocation = False
