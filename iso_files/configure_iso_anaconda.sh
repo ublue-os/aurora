@@ -12,9 +12,9 @@ sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 
 . /etc/os-release
 if [[ "$IMAGE_TAG" =~ gts|lts ]]; then
-    echo "Bluefin ${IMAGE_TAG^^} release $VERSION_ID (${VERSION_CODENAME:='Big Bird'})" >/etc/system-release
+    echo "Aurora ${IMAGE_TAG^^} release $VERSION_ID (${VERSION_CODENAME:='Big Star'})" >/etc/system-release
 else
-    echo "Bluefin release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
+    echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 fi
 
 sed 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=" "' /usr/{,s}bin/liveinst
@@ -56,9 +56,9 @@ systemctl --global disable ublue-user-setup.service
 # Anaconda Profile Detection
 # TODO: Make our own profiles to not need to do this
 if [[ "$IMAGE_TAG" =~ lts ]]; then
-    echo 'VARIANT_ID=silverblue' >>/usr/lib/os-release
+    echo 'VARIANT_ID=kinoite' >>/usr/lib/os-release
 else
-    sed -i 's/^VARIANT_ID=.*/VARIANT_ID=silverblue/' /usr/lib/os-release
+    sed -i 's/^VARIANT_ID=.*/VARIANT_ID=kinoite/' /usr/lib/os-release
 fi
 sed -i 's/^ID=.*/ID=fedora/' /usr/lib/os-release
 
@@ -80,9 +80,9 @@ dnf install -y "${SPECS[@]}"
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
-mkdir -p /usr/share/anaconda/pixmaps/silverblue
-cp -r /root/packages/bluefin/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
-cp -r /root/packages/bluefin/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/silverblue/
+mkdir -p /usr/share/anaconda/pixmaps/
+cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
+cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
 rm -rf /root/packages
 
 # Interactive Kickstart
