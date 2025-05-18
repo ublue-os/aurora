@@ -9,25 +9,6 @@ IMAGE_REF="${IMAGE_REF##*://}"
 sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 
 # Configure Live Environment
-
-<<<<<<< HEAD
-=======
-# Setup dock
-tee /usr/share/glib-2.0/schemas/zz2-org.gnome.shell.gschema.override <<EOF
-[org.gnome.shell]
-welcome-dialog-last-shown-version='4294967295'
-favorite-apps = ['anaconda.desktop', 'documentation.desktop', 'discourse.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop']
-EOF
-
-# don't autostart gnome-software session service
-rm -f /etc/xdg/autostart/org.gnome.Software.desktop
-
-# disable the gnome-software shell search provider
-tee /usr/share/gnome-shell/search-providers/org.gnome.Software-search-provider.ini <<EOF
-DefaultDisabled=true
-EOF
-
->>>>>>> abea734 (desktop icon, don't constantly rebuild images)
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
 systemctl disable rpm-ostree-countme.service
@@ -115,14 +96,6 @@ hidden_webui_pages =
 use_geolocation = False
 EOF
 
-<<<<<<< HEAD
-=======
-if [[ "${IMAGE_TAG}" =~ lts ]]; then
-    sed -i 's/^ID=.*/ID=bluefin/' /usr/lib/os-release
-    echo "VARIANT_ID=bluefin" >>/usr/lib/os-release
-fi
-
->>>>>>> 829e40e (figure out how to get libblockdev-btrfs on lts)
 # Configure
 . /etc/os-release
 if [[ "$IMAGE_TAG" =~ gts|lts ]]; then
