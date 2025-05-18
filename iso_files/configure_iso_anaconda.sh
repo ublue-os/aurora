@@ -50,15 +50,9 @@ dnf install -y "${SPECS[@]}"
 
 # Anaconda Profile Detection
 
-<<<<<<< HEAD
 # Aurora Stable
 tee /etc/anaconda/profile.d/aurora.conf <<'EOF'
 # Anaconda configuration file for Aurora Stable
-=======
-# Bluefin GTS/Stable
-tee /etc/anaconda/profile.d/bluefin.conf <<'EOF'
-# Anaconda configuration file for Bluefin
->>>>>>> 829e40e (figure out how to get libblockdev-btrfs on lts)
 
 [Profile]
 # Define the profile.
@@ -98,15 +92,10 @@ EOF
 
 # Configure
 . /etc/os-release
-if [[ "$IMAGE_TAG" =~ gts|lts ]]; then
-    echo "Aurora ${IMAGE_TAG^^} release $VERSION_ID (${VERSION_CODENAME:='Big Bang'})" >/etc/system-release
-else
-    echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
-fi
+echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
+
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
-sed -i 's|^Icon=.*|Icon=/usr/shre/pixmaps/fedora-logo-icon.png|' /usr/share/applications/anaconda.desktop || true
-sed -i 's| Fedora| Bluefin|' /usr/share/anaconda/gnome/fedora-welcome || true
-sed -i 's|Activities|in the dock|' /usr/share/anaconda/gnome/fedora-welcome || true
+sed -i 's|^Icon=.*|Icon=/usr/share/pixmaps/fedora-logo-icon.png|' /usr/share/applications/anaconda.desktop || true
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
