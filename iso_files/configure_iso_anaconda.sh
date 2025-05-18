@@ -29,30 +29,63 @@ systemctl --global disable ublue-user-setup.service
 
 # Configure Anaconda
 
-# Anaconda Profile Detection
-# TODO: Make our own profiles to not need to do this
-if [[ "$IMAGE_TAG" =~ lts ]]; then
-    echo 'VARIANT_ID=kinoite' >>/usr/lib/os-release
-else
-    sed -i 's/^VARIANT_ID=.*/VARIANT_ID=kinoite/' /usr/lib/os-release
-fi
-sed -i 's/^ID=.*/ID=fedora/' /usr/lib/os-release
-
 # Install Anaconda, Webui if >= F42
 SPECS=(
-    "libblockdev-btrfs"
     "libblockdev-lvm"
     "libblockdev-dm"
 )
 if [[ "$IMAGE_TAG" =~ lts ]]; then
     SPECS+=("anaconda-liveinst")
 else
-    SPECS+=("anaconda-live")
+    SPECS+=(
+        "anaconda-live"
+        "libblockdev-btrfs"
+    )
     if [[ "$(rpm -E %fedora)" -ge 42 ]]; then
         SPECS+=("anaconda-webui")
     fi
 fi
 dnf install -y "${SPECS[@]}"
+
+# Anaconda Profile Detection
+
+# Aurora Stable
+tee /etc/anaconda/profile.d/aurora.conf <<'EOF'
+# Anaconda configuration file for Aurora Stable
+
+[Profile]
+# Define the profile.
+profile_id = aurora
+
+[Profile Detection]
+# Match os-release values
+os_id = aurora
+
+[Network]
+default_on_boot = FIRST_WIRED_WITH_LINK
+
+[Bootloader]
+efi_dir = fedora
+menu_auto_hide = True
+
+[Storage]
+default_scheme = BTRFS
+btrfs_compression = zstd:1
+default_partitioning =
+    /     (min 1 GiB, max 70 GiB)
+    /home (min 500 MiB, free 50 GiB)
+    /var  (btrfs)
+
+[User Interface]
+custom_styleshee = /usr/share/anaconda/pixmaps/fedora.css
+hidden_spokes =
+    NetworkSpoke
+    PasswordSpoke
+    UserSpoke
+
+[Localization]
+use_geolocation = False
+EOF
 
 # Configure
 . /etc/os-release
@@ -61,12 +94,11 @@ if [[ "$IMAGE_TAG" =~ gts|lts ]]; then
 else
     echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 fi
-sed 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=" "/' /usr/{,s}bin/liveinst || true
+sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
 mkdir -p /usr/share/anaconda/pixmaps/
-cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
 cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
 rm -rf /root/packages
 
