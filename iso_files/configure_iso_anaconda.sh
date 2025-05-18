@@ -33,24 +33,14 @@ SPECS=(
     "libblockdev-btrfs"
     "libblockdev-lvm"
     "libblockdev-dm"
+    "anaconda-live"
+    "anaconda-webui"
 )
-if [[ "$IMAGE_TAG" =~ lts ]]; then
-    SPECS+=("anaconda-liveinst")
-    dnf install -y centos-release-hyperscale
-    dnf config-manager --set-enabled crb
-else
-    SPECS+=(
-        "anaconda-live"
-    )
-    if [[ "$(rpm -E %fedora)" -ge 42 ]]; then
-        SPECS+=("anaconda-webui")
-    fi
-fi
 dnf install -y "${SPECS[@]}"
 
 # Anaconda Profile Detection
 
-# Aurora Stable
+# Aurora
 tee /etc/anaconda/profile.d/aurora.conf <<'EOF'
 # Anaconda configuration file for Aurora Stable
 
@@ -78,7 +68,7 @@ default_partitioning =
     /var  (btrfs)
 
 [User Interface]
-custom_styleshee = /usr/share/anaconda/pixmaps/fedora.css
+custom_stylesheet = /usr/share/anaconda/pixmaps/fedora.css
 
 [Localization]
 use_geolocation = False
@@ -89,7 +79,7 @@ EOF
 echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
-sed -i 's|^Icon=.*|Icon=/usr/share/pixmaps/fedora-logo-icon.png|' /usr/share/applications/anaconda.desktop || true
+sed -i 's|^Icon=.*|Icon=/usr/share/pixmaps/fedora-logo-icon.png|' /usr/share/applications/liveinst.desktop || true
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
