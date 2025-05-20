@@ -9,6 +9,9 @@ dnf -y --enablerepo copr:copr.fedorainfracloud.org:ublue-os:staging install -y \
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:ublue-os:packages install -y \
   aurora-readymade-config
 
+dnf -y --enablerepo copr:copr.fedorainfracloud.org:ublue-os:staging install -y \
+  taidan
+
 sudo ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 IMAGE_INFO="$(cat /usr/share/ublue-os/image-info.json)"
