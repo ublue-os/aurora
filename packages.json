@@ -12,6 +12,8 @@
 				"bootc",
 				"borgbackup",
 				"ddcutil",
+				"epson-inkjet-printer-escpr",
+				"epson-inkjet-printer-escpr2",
 				"evtest",
 				"fastfetch",
 				"fcitx5-chinese-addons",
@@ -28,6 +30,7 @@
 				"gcc",
 				"git-credential-libsecret",
 				"glow",
+				"google-noto-fonts-all",
 				"gum",
 				"hplip",
 				"ifuse",
@@ -180,11 +183,7 @@
 	},
 	"41": {
 		"include": {
-			"all": [
-				"epson-inkjet-printer-escpr",
-				"epson-inkjet-printer-escpr2",
-				"google-noto-fonts-all"
-			],
+			"all": [],
 			"dx":[]
 		},
 		"exclude": {
