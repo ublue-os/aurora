@@ -75,6 +75,9 @@ custom_stylesheet = /usr/share/anaconda/pixmaps/fedora.css
 hidden_spokes =
     NetworkSpoke
     PasswordSpoke
+hidden_webui_pages =
+    root-password
+    network
 
 [Localization]
 use_geolocation = False
