@@ -80,6 +80,7 @@ tee /usr/share/readymade/postinstall.d/11-taidan.sh <<EOF
 set -x
 mkdir -p /ostree/deploy/default/var/lib
 touch /ostree/deploy/default/var/lib/taidan
+touch /.unconfigured
 EOF
 chmod +x /usr/share/readymade/postinstall.d/11-taidan.sh
 
@@ -133,3 +134,4 @@ systemctl disable check-sb-key.service
 systemctl --global disable ublue-flatpak-manager.service
 systemctl --global disable podman-auto-update.timer
 systemctl --global disable ublue-user-setup.service
+systemctl enable taidan-initial-setup-reconfiguration.service
