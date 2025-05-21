@@ -39,7 +39,7 @@ SPECS=(
     "anaconda-live"
     "anaconda-webui"
 )
-dnf install -y "${SPECS[@]}"
+dnf -y --enablerepo copr:copr.fedorainfracloud.org:@rhinstaller:Anaconda-webui install -y "${SPECS[@]}"
 
 # Anaconda Profile Detection
 
