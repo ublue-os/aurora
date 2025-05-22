@@ -276,9 +276,7 @@ setup-brew-not-found ACTION="":
 # List installed RPM packages of currently booted system
 [group('Apps')]
 list-installed-rpms:
-    #!/usr/bin/env bash
-    deployment=$(rpm-ostree status --json | jq '.deployments[] | select(.booted == true) | .checksum' | sed 's/"//g')
-    rpm-ostree db list $deployment
+    rpm -qa
 
 # Setup and configure Sunshine Game Streaming host
 [group('Apps')]
