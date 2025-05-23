@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # SCRIPT VERSION
-USER_SETUP_VER=11
+USER_SETUP_VER=12
 USER_SETUP_VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/user-setup"
 USER_SETUP_VER_RAN=$(cat "$USER_SETUP_VER_FILE")
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
@@ -65,9 +65,6 @@ flatpak override --user --filesystem=xdg-config/gtk-4.0:ro
 # will break the XDG Desktop Portal inside the sandbox
 # See https://github.com/ublue-os/aurora/issues/224
 flatpak override --user --unset-env=QT_QPA_PLATFORMTHEME
-
-# smaller cursor on GTK apps - should be fixed by F42 with GTK 4.17
-flatpak override --user --env=USE_POINTER_VIEWPORT=1
 
 # webkit override to devpod for nvidia users
 flatpak override --user --env=WEBKIT_DISABLE_COMPOSITING_MODE=1 sh.loft.devpod
