@@ -37,9 +37,9 @@ SPECS=(
     "libblockdev-lvm"
     "libblockdev-dm"
     "anaconda-live"
-    "anaconda-webui"
 )
 dnf install -y "${SPECS[@]}"
+dnf -y --enablerepo copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda-webui install -y anaconda-webui
 
 # Anaconda Profile Detection
 
