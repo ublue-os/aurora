@@ -2,4 +2,4 @@ images:
   - name: kinoite-nvidia
     image: ghcr.io/ublue-os/kinoite-nvidia
     tag: latest
-    digest: sha256:7a47bf788cb60e3ef5696ab593916b8a4c03560e1128ebfd8dcb336a5d3a0d13
+    digest: sha256:81700138c091cfa27f921ec86d21b1bd67d842656555bdea97855be76c070083
