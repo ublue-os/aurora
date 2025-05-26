@@ -33,4 +33,4 @@ done
 
 # Prevent future executions
 echo "Writing state file"
-echo "$GROUP_SETUP_VER" > "$GROUP_SETUP_VER_FILE"
+echo "$GROUP_SETUP_VER" >"$GROUP_SETUP_VER_FILE"
