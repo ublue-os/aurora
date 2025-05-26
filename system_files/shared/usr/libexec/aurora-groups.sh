@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 # SCRIPT VERSION
-GROUP_SETUP_VER=1
+GROUP_SETUP_VER=2
 GROUP_SETUP_VER_FILE="/etc/ublue/aurora-groups"
 GROUP_SETUP_VER_RAN=$(cat "$GROUP_SETUP_VER_FILE")
+
+# make the directory if it doesn't exist
+mkdir -p /etc/ublue
 
 # Run script if updated
 if [[ -f $GROUP_SETUP_VER_FILE && "$GROUP_SETUP_VER" = "$GROUP_SETUP_VER_RAN" ]]; then
@@ -16,19 +19,18 @@ append_group() {
   local group_name="$1"
   if ! grep -q "^$group_name:" /etc/group; then
     echo "Appending $group_name to /etc/group"
-    grep "^$group_name:" /usr/lib/group | tee -a /etc/group > /dev/null
+    grep "^$group_name:" /usr/lib/group | tee -a /etc/group >/dev/null
   fi
 }
 
 # Setup Groups
 append_group plugdev
 
-wheelarray=($(getent group wheel | cut -d ":" -f 4 | tr  ',' '\n'))
-for user in "${wheelarray[@]}"
-do
+wheelarray=($(getent group wheel | cut -d ":" -f 4 | tr ',' '\n'))
+for user in $wheelarray; do
   usermod -aG plugdev $user
 done
 
 # Prevent future executions
 echo "Writing state file"
-echo "$GROUP_SETUP_VER" > "$GROUP_SETUP_VER_FILE"
+echo "$GROUP_SETUP_VER" >"$GROUP_SETUP_VER_FILE"
