@@ -7,12 +7,12 @@ set -eoux pipefail
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
 # Remember to leave a note with rationale/link to issue for each pin!
-#
-# Example:
-#if [ "$FEDORA_MAJOR_VERSION" -eq "41" ]; then
-#    Workaround pkcs11-provider regression, see issue #1943
-#    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
-#fi
+# Use dnf list --showduplicates package
+
+# Workaround atheros-firmware regression
+# see https://bugzilla.redhat.com/show_bug.cgi?id=2365882
+dnf -y swap atheros-firmware atheros-firmware-20250311-1$(rpm -E %{dist})
+
 
 # Current aurora systems have the bling.sh and bling.fish in their default locations
 mkdir -p /usr/share/ublue-os/aurora-cli
