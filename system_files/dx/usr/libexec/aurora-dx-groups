@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # SCRIPT VERSION
-GROUP_SETUP_VER=1
+GROUP_SETUP_VER=2
 GROUP_SETUP_VER_FILE="/etc/ublue/dx-groups"
 GROUP_SETUP_VER_RAN=$(cat "$GROUP_SETUP_VER_FILE")
 
