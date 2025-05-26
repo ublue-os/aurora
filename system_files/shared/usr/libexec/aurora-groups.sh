@@ -19,16 +19,15 @@ append_group() {
   local group_name="$1"
   if ! grep -q "^$group_name:" /etc/group; then
     echo "Appending $group_name to /etc/group"
-    grep "^$group_name:" /usr/lib/group | tee -a /etc/group > /dev/null
+    grep "^$group_name:" /usr/lib/group | tee -a /etc/group >/dev/null
   fi
 }
 
 # Setup Groups
 append_group plugdev
 
-wheelarray=($(getent group wheel | cut -d ":" -f 4 | tr  ',' '\n'))
-for user in "${wheelarray[@]}"
-do
+wheelarray=($(getent group wheel | cut -d ":" -f 4 | tr ',' '\n'))
+for user in $wheelarray; do
   usermod -aG plugdev $user
 done
 
