@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 # SCRIPT VERSION
-GROUP_SETUP_VER=1
+GROUP_SETUP_VER=2
 GROUP_SETUP_VER_FILE="/etc/ublue/aurora-groups"
 GROUP_SETUP_VER_RAN=$(cat "$GROUP_SETUP_VER_FILE")
+
+# make the directory if it doesn't exist
+mkdir -p /etc/ublue
 
 # Run script if updated
 if [[ -f $GROUP_SETUP_VER_FILE && "$GROUP_SETUP_VER" = "$GROUP_SETUP_VER_RAN" ]]; then
