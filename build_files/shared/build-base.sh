@@ -7,6 +7,13 @@ if [ "${FEDORA_MAJOR_VERSION}" -lt 41 ]; then
     rpm-ostree install --idempotent dnf5 dnf5-plugins
 fi
 
+echo "::endgroup::"
+
+echo "::group:: Copy Files"
+
+# Copy ISO list for `install-system-flatpaks`
+install -Dm0644 -t /etc/ublue-os/ /ctx/iso_files/*.list
+
 # Copy Files to Container
 cp -r /ctx/just /tmp/just
 cp /ctx/packages.json /tmp/packages.json

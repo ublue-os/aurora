@@ -115,7 +115,7 @@ ptyxis-transparency opacity="0.95":
 # Configure docker,incus-admin,libvirt container manager permissions
 [group('System')]
 dx-group:
-    #!/usr/bin/env bash
+    #!/usr/bin/pkexec bash
     append_group() {
         local group_name="$1"
         if ! grep -q "^$group_name:" /etc/group; then
@@ -128,10 +128,10 @@ dx-group:
 
     for GROUP_ADD in "${GROUPS_ADD[@]}" ; do
         append_group $GROUP_ADD
-        pkexec usermod -aG $GROUP_ADD {{ `id -un` }}
+        usermod -aG $GROUP_ADD $USER
     done
 
-    echo "Reboot system and log back in to use docker, incus-admin, libvirt."
+    echo "Reboot system and log back in to use docker, incus, libvirt."
 
 # alias for configure-vfio
 [group('System')]
