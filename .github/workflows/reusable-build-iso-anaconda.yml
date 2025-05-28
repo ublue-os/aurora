@@ -1,5 +1,5 @@
 ---
-name: Build ISOs (Live Anaconda)
+name: Build ISOs (Live without Webui)
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
       - ".github/workflows/reusable-build-iso-anaconda.yml"
       - "iso_files/configure_iso_anaconda.sh"
   schedule:
-    - cron: "0 0 * * 0"
+    - cron: "0 0 * * 1"
 
 env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
@@ -65,7 +65,7 @@ jobs:
           image_ref="${IMAGE_REGISTRY}/${image_name}"
           KARGS="NONE"
           echo "image_ref=$image_ref" >> "${GITHUB_OUTPUT}"
-          echo "artifact_format="$image_name-${{ matrix.image_version }}-live"" >> "${GITHUB_OUTPUT}"
+          echo "artifact_format="$image_name-${{ matrix.image_version }}-$(uname -m)"" >> "${GITHUB_OUTPUT}"
           echo "kargs=$KARGS" >> "${GITHUB_OUTPUT}"
 
       - name: Build ISO

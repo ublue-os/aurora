@@ -31,13 +31,12 @@ systemctl --global disable ublue-user-setup.service
 
 # Configure Anaconda
 
-# Install Anaconda, Webui if >= F42
+# Install Anaconda
 SPECS=(
     "libblockdev-btrfs"
     "libblockdev-lvm"
     "libblockdev-dm"
     "anaconda-live"
-    "anaconda-webui"
 )
 dnf install -y "${SPECS[@]}"
 
