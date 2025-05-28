@@ -93,6 +93,9 @@ toggle-devmode:
         NEW_IMAGE=$(sed "s/\-dx//" <<< $CURRENT_IMAGE)
         rpm-ostree rebase $NEW_IMAGE
     fi
+    if gum choose "Do you want to also install the default development flatpaks?" ; then
+            ujust install-system-flatpaks 1
+    fi
 
 # Ptyxis terminal transparency
 [group('System')]
