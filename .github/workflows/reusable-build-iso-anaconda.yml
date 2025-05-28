@@ -1,5 +1,5 @@
 ---
-name: Build ISOs (Live Anaconda without Webui)
+name: Build ISOs (Live without Webui)
 
 on:
   workflow_dispatch:
