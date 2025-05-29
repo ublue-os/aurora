@@ -10,6 +10,7 @@ HOME_URL="https://getaurora.dev/"
 DOCUMENTATION_URL="https://docs.getaurora.dev"
 SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
 BUG_SUPPORT_URL="https://github.com/ublue-os/aurora/issues/"
+CODE_NAME="Stargazer"
 VERSION="${VERSION:-00.00000000}"
 
 IMAGE_INFO="/usr/share/ublue-os/image-info.json"
