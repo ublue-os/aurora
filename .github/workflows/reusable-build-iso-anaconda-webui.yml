@@ -1,14 +1,14 @@
 ---
-name: Build ISOs (Live without Webui)
+name: Build ISOs (Live with Webui)
 
 on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".github/workflows/reusable-build-iso-anaconda.yml"
-      - "iso_files/configure_iso_anaconda.sh"
+      - ".github/workflows/reusable-build-iso-anaconda-webui.yml"
+      - "iso_files/configure_iso_anaconda-webui.sh"
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: "30 0 * * 1"
 
 env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
@@ -65,7 +65,7 @@ jobs:
           image_ref="${IMAGE_REGISTRY}/${image_name}"
           KARGS="NONE"
           echo "image_ref=$image_ref" >> "${GITHUB_OUTPUT}"
-          echo "artifact_format="$image_name-${{ matrix.image_version }}-$(uname -m)"" >> "${GITHUB_OUTPUT}"
+          echo "artifact_format="$image_name-${{ matrix.image_version }}-webui-$(uname -m)"" >> "${GITHUB_OUTPUT}"
           echo "kargs=$KARGS" >> "${GITHUB_OUTPUT}"
 
       - name: Build ISO
@@ -74,7 +74,7 @@ jobs:
         with:
           image-ref: ${{ steps.image_ref.outputs.image_ref }}:${{ matrix.image_version }}
           flatpaks-list: ${{ github.workspace }}/iso_files/system-flatpaks.list
-          hook-post-rootfs: ${{ github.workspace }}/iso_files/configure_iso_anaconda.sh
+          hook-post-rootfs: ${{ github.workspace }}/iso_files/configure_iso_anaconda-webui.sh
           kargs: ${{ steps.image_ref.outputs.kargs }}
 
       - name: Rename ISO

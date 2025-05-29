@@ -31,14 +31,21 @@ systemctl --global disable ublue-user-setup.service
 
 # Configure Anaconda
 
-# Install Anaconda
+# Install Anaconda WebUI
 SPECS=(
     "libblockdev-btrfs"
     "libblockdev-lvm"
     "libblockdev-dm"
     "anaconda-live"
+    "anaconda-webui"
 )
 dnf install -y "${SPECS[@]}"
+
+# swap webui package to copr
+dnf -y copr enable @rhinstaller/Anaconda-webui
+dnf5 -y swap \
+    --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda-webui \
+    anaconda-webui anaconda-webui
 
 # Anaconda Profile Detection
 
