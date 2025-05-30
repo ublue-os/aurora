@@ -247,7 +247,8 @@ configure-vfio ACTION="":
 
 # Install system flatpaks for rebasers
 [group('System')]
-  install-system-flatpaks $dx="dynamic":
+install-system-flatpaks $dx="dynamic":
+  #!/usr/bin/env bash
   TARGET_FLATPAK_FILE="${TARGET_FLATPAK_FILE:-/etc/ublue-os/system-flatpaks.list}"
   TARGET_DEVMODE_FILE="${TARGET_DEVMODE_FILE:-/etc/ublue-os/system-flatpaks-dx.list}"
   case "$dx" in
