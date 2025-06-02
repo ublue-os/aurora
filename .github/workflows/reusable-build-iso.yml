@@ -33,38 +33,52 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - name: Install Just
-        shell: bash
-        run: bash .github/workflows/shared/install-just.sh
-
-      - name: Check Just Syntax
-        shell: bash
+      - name: Install dependencies
+        if: matrix.platform == 'arm64'
         run: |
-          just check
+          set -x
+          sudo apt update -y
+          sudo apt install -y \
+            podman
 
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
         with:
           remove-codeql: true
 
-      - name: Build ISO
+      - name: Setup Just
+        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
+
+      - name: Check Just Syntax
         shell: bash
         run: |
-          image_name="$(just image_name ${{ matrix.base_name }} ${{ matrix.stream_name }} ${{ matrix.image_flavor }})"
-          sudo $(command -v just) build-iso "${{ matrix.base_name }}" "${{ matrix.stream_name }}" "${{ matrix.image_flavor }}" "1" "1"
-          echo "IMAGE_NAME=${image_name}" >> $GITHUB_ENV
-          echo "ISO_BUILD_DIR=${{ github.workspace }}/${image_name}_build" >> $GITHUB_ENV
-          echo "ISO_NAME=${image_name}-${{ matrix.stream_name }}.iso" >> $GITHUB_ENV
+          just check
+
+      - name: Build ISO
+        shell: bash
+        env:
+          BASE_NAME: ${{ matrix.base_name }}
+          STREAM_NAME: ${{ matrix.stream_name }}
+          IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+        run: |
+          IMAGE_NAME="$(just image_name ${BASE_NAME} ${STREAM_NAME} ${IMAGE_FLAVOR})"
+          sudo $(command -v just) build-iso "${BASE_NAME}" "${STREAM_NAME}" "${IMAGE_FLAVOR}" "1" "1"
+          echo "IMAGE_NAME=${image_name}" >> "${GITHUB_ENV}"
+          echo "ISO_BUILD_DIR=${GITHUB_WORKSPACE}/${IMAGE_NAME}_build" >> "${GITHUB_ENV}"
+          echo "ISO_NAME=${IMAGE_NAME}-${STREAM_NAME}.iso" >> "${GITHUB_ENV}"
 
       - name: Move ISOs to Upload Directory
         id: upload-directory
         shell: bash
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          ISO_UPLOAD_DIR=${{ github.workspace }}/upload
-          mkdir ${ISO_UPLOAD_DIR}
-          mv ${{ env.ISO_BUILD_DIR }}/${{ env.ISO_NAME }} ${ISO_UPLOAD_DIR}
-          mv ${{ env.ISO_BUILD_DIR }}/${{ env.ISO_NAME }}-CHECKSUM ${ISO_UPLOAD_DIR}
-          echo "iso-upload-dir=${ISO_UPLOAD_DIR}" >> $GITHUB_OUTPUT
+          ISO_UPLOAD_DIR="${GITHUB_WORKSPACE}/upload"
+          mkdir "${ISO_UPLOAD_DIR}"
+          mv "${ISO_BUILD_DIR}/${ISO_NAME}" "${ISO_UPLOAD_DIR}"
+          mv "${ISO_BUILD_DIR}/${ISO_NAME}-CHECKSUM" "${ISO_UPLOAD_DIR}"
+          echo "iso-upload-dir=${ISO_UPLOAD_DIR}" >> "${GITHUB_OUTPUT}"
 
       - name: Upload ISOs and Checksum to Job Artifacts
         if: github.ref_name == 'testing'
@@ -91,4 +105,4 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y rclone
-          rclone copy $SOURCE_DIR R2:aurora-dl
+          rclone copy "${SOURCE_DIR}" R2:aurora-dl

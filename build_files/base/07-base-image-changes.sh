@@ -14,9 +14,13 @@ fi
 
 # Branding for Images
 ln -sf ../places/distributor-logo.svg /usr/share/icons/hicolor/scalable/apps/start-here.svg
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default.png
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-1/contents/images/15392x8616.jpg /usr/share/backgrounds/default-dark.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default-dark.png
 ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.xml
+
+# /usr/share/sddm/themes/01-breeze-fedora/theme.conf uses default.jxl for the background
+ln -sf /usr/share/backgrounds/default.png /usr/share/backgrounds/default.jxl
+ln -sf /usr/share/backgrounds/default-dark.png /usr/share/backgrounds/default-dark.jxl
 
 # Favorites in Kickoff
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml

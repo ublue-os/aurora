@@ -21,17 +21,8 @@ function list_tags(){
 function rebase_helper(){
     base_image="ghcr.io/ublue-os/${IMAGE_NAME}"
     echo "Which Tag would you like to rebase to?"
-
-    if [[ "$composefs_enabled" == "true" ]]; then
-        #CHANNELS=(latest stable stable-daily)
-        #need to change this when stable gets F42
-        CHANNELS=(latest)
-        echo "Since you are on Fedora 42+, you will not be (currently) able to rollback to the stable stream."
-    elif [[ "$composefs_enabled" == "false" ]]; then
-        CHANNELS=(latest stable stable-daily)
-        echo "The default selection is stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
-        echo "Note: if you rebase to latest (F42) now you won't be able to rebase back to stable until it is based on Fedora F42"
-        fi
+    CHANNELS=(latest stable stable-daily)
+    echo "The default selection is stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
 
     choose_target=$(Choose date "${CHANNELS[@]}" cancel)
     if [[ "$choose_target" != "date" && "$choose_target" != "cancel" ]]; then
