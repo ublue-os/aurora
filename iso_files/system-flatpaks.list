@@ -9,7 +9,7 @@ org.kde.kclock
 org.fkoehler.KTailctl
 org.kde.haruna
 com.github.tchx84.Flatseal
-io.github.dvlv.boxbuddyrs
+com.ranfdev.DistroShelf
 io.github.flattool.Warehouse
 org.fedoraproject.MediaWriter
 io.missioncenter.MissionCenter
