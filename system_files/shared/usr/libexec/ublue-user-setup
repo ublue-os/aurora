@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # SCRIPT VERSION
-USER_SETUP_VER=12
+USER_SETUP_VER=13
 USER_SETUP_VER_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/ublue/user-setup"
 USER_SETUP_VER_RAN=$(cat "$USER_SETUP_VER_FILE")
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
@@ -20,7 +20,7 @@ USER_SETUP_VER_FILE_V1="$HOME/.ublue-configured"
 if [[ -f $USER_SETUP_VER_FILE_V1 ]]; then
   echo "User setup v1 has already run. Exiting..."
   rm "$USER_SETUP_VER_FILE_V1"
-  echo "$USER_SETUP_VER" > "$USER_SETUP_VER_FILE"
+  echo "$USER_SETUP_VER" >"$USER_SETUP_VER_FILE"
   exit 0
 fi
 
@@ -42,18 +42,44 @@ if [[ ! -f "$PTYXIS_DIR/catppuccin-dynamic.palette" ]]; then
   cp "$PTYXIS_THEME_DIR/catppuccin-dynamic.palette" "$PTYXIS_DIR/catppuccin-dynamic.palette"
 fi
 
+VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
 if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
-  if [[ ! -f "$UBLUE_CONFIG_DIR/framework-initialized" ]]; then
-    echo 'Setting Framework logo menu'
-    dconf write /org/gnome/shell/extensions/Logo-menu/symbolic-icon true
-    dconf write /org/gnome/shell/extensions/Logo-menu/menu-button-icon-image 31
-    echo 'Setting touch scroll type'
-    dconf write /org/gnome/desktop/peripherals/mouse/natural-scroll true
-    if [[ $SYS_ID == "Laptop ("* ]]; then
-      echo 'Applying font fix for Framework 13'
-      dconf write /org/gnome/desktop/interface/text-scaling-factor 1.25
+  FRAMEWORK_SETUP_VER=2
+  FRAMEWORK_VER_FILE="$UBLUE_CONFIG_DIR/framework-initialized"
+  FRAMEWORK_VER_RAN=$(cat "$FRAMEWORK_VER_FILE" 2>/dev/null || echo "0")
+
+  if [[ "$FRAMEWORK_SETUP_VER" -gt "$FRAMEWORK_VER_RAN" ]]; then
+    echo "Running Framework setup v$FRAMEWORK_SETUP_VER (previous: v$FRAMEWORK_VER_RAN)"
+
+    CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+
+    if [[ -f "$CONFIG" ]]; then
+      # Find kickoff/application launcher applet sections
+      APPLET_SECTIONS=$(grep -n '\[Containments\]\[[0-9]*\]\[Applets\]\[[0-9]*\]' "$CONFIG")
+
+      # For each applet section, check if it's a launcher and update it
+      while IFS=: read -r line_num line_content; do
+        SECTION_NUM=$(echo "$line_content" | sed -E 's/\[Containments\]\[([0-9]+)\]\[Applets\]\[([0-9]+)\]/\1:\2/')
+        CONT_NUM=$(echo "$SECTION_NUM" | cut -d: -f1)
+        APP_NUM=$(echo "$SECTION_NUM" | cut -d: -f2)
+
+        # Check if this is a launcher applet
+        IS_LAUNCHER=$(grep -A 5 "\[Containments\]\[$CONT_NUM\]\[Applets\]\[$APP_NUM\]" "$CONFIG" | grep -i "kickoff\|launcher")
+
+        if [[ -n "$IS_LAUNCHER" ]]; then
+          echo "Found launcher applet in section $CONT_NUM:$APP_NUM, updating icon"
+          kwriteconfig6 --file "$CONFIG" --group Containments --group $CONT_NUM --group Applets --group $APP_NUM --group Configuration --group General --key "icon" "framework"
+        fi
+      done <<<"$APPLET_SECTIONS"
+
+      echo "Restarting Plasma to apply changes"
+      kquitapp6 plasmashell || killall plasmashell
+      kstart plasmashell &
     fi
-    touch "$UBLUE_CONFIG_DIR/framework-initialized"
+
+    echo "$FRAMEWORK_SETUP_VER" >"$FRAMEWORK_VER_FILE"
+  else
+    echo "Framework setup v$FRAMEWORK_VER_RAN already applied, skipping"
   fi
 fi
 
@@ -74,4 +100,4 @@ pkexec /usr/libexec/ublue-privileged-user-setup
 
 # Prevent future executions
 echo "Writing state file"
-echo $USER_SETUP_VER > "$USER_SETUP_VER_FILE"
+echo $USER_SETUP_VER >"$USER_SETUP_VER_FILE"
