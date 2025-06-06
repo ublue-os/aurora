@@ -73,8 +73,7 @@ if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
       done <<<"$APPLET_SECTIONS"
 
       echo "Restarting Plasma to apply changes"
-      kquitapp6 plasmashell || killall plasmashell
-      kstart plasmashell &
+      systemctl --user restart plasma-plasmashell.service
     fi
 
     echo "$FRAMEWORK_SETUP_VER" >"$FRAMEWORK_VER_FILE"
