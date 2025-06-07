@@ -40,6 +40,7 @@ echo 'eval "$(starship init bash)"' >> /etc/bashrc
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
 
 dnf5 -y swap fedora-logos aurora-logos
+dnf5 -y install aurora-kde-config
 dnf5 -y install aurora-plymouth
 
 # Consolidate Just Files
