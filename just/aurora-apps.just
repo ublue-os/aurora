@@ -127,7 +127,7 @@ install-jetbrains-toolbox:
     mkdir -p $HOME/.local/share/JetBrains/ToolboxApp/
     mv jetbrains-toolbox-"${BUILD_VERSION}"/* $HOME/.local/share/JetBrains/ToolboxApp/
     echo "Launching JetBrains Toolbox"
-    $HOME/.local/share/JetBrains/ToolboxApp/bin/jetbrains-toolbox
+    $HOME/.local/share/JetBrains/ToolboxApp/bin/jetbrains-toolbox &
 
 # Install GUI apps for OpenRazer
 [group('Apps')]
