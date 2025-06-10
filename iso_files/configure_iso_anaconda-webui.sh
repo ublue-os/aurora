@@ -45,7 +45,7 @@ dnf install -y "${SPECS[@]}"
 dnf5 -y copr enable @rhinstaller/Anaconda
 dnf5 -y swap \
     --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda \
-    anaconda anaconda
+    anaconda-core anaconda-core
 
 dnf5 -y copr enable @rhinstaller/Anaconda-webui
 dnf5 -y swap \
