@@ -14,7 +14,7 @@ app/io.github.flattool.Warehouse
 app/org.fedoraproject.MediaWriter
 app/io.missioncenter.MissionCenter
 app/org.gnome.DejaDup
-app/org.gnome.World.PikaBackup
+app/com.borgbase.Vorta
 app/io.github.input_leap.input-leap
 runtime/org.gtk.Gtk3theme.Breeze
 app/io.github.pwr_solaar.solaar
