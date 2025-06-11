@@ -41,8 +41,13 @@ SPECS=(
 )
 dnf install -y "${SPECS[@]}"
 
-# swap webui package to copr
-dnf -y copr enable @rhinstaller/Anaconda-webui
+# swap anaconda packages to copr
+dnf5 -y copr enable @rhinstaller/Anaconda
+dnf5 -y swap \
+    --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda \
+    anaconda-core anaconda-core
+
+dnf5 -y copr enable @rhinstaller/Anaconda-webui
 dnf5 -y swap \
     --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda-webui \
     anaconda-webui anaconda-webui

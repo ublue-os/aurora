@@ -180,25 +180,22 @@
 			"dx": []
 		}
 	},
-	"41": {
+	"42": {
 		"include": {
 			"all": [
-				"epson-inkjet-printer-escpr",
-				"epson-inkjet-printer-escpr2",
-				"google-noto-fonts-all"
-			],
-			"dx":[]
+				"google-noto-fonts-all",
+				"fw-fanctrl"
+      		],
+			"dx": []
 		},
 		"exclude": {
 			"all": [],
 			"dx": []
 		}
 	},
-	"42": {
+	"43": {
 		"include": {
 			"all": [
-				"google-noto-fonts-all",
-				"fw-fanctrl"
       		],
 			"dx": []
 		},
