@@ -165,6 +165,7 @@
 				"fedora-chromium-config-kde",
 				"firefox",
 				"firefox-langpacks",
+				"firewall-config",
 				"kcharselect",
 				"krfb",
 				"krfb-libs",
