@@ -5,7 +5,7 @@
 [![Stable Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-stable.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-stable.yml) [![Latest Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest-main.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest-main.yml) [![Latest Images HWE](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest-hwe.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-latest-hwe.yml) <!--[![Beta Images](https://github.com/ublue-os/aurora/actions/workflows/build-image-beta.yml/badge.svg)](https://github.com/ublue-os/aurora/actions/workflows/build-image-beta.yml)-->
 
 
-![aurora](https://github.com/user-attachments/assets/5d16c9fd-cdfa-49a0-bc03-b28026f8c6df)
+![aurora](https://github.com/user-attachments/assets/2b36fa23-0122-4cba-bc8f-87026c84b909)
 
 
 Aurora is a delightful KDE desktop experience for end-users that are looking for reliability and developers for the most-hassle free setup. Zero maintenance included.
