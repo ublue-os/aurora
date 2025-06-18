@@ -21,17 +21,6 @@ set -eoux pipefail
 curl --retry 3 -Lo /tmp/aurora.pdf https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 
-# TODO: Fedora 42 specific -- re-evaluate with Fedora 43
-# negativo's libheif is broken somehow on older Intel machines
-# https://github.com/ublue-os/aurora/issues/8
-dnf5 -y swap \
-    --repo=fedora \
-        libheif libheif
-        
-dnf5 -y swap \
-    --repo=fedora \
-        heif-pixbuf-loader heif-pixbuf-loader
-
 # Starship Shell Prompt
 # shellcheck disable=SC2016
 echo 'eval "$(starship init bash)"' >> /etc/bashrc
@@ -40,6 +29,7 @@ echo 'eval "$(starship init bash)"' >> /etc/bashrc
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
 
 dnf5 -y swap fedora-logos aurora-logos
+dnf5 -y install aurora-kde-config
 dnf5 -y install aurora-plymouth
 
 # Consolidate Just Files

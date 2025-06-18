@@ -9,12 +9,12 @@ app/org.kde.kclock
 app/org.fkoehler.KTailctl
 app/org.kde.haruna
 app/com.github.tchx84.Flatseal
-app/io.github.dvlv.boxbuddyrs
+app/com.ranfdev.DistroShelf
 app/io.github.flattool.Warehouse
 app/org.fedoraproject.MediaWriter
 app/io.missioncenter.MissionCenter
 app/org.gnome.DejaDup
-app/org.gnome.World.PikaBackup
+app/com.borgbase.Vorta
 app/io.github.input_leap.input-leap
 runtime/org.gtk.Gtk3theme.Breeze
 app/io.github.pwr_solaar.solaar

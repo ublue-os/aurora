@@ -14,12 +14,6 @@
 				"ddcutil",
 				"evtest",
 				"fastfetch",
-				"fcitx5-chinese-addons",
-				"fcitx5-hangul",
-				"fcitx5-libthai",
-				"fcitx5-mozc",
-				"fcitx5-sayura",
-				"fcitx5-unikey",
 				"firacode-nerd-fonts",
 				"fish",
 				"foo2zjs",
@@ -171,6 +165,7 @@
 				"fedora-chromium-config-kde",
 				"firefox",
 				"firefox-langpacks",
+				"firewall-config",
 				"kcharselect",
 				"krfb",
 				"krfb-libs",
@@ -180,25 +175,22 @@
 			"dx": []
 		}
 	},
-	"41": {
+	"42": {
 		"include": {
 			"all": [
-				"epson-inkjet-printer-escpr",
-				"epson-inkjet-printer-escpr2",
-				"google-noto-fonts-all"
-			],
-			"dx":[]
+				"google-noto-fonts-all",
+				"fw-fanctrl"
+      		],
+			"dx": []
 		},
 		"exclude": {
 			"all": [],
 			"dx": []
 		}
 	},
-	"42": {
+	"43": {
 		"include": {
 			"all": [
-				"google-noto-fonts-all",
-				"fw-fanctrl"
       		],
 			"dx": []
 		},
