@@ -1,37 +1,31 @@
 #!/usr/bin/bash
 
-set -exuo pipefail
-
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
 if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
-    CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+  echo "Running Framework KDE Plasma Shell setup"
 
-    if [[ -f "$CONFIG" ]]; then
-      # Find kickoff/application launcher applet sections
-      APPLET_SECTIONS=$(grep -n '\[Containments\]\[[0-9]*\]\[Applets\]\[[0-9]*\]' "$CONFIG")
+  CONFIG="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
 
-      # For each applet section, check if it's a launcher and update it
-      while IFS=: read -r line_num line_content; do
-        SECTION_NUM=$(echo "$line_content" | sed -E 's/\[Containments\]\[([0-9]+)\]\[Applets\]\[([0-9]+)\]/\1:\2/')
-        CONT_NUM=$(echo "$SECTION_NUM" | cut -d: -f1)
-        APP_NUM=$(echo "$SECTION_NUM" | cut -d: -f2)
+  if [[ -f "$CONFIG" ]]; then
+    # Find kickoff/application launcher applet sections
+    APPLET_SECTIONS=$(grep -n '\[Containments\]\[[0-9]*\]\[Applets\]\[[0-9]*\]' "$CONFIG")
 
-        # Check if this is a launcher applet
-        IS_LAUNCHER=$(grep -A 5 "\[Containments\]\[$CONT_NUM\]\[Applets\]\[$APP_NUM\]" "$CONFIG" | grep -i "kickoff\|launcher")
+    # For each applet section, check if it's a launcher and update it
+    while IFS=: read -r line_num line_content; do
+      SECTION_NUM=$(echo "$line_content" | sed -E 's/\[Containments\]\[([0-9]+)\]\[Applets\]\[([0-9]+)\]/\1:\2/')
+      CONT_NUM=$(echo "$SECTION_NUM" | cut -d: -f1)
+      APP_NUM=$(echo "$SECTION_NUM" | cut -d: -f2)
 
-        if [[ -n "$IS_LAUNCHER" ]]; then
-          echo "Found launcher applet in section $CONT_NUM:$APP_NUM, updating icon"
-          kwriteconfig6 --file "$CONFIG" --group Containments --group $CONT_NUM --group Applets --group $APP_NUM --group Configuration --group General --key "icon" "framework"
-        fi
-      done <<<"$APPLET_SECTIONS"
+      # Check if this is a launcher applet
+      IS_LAUNCHER=$(grep -A 5 "\[Containments\]\[$CONT_NUM\]\[Applets\]\[$APP_NUM\]" "$CONFIG" | grep -i "kickoff\|launcher")
 
-      echo "Restarting Plasma to apply changes"
-      kquitapp6 plasmashell || killall plasmashell
-      kstart plasmashell &
-    fi
+      if [[ -n "$IS_LAUNCHER" ]]; then
+        echo "Found launcher applet in section $CONT_NUM:$APP_NUM, updating icon"
+        kwriteconfig6 --file "$CONFIG" --group Containments --group $CONT_NUM --group Applets --group $APP_NUM --group Configuration --group General --key "icon" "framework"
+      fi
+    done <<<"$APPLET_SECTIONS"
 
-    echo "$FRAMEWORK_SETUP_VER" >"$FRAMEWORK_VER_FILE"
-  else
-    echo "Framework setup v$FRAMEWORK_VER_RAN already applied, skipping"
+    echo "Restarting Plasma to apply changes"
+    systemctl --user restart plasma-plasmashell.service
   fi
 fi
