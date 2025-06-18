@@ -1,4 +1,8 @@
 #!/usr/bin/bash
+set -euo pipefail
+
+source /usr/lib/ublue/setup-services/libsetup.sh
+version-script aurora-framework-icon user 1 || exit 0
 
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
 if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
