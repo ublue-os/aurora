@@ -4,14 +4,6 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
-# Remove desktop entries
-if [[ -f /usr/share/applications/gnome-system-monitor.desktop ]]; then
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/gnome-system-monitor.desktop
-fi
-if [[ -f /usr/share/applications/org.gnome.SystemMonitor.desktop ]]; then
-    sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/org.gnome.SystemMonitor.desktop
-fi
-
 # Branding for Images
 ln -sf ../places/distributor-logo.svg /usr/share/icons/hicolor/scalable/apps/start-here.svg
 ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default.png
