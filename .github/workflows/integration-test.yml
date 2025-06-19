@@ -1,0 +1,94 @@
+name: Integration Tests
+
+on:
+  workflow_call:
+    inputs:
+      image-ref:
+        required: true
+        type: string
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-24.04
+    env:
+      SSH_PORT: 2222
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build QCOW Image
+        id: build
+        uses: bootc-warehouse/bootc-image-builder-action@main
+        with:
+          config-file: ./tests/__fixtures__/qcow2-config.toml
+          image: ${{ inputs.image-ref }}
+          types: |
+            qcow2
+
+      - name: Setup KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm --settle
+          ls -l /dev/kvm
+
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86
+
+      - name: Run QEMU VM
+        id: run-qemu
+        env:
+          QCOW2_PATH: ${{ steps.build.outputs.qcow2-output-path }}
+        run: |
+          qemu-system-x86_64 \
+            -enable-kvm \
+            -cpu host \
+            -smp 2 \
+            -display none \
+            -m 8192 \
+            -device virtio-rng-pci \
+            -serial file:/tmp/qemu-serial.log \
+            -drive file=$QCOW2_PATH,if=virtio \
+            -snapshot \
+            -net nic,model=virtio \
+            -net user,hostfwd=tcp::$SSH_PORT-:22 &
+          QEMU_PID=$!
+
+          # Wait for log file to appear (max 10s)
+          for i in {1..10}; do
+            [ -f "$LOG_FILE" ] && break
+            sleep 1
+          done
+
+          # Wait 20 seconds and show log
+          timeout 20 tail -f /tmp/qemu-serial.log || true
+
+          disown $QEMU_PID
+          echo "QEMU_PID=$QEMU_PID" >> $GITHUB_OUTPUT
+
+      - name: Wait for SSH
+        run: |
+          while ! nc -z localhost $SSH_PORT; do
+            sleep 10
+          done
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+
+      - name: Run Tests
+        working-directory: ./tests
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.CI_SSH_PRIVATE_KEY }}
+          SSH_PORT: ${{ env.SSH_PORT }}
+        run: |
+          go test -v ./...
+
+      - name: Stop QEMU
+        env:
+          QEMU_PID: ${{ steps.run-qemu.outputs.QEMU_PID }}
+        run: |
+          echo "Stopping QEMU with PID $QEMU_PID"
+          kill $QEMU_PID
+          wait $QEMU_PID || true
+          sleep 5
+          echo "QEMU stopped"
