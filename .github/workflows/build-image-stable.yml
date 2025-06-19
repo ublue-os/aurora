@@ -32,6 +32,7 @@ jobs:
       stream_name: stable
   
   integration-tests:
+    name: Integration Test
     uses: ./.github/workflows/integration-test.yml
     secrets: inherit
     needs: build-image-stable
