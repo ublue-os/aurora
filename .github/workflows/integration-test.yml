@@ -72,23 +72,10 @@ jobs:
             sleep 10
           done
 
-      - name: Setup Go
-        uses: actions/setup-go@v4
-
       - name: Run Tests
         working-directory: ./tests
         env:
           SSH_PRIVATE_KEY: ${{ secrets.CI_SSH_PRIVATE_KEY }}
           SSH_PORT: ${{ env.SSH_PORT }}
         run: |
-          go test -v ./...
-
-      - name: Stop QEMU
-        env:
-          QEMU_PID: ${{ steps.run-qemu.outputs.QEMU_PID }}
-        run: |
-          echo "Stopping QEMU with PID $QEMU_PID"
-          kill $QEMU_PID
-          wait $QEMU_PID || true
-          sleep 5
-          echo "QEMU stopped"
+          python3 ./qemu_test.py
