@@ -18,7 +18,7 @@ jobs:
 
       - name: Build QCOW Image
         id: build
-        uses: bootc-warehouse/bootc-image-builder-action@main
+        uses: osbuild/bootc-image-builder-action@v0.0.2
         with:
           config-file: ./tests/__fixtures__/qcow2-config.toml
           image: ${{ inputs.image-ref }}
