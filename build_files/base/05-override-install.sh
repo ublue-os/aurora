@@ -18,6 +18,10 @@ dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
 
+# Explicitly install KDE Plasma related packages with the same version as in base image
+dnf5 -y install \
+  plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+
 # Offline Aurora documentation
 curl --retry 3 -Lo /tmp/aurora.pdf https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf

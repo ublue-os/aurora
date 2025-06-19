@@ -126,7 +126,6 @@
 				"osbuild-selinux",
 				"p7zip",
 				"p7zip-plugins",
-				"plasma-firewall",
 				"podman-bootc",
 				"podman-compose",
 				"podman-machine",
