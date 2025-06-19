@@ -7,7 +7,8 @@ set -eoux pipefail
 # Patched shell and switcheroo-control
   dnf5 -y swap \
       --repo="terra-extras" \
-          kf6-kio kf6-kio-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
+          kf6-kio kf6-kio-$(rpm -q --qf "%{VERSION}" kf6-kcoreaddons)
+
   dnf5 -y swap \
       --repo="terra-extras" \
           switcheroo-control switcheroo-control
