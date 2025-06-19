@@ -37,7 +37,7 @@
     {
       "automerge": true,
       "matchUpdateTypes": ["digest"],
-      "matchDepNames": ["ghcr.io/ublue-os/kinoite-nvidia"],
+      "matchDepNames": ["ghcr.io/ublue-os/kinoite-main"],
     }
   ]
 }
