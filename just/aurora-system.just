@@ -267,9 +267,9 @@ install-system-flatpaks $dx="dynamic":
   esac
 
   flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
-  xargs flatpak --system -y install --or-update < $TARGET_FLATPAK_FILE
+  xargs flatpak --system -y install --reinstall --or-update < $TARGET_FLATPAK_FILE
   if [ "$ADD_DEVMODE" == "1" ] ; then
-      xargs flatpak --system -y install --or-update < $TARGET_DEVMODE_FILE
+      xargs flatpak --system -y install --reinstall --or-update < $TARGET_DEVMODE_FILE
   fi
 
 # Configure grub bootmenu visibility
