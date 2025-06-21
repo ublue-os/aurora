@@ -5,17 +5,22 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 # Patched shell and switcheroo-control
-  dnf5 -y swap \
-      --repo="terra-extras" \
-          kf6-kio kf6-kio-$(rpm -qi kf6-kcoreaddons | awk '/^Version/ {print $3}')
-  dnf5 -y swap \
-      --repo="terra-extras" \
-          switcheroo-control switcheroo-control
+dnf5 -y swap \
+  --repo="terra-extras" \
+  kf6-kio kf6-kio-$(rpm -q --qf "%{VERSION}" kf6-kcoreaddons)
+
+dnf5 -y swap \
+  --repo="terra-extras" \
+  switcheroo-control switcheroo-control
 
 # Fix for ID in fwupd
-  dnf5 -y swap \
-      --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-          fwupd fwupd
+dnf5 -y swap \
+  --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+  fwupd fwupd
+
+# Explicitly install KDE Plasma related packages with the same version as in base image
+dnf5 -y install \
+  plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 # Offline Aurora documentation
 curl --retry 3 -Lo /tmp/aurora.pdf https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf

@@ -126,7 +126,6 @@
 				"osbuild-selinux",
 				"p7zip",
 				"p7zip-plugins",
-				"plasma-firewall",
 				"podman-bootc",
 				"podman-compose",
 				"podman-machine",
@@ -169,6 +168,7 @@
 				"kcharselect",
 				"krfb",
 				"krfb-libs",
+				"plasma-discover-kns",
 				"plasma-welcome-fedora",
 				"podman-docker"
 			],
