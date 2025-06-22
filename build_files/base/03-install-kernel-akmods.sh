@@ -20,7 +20,9 @@ mv /tmp/rpms/* /tmp/akmods/
 dnf5 -y install \
   /tmp/kernel-rpms/kernel-[0-9]*.rpm \
   /tmp/kernel-rpms/kernel-core-*.rpm \
-  /tmp/kernel-rpms/kernel-modules-*.rpm
+  /tmp/kernel-rpms/kernel-modules-*.rpm \
+  /tmp/kernel-rpms/kernel-uki-virt-*.rpm
+
 
 dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
