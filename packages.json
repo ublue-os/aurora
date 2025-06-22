@@ -78,6 +78,7 @@
 				"uld",
 				"usbmuxd",
 				"uupd",
+				"virtualbox-guest-additions",
 				"wireguard-tools",
 				"wl-clipboard",
 				"xprop",
