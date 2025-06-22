@@ -24,7 +24,7 @@ dnf5 -y install \
   /tmp/kernel-rpms/kernel-uki-virt-*.rpm
 
 
-dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
+dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
