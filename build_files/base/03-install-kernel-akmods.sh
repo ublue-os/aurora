@@ -5,8 +5,8 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 # Remove Existing Kernel
-for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do
-  rpm --erase $pkg --nodeps
+for pkg in kernel-{core,modules,modules-core,modules-extra,tools,tools-libs}; do
+  dnf5 -y remove $pkg --noautoremove
 done
 
 # Fetch Common AKMODS & Kernel RPMS
@@ -21,10 +21,6 @@ dnf5 -y install \
   /tmp/kernel-rpms/kernel-[0-9]*.rpm \
   /tmp/kernel-rpms/kernel-core-*.rpm \
   /tmp/kernel-rpms/kernel-modules-*.rpm
-
-# TODO: Figure out why akmods cache is pulling in akmods/kernel-devel
-dnf5 -y install \
-  /tmp/kernel-rpms/kernel-devel-*.rpm
 
 dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
