@@ -6,7 +6,7 @@ set -eoux pipefail
 
 # Remove Existing Kernel
 for pkg in kernel-{core,modules,modules-core,modules-extra,tools,tools-libs}; do
-  dnf5 -y remove $pkg --noautoremove
+  dnf5 -y remove "$pkg" --noautoremove
 done
 
 # Fetch Common AKMODS & Kernel RPMS
