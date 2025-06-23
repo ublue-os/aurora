@@ -131,7 +131,7 @@ jobs:
         id: generate-tags
         shell: bash
         run: |
-          alias_tags="$(just generate-build-tags \
+          alias_tags="sudo $(command -v just) generate-build-tags \
                      "${{ matrix.base_name }}" \
                      "${{ matrix.stream_name }}" \
                      "${{ matrix.image_flavor }}" \
