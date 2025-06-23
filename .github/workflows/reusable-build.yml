@@ -74,7 +74,7 @@ jobs:
         id: build-image
         shell: bash
         run: |
-          sudo $(command -v just) repo_organization="${{ github.repository_owner }}" \
+          just repo_organization="${{ github.repository_owner }}" \
                     build-ghcr "${{ matrix.base_name }}" \
                                "${{ matrix.stream_name }}" \
                                "${{ matrix.image_flavor }}" \
