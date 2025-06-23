@@ -5,9 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 # Remove Existing Kernel
-for pkg in kernel-{core,modules,modules-core,modules-extra,tools,tools-libs}; do
-  dnf5 -y remove "$pkg" --noautoremove
-done
+dnf5 -y remove kernel-{core,modules,modules-core,modules-extra,tools,tools-libs}
 
 # Fetch Common AKMODS & Kernel RPMS
 skopeo copy --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${AKMODS_FLAVOR}"-"$(rpm -E %fedora)"-"${KERNEL}" dir:/tmp/akmods
