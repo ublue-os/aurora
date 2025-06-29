@@ -14,14 +14,26 @@ tar -xvzf /tmp/akmods/"$AKMODS_TARGZ" -C /tmp/
 mv /tmp/rpms/* /tmp/akmods/
 # NOTE: kernel-rpms should auto-extract into correct location
 
-# TODO: Figure out why some akmods require kernel-devel
-# dnf5 versionlock clear
-#
-# if [[ -z "$(grep kernel-devel <<<$(rpm -qa))" ]]; then
-#     dnf5 -y install /tmp/kernel-rpms/kernel-devel-*.rpm
-# fi
-#
-# dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-headers kernel-modules kernel-modules-core kernel-modules-extra
+# remove this when main removes it
+dnf5 -y remove kernel-uki-virt
+
+# For stable images with coreos kernel always replace the kernel
+# kernel-tools is not cached in akmods, so install from repos
+# only install kernel-tools on dx
+# kernel-headers version that matches coreos doesn't exist, install the ungated version from repos instead
+if [ $AKMODS_FLAVOR = "coreos-stable" ]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra,-devel,-devel,-devel-matched}-"${KERNEL}".rpm kernel-{tools,tools-libs}-"$KERNEL"
+fi
+
+# Only touch latest kernel when we need to pin it because of some super bad regression
+# so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
+# we don't cache kernel-tools from the latest fedora so install from repos instead
+if [[ $AKMODS_FLAVOR = "main" && $KERNEL -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra,-devel}-"${KERNEL}".rpm kernel-{tools,tools-libs}-"$KERNEL"
+fi
+
+# Prevent kernel stuff from upgrading again
+dnf5 versionlock add kernel-{core,modules,modules-core,modules-extra,tools,tools-lib,headers,devel}
 
 # Install RPMS
 dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm
