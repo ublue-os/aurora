@@ -4,9 +4,6 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-# Remove Existing Kernel
-dnf5 -y remove kernel-{core,modules,modules-core,modules-extra,tools,tools-libs}
-
 # Fetch Common AKMODS & Kernel RPMS
 skopeo copy --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${AKMODS_FLAVOR}"-"$(rpm -E %fedora)"-"${KERNEL}" dir:/tmp/akmods
 AKMODS_TARGZ=$(jq -r '.layers[].digest' </tmp/akmods/manifest.json | cut -d : -f 2)
@@ -14,17 +11,24 @@ tar -xvzf /tmp/akmods/"$AKMODS_TARGZ" -C /tmp/
 mv /tmp/rpms/* /tmp/akmods/
 # NOTE: kernel-rpms should auto-extract into correct location
 
-# Install Kernel
-dnf5 -y install \
-  /tmp/kernel-rpms/kernel-[0-9]*.rpm \
-  /tmp/kernel-rpms/kernel-core-*.rpm \
-  /tmp/kernel-rpms/kernel-modules-*.rpm \
-  /tmp/kernel-rpms/kernel-uki-virt-*.rpm
 # remove this when main removes it
 dnf5 -y remove kernel-uki-virt
 
+# For stable images with coreos kernel always replace the kernel with the one from akmods
+if [ $AKMODS_FLAVOR = "coreos-stable" ]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel-{core,modules,modules-core,modules-extra}-"${KERNEL}".rpm
+  # CoreOS doesn't do kernel-tools, removes leftovers from newer kernel
+  dnf5 -y remove kernel-tools{,-libs}
+fi
 
-dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra kernel-uki-virt
+# Only touch latest kernel when we need to pin it because of some super bad regression
+# so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
+if [[ $AKMODS_FLAVOR = "main" && $KERNEL -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel-{core,modules,modules-core,modules-extra}-"${KERNEL}".rpm
+fi
+
+# Prevent kernel stuff from upgrading again
+dnf5 versionlock add kernel-{core,modules,modules-core,modules-extra,tools,tools-lib,headers,devel}
 
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
