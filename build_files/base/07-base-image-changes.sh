@@ -5,7 +5,6 @@ echo "::group:: ===$(basename "$0")==="
 set -ouex pipefail
 
 # Branding for Images
-ln -sf ../places/distributor-logo.svg /usr/share/icons/hicolor/scalable/apps/start-here.svg
 ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default.png
 ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default-dark.png
 ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.xml
