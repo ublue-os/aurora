@@ -20,6 +20,8 @@ dnf5 -y install \
   /tmp/kernel-rpms/kernel-core-*.rpm \
   /tmp/kernel-rpms/kernel-modules-*.rpm \
   /tmp/kernel-rpms/kernel-uki-virt-*.rpm
+# remove this when main removes it
+dnf5 -y remove kernel-uki-virt
 
 
 dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra kernel-uki-virt
