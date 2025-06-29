@@ -18,14 +18,14 @@ mv /tmp/rpms/* /tmp/akmods/
 # kernel-tools is not cached in akmods, so install from repos
 # only install kernel-tools on dx
 # kernel-headers version that matches coreos doesn't exist, install the ungated version from repos instead
-if [ $AKMODS_FLAVOR = "coreos-stable" ]; then
+if [ "$AKMODS_FLAVOR" = "coreos-stable" ]; then
   dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra,-devel,-devel,-devel-matched}-"${KERNEL}".rpm kernel-{tools,tools-libs}-"$KERNEL"
 fi
 
 # Only touch latest kernel when we need to pin it because of some super bad regression
 # so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
 # we don't cache kernel-tools from the latest fedora so install from repos instead
-if [[ $AKMODS_FLAVOR = "main" && $KERNEL -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
   dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra,-devel}-"${KERNEL}".rpm kernel-{tools,tools-libs}-"$KERNEL"
 fi
 

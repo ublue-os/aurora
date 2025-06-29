@@ -12,7 +12,7 @@ mv /tmp/rpms/* /tmp/akmods/
 # NOTE: kernel-rpms should auto-extract into correct location
 
 # For stable images with coreos kernel always replace the kernel with the one from akmods
-if [ $AKMODS_FLAVOR = "coreos-stable" ]; then
+if [ "$AKMODS_FLAVOR" = "coreos-stable" ]; then
   dnf5 -y install /tmp/kernel-rpms/kernel-{core,modules,modules-core,modules-extra}-"${KERNEL}".rpm
   # CoreOS doesn't do kernel-tools, removes leftovers from newer kernel
   dnf5 -y remove kernel-tools{,-libs}
@@ -20,7 +20,7 @@ fi
 
 # Only touch latest kernel when we need to pin it because of some super bad regression
 # so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
-if [[ $AKMODS_FLAVOR = "main" && $KERNEL -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
   dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
 fi
 
