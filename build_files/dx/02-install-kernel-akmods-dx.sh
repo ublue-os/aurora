@@ -33,7 +33,7 @@ if [[ $AKMODS_FLAVOR = "main" && $KERNEL -ne $(rpm -q --queryformat="%{evr}.%{ar
 fi
 
 # Prevent kernel stuff from upgrading again
-dnf5 versionlock add kernel-{core,modules,modules-core,modules-extra,tools,tools-lib,headers,devel}
+dnf5 versionlock add kernel{,-core,-modules,-modules-core,-modules-extra,-tools,-tools-lib,-headers,-devel,-devel-matched}
 
 # Install RPMS
 dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm
