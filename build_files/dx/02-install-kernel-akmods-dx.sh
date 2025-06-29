@@ -14,9 +14,6 @@ tar -xvzf /tmp/akmods/"$AKMODS_TARGZ" -C /tmp/
 mv /tmp/rpms/* /tmp/akmods/
 # NOTE: kernel-rpms should auto-extract into correct location
 
-# remove this when main removes it
-dnf5 -y remove kernel-uki-virt
-
 # For stable images with coreos kernel always replace the kernel
 # kernel-tools is not cached in akmods, so install from repos
 # only install kernel-tools on dx
