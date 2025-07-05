@@ -13,3 +13,4 @@ Tailscale is included, check out [their docs](https://tailscale.com/kb/1017/inst
 `ujust changelogs` shows a summary of the package changes since the last update
 Don't forget to check the [release notes](https://github.com/ublue-os/aurora/releases)
 Help keep Aurora alive and healthy, consider [donating](https://docs.projectbluefin.io/donations)
+KDE powers your desktop! Donate to [KDE](https://kde.org/donate)
