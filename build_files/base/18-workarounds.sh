@@ -11,7 +11,7 @@ set -eoux pipefail
 
 # Workaround atheros-firmware regression
 # see https://bugzilla.redhat.com/show_bug.cgi?id=2365882
-dnf -y swap atheros-firmware atheros-firmware-20250311-1$(rpm -E %{dist})
+# dnf -y swap atheros-firmware atheros-firmware-20250311-1$(rpm -E %{dist})
 
 # Workaround for kscreenlocker regression
 # see https://bugzilla.redhat.com/show_bug.cgi?id=2375356
