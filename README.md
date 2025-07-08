@@ -17,6 +17,7 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 1. [Discussions and Announcements](https://universal-blue.discourse.group/c/aurora/11) - strongly recommended!
 2. [Documentation](https://docs.getaurora.dev/)
 3. [Contributing Guide](https://universal-blue.org/contributing.html)
+4. [Local Building Guide](https://docs.getaurora.dev/guides/building)
 
 ### Secure Boot
 
