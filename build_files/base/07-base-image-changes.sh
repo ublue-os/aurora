@@ -5,9 +5,8 @@ echo "::group:: ===$(basename "$0")==="
 set -ouex pipefail
 
 # Branding for Images
-ln -sf ../places/distributor-logo.svg /usr/share/icons/hicolor/scalable/apps/start-here.svg
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default.png
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-3/contents/images/3840x2160.png /usr/share/backgrounds/default-dark.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-4/contents/images/3840x2160.png /usr/share/backgrounds/default.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-4/contents/images/3840x2160.png /usr/share/backgrounds/default-dark.png
 ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.xml
 
 # /usr/share/sddm/themes/01-breeze-fedora/theme.conf uses default.jxl for the background
@@ -23,9 +22,6 @@ sed -i 's@\[Desktop Action new-window\]@\[Desktop Action new-window\]\nX-KDE-Sho
 sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
-
-# Remove KNewStuff from Discover
-rm -f /usr/lib64/qt6/plugins/discover/kns-backend.so
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 

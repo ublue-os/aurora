@@ -4,11 +4,6 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-# Remove Existing Kernel
-for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do
-  rpm --erase $pkg --nodeps
-done
-
 # Fetch Common AKMODS & Kernel RPMS
 skopeo copy --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${AKMODS_FLAVOR}"-"$(rpm -E %fedora)"-"${KERNEL}" dir:/tmp/akmods
 AKMODS_TARGZ=$(jq -r '.layers[].digest' </tmp/akmods/manifest.json | cut -d : -f 2)
@@ -16,17 +11,26 @@ tar -xvzf /tmp/akmods/"$AKMODS_TARGZ" -C /tmp/
 mv /tmp/rpms/* /tmp/akmods/
 # NOTE: kernel-rpms should auto-extract into correct location
 
-# Install Kernel
-dnf5 -y install \
-  /tmp/kernel-rpms/kernel-[0-9]*.rpm \
-  /tmp/kernel-rpms/kernel-core-*.rpm \
-  /tmp/kernel-rpms/kernel-modules-*.rpm
+# For stable images with coreos kernel always replace the kernel with the one from akmods
+if [ "$AKMODS_FLAVOR" = "coreos-stable" ]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel-{core,modules,modules-core,modules-extra}-"${KERNEL}".rpm
+  # CoreOS doesn't do kernel-tools, removes leftovers from newer kernel
+  dnf5 -y remove kernel-tools{,-libs}
+fi
 
-# TODO: Figure out why akmods cache is pulling in akmods/kernel-devel
-dnf5 -y install \
-  /tmp/kernel-rpms/kernel-devel-*.rpm
+# Only touch latest kernel when we need to pin it because of some super bad regression
+# so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
+if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
+fi
 
-dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
+# TODO: Remove this shit with F43
+if [[ "$AKMODS_FLAVOR" = "bazzite" ]]; then
+  dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
+fi
+
+# Prevent kernel stuff from upgrading again
+dnf5 versionlock add kernel{,-core,-modules,-modules-core,-modules-extra,-tools,-tools-lib,-headers,-devel,-devel-matched}
 
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
@@ -64,7 +68,7 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
  dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
 
   # Install Nvidia RPMs
-  curl -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/main/main/build_files/nvidia-install.sh
+  curl --retry 3 -Lo /tmp/nvidia-install.sh https://raw.githubusercontent.com/ublue-os/main/main/build_files/nvidia-install.sh
   chmod +x /tmp/nvidia-install.sh
   IMAGE_NAME="${BASE_IMAGE_NAME}" RPMFUSION_MIRROR="" /tmp/nvidia-install.sh
   rm -f /usr/share/vulkan/icd.d/nouveau_icd.*.json
