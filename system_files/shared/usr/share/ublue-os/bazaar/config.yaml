@@ -55,7 +55,7 @@ sections:
     classes:
       - aurora-section
     appids:
-      - io.github.DenysMb.Kontainer  
+      - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
       - io.github.fabrialberio.pinapp
       - re.sonny.Eloquent
@@ -65,7 +65,7 @@ sections:
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer  
+      - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Browsers"
     subtitle: "Use the web with your favorite browser"
     rows: 2
@@ -100,6 +100,8 @@ sections:
       - com.github.iwalton3.jellyfin-media-player
       - tv.plex.PlexDesktop
       - com.plexamp.Plexamp
+      - com.github.wwmm.easyeffects
+      - me.timschneeberger.jdsp4linux
   - title: "Office & Productivity"
     subtitle: "Let's do some work"
     rows: 3
@@ -166,6 +168,7 @@ sections:
       - io.github.radiolamp.mangojuice
       - org.fedoraproject.MediaWriter
       - org.raspberrypi.rpi-imager
+      - org.mozilla.vpn
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
