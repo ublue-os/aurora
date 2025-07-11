@@ -11,6 +11,7 @@ sudo dnf5 install -y bazaar krunner-bazaar
 
 # For new users, enable Bazaar in KRunner + disable Discover results
 cat >> /usr/share/kde-settings/kde-profile/default/xdg/krunnerrc << 'EOF'
+[Plugins]
 krunner_appstreamEnabled=false
 bazaarrunnerEnabled=true
 EOF
