@@ -2,5 +2,3 @@
 FreeFloating=true
 
 [Plugins]
-krunner_appstreamEnabled=false
-bazaarrunnerEnabled=true
