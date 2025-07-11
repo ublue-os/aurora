@@ -44,6 +44,9 @@ echo "::endgroup::"
 # Make HWE changes
 /ctx/build_files/base/09-hwe-additions.sh
 
+# Beta
+/ctx/build_files/base/10-beta.sh
+
 ## late stage changes
 
 # Systemd and Remove Items
