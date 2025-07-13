@@ -47,7 +47,7 @@ sections:
   - title: "Aurora Recommends"
     subtitle: "Our Favorite Applications"
     rows: 3
-    banner: file:///usr/share/ublue-os/bazaar/favourites.png
+    banner: file:///usr/share/ublue-os/bazaar/favourites.jxl
     banner-fit: cover
     banner-text-halign: end
     banner-text-valign: start
@@ -69,7 +69,7 @@ sections:
   - title: "Browsers"
     subtitle: "Use the web with your favorite browser"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/browse.png
+    banner: file:///usr/share/ublue-os/bazaar/browse.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: start
@@ -85,7 +85,7 @@ sections:
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/music.png
+    banner: file:///usr/share/ublue-os/bazaar/music.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: end
@@ -105,7 +105,7 @@ sections:
   - title: "Office & Productivity"
     subtitle: "Let's do some work"
     rows: 3
-    banner: file:///usr/share/ublue-os/bazaar/office.png
+    banner: file:///usr/share/ublue-os/bazaar/office.jxl
     banner-fit: cover
     banner-text-halign: end
     banner-text-valign: start
@@ -130,7 +130,7 @@ sections:
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
-    banner: file:///usr/share/ublue-os/bazaar/music.png
+    banner: file:///usr/share/ublue-os/bazaar/music.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: start
@@ -152,7 +152,7 @@ sections:
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/utilities.png
+    banner: file:///usr/share/ublue-os/bazaar/utilities.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: start
@@ -172,7 +172,7 @@ sections:
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/developers.png
+    banner: file:///usr/share/ublue-os/bazaar/developers.jxl
     banner-fit: cover
     banner-text-halign: end
     banner-text-valign: start
@@ -191,7 +191,7 @@ sections:
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
-    banner: file:///usr/share/ublue-os/bazaar/ai.png
+    banner: file:///usr/share/ublue-os/bazaar/ai.jxl
     banner-fit: cover
     banner-text-halign: end
     banner-text-valign: start
