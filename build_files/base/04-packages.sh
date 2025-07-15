@@ -38,9 +38,7 @@ readarray -t FLATPAK_EXCLUDES < <(jq -r "[(.all.flatpak_exclude | (select(.all !
                     | sort | unique[]" /tmp/packages.json)
 
 if [[ "${#FLATPAK_EXCLUDES[@]}" -gt 0 ]]; then
-    echo "" >> /usr/share/ublue-os/bazaar/blocklist.txt
-    echo "# Applications with pre-installed alternatives" >> /usr/share/ublue-os/bazaar/blocklist.txt
-    printf '%s\n' "${FLATPAK_EXCLUDES[@]}" >> /usr/share/ublue-os/bazaar/blocklist.txt
+    printf '%s\n' "${FLATPAK_EXCLUDES[@]}" > /usr/share/ublue-os/bazaar/blocklist.txt
 fi
 
 echo "::endgroup::"
