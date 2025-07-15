@@ -82,6 +82,7 @@ sections:
       - com.microsoft.Edge
       - com.opera.Opera
       - com.vivaldi.Vivaldi
+      - app.zen_browser.zen
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2

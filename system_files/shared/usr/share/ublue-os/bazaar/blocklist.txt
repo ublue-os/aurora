@@ -24,3 +24,4 @@ org.gnu.emacs
 app.devsuite.Ptyxis
 org.kde.konsole
 org.kde.dolphin
+dev.lizardbyte.app.Sunshine
