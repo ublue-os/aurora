@@ -32,4 +32,13 @@ else
     echo "No packages to remove."
 fi
 
+# Add dx-specific Flatpaks to Bazaar blocklist
+readarray -t FLATPAK_EXCLUDES_DX < <(jq -r "[(.all.flatpak_exclude | (select(.dx != null).dx)[]), \
+                    (select(.\"$FEDORA_MAJOR_VERSION\" != null).\"$FEDORA_MAJOR_VERSION\".flatpak_exclude | (select(.dx != null).dx)[])] \
+                    | sort | unique[]" /tmp/packages.json)
+
+if [[ "${#FLATPAK_EXCLUDES_DX[@]}" -gt 0 ]]; then
+    printf '%s\n' "${FLATPAK_EXCLUDES_DX[@]}" >> /usr/share/ublue-os/bazaar/blocklist.txt
+fi
+
 echo "::endgroup::"
