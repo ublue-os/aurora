@@ -334,40 +334,40 @@ toggle-tailscale:
     fi
 
 [group('System')]
-toggle-dinosaurs hemi="north":
+toggle-dinosaurs hemisphere="north":
     #!/bin/bash
     source /usr/lib/ujust/ujust.sh
 
-    if [[ "{{ hemi }}" != "north" && "{{ hemi }}" != "south" ]]; then
-        echo "Error: Invalid hemisphere '{{ hemi }}'. Must be 'north' or 'south'."
+    if [[ "{{ hemisphere }}" != "north" && "{{ hemisphere }}" != "south" ]]; then
+        echo "Error: Invalid hemisphere '{{ hemisphere }}'. Must be 'north' or 'south'."
         exit 1
     fi
 
-    DINOSAUR_STATUS="$(systemctl --user is-enabled bluefin-wallpaper@{{ hemi }}.service 2>/dev/null || echo 'disabled')"
+    DINOSAUR_STATUS="$(systemctl --user is-enabled bluefin-wallpaper@{{ hemisphere }}.service 2>/dev/null || echo 'disabled')"
 
-    echo "Bluefin dinosaur wallpapers ({{ hemi }}ern hemisphere) are currently: $DINOSAUR_STATUS"
+    echo "Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) are currently: $DINOSAUR_STATUS"
 
     if [ "$DINOSAUR_STATUS" == "enabled" ]; then
         echo "Disable Bluefin dinosaur wallpapers?"
         OPTION=$(Choose Disable Cancel)
         if [ "$OPTION" = "Disable" ]; then
-            systemctl --user disable --now bluefin-wallpaper@{{ hemi }}.service
-            echo "${b}${red}Bluefin dinosaur wallpapers ({{ hemi }}ern hemisphere) disabled.${n}"
+            systemctl --user disable --now bluefin-wallpaper@{{ hemisphere }}.service
+            echo "${b}${red}Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) disabled.${n}"
             echo "Wallpaper files remain in ~/.local/share/wallpapers/Bluefin/"
         fi
     else
-        echo "Enable Bluefin dinosaur wallpapers for the {{ hemi }}ern hemisphere?"
+        echo "Enable Bluefin dinosaur wallpapers for the {{ hemisphere }}ern hemisphere?"
         OPTION=$(Choose Enable Cancel)
         if [ "$OPTION" = "Enable" ]; then
             mkdir -p ~/.local/share/wallpapers/Bluefin
-            systemctl --user enable --now bluefin-wallpaper@{{ hemi }}.service
+            systemctl --user enable --now bluefin-wallpaper@{{ hemisphere }}.service
 
             sleep 1
-            if systemctl --user is-active --quiet bluefin-wallpaper@{{ hemi }}.service; then
-                echo "${b}${green}Bluefin dinosaur wallpapers ({{ hemi }}ern hemisphere) enabled!${n}"
+            if systemctl --user is-active --quiet bluefin-wallpaper@{{ hemisphere }}.service; then
+                echo "${b}${green}Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) enabled!${n}"
                 echo "Wallpapers will be downloaded to ~/.local/share/wallpapers/Bluefin/"
                 echo "The wallpaper will update automatically each month."
-                filename="$HOME/.local/share/wallpapers/Bluefin/{{ hemi }}.avif"
+                filename="$HOME/.local/share/wallpapers/Bluefin/{{ hemisphere }}.avif"
 
                 qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
                     var allDesktops = desktops();
@@ -383,7 +383,7 @@ toggle-dinosaurs hemi="north":
             else
                 echo "${b}${red}Failed to start bluefin-wallpaper service.${n}"
                 echo "Check the service status with:"
-                echo "  systemctl --user status bluefin-wallpaper@{{ hemi }}.service"
+                echo "  systemctl --user status bluefin-wallpaper@{{ hemisphere }}.service"
             fi
         fi
     fi
