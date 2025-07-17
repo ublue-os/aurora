@@ -362,15 +362,24 @@ toggle-dinosaurs hemi="north":
             mkdir -p ~/.local/share/wallpapers/Bluefin
             systemctl --user enable --now bluefin-wallpaper@{{ hemi }}.service
 
-            sleep 2
+            sleep 1
             if systemctl --user is-active --quiet bluefin-wallpaper@{{ hemi }}.service; then
                 echo "${b}${green}Bluefin dinosaur wallpapers ({{ hemi }}ern hemisphere) enabled!${n}"
                 echo "Wallpapers will be downloaded to ~/.local/share/wallpapers/Bluefin/"
                 echo "The wallpaper will update automatically each month."
-                echo ""
-                echo "To set the wallpaper in KDE:"
-                echo "  Right-click desktop → Configure Desktop and Wallpaper"
-                echo "  → Add Image → ~/.local/share/wallpapers/Bluefin/{{ hemi }}.avif"
+                filename="$HOME/.local/share/wallpapers/Bluefin/{{ hemi }}.avif"
+
+                qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+                    var allDesktops = desktops();
+                    for (var i = 0; i < allDesktops.length; i++) {
+                        var d = allDesktops[i];
+                        print('Desktop ' + i + ' current wallpaper plugin: ' + d.wallpaperPlugin);
+                        d.wallpaperPlugin = \"com.github.zzag.dynamic\";
+                        d.currentConfigGroup = Array(\"Wallpaper\", \"com.github.zzag.dynamic\", \"General\");
+                        d.writeConfig(\"Image\", \"file:///${filename}\");
+                        print('Desktop ' + i + ' wallpaper plugin set to: ' + d.wallpaperPlugin);
+                    }
+                "
             else
                 echo "${b}${red}Failed to start bluefin-wallpaper service.${n}"
                 echo "Check the service status with:"
