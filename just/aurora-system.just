@@ -333,6 +333,7 @@ toggle-tailscale:
         fi
     fi
 
+# Automatically download Bluefin's monthly dinosaur wallpapers
 [group('System')]
 toggle-dinosaurs hemisphere="north":
     #!/bin/bash
@@ -373,11 +374,9 @@ toggle-dinosaurs hemisphere="north":
                     var allDesktops = desktops();
                     for (var i = 0; i < allDesktops.length; i++) {
                         var d = allDesktops[i];
-                        print('Desktop ' + i + ' current wallpaper plugin: ' + d.wallpaperPlugin);
                         d.wallpaperPlugin = \"com.github.zzag.dynamic\";
                         d.currentConfigGroup = Array(\"Wallpaper\", \"com.github.zzag.dynamic\", \"General\");
                         d.writeConfig(\"Image\", \"file:///${filename}\");
-                        print('Desktop ' + i + ' wallpaper plugin set to: ' + d.wallpaperPlugin);
                     }
                 "
             else
