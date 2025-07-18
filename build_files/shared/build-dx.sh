@@ -9,6 +9,10 @@ echo "::group:: Copy Files"
 # Copy Files to Image
 cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/dx/ /
+
+install -Dm0755 /ctx/build_files/shared/utils/ghcurl /usr/local/bin/ghcurl
+export PATH="/usr/local/bin:$PATH"
+
 echo "::endgroup::"
 
 # Apply IP Forwarding before installing Docker to prevent messing with LXC networking
