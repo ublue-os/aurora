@@ -4,12 +4,25 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# A curl wrapper that uses GITHUB_TOKEN for authentication with the GitHub API
+gh_curl() {
+  # Check if GITHUB_TOKEN is set and not empty
+  if [ -n "$GITHUB_TOKEN" ]; then
+    # Use the token for authentication if it exists
+    curl -H "Authorization: Bearer $GITHUB_TOKEN" -fsSL "$@"
+  else
+    # Otherwise, just run curl as normal
+    curl -fsSL "$@"
+  fi
+}
+
 curl --retry 3 -Lo /tmp/kind "https://github.com/kubernetes-sigs/kind/releases/latest/download/kind-$(uname)-amd64"
 chmod +x /tmp/kind
 mv /tmp/kind /usr/bin/kind
 
 # ls-iommu helper tool for listing devices in iommu groups (PCI Passthrough)
-DOWNLOAD_URL=$(curl --retry 3 https://api.github.com/repos/HikariKnight/ls-iommu/releases/latest | jq -r '.assets[] | select(.name| test(".*x86_64.tar.gz$")).browser_download_url')
+# Use the gh_curl wrapper to avoid rate limiting
+DOWNLOAD_URL=$(gh_curl --retry 3 https://api.github.com/repos/HikariKnight/ls-iommu/releases/latest | jq -r '.assets[] | select(.name| test(".*x86_64.tar.gz$")).browser_download_url')
 curl --retry 3 -Lo /tmp/ls-iommu.tar.gz "$DOWNLOAD_URL"
 mkdir /tmp/ls-iommu
 tar --no-same-owner --no-same-permissions --no-overwrite-dir -xvzf /tmp/ls-iommu.tar.gz -C /tmp/ls-iommu
