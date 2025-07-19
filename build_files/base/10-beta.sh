@@ -7,7 +7,10 @@ if ! jq -e '.["image-tag"] | test("beta")' /usr/share/ublue-os/image-info.json >
     exit 0
 fi
 
-sudo dnf5 install -y bazaar krunner-bazaar
+dnf5 install -y bazaar krunner-bazaar
+
+# Downgrade libdex to 0.9.1 because 0.10 makes bazaar crash under VMs and PCs with low specs
+dnf5 install -y libdex-0.9.1
 
 # For new users, enable Bazaar in KRunner + disable Discover results
 cat >> /usr/share/kde-settings/kde-profile/default/xdg/krunnerrc << 'EOF'
