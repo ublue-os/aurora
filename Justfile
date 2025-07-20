@@ -755,6 +755,8 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
         if [[ "{{ tag }}" =~ stable ]]; then
             # CoreOS does not uses cosign
             skopeo inspect --retry-times 3 docker://quay.io/fedora/fedora-coreos:stable > /tmp/manifest.json
+        elif [[ "{{ tag }}" =~ beta ]]; then
+            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:latest > /tmp/manifest.json
         else
             skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:"{{ tag }}" > /tmp/manifest.json
         fi
