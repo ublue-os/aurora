@@ -18,7 +18,7 @@ dnf5 -y install \
   plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 # Offline Aurora documentation
-curl --retry 3 -Lo /tmp/aurora.pdf https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf
+ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 
 # Starship Shell Prompt
