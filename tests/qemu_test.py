@@ -74,7 +74,7 @@ def run_test(ssh_client: SSHClient, test_name: str, command: str, expected_text:
             continue
 
         if expected_text in stdout:
-            print(f"PASS")
+            print("PASS")
             return True
         else:
             print(f"Expected '{expected_text}' not found in output")
@@ -122,6 +122,7 @@ def main():
         sys.exit(1)
     else:
         print("All tests passed!")
+
 
 if __name__ == "__main__":
     main()

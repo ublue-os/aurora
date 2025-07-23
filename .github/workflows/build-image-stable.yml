@@ -31,14 +31,6 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
   
-  integration-tests:
-    name: Integration Test
-    uses: ./.github/workflows/integration-test.yml
-    secrets: inherit
-    needs: build-image-stable
-    with:
-      image-ref: ghcr.io/${{ github.repository_owner }}/aurora:stable
-
   generate-release:
     name: Generate Release
     needs: [build-image-stable]
