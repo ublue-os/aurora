@@ -31,18 +31,9 @@ jobs:
           echo "Private key fingerprint:"
           ssh-keygen -lf ~/.ssh/test_key
           
-          # Create a new config file with the generated key
-          cat > ./tests/qcow2-config.toml << 'EOF'
-[[customizations.user]]
-name = "aurora-ci-user"
-password = "$6$rounds=4096$saltysalt$UiZikbV3VeeBPsg8./Q5DAfq9aj2.9.MTZ.gzcjF4jhfjsdljfdjsfdlksjfdf.LDL4IzYYqKxMf3eiexVyNs3."
-groups = ["wheel", "users"]
-home = "/home/aurora-ci-user"
-shell = "/bin/bash"
-EOF
+          # Append the SSH key to the existing config file
           echo "key = \"$PUBLIC_KEY\"" >> ./tests/qcow2-config.toml
 
-          # Verify the update
           echo "Updated config file:"
           cat ./tests/qcow2-config.toml
 
@@ -187,6 +178,7 @@ EOF
             tail -50 /tmp/qemu-serial.log || echo "No serial log available"
             exit 1
           fi
+
       - name: Run Tests
         working-directory: ./tests
         env:
