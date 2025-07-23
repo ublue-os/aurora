@@ -23,13 +23,17 @@ jobs:
           cat ~/.ssh/test_key >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-          # Update config file with new public key
           PUBLIC_KEY=$(cat ~/.ssh/test_key.pub)
-          sed -i "s|key = \".*\"|key = \"$PUBLIC_KEY\"|" ./tests/__fixtures__/qcow2-config.toml
+          cat > ./tests/qcow2-config.toml << EOF
+          [[customizations.user]]
+          name = "aurora-ci-user"
+          key = "$PUBLIC_KEY"
+          groups = ["wheel"]
+          EOF
 
           # Verify the update
           echo "Updated config file:"
-          cat ./tests/__fixtures__/qcow2-config.toml
+          cat ./tests/qcow2-config.toml
 
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
@@ -40,7 +44,7 @@ jobs:
         id: build
         uses: osbuild/bootc-image-builder-action@v0.0.2
         with:
-          config-file: ./tests/__fixtures__/qcow2-config.toml
+          config-file: ./tests/qcow2-config.toml
           image: ${{ inputs.image-ref }}
           types: |
             qcow2
@@ -76,23 +80,56 @@ jobs:
             -net user,hostfwd=tcp::$SSH_PORT-:22 &
           QEMU_PID=$!
 
-          # Wait for log file to appear (max 10s)
-          for i in {1..10}; do
+          echo "QEMU started with PID: $QEMU_PID"
+
+          # Wait for log file to appear (max 30s)
+          for i in {1..30}; do
             [ -f "$LOG_FILE" ] && break
             sleep 1
           done
 
-          # Wait 20 seconds and show log
-          timeout 20 tail -f $LOG_FILE || true
+          if [ ! -f "$LOG_FILE" ]; then
+            echo "Warning: Log file did not appear"
+          fi
+
+          # Wait 60 seconds and show log
+          echo "Waiting for VM to boot (60 seconds)..."
+          timeout 60 tail -f $LOG_FILE || true
+
+          echo "Current log contents:"
+          cat $LOG_FILE || echo "No log file available"
 
           disown $QEMU_PID
           echo "QEMU_PID=$QEMU_PID" >> $GITHUB_OUTPUT
 
       - name: Wait for SSH
         run: |
-          while ! nc -z localhost $SSH_PORT; do
+          echo "Waiting for SSH service to be ready..."
+          max_attempts=60  # Wait up to 10 minutes
+          attempt=0
+
+          while [ $attempt -lt $max_attempts ]; do
+            if nc -z localhost $SSH_PORT; then
+              echo "Port $SSH_PORT is open, waiting a bit more for SSH to be fully ready..."
+              sleep 10
+              # Test if we can actually connect with SSH
+              if ssh -i ~/.ssh/test_key -p $SSH_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR aurora-ci-user@localhost "echo 'SSH connection test successful'" 2>/dev/null; then
+                echo "SSH connection successful!"
+                break
+              else
+                echo "Port open but SSH not ready yet, waiting..."
+              fi
+            else
+              echo "Waiting for SSH port to open... (attempt $((attempt + 1))/$max_attempts)"
+            fi
             sleep 10
+            attempt=$((attempt + 1))
           done
+
+          if [ $attempt -eq $max_attempts ]; then
+            echo "SSH service did not become ready within the timeout period"
+            exit 1
+          fi
 
       - name: Run Tests
         working-directory: ./tests

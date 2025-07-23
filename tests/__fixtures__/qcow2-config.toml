@@ -1,4 +1,0 @@
-[[customizations.user]]
-name = "aurora-ci-user"
-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMnkmox0kV4ediDt7MsvHlZ3mncW6GIZzl8KgrJn+zbr aurora-ci-user@github-actions.com"
-groups = ["wheel"]

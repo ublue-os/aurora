@@ -20,17 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image_flavor: "main"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora:latest"
-          - image_flavor: "nvidia"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora-nvidia:latest"
-          - image_flavor: "nvidia-open"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora-nvidia-open:latest"
-          - image_flavor: "dx"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora-dx:latest"
-          - image_flavor: "dx-nvidia"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora-dx-nvidia:latest"
-          - image_flavor: "dx-nvidia-open"
-            image_ref: "ghcr.io/${{ github.repository_owner }}/aurora-dx-nvidia-open:latest"
+          - image_flavor: "aurora"
+          - image_flavor: "aurora-nvidia"
+          - image_flavor: "aurora-nvidia-open"
+          - image_flavor: "aurora-dx"
+          - image_flavor: "aurora-dx-nvidia"
+          - image_flavor: "aurora-dx-nvidia-open"
     with:
-      image-ref: ${{ matrix.image_ref }}
+      image-ref: ghcr.io/${{ github.repository_owner }}/${{ matrix.image_flavor }}:latest
