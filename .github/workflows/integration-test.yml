@@ -16,6 +16,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate SSH Key Pair
+        run: |
+          ssh-keygen -t ed25519 -f ~/.ssh/test_key -N "" -C "aurora-ci-user@github-actions.com"
+          echo "SSH_PRIVATE_KEY<<EOF" >> $GITHUB_ENV
+          cat ~/.ssh/test_key >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+          # Update config file with new public key
+          PUBLIC_KEY=$(cat ~/.ssh/test_key.pub)
+          sed -i "s|key = \".*\"|key = \"$PUBLIC_KEY\"|" ./tests/__fixtures__/qcow2-config.toml
+
+          # Verify the update
+          echo "Updated config file:"
+          cat ./tests/__fixtures__/qcow2-config.toml
+
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
         with:
@@ -45,6 +60,8 @@ jobs:
         env:
           QCOW2_PATH: ${{ steps.build.outputs.qcow2-output-path }}
         run: |
+          LOG_FILE="/tmp/qemu-serial.log"
+
           qemu-system-x86_64 \
             -enable-kvm \
             -cpu host \
@@ -52,7 +69,7 @@ jobs:
             -display none \
             -m 8192 \
             -device virtio-rng-pci \
-            -serial file:/tmp/qemu-serial.log \
+            -serial file:$LOG_FILE \
             -drive file=$QCOW2_PATH,if=virtio \
             -snapshot \
             -net nic,model=virtio \
@@ -66,7 +83,7 @@ jobs:
           done
 
           # Wait 20 seconds and show log
-          timeout 20 tail -f /tmp/qemu-serial.log || true
+          timeout 20 tail -f $LOG_FILE || true
 
           disown $QEMU_PID
           echo "QEMU_PID=$QEMU_PID" >> $GITHUB_OUTPUT
@@ -80,7 +97,7 @@ jobs:
       - name: Run Tests
         working-directory: ./tests
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
           SSH_PORT: ${{ env.SSH_PORT }}
         run: |
           python3 ./qemu_test.py
