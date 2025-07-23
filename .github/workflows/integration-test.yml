@@ -32,12 +32,15 @@ jobs:
           ssh-keygen -lf ~/.ssh/test_key
           
           # Create a new config file with the generated key
-          cat > ./tests/qcow2-config.toml << EOF
-          [[customizations.user]]
-          name = "aurora-ci-user"
-          key = "$PUBLIC_KEY"
-          groups = ["wheel"]
-          EOF
+          cat > ./tests/qcow2-config.toml << 'EOF'
+[[customizations.user]]
+name = "aurora-ci-user"
+password = "$6$rounds=4096$saltysalt$UiZikbV3VeeBPsg8./Q5DAfq9aj2.9.MTZ.gzcjF4jhfjsdljfdjsfdlksjfdf.LDL4IzYYqKxMf3eiexVyNs3."
+groups = ["wheel", "users"]
+home = "/home/aurora-ci-user"
+shell = "/bin/bash"
+EOF
+          echo "key = \"$PUBLIC_KEY\"" >> ./tests/qcow2-config.toml
 
           # Verify the update
           echo "Updated config file:"
@@ -65,7 +68,7 @@ jobs:
           ls -l /dev/kvm
 
           sudo apt-get update
-          sudo apt-get install -y qemu-system-x86
+          sudo apt-get install -y qemu-system-x86 sshpass
 
       - name: Run QEMU VM
         id: run-qemu
@@ -128,6 +131,7 @@ jobs:
               timeout 10 nc localhost $SSH_PORT || echo "Could not get SSH banner"
               
               # Try SSH connection with more debugging
+              echo "Attempting SSH connection..."
               if timeout 15 ssh -i ~/.ssh/test_key -p $SSH_PORT \
                   -o StrictHostKeyChecking=no \
                   -o UserKnownHostsFile=/dev/null \
@@ -135,13 +139,34 @@ jobs:
                   -o ServerAliveInterval=5 \
                   -o ServerAliveCountMax=3 \
                   -o BatchMode=yes \
-                  -v \
+                  -o LogLevel=DEBUG3 \
                   aurora-ci-user@localhost "echo 'SSH connection test successful'" 2>&1; then
                 echo "SSH connection successful!"
                 break
               else
                 echo "SSH connection failed, checking what's listening on port $SSH_PORT..."
                 netstat -tlnp | grep ":$SSH_PORT " || echo "Nothing found listening on port $SSH_PORT"
+                
+                echo "Let's check if we can see what's inside the VM via the serial console..."
+                echo "Looking for recent SSH logs in VM serial output:"
+                grep -i "ssh\|sshd\|authentication\|login\|user" /tmp/qemu-serial.log | tail -10 || echo "No SSH-related messages in serial log"
+                
+                echo "Let's try connecting as root to see if that works:"
+                timeout 10 ssh -i ~/.ssh/test_key -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=5 \
+                  -o BatchMode=yes \
+                  root@localhost "whoami" 2>&1 || echo "Root connection also failed"
+                
+                echo "Let's try with password authentication (password is 'testpass'):"
+                timeout 10 sshpass -p 'testpass' ssh -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=5 \
+                  -o PreferredAuthentications=password \
+                  aurora-ci-user@localhost "whoami" 2>&1 || echo "Password auth also failed"
+                
                 echo "Attempting telnet test:"
                 timeout 5 telnet localhost $SSH_PORT || echo "Telnet failed"
                 echo "Port open but SSH not ready yet, waiting... (attempt $((attempt + 1))/$max_attempts)"
