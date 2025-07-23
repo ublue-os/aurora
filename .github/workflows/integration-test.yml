@@ -23,7 +23,15 @@ jobs:
           cat ~/.ssh/test_key >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+          # Update config file with new public key
           PUBLIC_KEY=$(cat ~/.ssh/test_key.pub)
+          
+          echo "Generated SSH key:"
+          echo "Public key: $PUBLIC_KEY"
+          echo "Private key fingerprint:"
+          ssh-keygen -lf ~/.ssh/test_key
+          
+          # Create a new config file with the generated key
           cat > ./tests/qcow2-config.toml << EOF
           [[customizations.user]]
           name = "aurora-ci-user"
@@ -96,8 +104,11 @@ jobs:
           echo "Waiting for VM to boot (60 seconds)..."
           timeout 60 tail -f $LOG_FILE || true
 
-          echo "Current log contents:"
-          cat $LOG_FILE || echo "No log file available"
+          echo "Current log contents (last 50 lines):"
+          tail -50 $LOG_FILE || echo "No log file available"
+          
+          echo "Checking if we can see SSH-related messages in the log:"
+          grep -i ssh $LOG_FILE || echo "No SSH messages found in log"
 
           disown $QEMU_PID
           echo "QEMU_PID=$QEMU_PID" >> $GITHUB_OUTPUT
@@ -105,19 +116,35 @@ jobs:
       - name: Wait for SSH
         run: |
           echo "Waiting for SSH service to be ready..."
-          max_attempts=60  # Wait up to 10 minutes
+          max_attempts=120  # Wait up to 20 minutes
           attempt=0
-
+          
           while [ $attempt -lt $max_attempts ]; do
             if nc -z localhost $SSH_PORT; then
-              echo "Port $SSH_PORT is open, waiting a bit more for SSH to be fully ready..."
-              sleep 10
-              # Test if we can actually connect with SSH
-              if ssh -i ~/.ssh/test_key -p $SSH_PORT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR aurora-ci-user@localhost "echo 'SSH connection test successful'" 2>/dev/null; then
+              echo "Port $SSH_PORT is open, testing SSH connection..."
+              
+              # Try to get SSH version first
+              echo "Checking SSH service version:"
+              timeout 10 nc localhost $SSH_PORT || echo "Could not get SSH banner"
+              
+              # Try SSH connection with more debugging
+              if timeout 15 ssh -i ~/.ssh/test_key -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=10 \
+                  -o ServerAliveInterval=5 \
+                  -o ServerAliveCountMax=3 \
+                  -o BatchMode=yes \
+                  -v \
+                  aurora-ci-user@localhost "echo 'SSH connection test successful'" 2>&1; then
                 echo "SSH connection successful!"
                 break
               else
-                echo "Port open but SSH not ready yet, waiting..."
+                echo "SSH connection failed, checking what's listening on port $SSH_PORT..."
+                netstat -tlnp | grep ":$SSH_PORT " || echo "Nothing found listening on port $SSH_PORT"
+                echo "Attempting telnet test:"
+                timeout 5 telnet localhost $SSH_PORT || echo "Telnet failed"
+                echo "Port open but SSH not ready yet, waiting... (attempt $((attempt + 1))/$max_attempts)"
               fi
             else
               echo "Waiting for SSH port to open... (attempt $((attempt + 1))/$max_attempts)"
@@ -125,13 +152,16 @@ jobs:
             sleep 10
             attempt=$((attempt + 1))
           done
-
+          
           if [ $attempt -eq $max_attempts ]; then
             echo "SSH service did not become ready within the timeout period"
+            echo "Final diagnostic information:"
+            netstat -tlnp | grep ":$SSH_PORT " || echo "Nothing listening on port $SSH_PORT"
+            ps aux | grep ssh || echo "No SSH processes found"
+            echo "VM serial log (last 50 lines):"
+            tail -50 /tmp/qemu-serial.log || echo "No serial log available"
             exit 1
-          fi
-
-      - name: Run Tests
+          fi      - name: Run Tests
         working-directory: ./tests
         env:
           SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
