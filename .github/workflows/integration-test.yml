@@ -161,7 +161,8 @@ jobs:
             echo "VM serial log (last 50 lines):"
             tail -50 /tmp/qemu-serial.log || echo "No serial log available"
             exit 1
-          fi      - name: Run Tests
+          fi
+      - name: Run Tests
         working-directory: ./tests
         env:
           SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
