@@ -42,9 +42,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - name: wait for /mnt to mount?
-        run: sleep 5
-
       - name: Maximize build space
         uses: ublue-os/container-storage-action@8e3f8f5368cfce1595269830378c3d7ad0b1673b
         with:
