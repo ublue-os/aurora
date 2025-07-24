@@ -1,0 +1,188 @@
+name: Integration Tests
+
+on:
+  workflow_call:
+    inputs:
+      image-ref:
+        required: true
+        type: string
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-24.04
+    env:
+      SSH_PORT: 2222
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate SSH Key Pair
+        run: |
+          ssh-keygen -t ed25519 -f ~/.ssh/test_key -N "" -C "aurora-ci-user@github-actions.com"
+          echo "SSH_PRIVATE_KEY<<EOF" >> $GITHUB_ENV
+          cat ~/.ssh/test_key >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+          # Update config file with new public key
+          PUBLIC_KEY=$(cat ~/.ssh/test_key.pub)
+          
+          echo "Generated SSH key:"
+          echo "Public key: $PUBLIC_KEY"
+          echo "Private key fingerprint:"
+          ssh-keygen -lf ~/.ssh/test_key
+          
+          # Append the SSH key to the existing config file
+          echo "key = \"$PUBLIC_KEY\"" >> ./tests/qcow2-config.toml
+
+          echo "Updated config file:"
+          cat ./tests/qcow2-config.toml
+
+      - name: Maximize build space
+        uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
+        with:
+          remove-codeql: true
+
+      - name: Build QCOW Image
+        id: build
+        uses: osbuild/bootc-image-builder-action@v0.0.2
+        with:
+          config-file: ./tests/qcow2-config.toml
+          image: ${{ inputs.image-ref }}
+          types: |
+            qcow2
+
+      - name: Setup KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm --settle
+          ls -l /dev/kvm
+
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 sshpass
+
+      - name: Run QEMU VM
+        id: run-qemu
+        env:
+          QCOW2_PATH: ${{ steps.build.outputs.qcow2-output-path }}
+        run: |
+          LOG_FILE="/tmp/qemu-serial.log"
+
+          qemu-system-x86_64 \
+            -enable-kvm \
+            -cpu host \
+            -smp 2 \
+            -display none \
+            -m 8192 \
+            -device virtio-rng-pci \
+            -serial file:$LOG_FILE \
+            -drive file=$QCOW2_PATH,if=virtio \
+            -snapshot \
+            -net nic,model=virtio \
+            -net user,hostfwd=tcp::$SSH_PORT-:22 &
+          QEMU_PID=$!
+
+          echo "QEMU started with PID: $QEMU_PID"
+
+          # Wait for log file to appear (max 30s)
+          for i in {1..30}; do
+            [ -f "$LOG_FILE" ] && break
+            sleep 1
+          done
+
+          if [ ! -f "$LOG_FILE" ]; then
+            echo "Warning: Log file did not appear"
+          fi
+
+          # Wait 60 seconds and show log
+          echo "Waiting for VM to boot (60 seconds)..."
+          timeout 60 tail -f $LOG_FILE || true
+
+          echo "Current log contents (last 50 lines):"
+          tail -50 $LOG_FILE || echo "No log file available"
+          
+          echo "Checking if we can see SSH-related messages in the log:"
+          grep -i ssh $LOG_FILE || echo "No SSH messages found in log"
+
+          disown $QEMU_PID
+          echo "QEMU_PID=$QEMU_PID" >> $GITHUB_OUTPUT
+
+      - name: Wait for SSH
+        run: |
+          echo "Waiting for SSH service to be ready..."
+          max_attempts=120  # Wait up to 20 minutes
+          attempt=0
+          
+          while [ $attempt -lt $max_attempts ]; do
+            if nc -z localhost $SSH_PORT; then
+              echo "Port $SSH_PORT is open, testing SSH connection..."
+              
+              # Try to get SSH version first
+              echo "Checking SSH service version:"
+              timeout 10 nc localhost $SSH_PORT || echo "Could not get SSH banner"
+              
+              # Try SSH connection with more debugging
+              echo "Attempting SSH connection..."
+              if timeout 15 ssh -i ~/.ssh/test_key -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=10 \
+                  -o ServerAliveInterval=5 \
+                  -o ServerAliveCountMax=3 \
+                  -o BatchMode=yes \
+                  -o LogLevel=DEBUG3 \
+                  aurora-ci-user@localhost "echo 'SSH connection test successful'" 2>&1; then
+                echo "SSH connection successful!"
+                break
+              else
+                echo "SSH connection failed, checking what's listening on port $SSH_PORT..."
+                netstat -tlnp | grep ":$SSH_PORT " || echo "Nothing found listening on port $SSH_PORT"
+                
+                echo "Let's check if we can see what's inside the VM via the serial console..."
+                echo "Looking for recent SSH logs in VM serial output:"
+                grep -i "ssh\|sshd\|authentication\|login\|user" /tmp/qemu-serial.log | tail -10 || echo "No SSH-related messages in serial log"
+                
+                echo "Let's try connecting as root to see if that works:"
+                timeout 10 ssh -i ~/.ssh/test_key -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=5 \
+                  -o BatchMode=yes \
+                  root@localhost "whoami" 2>&1 || echo "Root connection also failed"
+                
+                echo "Let's try with password authentication (password is 'testpass'):"
+                timeout 10 sshpass -p 'testpass' ssh -p $SSH_PORT \
+                  -o StrictHostKeyChecking=no \
+                  -o UserKnownHostsFile=/dev/null \
+                  -o ConnectTimeout=5 \
+                  -o PreferredAuthentications=password \
+                  aurora-ci-user@localhost "whoami" 2>&1 || echo "Password auth also failed"
+                
+                echo "Attempting telnet test:"
+                timeout 5 telnet localhost $SSH_PORT || echo "Telnet failed"
+                echo "Port open but SSH not ready yet, waiting... (attempt $((attempt + 1))/$max_attempts)"
+              fi
+            else
+              echo "Waiting for SSH port to open... (attempt $((attempt + 1))/$max_attempts)"
+            fi
+            sleep 10
+            attempt=$((attempt + 1))
+          done
+          
+          if [ $attempt -eq $max_attempts ]; then
+            echo "SSH service did not become ready within the timeout period"
+            echo "Final diagnostic information:"
+            netstat -tlnp | grep ":$SSH_PORT " || echo "Nothing listening on port $SSH_PORT"
+            ps aux | grep ssh || echo "No SSH processes found"
+            echo "VM serial log (last 50 lines):"
+            tail -50 /tmp/qemu-serial.log || echo "No serial log available"
+            exit 1
+          fi
+
+      - name: Run Tests
+        working-directory: ./tests
+        env:
+          SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
+          SSH_PORT: ${{ env.SSH_PORT }}
+        run: |
+          python3 ./qemu_test.py
