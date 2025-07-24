@@ -1,6 +1,6 @@
 [[customizations.user]]
 name = "aurora-ci-user"
 password = "$6$rounds=4096$saltysalt$UiZikbV3VeeBPsg8./Q5DAfq9aj2.9.MTZ.gzcjF4jhfjsdljfdjsfdlksjfdf.LDL4IzYYqKxMf3eiexVyNs3."
-groups = ["wheel", "users"]
+groups = ["wheel"]
 home = "/home/aurora-ci-user"
 shell = "/bin/bash"
