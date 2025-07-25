@@ -28,4 +28,10 @@ sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]
 sed -i '/<entry name="favorites" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,systemsettings.desktop,org.kde.dolphin.desktop,org.kde.kate.desktop,org.gnome.Ptyxis.desktop,io.github.kolunmi.Bazaar.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml
 
 
+# install sudo-rs
+dnf5 -y install sudo-rs
+ln -sf /usr/bin/su-rs /usr/bin/su
+ln -sf /usr/bin/sudo-rs /usr/bin/sudo
+ln -sf /usr/bin/visudo-rs /usr/bin/visudo
+
 echo "::endgroup::"
