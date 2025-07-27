@@ -202,6 +202,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
 
     # Pull in most recent upstream base image
+    # if building locally/not ghcr pull the new image
     if [[ {{ ghcr }} == "0" ]]; then
         ${PODMAN} pull "ghcr.io/ublue-os/kinoite-main:${fedora_version}"
     fi
@@ -240,13 +241,13 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     ${PODMAN} build "${PODMAN_BUILD_ARGS[@]}" .
     echo "::endgroup::"
 
-    # Rechunk
+    # Rechunk the image if we are running inside ghcr or set the variable locally
     if [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" && "{{ pipeline }}" == "1" ]]; then
-        {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1 1
+        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1 1
     elif [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" ]]; then
-        {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1
+        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1
     elif [[ "{{ rechunk }}" == "1" ]]; then
-        {{ just }} rechunk "${image}" "${tag}" "${flavor}"
+        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}"
     fi
 
 # Build Image and Rechunk
