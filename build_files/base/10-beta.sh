@@ -41,6 +41,11 @@ done
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
 sed -i '/<entry name="favorites" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,systemsettings.desktop,org.kde.dolphin.desktop,org.kde.kate.desktop,org.gnome.Ptyxis.desktop,io.github.kolunmi.Bazaar.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml
 
+# Add beta-specific just recipes
+if [ -f "/tmp/just/aurora-beta.just" ]; then
+    printf "\n\n" >> /usr/share/ublue-os/just/60-custom.just
+    cat /tmp/just/aurora-beta.just >> /usr/share/ublue-os/just/60-custom.just
+fi
 
 # install sudo-rs
 dnf5 -y install sudo-rs
