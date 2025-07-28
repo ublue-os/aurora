@@ -49,9 +49,9 @@ sections:
     rows: 3
     banner: file:///usr/share/ublue-os/bazaar/01-aurora-bazaar.jxl
     banner-fit: cover
-    banner-text-halign: end
-    banner-text-valign: start
-    banner-height: 500
+    banner-text-halign: start
+    banner-text-valign: center
+    banner-height: 400
     classes:
       - aurora-section
     appids:
@@ -71,9 +71,9 @@ sections:
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
-    banner-text-halign: start
-    banner-text-valign: start
-    banner-height: 500
+    banner-text-halign: end
+    banner-text-valign: center
+    banner-height: 400
     classes:
       - aurora-section
     appids:
@@ -89,8 +89,8 @@ sections:
     banner: file:///usr/share/ublue-os/bazaar/03-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: start
-    banner-text-valign: end
-    banner-height: 500
+    banner-text-valign: center
+    banner-height: 400
     classes:
       - aurora-section
     appids:
@@ -109,8 +109,8 @@ sections:
     banner: file:///usr/share/ublue-os/bazaar/04-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: end
-    banner-text-valign: start
-    banner-height: 500
+    banner-text-valign: center
+    banner-height: 400
     classes:
       - aurora-section
     appids:
