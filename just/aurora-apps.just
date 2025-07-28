@@ -392,10 +392,7 @@ toggle-software-store ACTION="":
             fi
         done
         # Hide Bazaar by creating NoDisplay override
-        cat > "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop" << 'EOF'
-[Desktop Entry]
-NoDisplay=true
-EOF
+        echo "[Desktop Entry]\nNoDisplay=true" > "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         echo "${blue}${b}Discover is now active${n}"
 
     elif [[ "${OPTION,,}" =~ ^cancel ]]; then
