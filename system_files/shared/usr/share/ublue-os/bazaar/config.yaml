@@ -57,7 +57,7 @@ sections:
     appids:
       - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
-      - io.github.fabrialberio.pinapp
+      - org.kde.kstars
       - re.sonny.Eloquent
       - be.alexandervanhee.gradia
       - app.fotema.Fotema
@@ -94,12 +94,14 @@ sections:
     classes:
       - aurora-section
     appids:
-      - io.bassi.Amberol
+      - org.kde.elisa
       - com.spotify.Client
       - com.mastermindzh.tidal-hifi
       - org.videolan.VLC
       - com.github.iwalton3.jellyfin-media-player
       - tv.plex.PlexDesktop
+      - org.kde.kasts
+      - org.kde.arianna
       - com.plexamp.Plexamp
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
