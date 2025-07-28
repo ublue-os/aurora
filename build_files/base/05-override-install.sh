@@ -33,7 +33,7 @@ dnf5 -y install aurora-kde-config
 dnf5 -y install aurora-plymouth
 
 # Consolidate Just Files
-find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just
+find /tmp/just -iname '*.just' ! -name 'aurora-beta.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
