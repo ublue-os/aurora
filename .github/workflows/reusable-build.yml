@@ -120,7 +120,7 @@ jobs:
         id: load-rechunk
         shell: bash
         run: |
-          just load-rechunk "${{ matrix.base_name }}" \
+          sudo -E $(command -v just) load-rechunk "${{ matrix.base_name }}" \
                             "${{ env.DEFAULT_TAG }}" \
                             "${{ matrix.image_flavor }}"
 
