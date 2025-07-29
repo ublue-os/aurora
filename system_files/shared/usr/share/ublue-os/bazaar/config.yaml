@@ -57,7 +57,7 @@ sections:
     appids:
       - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
-      - io.github.fabrialberio.pinapp
+      - org.kde.kstars
       - re.sonny.Eloquent
       - be.alexandervanhee.gradia
       - app.fotema.Fotema
@@ -94,12 +94,14 @@ sections:
     classes:
       - aurora-section
     appids:
-      - io.bassi.Amberol
+      - org.kde.elisa
       - com.spotify.Client
       - com.mastermindzh.tidal-hifi
       - org.videolan.VLC
       - com.github.iwalton3.jellyfin-media-player
       - tv.plex.PlexDesktop
+      - org.kde.kasts
+      - org.kde.arianna
       - com.plexamp.Plexamp
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
@@ -131,11 +133,11 @@ sections:
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
-    banner: file:///usr/share/ublue-os/bazaar/music.jxl
+    banner: file:///usr/share/ublue-os/bazaar/favourites.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: start
-    banner-height: 500
+    banner-height: 400
     classes:
       - aurora-section
     appids:
@@ -153,11 +155,11 @@ sections:
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/utilities.jxl
+    banner: file:///usr/share/ublue-os/bazaar/browse.jxl
     banner-fit: cover
     banner-text-halign: start
-    banner-text-valign: start
-    banner-height: 500
+    banner-text-valign: end
+    banner-height: 400
     classes:
       - aurora-section
     appids:
@@ -173,11 +175,11 @@ sections:
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/developers.jxl
+    banner: file:///usr/share/ublue-os/bazaar/music.jxl
     banner-fit: cover
-    banner-text-halign: end
-    banner-text-valign: start
-    banner-height: 500
+    banner-text-halign: start
+    banner-text-valign: center
+    banner-height: 400
     classes:
       - aurora-section
     appids:
