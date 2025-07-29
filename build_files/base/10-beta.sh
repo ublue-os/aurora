@@ -53,4 +53,7 @@ ln -sf /usr/bin/su-rs /usr/bin/su
 ln -sf /usr/bin/sudo-rs /usr/bin/sudo
 ln -sf /usr/bin/visudo-rs /usr/bin/visudo
 
+dnf5 -y install eol-rebaser
+systemctl enable eol-rebaser.timer
+
 echo "::endgroup::"
