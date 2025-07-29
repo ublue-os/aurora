@@ -2,4 +2,4 @@ images:
   - name: kinoite-main
     image: ghcr.io/ublue-os/kinoite-main
     tag: latest
-    digest: sha256:686b05935b922ad4da8053d902f5296683872d91b3a83edc1924bd99863f39a0
+    digest: sha256:fe1081672a249f691dfd80636534b390d89c3cf0c56f1b0b3c285f5d2a4472cc
