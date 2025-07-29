@@ -11,6 +11,7 @@
 				"bcache-tools",
 				"bootc",
 				"borgbackup",
+				"davfs2",
 				"ddcutil",
 				"evtest",
 				"fastfetch",
