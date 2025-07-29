@@ -128,7 +128,7 @@ jobs:
         id: secureboot
         shell: bash
         run: |
-          just secureboot "${{ matrix.base_name }}" \
+          sudo -E $(command -v just) secureboot "${{ matrix.base_name }}" \
                           "${{ env.DEFAULT_TAG }}" \
                           "${{ matrix.image_flavor }}"
 
