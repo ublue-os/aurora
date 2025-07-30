@@ -115,7 +115,7 @@ ptyxis-transparency opacity="0.95":
         printf "Value must be greater than 0 and less than or equal to 1: %s.\n" "{{ opacity }}"
     fi
 
-# Configure docker,incus-admin,libvirt container manager permissions
+# Configure docker,incus-admin,libvirt, container manager, serial permissions
 [group('System')]
 dx-group:
     #!/usr/bin/pkexec bash
@@ -127,14 +127,14 @@ dx-group:
         fi
     }
 
-    GROUPS_ADD=("docker" "incus-admin" "libvirt")
+    GROUPS_ADD=("docker" "incus-admin" "libvirt" "dialout")
 
     for GROUP_ADD in "${GROUPS_ADD[@]}" ; do
         append_group $GROUP_ADD
         usermod -aG $GROUP_ADD $USER
     done
 
-    echo "Reboot system and log back in to use docker, incus, libvirt."
+    echo "Reboot system and log back in to use docker, libvirt, incus, and serial connections."
 
 # alias for configure-vfio
 [group('System')]
@@ -329,6 +329,60 @@ toggle-tailscale:
             TAILSCALED_STATUS="$(systemctl is-enabled tailscaled || true )"
             if [ "$TAILSCALED_STATUS" == "disabled" ]; then
                 echo "${b}${red}Tailscale is disabled.${n}"
+            fi
+        fi
+    fi
+
+# Automatically download Bluefin's monthly dinosaur wallpapers
+[group('System')]
+toggle-dinosaurs hemisphere="north":
+    #!/bin/bash
+    source /usr/lib/ujust/ujust.sh
+
+    if [[ "{{ hemisphere }}" != "north" && "{{ hemisphere }}" != "south" ]]; then
+        echo "Error: Invalid hemisphere '{{ hemisphere }}'. Must be 'north' or 'south'."
+        exit 1
+    fi
+
+    DINOSAUR_STATUS="$(systemctl --user is-enabled bluefin-wallpaper@{{ hemisphere }}.service 2>/dev/null || echo 'disabled')"
+
+    echo "Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) are currently: $DINOSAUR_STATUS"
+
+    if [ "$DINOSAUR_STATUS" == "enabled" ]; then
+        echo "Disable Bluefin dinosaur wallpapers?"
+        OPTION=$(Choose Disable Cancel)
+        if [ "$OPTION" = "Disable" ]; then
+            systemctl --user disable --now bluefin-wallpaper@{{ hemisphere }}.service
+            echo "${b}${red}Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) disabled.${n}"
+            echo "Wallpaper files remain in ~/.local/share/wallpapers/Bluefin/"
+        fi
+    else
+        echo "Enable Bluefin dinosaur wallpapers for the {{ hemisphere }}ern hemisphere?"
+        OPTION=$(Choose Enable Cancel)
+        if [ "$OPTION" = "Enable" ]; then
+            mkdir -p ~/.local/share/wallpapers/Bluefin
+            systemctl --user enable --now bluefin-wallpaper@{{ hemisphere }}.service
+
+            sleep 1
+            if systemctl --user is-active --quiet bluefin-wallpaper@{{ hemisphere }}.service; then
+                echo "${b}${green}Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) enabled!${n}"
+                echo "Wallpapers will be downloaded to ~/.local/share/wallpapers/Bluefin/"
+                echo "The wallpaper will update automatically each month."
+                filename="$HOME/.local/share/wallpapers/Bluefin/{{ hemisphere }}.avif"
+
+                qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+                    var allDesktops = desktops();
+                    for (var i = 0; i < allDesktops.length; i++) {
+                        var d = allDesktops[i];
+                        d.wallpaperPlugin = \"com.github.zzag.dynamic\";
+                        d.currentConfigGroup = Array(\"Wallpaper\", \"com.github.zzag.dynamic\", \"General\");
+                        d.writeConfig(\"Image\", \"file:///${filename}\");
+                    }
+                "
+            else
+                echo "${b}${red}Failed to start bluefin-wallpaper service.${n}"
+                echo "Check the service status with:"
+                echo "  systemctl --user status bluefin-wallpaper@{{ hemisphere }}.service"
             fi
         fi
     fi
