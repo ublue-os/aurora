@@ -47,6 +47,9 @@ if [ -f "/tmp/just/aurora-beta.just" ]; then
     cat /tmp/just/aurora-beta.just >> /usr/share/ublue-os/just/60-custom.just
 fi
 
+# Use Bazaar for Flatpak refs
+echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/share/applications/mimeapps.list
+
 # install sudo-rs
 dnf5 -y install sudo-rs
 ln -sf /usr/bin/su-rs /usr/bin/su
