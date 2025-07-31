@@ -41,12 +41,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
+      # mount /mnt as /var/lib/containers
       - name: Maximize build space
+        id: container-storage-action
         uses: ublue-os/container-storage-action@a029627d0d7d5ca8afc58e68f39832bb3cda129b
+        continue-on-error: true
         with:
           target-dir: /var/lib/containers
           mount-opts: compress-force=zstd:2
+
+      # only run this as a fallback if the container-storage-action failed explicitly
+      - name: Remove software when /mnt was not mounted
+        if: steps.container-storage-action.outcome == 'failure'
+        uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
 
       - name: Setup Just
         uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
