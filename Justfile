@@ -91,7 +91,6 @@ validate $image $tag $flavor:
         exit 1
     fi
 
-
 # Build Image
 [group('Image')]
 build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline="0" $kernel_pin="":
