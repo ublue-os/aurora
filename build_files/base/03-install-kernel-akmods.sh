@@ -24,11 +24,6 @@ if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" -ne $(rpm -q --queryformat="%{evr}.
   dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
 fi
 
-# TODO: Remove this shit with F43
-if [[ "$AKMODS_FLAVOR" = "bazzite" ]]; then
-  dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
-fi
-
 # Prevent kernel stuff from upgrading again
 dnf5 versionlock add kernel{,-core,-modules,-modules-core,-modules-extra,-tools,-tools-lib,-headers,-devel,-devel-matched}
 
