@@ -44,7 +44,7 @@ jobs:
       # mount /mnt as /var/lib/containers
       - name: Maximize build space
         id: container-storage-action
-        uses: ublue-os/container-storage-action@c5d693b983980917338f95ac1f481b8a33cd4dfc
+        uses: ublue-os/container-storage-action@fb03d44358403015d2a12cc59c5fb658d957adc2
         continue-on-error: true
         with:
           target-dir: /var/lib/containers
