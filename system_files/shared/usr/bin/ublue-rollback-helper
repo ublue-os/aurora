@@ -44,7 +44,7 @@ function rebase_helper() {
   # Step 2: Channel Selection
   declare -a CHANNELS
   CHANNELS=(stable stable-daily latest)
-    echo "The default selection is stable. Stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
+    echo "The default selection is stable. Stable-daily (daily builds) are for enthusiasts, and latest is for testers"
 
   # Fetch Fedora version per channel and build display list
   declare -a CHANNELS_DISPLAY
