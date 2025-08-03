@@ -43,8 +43,8 @@ function rebase_helper() {
 
   # Step 2: Channel Selection
   declare -a CHANNELS
-  CHANNELS=(latest stable stable-daily)
-    echo "The default selection is latest, stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
+  CHANNELS=(stable stable-daily latest)
+    echo "The default selection is stable. Stable (weekly builds) and stable-daily (daily builds) are for enthusiasts, and latest is for testers"
 
   # Fetch Fedora version per channel and build display list
   declare -a CHANNELS_DISPLAY
@@ -64,6 +64,7 @@ function rebase_helper() {
 
   # Step 3: Date selection (scoped to channel)
   echo "Would you like to pin to a specific build date?"
+  echo "NOTICE! You won't receive any updates after pinning to a specific build date."
   date_choice=$(Choose "no" "yes" cancel)
   [[ "$date_choice" == "cancel" ]] && return 1
 
