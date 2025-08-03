@@ -1,0 +1,18 @@
+migrations:
+  - name: "ASUS end-of-life"
+    from_pattern: "ghcr\\.io/ublue-os/(aurora(?:-dx)?)-asus(-nvidia(?:-open)?)?:(.+)"
+    to_image: "ghcr.io/ublue-os/\\1\\2:\\3"
+    reason: "ASUS-specific images are deprecated. Migrating to base Aurora images which include all necessary drivers."
+    effective_date: "2024-01-01"
+
+  - name: "Surface end-of-life"
+    from_pattern: "ghcr\\.io/ublue-os/(aurora(?:-dx)?)-surface(-nvidia(?:-open)?)?:(.+)"
+    to_image: "ghcr.io/ublue-os/\\1\\2:\\3"
+    reason: "Surface-specific images are deprecated. Migrating to base Aurora images which include all necessary drivers."
+    effective_date: "2024-01-01"
+
+  - name: "HWE end-of-life"
+    from_pattern: "ghcr\\.io/ublue-os/(aurora(?:-dx)?)-hwe(-nvidia(?:-open)?)?:(.+)"
+    to_image: "ghcr.io/ublue-os/\\1\\2:\\3"
+    reason: "HWE images are deprecated. Migrating to base Aurora images which include all necessary drivers."
+    effective_date: "2024-01-01"
