@@ -316,7 +316,7 @@ setup-sunshine ACTION="":
       exit 0
     fi
 
-# Toggle between Bazaar and Discover software stores (beta only)
+# Toggle between Bazaar and Discover software stores
 [group('Apps')]
 toggle-software-store ACTION="":
     #!/usr/bin/env bash
