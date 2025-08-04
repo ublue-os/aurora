@@ -376,6 +376,12 @@ toggle-software-store ACTION="":
         if [ -f "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop" ]; then
             rm "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         fi
+
+        # enable bazaar in krunner
+        kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled false
+        kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled true
+        systemctl --user restart plasma-krunner.service
+
         echo "${green}${b}Bazaar is now active${n}"
 
     elif [[ "${OPTION,,}" =~ ^(switch.*discover|discover) ]]; then
@@ -386,6 +392,12 @@ toggle-software-store ACTION="":
                 cp "/usr/share/applications/${app}.disabled" "$HOME/.local/share/applications/${app}"
             fi
         done
+
+        # enable discover in krunner
+        kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
+        kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled false
+        systemctl --user restart plasma-krunner.service
+
         # Hide Bazaar by creating NoDisplay override
         echo "[Desktop Entry]\nNoDisplay=true" > "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         echo "${blue}${b}Discover is now active${n}"
