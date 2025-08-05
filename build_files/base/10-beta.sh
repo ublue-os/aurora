@@ -50,6 +50,11 @@ fi
 # Use Bazaar for Flatpak refs
 echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/share/applications/mimeapps.list
 
+# Symlink Discover to Bazaar
+cat > /usr/lib/tmpfiles.d/aurora-discover-bazaar.conf << 'EOF'
+L /usr/share/applications/org.kde.discover.desktop - - - - io.github.kolunmi.Bazaar.desktop
+EOF
+
 # install sudo-rs
 dnf5 -y install sudo-rs
 ln -sf /usr/bin/su-rs /usr/bin/su
