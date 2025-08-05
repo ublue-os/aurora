@@ -52,7 +52,7 @@ echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/shar
 
 # Symlink Discover to Bazaar
 cat > /usr/lib/tmpfiles.d/aurora-discover-bazaar.conf << 'EOF'
-L /usr/share/applications/org.kde.discover.desktop - - - - io.github.kolunmi.Bazaar.desktop
+L /usr/share/applications/org.kde.discover.desktop - - - - /usr/share/applications/io.github.kolunmi.Bazaar.desktop
 EOF
 
 # install sudo-rs
