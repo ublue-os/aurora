@@ -119,17 +119,17 @@ sections:
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
-      - io.gitlab.theevilskeleton.Upscaler
-      - io.github.alainm23.planify
       - org.libreoffice.LibreOffice
+      - io.github.alainm23.planify
       - org.gimp.GIMP
       - org.kde.krita
+      - org.kde.kdenlive
       - org.inkscape.Inkscape
       - org.blender.Blender
       - io.github.nokse22.Exhibit
       - org.audacityteam.Audacity
+      - io.gitlab.theevilskeleton.Upscaler
       - org.ardour.Ardour
-      - org.gnome.Fractal
       - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Games"
     subtitle: "The cake is a lie"
