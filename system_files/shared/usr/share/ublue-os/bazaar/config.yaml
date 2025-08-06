@@ -67,7 +67,7 @@ sections:
       - com.github.ADBeveridge.Raider
       - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Browsers"
-    subtitle: "Use the web with your favorite browser"
+    subtitle: "Explore the web with your favorite browser"
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
@@ -103,6 +103,7 @@ sections:
       - org.kde.kasts
       - org.kde.arianna
       - com.plexamp.Plexamp
+      - io.github.mhogomchungu.media-downloader
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
   - title: "Office & Productivity"
@@ -136,7 +137,7 @@ sections:
     banner: file:///usr/share/ublue-os/bazaar/05-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: start
-    banner-text-valign: start
+    banner-text-valign: center
     banner-height: 400
     classes:
       - aurora-section
@@ -157,8 +158,8 @@ sections:
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/06-aurora-bazaar.jxl
     banner-fit: cover
-    banner-text-halign: start
-    banner-text-valign: end
+    banner-text-halign: end
+    banner-text-valign: center
     banner-height: 400
     classes:
       - aurora-section
@@ -196,8 +197,8 @@ sections:
     rows: 1
     banner: file:///usr/share/ublue-os/bazaar/browse.jxl
     banner-fit: cover
-    banner-text-halign: end
-    banner-text-valign: start
+    banner-text-halign: start
+    banner-text-valign: center
     banner-height: 500
     classes:
       - aurora-section
