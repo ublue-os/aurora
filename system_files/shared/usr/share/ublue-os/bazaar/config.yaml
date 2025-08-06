@@ -103,6 +103,7 @@ sections:
       - org.kde.kasts
       - org.kde.arianna
       - com.plexamp.Plexamp
+      - io.github.mhogomchungu.media-downloader
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
   - title: "Office & Productivity"
