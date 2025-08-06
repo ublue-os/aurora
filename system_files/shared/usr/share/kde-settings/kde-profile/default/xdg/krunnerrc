@@ -1,2 +1,5 @@
 [General]
 FreeFloating=true
+# Disable Discover, enable bazaar search results
+krunner_appstreamEnabled=false
+bazaarrunnerEnabled=true
