@@ -399,6 +399,7 @@ toggle-software-store ACTION="":
         systemctl --user restart plasma-krunner.service
 
         # Hide Bazaar by creating NoDisplay override
+       cp /usr/share/applications/io.github.kolunmi.Bazaar.desktop "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
        desktop-file-edit --set-key=NoDisplay --set-value=true "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         echo "${blue}${b}Discover is now active${n}"
 
