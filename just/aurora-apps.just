@@ -324,7 +324,7 @@ toggle-software-store ACTION="":
 
     discover_apps=(
         "org.kde.discover.desktop"
-        "org.kde.discover-flatpak.desktop"
+        "org.kde.discover.flatpak.desktop"
         "org.kde.discover.notifier.desktop"
         "org.kde.discover.urlhandler.desktop"
     )
