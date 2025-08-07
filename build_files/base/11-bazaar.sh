@@ -17,7 +17,7 @@ fi
 # Hide Discover entries by renaming them (allows for easy re-enabling)
 discover_apps=(
   "org.kde.discover.desktop"
-  "org.kde.discover-flatpak.desktop"
+  "org.kde.discover.flatpak.desktop"
   "org.kde.discover.notifier.desktop"
   "org.kde.discover.urlhandler.desktop"
 )
