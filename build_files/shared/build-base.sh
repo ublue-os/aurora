@@ -49,8 +49,11 @@ echo "::endgroup::"
 # Make HWE changes
 /ctx/build_files/base/09-hwe-additions.sh
 
+# Bazaar workarounds
+/ctx/build_files/base/11-bazaar.sh
+
 # Beta
-/ctx/build_files/base/10-beta.sh
+# /ctx/build_files/base/10-beta.sh
 
 ## late stage changes
 

@@ -17,6 +17,6 @@ jobs:
     build-image-latest-hwe:
         uses: ./.github/workflows/build-image-latest-hwe.yml
         secrets: inherit
-    build-image-beta:
-        uses: ./.github/workflows/build-image-beta.yml
-        secrets: inherit
+#    build-image-beta:
+#        uses: ./.github/workflows/build-image-beta.yml
+#        secrets: inherit
