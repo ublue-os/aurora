@@ -8,6 +8,7 @@ COPY /system_files /system_files
 COPY /build_files /build_files
 COPY /iso_files /iso_files
 COPY /just /just
+COPY /flatpaks /flatpaks
 COPY packages.json /
 
 ## aurora image section
