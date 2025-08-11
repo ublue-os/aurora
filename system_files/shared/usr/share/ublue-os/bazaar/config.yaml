@@ -67,7 +67,7 @@ sections:
       - com.github.ADBeveridge.Raider
       - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Browsers"
-    subtitle: "Use the web with your favorite browser"
+    subtitle: "Explore the web with your favorite browser"
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
@@ -103,6 +103,7 @@ sections:
       - org.kde.kasts
       - org.kde.arianna
       - com.plexamp.Plexamp
+      - io.github.mhogomchungu.media-downloader
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
   - title: "Office & Productivity"
@@ -118,25 +119,25 @@ sections:
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
-      - io.gitlab.theevilskeleton.Upscaler
-      - io.github.alainm23.planify
       - org.libreoffice.LibreOffice
+      - io.github.alainm23.planify
       - org.gimp.GIMP
       - org.kde.krita
+      - org.kde.kdenlive
       - org.inkscape.Inkscape
       - org.blender.Blender
       - io.github.nokse22.Exhibit
       - org.audacityteam.Audacity
+      - io.gitlab.theevilskeleton.Upscaler
       - org.ardour.Ardour
-      - org.gnome.Fractal
       - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
-    banner: file:///usr/share/ublue-os/bazaar/favourites.jxl
+    banner: file:///usr/share/ublue-os/bazaar/05-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: start
-    banner-text-valign: start
+    banner-text-valign: center
     banner-height: 400
     classes:
       - aurora-section
@@ -155,10 +156,10 @@ sections:
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/browse.jxl
+    banner: file:///usr/share/ublue-os/bazaar/06-aurora-bazaar.jxl
     banner-fit: cover
-    banner-text-halign: start
-    banner-text-valign: end
+    banner-text-halign: end
+    banner-text-valign: center
     banner-height: 400
     classes:
       - aurora-section
@@ -175,7 +176,7 @@ sections:
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
-    banner: file:///usr/share/ublue-os/bazaar/music.jxl
+    banner: file:///usr/share/ublue-os/bazaar/favourites.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: center
@@ -194,10 +195,10 @@ sections:
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
-    banner: file:///usr/share/ublue-os/bazaar/ai.jxl
+    banner: file:///usr/share/ublue-os/bazaar/browse.jxl
     banner-fit: cover
-    banner-text-halign: end
-    banner-text-valign: start
+    banner-text-halign: start
+    banner-text-valign: center
     banner-height: 500
     classes:
       - aurora-section
