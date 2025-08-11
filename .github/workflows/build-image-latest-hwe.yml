@@ -8,8 +8,7 @@ on:
     paths-ignore:
       - "**.md"
       - "iso_files/**"
-      - "aurora_flatpaks/**"
-      - "dx_flatpaks/**"
+      - "flatpaks/**"
       - ".github/workflows/*iso*"
   workflow_call:
   workflow_dispatch:

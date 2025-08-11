@@ -12,7 +12,7 @@ echo "::endgroup::"
 echo "::group:: Copy Files"
 
 # Copy ISO list for `install-system-flatpaks`
-install -Dm0644 -t /etc/ublue-os/ /ctx/iso_files/*.list
+install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # Copy Files to Container
 cp -r /ctx/just /tmp/just
@@ -49,8 +49,11 @@ echo "::endgroup::"
 # Make HWE changes
 /ctx/build_files/base/09-hwe-additions.sh
 
+# Bazaar workarounds
+/ctx/build_files/base/11-bazaar.sh
+
 # Beta
-/ctx/build_files/base/10-beta.sh
+# /ctx/build_files/base/10-beta.sh
 
 ## late stage changes
 
