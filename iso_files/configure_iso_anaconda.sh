@@ -62,7 +62,6 @@ efi_dir = fedora
 menu_auto_hide = True
 
 [Storage]
-default_scheme = LVM_THINP
 file_system_type = xfs
 default_partitioning =
     /     (min 1 GiB, max 70 GiB)
