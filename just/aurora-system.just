@@ -430,7 +430,7 @@ toggle-iwd:
     current_status=$(get_current_status)
     echo -e "\nCurrent iwd status: $current_status\n"
     # Prompt user for action
-    CHOICE=$(ugum choose "Enable iwd" "Disable iwd" "Exit without changes")
+    CHOICE=$(gum choose "Enable iwd" "Disable iwd" "Exit without changes")
     case "$CHOICE" in
       "Enable iwd")
         enable_iwd
