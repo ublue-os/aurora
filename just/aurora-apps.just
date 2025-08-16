@@ -210,7 +210,7 @@ install-k8s-dev-tools:
 install-ai-tools:
     #!/usr/bin/bash
     echo "🧠🤖 Adding AI tools..."
-    brew bundle --file /usr/share/ublue-os/homebrew/bluefin-ai.Brewfile
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-ai.Brewfile
 
 # Install gaming flatpaks
 # 23.08 runtime versions are needed for Heroic/Lutris
