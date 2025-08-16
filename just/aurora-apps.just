@@ -202,8 +202,15 @@ install-incus:
 [group('Apps')]
 install-k8s-dev-tools:
     #!/usr/bin/bash
-    echo "Adding Kubernetes command line tools..."
+    echo "☸️🛠️ Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+
+# Install AI tools
+[group('Apps')]
+install-ai-tools:
+    #!/usr/bin/bash
+    echo "🧠🤖 Adding AI tools..."
+    brew bundle --file /usr/share/ublue-os/homebrew/bluefin-ai.Brewfile
 
 # Install gaming flatpaks
 # 23.08 runtime versions are needed for Heroic/Lutris
