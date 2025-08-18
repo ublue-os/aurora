@@ -31,4 +31,9 @@ sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
 # Diable terra repo
 dnf5 -y config-manager setopt "terra".enabled=false
 
+# Check if any rpmfusion repos exist before trying to disable them
+if dnf5 repolist --all | grep -q rpmfusion; then
+    dnf5 config-manager setopt "rpmfusion*".enabled=0
+fi
+
 echo "::endgroup::"
