@@ -55,7 +55,6 @@ dnf5 -y config-manager setopt "terra*".enabled=false
 # Disable coprs
 dnf5 -y copr disable ublue-os/staging
 dnf5 -y copr disable ublue-os/packages
-dnf5 -y copr disable phracek/PyCharm
 dnf5 -y copr disable bieszczaders/kernel-cachyos-addons
 dnf5 -y copr disable lizardbyte/beta
 
