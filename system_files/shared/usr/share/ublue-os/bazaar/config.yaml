@@ -147,6 +147,7 @@ sections:
       - com.heroicgameslauncher.hgl
       - com.discordapp.Discord
       - net.lutris.Lutris
+      - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
       - com.obsproject.Studio
