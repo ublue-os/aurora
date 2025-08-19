@@ -4,9 +4,6 @@ SingleClick=false
 ColorScheme=BreezeDark
 widgetStyle=Breeze
 
-[KDE Control Module Restrictions][$i]
-kcm_plymouth.desktop=false
-
 [General]
 TerminalApplication=kde-ptyxis
 TerminalService=org.gnome.Ptyxis.desktop
