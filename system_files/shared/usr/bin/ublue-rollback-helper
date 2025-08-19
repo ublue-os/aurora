@@ -42,7 +42,12 @@ function rebase_helper() {
   fi
   
   IMAGE_OPTIONS+=(cancel)
+  
+  selected_image=$(Choose "${IMAGE_OPTIONS[@]}")
+  [[ "$selected_image" == "cancel" ]] && exit 0
 
+  IMAGE_NAME="$selected_image"
+  base_image="${IMAGE_REGISTRY}/${IMAGE_NAME}"
   # Step 2: Channel Selection
   declare -a CHANNELS
   CHANNELS=(stable stable-daily latest)
