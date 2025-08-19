@@ -6,8 +6,6 @@ set -eoux pipefail
 
 ### Bazaar
 echo "Installing Bazaar workarounds"
-# Downgrade libdex to 0.9.1 because 0.10 makes bazaar crash under VMs and PCs with low specs
-dnf5 install -y libdex-0.9.1
 
 # Workaround for Bazaar on Nvidia systems
 if jq -e '.["image-flavor"] | test("nvidia")' /usr/share/ublue-os/image-info.json >/dev/null; then
