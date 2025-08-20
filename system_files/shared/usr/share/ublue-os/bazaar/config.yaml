@@ -119,6 +119,7 @@ sections:
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
+      - org.onlyoffice.desktopeditors
       - org.libreoffice.LibreOffice
       - io.github.alainm23.planify
       - org.gimp.GIMP
@@ -147,6 +148,7 @@ sections:
       - com.heroicgameslauncher.hgl
       - com.discordapp.Discord
       - net.lutris.Lutris
+      - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
       - com.obsproject.Studio
