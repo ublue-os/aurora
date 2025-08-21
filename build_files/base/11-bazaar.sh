@@ -7,11 +7,6 @@ set -eoux pipefail
 ### Bazaar
 echo "Installing Bazaar workarounds"
 
-# Workaround for Bazaar on Nvidia systems
-if jq -e '.["image-flavor"] | test("nvidia")' /usr/share/ublue-os/image-info.json >/dev/null; then
-  sed -i 's|^Exec=bazaar window --auto-service$|Exec=env GSK_RENDERER=opengl bazaar window --auto-service|' /usr/share/applications/io.github.kolunmi.Bazaar.desktop
-fi
-
 # Hide Discover entries by renaming them (allows for easy re-enabling)
 discover_apps=(
   "org.kde.discover.desktop"
