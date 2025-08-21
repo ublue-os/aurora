@@ -79,12 +79,11 @@ sections:
       - org.ardour.Ardour
       - org.kde.kdenlive
       - org.blender.Blender
-      - org.gimp.GIMP
-      - com.inochi2d.inochi-session
       - org.inkscape.Inkscape
       - org.audacityteam.Audacity
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
       - com.obsproject.Studio
+      - com.inochi2d.inochi-session
+      - org.gimp.GIMP
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
@@ -164,9 +163,10 @@ sections:
       - org.localsend.localsend_app
       - com.github.zocker_160.SyncThingy
       - org.deskflow.deskflow
-      - io.github.lawstorant.boxflat
+      - io.github.nokse22.asciidraw
       - io.github.radiolamp.mangojuice
       - org.fedoraproject.MediaWriter
+      - org.gnome.gitlab.YaLTeR.VideoTrimmer
       - org.raspberrypi.rpi-imager
       - org.mozilla.vpn
       - hu.irl.cameractrls
