@@ -59,14 +59,13 @@ sections:
       - com.pixelomer.ShijimaQt
       - org.kde.kstars
       - re.sonny.Eloquent
-      - be.alexandervanhee.gradia
+      - io.github.halfmexican.Mingle
       - app.fotema.Fotema
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Content Creation"
-    subtitle: "We need something funny here but I can't think of anything"
+    subtitle: "Create your first donut or make some tunes"
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
@@ -84,6 +83,8 @@ sections:
       - com.inochi2d.inochi-session
       - org.inkscape.Inkscape
       - org.audacityteam.Audacity
+      - org.gnome.gitlab.YaLTeR.VideoTrimmer
+      - com.obsproject.Studio
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
@@ -125,7 +126,6 @@ sections:
       - io.github.alainm23.planify
       - io.github.nokse22.Exhibit
       - io.gitlab.theevilskeleton.Upscaler
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
@@ -170,6 +170,7 @@ sections:
       - org.raspberrypi.rpi-imager
       - org.mozilla.vpn
       - hu.irl.cameractrls
+      - org.gnome.gitlab.YaLTeR.Identity
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
