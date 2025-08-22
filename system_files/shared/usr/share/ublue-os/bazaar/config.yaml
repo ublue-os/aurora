@@ -126,6 +126,9 @@ sections:
       - io.github.alainm23.planify
       - io.github.nokse22.Exhibit
       - io.gitlab.theevilskeleton.Upscaler
+      - com.bambulab.BambuStudio
+      - com.github.IsmaelMartinez.teams_for_linux
+      - com.super_productivity.SuperProductivity
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
