@@ -148,7 +148,7 @@ sections:
       - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
-      - com.obsproject.Studio
+      - org.prismlauncher.PrismLauncher
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
