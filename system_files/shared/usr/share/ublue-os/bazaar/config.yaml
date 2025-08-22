@@ -59,14 +59,13 @@ sections:
       - com.pixelomer.ShijimaQt
       - org.kde.kstars
       - re.sonny.Eloquent
-      - be.alexandervanhee.gradia
+      - io.github.halfmexican.Mingle
       - app.fotema.Fotema
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
-  - title: "Browsers"
-    subtitle: "Explore the web with your favorite browser"
+  - title: "Content Creation"
+    subtitle: "Create your first donut or make some tunes"
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
@@ -76,12 +75,16 @@ sections:
     classes:
       - aurora-section
     appids:
-      - com.brave.Browser
-      - com.google.Chrome
-      - com.microsoft.Edge
-      - com.opera.Opera
-      - com.vivaldi.Vivaldi
-      - app.zen_browser.zen
+      - org.kde.krita
+      - org.ardour.Ardour
+      - org.kde.kdenlive
+      - org.blender.Blender
+      - org.inkscape.Inkscape
+      - org.audacityteam.Audacity
+      - com.obsproject.Studio
+      - com.inochi2d.inochi-session
+      - org.gimp.GIMP
+      - org.darktable.Darktable
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
@@ -121,16 +124,11 @@ sections:
       - org.onlyoffice.desktopeditors
       - org.libreoffice.LibreOffice
       - io.github.alainm23.planify
-      - org.gimp.GIMP
-      - org.kde.krita
-      - org.kde.kdenlive
-      - org.inkscape.Inkscape
-      - org.blender.Blender
       - io.github.nokse22.Exhibit
-      - org.audacityteam.Audacity
       - io.gitlab.theevilskeleton.Upscaler
-      - org.ardour.Ardour
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
+      - com.bambulab.BambuStudio
+      - com.github.IsmaelMartinez.teams_for_linux
+      - com.super_productivity.SuperProductivity
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
@@ -150,7 +148,7 @@ sections:
       - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
-      - com.obsproject.Studio
+      - org.prismlauncher.PrismLauncher
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
@@ -169,12 +167,14 @@ sections:
       - org.localsend.localsend_app
       - com.github.zocker_160.SyncThingy
       - org.deskflow.deskflow
-      - io.github.lawstorant.boxflat
+      - io.github.nokse22.asciidraw
       - io.github.radiolamp.mangojuice
       - org.fedoraproject.MediaWriter
+      - org.gnome.gitlab.YaLTeR.VideoTrimmer
       - org.raspberrypi.rpi-imager
       - org.mozilla.vpn
       - hu.irl.cameractrls
+      - org.gnome.gitlab.YaLTeR.Identity
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
