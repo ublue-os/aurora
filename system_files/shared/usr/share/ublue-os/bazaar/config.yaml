@@ -84,6 +84,7 @@ sections:
       - com.obsproject.Studio
       - com.inochi2d.inochi-session
       - org.gimp.GIMP
+      - org.darktable.Darktable
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
