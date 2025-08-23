@@ -27,6 +27,7 @@
 				"gum",
 				"hplip",
 				"ifuse",
+				"igt-gpu-tools",
 				"input-remapper",
 				"iwd",
 				"jetbrains-mono-fonts-all",
