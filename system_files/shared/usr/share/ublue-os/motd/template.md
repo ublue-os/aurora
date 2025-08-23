@@ -15,5 +15,6 @@ Hello, stargazer.
 - **󰊤** [Issues](https://github.com/ublue-os/aurora/issues)
 - **󰈙** [Documentation](https://docs.getaurora.dev/)
 - **󰊌** [Discuss](https://universal-blue.discourse.group/)
+- **󰙯** [Discord](https://discord.com/invite/WEu6BdFEtp)
 
 %KEY_WARN%
