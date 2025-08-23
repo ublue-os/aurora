@@ -35,9 +35,9 @@ systemctl disable rpm-ostreed-automatic.timer
 systemctl disable flatpak-system-update.timer
 
 # Hide Desktop Files. Hidden removes mime associations
-for file in fish htop nvtop; do
-    if [[ -f "/usr/share/applications/$file.desktop" ]]; then
-        sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/"$file".desktop
+for file in htop nvtop; do
+    if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
+        desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
     fi
 done
 
