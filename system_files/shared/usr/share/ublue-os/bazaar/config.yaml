@@ -194,6 +194,8 @@ sections:
       - io.dbeaver.DBeaverCommunity
       - com.github.marhkb.Pods
       - cc.arduino.IDE2
+      - io.github.plrigaux.sysd-manager
+      - me.iepure.devtoolbox
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
