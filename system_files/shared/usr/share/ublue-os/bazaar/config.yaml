@@ -9,39 +9,44 @@ css: |
      margin: 30px;
      padding: 20px;
   }
-  .aurora-section banner-text-bg {
-     background-color: var(--accent-color);
-     filter: blur(50px) brightness(0.3);
-     opacity: 0.75;
-     border-radius: 30px;
-     background-color: var(--accent-color);
-  }
   .aurora-section banner-text {
      padding: 50px;
-     color: lighter(var(--accent-color));
+     color: #ffffff;
   }
   .aurora-section title {
      color: #ffffff;
   }
   .aurora-section subtitle {
-    color: var(--accent-color);
-    filter: brightness(1.25);
+    color: #ffffff;
     font-weight: 400;
   }
-  .aurora-section entry {
-     background: linear-gradient(to right, alpha(var(--accent-color), 0.2), alpha(var(--accent-bg-color), 0.1));
-     transition-property: background;
-     transition-duration: 0.25s;
+  .aurora-section {
+    margin: 15px;
+    border-radius: 25px;
   }
-  .aurora-section entry:hover {
-     background: linear-gradient(to right, alpha(var(--accent-bg-color), 0.5), alpha(var(--accent-color), 0.7));
-     transition-property: background;
-     transition-duration: 0.75s;
+  .aurora-section {
+    background: linear-gradient(90deg, #a94f6f, #517fc3);
   }
-  .aurora-section entry:active {
-     background: linear-gradient(to right, alpha(var(--accent-bg-color), 0.5), alpha(var(--accent-color), 0.7));
-     transition-property: background;
-     transition-duration: 0.15s;
+  .cc-section {
+    background: linear-gradient(0deg, #392946, #050815);
+  }
+  .music-section {
+    background: linear-gradient(45deg, #e97e4f, #565d8d);
+  }
+  .office-section {
+    background: linear-gradient(45deg, #8c1790, #fa224a);
+  }
+  .gaming-section {
+    background: linear-gradient(160deg, #ff9d08, #08a5ff);
+  }
+  .utilities-section {
+    background: linear-gradient(45deg, #ed5b00, #a6480d);
+  }
+  .dev-section {
+    background: linear-gradient(45deg, #ed5b00, #a6480d);
+  }
+  .ai-section {
+    background: linear-gradient(45deg, #ed5b00, #a6480d);
   }
 sections:
   - title: "Aurora Recommends"
@@ -74,6 +79,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - cc-section
     appids:
       - org.kde.krita
       - org.ardour.Ardour
@@ -95,6 +101,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - music-section
     appids:
       - org.kde.elisa
       - com.spotify.Client
@@ -118,6 +125,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - office-section
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
@@ -139,6 +147,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - gaming-section
     appids:
       - com.valvesoftware.Steam
       - com.valvesoftware.SteamLink
@@ -162,6 +171,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - utilities-section
     appids:
       - app.drey.Warp
       - org.localsend.localsend_app
@@ -185,6 +195,7 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+      - dev-section
     appids:
       - io.podman_desktop.PodmanDesktop
       - io.kinvolk.Headlamp
@@ -208,6 +219,7 @@ sections:
     banner-height: 500
     classes:
       - aurora-section
+      - ai-section
     appids:
       - com.jeffser.Alpaca
       - io.github.qwersyk.Newelle
