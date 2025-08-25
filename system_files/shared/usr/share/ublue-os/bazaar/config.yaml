@@ -189,7 +189,6 @@ sections:
       - io.podman_desktop.PodmanDesktop
       - io.kinvolk.Headlamp
       - sh.loft.devpod
-      - org.gnome.Builder
       - com.getpostman.Postman
       - io.dbeaver.DBeaverCommunity
       - com.github.marhkb.Pods
