@@ -25,7 +25,7 @@ css: |
     border-radius: 25px;
   }
   .aurora-section {
-    background: linear-gradient(90deg, #a94f6f, #517fc3);
+    background: linear-gradient(0deg, #271e7f, #60a5c3);
   }
   .cc-section {
     background: linear-gradient(0deg, #392946, #050815);
