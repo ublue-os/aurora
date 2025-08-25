@@ -15,10 +15,20 @@ css: |
   }
   .aurora-section title {
      color: #ffffff;
+     text-shadow:
+      -1px -1px 0 black,
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
   }
   .aurora-section subtitle {
     color: #ffffff;
     font-weight: 400;
+    text-shadow:
+      -1px -1px 0 black,
+       1px -1px 0 black,
+      -1px  1px 0 black,
+       1px  1px 0 black;
   }
   .aurora-section {
     margin: 15px;
