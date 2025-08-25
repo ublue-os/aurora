@@ -47,16 +47,22 @@ css: |
     background: linear-gradient(45deg, #8c1790, #fa224a);
   }
   .gaming-section {
-    background: linear-gradient(160deg, #ff9d08, #08a5ff);
+    background: linear-gradient(0deg, #444445, #00ce75);
+
   }
   .utilities-section {
-    background: linear-gradient(45deg, #ed5b00, #a6480d);
+    background: linear-gradient(to left top, #00244e, #2f3b60, #505472, #6f6f85, #8d8c99, #8e8d96, #8f8f93, #909090, #767676, #5d5d5d, #454545, #2f2f2f);
   }
   .dev-section {
-    background: linear-gradient(45deg, #ed5b00, #a6480d);
+    /* #392946 #050815 #508EB7
+    /*background-image: linear-gradient(to bottom, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);*/
+     background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
   }
   .ai-section {
-    background: linear-gradient(45deg, #ed5b00, #a6480d);
+    /*background: linear-gradient(0deg, #510033, #ff7843);*/
+    /*background: linear-gradient(0deg, #007ade, #ff7843);*/
+    background: linear-gradient(0deg, #0055b1, #ff7843);
+
   }
 sections:
   - title: "Aurora Recommends"
