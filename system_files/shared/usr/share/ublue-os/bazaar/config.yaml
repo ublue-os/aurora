@@ -191,7 +191,9 @@ sections:
       - sh.loft.devpod
       - org.gnome.Builder
       - com.getpostman.Postman
+      - org.kde.kdevelop
       - io.dbeaver.DBeaverCommunity
+      - com.mardojai.ForgeSparks
       - com.github.marhkb.Pods
       - cc.arduino.IDE2
       - io.github.plrigaux.sysd-manager
