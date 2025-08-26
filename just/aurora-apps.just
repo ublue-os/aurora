@@ -379,6 +379,12 @@ toggle-software-store ACTION="":
                 rm "$HOME/.local/share/applications/${app}"
             fi
         done
+
+        # Remove discover notifier
+        if [ -f "$HOME/.config/autostart/org.kde.discover.notifier.desktop" ]; then
+            rm "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
+        fi
+
         # Remove Bazaar override if it exists (shows Bazaar)
         if [ -f "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop" ]; then
             rm "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
@@ -399,6 +405,10 @@ toggle-software-store ACTION="":
                 cp "/usr/share/applications/${app}.disabled" "$HOME/.local/share/applications/${app}"
             fi
         done
+
+        if [ -f "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" ]; then
+            cp "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
+        fi
 
         # enable discover in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
