@@ -25,4 +25,9 @@ org.kde.konsole
 org.kde.dolphin
 dev.lizardbyte.app.Sunshine
 org.freedesktop.fwupd
+org.kde.kate
+org.kde.ark
+org.kde.filelight
+org.kde.kfind
+org.kde.kwalletmanager5
 io.github.kolunmi.Bazaar
