@@ -44,23 +44,19 @@ css: |
     background: linear-gradient(45deg, #e97e4f, #565d8d);
   }
   .office-section {
-    background: linear-gradient(45deg, #8c1790, #fa224a);
+    background: linear-gradient(to left bottom, #8c1790, #a81b8d, #c0258a, #d63386, #e94482, #e7457c, #e54777, #e24872, #cc3969, #b72960, #a21757, #8d004d);
   }
   .gaming-section {
     background: linear-gradient(0deg, #444445, #00ce75);
 
   }
   .utilities-section {
-    background: linear-gradient(to left top, #00244e, #2f3b60, #505472, #6f6f85, #8d8c99, #8e8d96, #8f8f93, #909090, #767676, #5d5d5d, #454545, #2f2f2f);
+    background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
   }
   .dev-section {
-    /* #392946 #050815 #508EB7
-    /*background-image: linear-gradient(to bottom, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);*/
      background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
   }
   .ai-section {
-    /*background: linear-gradient(0deg, #510033, #ff7843);*/
-    /*background: linear-gradient(0deg, #007ade, #ff7843);*/
     background: linear-gradient(0deg, #0055b1, #ff7843);
 
   }
