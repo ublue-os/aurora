@@ -396,8 +396,7 @@ toggle-software-store ACTION="":
         # enable bazaar in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled false
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled true
-        sleep 1
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         echo "${green}${b}Bazaar is now active${n}"
 
@@ -420,8 +419,7 @@ toggle-software-store ACTION="":
         # enable discover in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled false
-        sleep 1
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         # Hide Bazaar by creating NoDisplay override
         cp /usr/share/applications/io.github.kolunmi.Bazaar.desktop "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
