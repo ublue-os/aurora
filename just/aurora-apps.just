@@ -390,9 +390,13 @@ toggle-software-store ACTION="":
             rm "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         fi
 
+        # discover could still be running
+        pkill -f DiscoverNotifier
+
         # enable bazaar in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled false
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled true
+        sleep 1
         systemctl --user restart plasma-krunner.service
 
         echo "${green}${b}Bazaar is now active${n}"
@@ -410,9 +414,13 @@ toggle-software-store ACTION="":
             cp "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
         fi
 
+        # bazaar is probably still running
+        pkill -f bazaar
+
         # enable discover in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled false
+        sleep 1
         systemctl --user restart plasma-krunner.service
 
         # Hide Bazaar by creating NoDisplay override
