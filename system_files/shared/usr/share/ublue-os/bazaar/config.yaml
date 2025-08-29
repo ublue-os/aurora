@@ -11,28 +11,20 @@ css: |
   }
   .aurora-section banner-text {
      padding: 50px;
-     color: #ffffff;
+     color: inherit;
+     text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
   .aurora-section title {
-     color: #ffffff;
-     text-shadow:
-      -1px -1px 0 black,
-       1px -1px 0 black,
-      -1px  1px 0 black,
-       1px  1px 0 black;
+     color: inherit;
   }
   .aurora-section subtitle {
-    color: #ffffff;
+    color: inherit;
     font-weight: 400;
-    text-shadow:
-      -1px -1px 0 black,
-       1px -1px 0 black,
-      -1px  1px 0 black,
-       1px  1px 0 black;
   }
   .aurora-section {
     margin: 15px;
     border-radius: 25px;
+    color: inherit;
   }
   .aurora-section {
     background: linear-gradient(0deg, #271e7f, #60a5c3);
@@ -48,17 +40,15 @@ css: |
   }
   .gaming-section {
     background: linear-gradient(0deg, #444445, #00ce75);
-
   }
   .utilities-section {
     background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
   }
   .dev-section {
-     background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
+    background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
   }
   .ai-section {
     background: linear-gradient(0deg, #0055b1, #ff7843);
-
   }
 sections:
   - title: "Aurora Recommends"
