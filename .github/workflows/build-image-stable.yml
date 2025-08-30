@@ -24,11 +24,12 @@ jobs:
       fail-fast: false
       matrix:
         brand_name: ["aurora"]
+    
     with:
       kernel_pin: 6.14.11-300.fc42.x86_64 ## This is where kernels get pinned.
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
-
+  
   generate-release:
     name: Generate Release
     needs: [build-image-stable]
