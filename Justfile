@@ -35,6 +35,7 @@ default:
     @{{ just }} --list
 
 # Check Just Syntax
+
 [group('Just')]
 check:
     #!/usr/bin/bash
@@ -899,8 +900,8 @@ tag-images image_name="" default_tag="" tags="":
 #
 # First generate a PAT with package write access (https://github.com/settings/tokens)
 # and set $GITHUB_USERNAME and $GITHUB_PAT environment variables
-
 # Retag images on GHCR
+
 [group('Admin')]
 retag-nvidia-on-ghcr working_tag="" stream="" dry_run="1":
     #!/bin/bash
