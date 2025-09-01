@@ -9,14 +9,14 @@ version-script aurora-framework-icon user 1 || exit 0
 VEN_ID="$(cat /sys/devices/virtual/dmi/id/chassis_vendor)"
 if [[ ":Framework:" =~ ":$VEN_ID:" ]]; then
   qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
-    let allPanels = panels();
+    var allPanels = panels();
 
-    for (let i = 0; i < allPanels.length; i++) {
-      let panel = allPanels[i];
-      let widgetIds = panel.widgetIds;
+    for (var i = 0; i < allPanels.length; i++) {
+      var panel = allPanels[i];
+      var widgetIds = panel.widgetIds;
 
-      for (let j = 0; j < widgetIds.length; j++) {
-        let widget = panel.widgetById(widgetIds[j]);
+      for (var j = 0; j < widgetIds.length; j++) {
+        var widget = panel.widgetById(widgetIds[j]);
 
         if (widget.type === \"org.kde.plasma.kickoff\") {
           widget.currentConfigGroup = [\"General\"];
