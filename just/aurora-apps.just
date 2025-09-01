@@ -213,6 +213,7 @@ install-ai-tools:
     brew bundle --file /usr/share/ublue-os/homebrew/aurora-ai.Brewfile
 
 # Install gaming flatpaks
+
 # 23.08 runtime versions are needed for Heroic/Lutris
 [group('Apps')]
 install-gaming-flatpaks:
