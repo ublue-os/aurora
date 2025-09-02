@@ -26,8 +26,6 @@ benchmark:
         fi
     fi
 
-
-
 # Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
 aurora-cli:
@@ -248,35 +246,35 @@ configure-vfio ACTION="":
 # Install system flatpaks for rebasers
 [group('System')]
 install-system-flatpaks $dx="dynamic":
-  #!/usr/bin/env bash
-  TARGET_FLATPAK_FILE="${TARGET_FLATPAK_FILE:-/etc/ublue-os/system-flatpaks.list}"
-  TARGET_DEVMODE_FILE="${TARGET_DEVMODE_FILE:-/etc/ublue-os/system-flatpaks-dx.list}"
-  case "$dx" in
-      "0"|"1")
-          ADD_DEVMODE="$dx"
-          ;;
-      "dynamic")
-          if [[ $(jq '."image-flavor"' /usr/share/ublue-os/image-info.json) =~ dx ]] ; then
-              ADD_DEVMODE=1
-          fi
-          ;;
-      *)
-          echo "Unsupported option"
-          exit 1
-          ;;
-  esac
+    #!/usr/bin/env bash
+    TARGET_FLATPAK_FILE="${TARGET_FLATPAK_FILE:-/etc/ublue-os/system-flatpaks.list}"
+    TARGET_DEVMODE_FILE="${TARGET_DEVMODE_FILE:-/etc/ublue-os/system-flatpaks-dx.list}"
+    case "$dx" in
+        "0"|"1")
+            ADD_DEVMODE="$dx"
+            ;;
+        "dynamic")
+            if [[ $(jq '."image-flavor"' /usr/share/ublue-os/image-info.json) =~ dx ]] ; then
+                ADD_DEVMODE=1
+            fi
+            ;;
+        *)
+            echo "Unsupported option"
+            exit 1
+            ;;
+    esac
 
-  flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
-  # Disable Fedora Flatpak remotes
-     for remote in fedora fedora-testing; do
-         if flatpak remote-list | grep -q "$remote"; then
-             flatpak remote-delete "$remote"
-         fi
-     done
-  xargs flatpak --system -y install --reinstall --or-update < $TARGET_FLATPAK_FILE
-  if [ "$ADD_DEVMODE" == "1" ] ; then
-      xargs flatpak --system -y install --reinstall --or-update < $TARGET_DEVMODE_FILE
-  fi
+    flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+    # Disable Fedora Flatpak remotes
+       for remote in fedora fedora-testing; do
+           if flatpak remote-list | grep -q "$remote"; then
+               flatpak remote-delete "$remote"
+           fi
+       done
+    xargs flatpak --system -y install --reinstall --or-update < $TARGET_FLATPAK_FILE
+    if [ "$ADD_DEVMODE" == "1" ] ; then
+        xargs flatpak --system -y install --reinstall --or-update < $TARGET_DEVMODE_FILE
+    fi
 
 # Configure grub bootmenu visibility
 [group('System')]
@@ -386,7 +384,6 @@ toggle-dinosaurs hemisphere="north":
             fi
         fi
     fi
-
 
 # Configure Boot to Windows desktop entry
 [group('System')]
