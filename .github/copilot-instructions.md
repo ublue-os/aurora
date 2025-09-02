@@ -26,6 +26,17 @@ Aurora is a Universal Blue KDE desktop experience built on Fedora Linux using co
   just clean      # Clean build artifacts - takes <1 second
   just --list     # Show all available commands and groups
   ```
+### Validation and Testing
+- **ALWAYS run syntax checks before making changes**:
+  - `just check` - validates Just syntax (takes <30 seconds)
+  - `just lint` - runs shellcheck on all shell scripts (takes <10 seconds)
+  - `just format` - formats shell scripts with shfmt (takes <10 seconds)
+    
+- **Build validation workflow**:
+  1. Always run `just check` before committing changes
+  2. Always run `just lint` before committing changes  
+  3. Test build with `just build aurora latest` (120+ minute timeout)
+  4. Test VM creation with `just build-qcow2` if modifying VM-related code
 
 ### Container Image Building
 **WARNING: Container builds require network access and take 45-90 minutes. NEVER CANCEL. Set timeout to 120+ minutes.**
@@ -33,11 +44,12 @@ Aurora is a Universal Blue KDE desktop experience built on Fedora Linux using co
 - Build Aurora base image:
   ```bash
   # Build standard Aurora (NEVER CANCEL - takes 60-90 minutes)
-  just build aurora-dx latest main 0 0 0
+  just build aurora latest main 0 0 0
   
   # Build with rechunking (adds 15-30 minutes)
-  just build-rechunk aurora-dx latest flavor
+  just build-rechunk aurora latest flavor
   ```
+
 
 - Available image types:
   - `aurora` - Base KDE desktop
