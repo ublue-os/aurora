@@ -85,7 +85,7 @@ EOF
 echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
-sed -i 's|^Icon=.*|Icon=/usr/share/anaconda/pixmaps/fedora-logo-icon.png|' /usr/share/applications/liveinst.desktop || true
+desktop-file-edit --set-key=Icon --set-value=/usr/share/anaconda/pixmaps/fedora-logo-icon.png /usr/share/applications/liveinst.desktop
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages

@@ -213,6 +213,7 @@ install-ai-tools:
     brew bundle --file /usr/share/ublue-os/homebrew/aurora-ai.Brewfile
 
 # Install gaming flatpaks
+
 # 23.08 runtime versions are needed for Heroic/Lutris
 [group('Apps')]
 install-gaming-flatpaks:
@@ -379,15 +380,24 @@ toggle-software-store ACTION="":
                 rm "$HOME/.local/share/applications/${app}"
             fi
         done
+
+        # Remove discover notifier
+        if [ -f "$HOME/.config/autostart/org.kde.discover.notifier.desktop" ]; then
+            rm "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
+        fi
+
         # Remove Bazaar override if it exists (shows Bazaar)
         if [ -f "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop" ]; then
             rm "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         fi
 
+        # discover could still be running
+        pkill -f DiscoverNotifier
+
         # enable bazaar in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled false
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled true
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         echo "${green}${b}Bazaar is now active${n}"
 
@@ -400,10 +410,17 @@ toggle-software-store ACTION="":
             fi
         done
 
+        if [ -f "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" ]; then
+            cp "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
+        fi
+
+        # bazaar is probably still running
+        pkill -f bazaar
+
         # enable discover in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled false
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         # Hide Bazaar by creating NoDisplay override
         cp /usr/share/applications/io.github.kolunmi.Bazaar.desktop "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"

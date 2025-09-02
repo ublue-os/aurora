@@ -76,8 +76,7 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{cu
 ```
 
 ### Documentation
-Be sure to read the [documentation](https://docs.getaurora.dev/) for more information
-on how to use your cloud native system.
+Be sure to read the [documentation](https://docs.getaurora.dev/) for more information on how to use your cloud native system.
 """
 HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
