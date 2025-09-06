@@ -20,10 +20,4 @@ cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/aurora-cli
 # Try removing just docs (is it actually promblematic?)
 rm -rf /usr/share/doc/just/README.*.md
 
-# NVIDIA GTK4 bug
-# https://github.com/ublue-os/aurora/issues/841
-if jq -e '.["image-flavor"] | test("nvidia")' /usr/share/ublue-os/image-info.json >/dev/null; then
-  echo "GSK_RENDERER=ngl" >/usr/lib/environment.d/gsk.conf
-fi
-
 echo "::endgroup::"
