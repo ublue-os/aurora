@@ -22,4 +22,7 @@ dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/te
 # Enable sunshine repo
 dnf5 -y copr enable lizardbyte/beta
 
+# Enable ledifs kAirpods repo
+dnf5 -y copr enable ledif/kairpods
+
 echo "::endgroup::"
