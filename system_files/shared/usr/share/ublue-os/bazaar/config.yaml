@@ -11,14 +11,14 @@ css: |
   }
   .aurora-section banner-text {
      padding: 50px;
-     color: inherit;
+     color: #ffffff;
      text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
   .aurora-section title {
-     color: inherit;
+     color: #ffffff;
   }
   .aurora-section subtitle {
-    color: inherit;
+    color: #ffffff;
     font-weight: 400;
   }
   .aurora-section {
