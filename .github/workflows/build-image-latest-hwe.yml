@@ -1,15 +1,7 @@
 name: Latest Images HWE
 on:
-  merge_group:
-  pull_request:
-    branches:
-      - main
-      - testing
-    paths-ignore:
-      - "**.md"
-      - "iso_files/**"
-      - "flatpaks/**"
-      - ".github/workflows/*iso*"
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
   workflow_call:
   workflow_dispatch:
 
