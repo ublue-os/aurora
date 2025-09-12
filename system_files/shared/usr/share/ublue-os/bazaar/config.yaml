@@ -75,9 +75,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
-      - aurora-section
     dark-classes:
-      - global-section
       - aurora-section
     appids:
       - io.github.DenysMb.Kontainer
@@ -100,6 +98,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - cc-section
     appids:
       - org.kde.krita
@@ -123,6 +122,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - music-section
     appids:
       - org.kde.elisa
@@ -148,6 +148,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - office-section
     appids:
       - com.slack.Slack
@@ -171,6 +172,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - gaming-section
     appids:
       - com.valvesoftware.Steam
@@ -196,6 +198,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - utilities-section
     appids:
       - app.drey.Warp
@@ -221,6 +224,7 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    dark-classes:
       - dev-section
     appids:
       - io.podman_desktop.PodmanDesktop
@@ -246,6 +250,7 @@ sections:
     banner-height: 500
     classes:
       - global-section
+    dark-classes:
       - ai-section
     appids:
       - com.jeffser.Alpaca
