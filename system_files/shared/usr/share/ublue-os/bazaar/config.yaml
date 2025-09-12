@@ -61,6 +61,15 @@ sections:
     banner-height: 400
     classes:
       - aurora-section
+    dark-classes:
+      - cc-section
+      - music-section
+      - office-section
+      - gaming-section
+      - utilities-section
+      - dev-section
+      - ai-section
+
     appids:
       - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
