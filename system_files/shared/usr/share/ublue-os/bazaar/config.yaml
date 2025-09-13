@@ -1,55 +1,69 @@
 css: |
-  .aurora-section banner {
+  .global-section banner {
      margin-top: 30px;
      margin-left: 30px;
      margin-right: 30px;
      border-radius: 10px;
   }
-  .aurora-section banner-text-overlay {
+
+  .global-section banner-text-overlay {
      margin: 30px;
      padding: 20px;
   }
-  .aurora-section banner-text {
+
+  .global-section banner-text {
      padding: 50px;
      color: #ffffff;
      text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
-  .aurora-section title {
-     color: #ffffff;
+
+  .global-section title {
+    color: #ffffff;
   }
-  .aurora-section subtitle {
+
+  .global-section subtitle {
     color: #ffffff;
     font-weight: 400;
   }
-  .aurora-section {
+
+  .global-section {
     margin: 15px;
     border-radius: 25px;
     color: inherit;
   }
+
   .aurora-section {
     background: linear-gradient(0deg, #271e7f, #60a5c3);
   }
+
   .cc-section {
     background: linear-gradient(0deg, #392946, #050815);
   }
+
   .music-section {
     background: linear-gradient(45deg, #e97e4f, #565d8d);
   }
+
   .office-section {
     background: linear-gradient(to left bottom, #8c1790, #a81b8d, #c0258a, #d63386, #e94482, #e7457c, #e54777, #e24872, #cc3969, #b72960, #a21757, #8d004d);
   }
+
   .gaming-section {
     background: linear-gradient(0deg, #444445, #00ce75);
   }
+
   .utilities-section {
     background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
   }
+
   .dev-section {
     background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
   }
+
   .ai-section {
     background: linear-gradient(0deg, #0055b1, #ff7843);
   }
+
 sections:
   - title: "Aurora Recommends"
     subtitle: "Our Favorite Applications"
@@ -60,6 +74,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
+      - global-section
+    dark-classes:
       - aurora-section
     appids:
       - io.github.DenysMb.Kontainer
@@ -71,6 +87,7 @@ sections:
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
+
   - title: "Content Creation"
     subtitle: "Create your first donut or make some tunes"
     rows: 2
@@ -80,7 +97,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - cc-section
     appids:
       - org.kde.krita
@@ -93,6 +111,7 @@ sections:
       - com.inochi2d.inochi-session
       - org.gimp.GIMP
       - org.darktable.Darktable
+
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
@@ -102,7 +121,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - music-section
     appids:
       - org.kde.elisa
@@ -117,6 +137,7 @@ sections:
       - io.github.mhogomchungu.media-downloader
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
+
   - title: "Office & Productivity"
     subtitle: "Let's do some work"
     rows: 3
@@ -126,7 +147,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - office-section
     appids:
       - com.slack.Slack
@@ -139,6 +161,7 @@ sections:
       - com.bambulab.BambuStudio
       - com.github.IsmaelMartinez.teams_for_linux
       - com.super_productivity.SuperProductivity
+
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
@@ -148,7 +171,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - gaming-section
     appids:
       - com.valvesoftware.Steam
@@ -163,6 +187,7 @@ sections:
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
+
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
     rows: 2
@@ -172,7 +197,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - utilities-section
     appids:
       - app.drey.Warp
@@ -187,6 +213,7 @@ sections:
       - org.mozilla.vpn
       - hu.irl.cameractrls
       - org.gnome.gitlab.YaLTeR.Identity
+
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
@@ -196,7 +223,8 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - dev-section
     appids:
       - io.podman_desktop.PodmanDesktop
@@ -211,6 +239,7 @@ sections:
       - cc.arduino.IDE2
       - io.github.plrigaux.sysd-manager
       - me.iepure.devtoolbox
+
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
@@ -220,7 +249,8 @@ sections:
     banner-text-valign: center
     banner-height: 500
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
       - ai-section
     appids:
       - com.jeffser.Alpaca
