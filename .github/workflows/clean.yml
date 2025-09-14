@@ -17,7 +17,7 @@ jobs:
         uses: dataaxiom/ghcr-cleanup-action@cd0cdb900b5dbf3a6f2cc869f0dbb0b8211f50c4 # v1.0.16
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          packages: aurora,aurora-dx,aurora-dx-nvidia,aurora-nvidia
+          packages: aurora,aurora-dx,aurora-nvidia,aurora-dx-nvidia,aurora-nvidia-open,aurora-dx-nvidia-open,aurora-hwe,aurora-dx-hwe,aurora-hwe-nvidia,aurora-dx-hwe-nvidia,aurora-hwe-nvidia-open,aurora-dx-hwe-nvidia-open,aurora-asus,aurora-dx-asus,aurora-asus-nvidia,aurora-dx-asus-nvidia,aurora-asus-nvidia-open,aurora-dx-asus-nvidia-open,aurora-surface,aurora-dx-surface,aurora-surface-nvidia,aurora-dx-surface-nvidia,aurora-surface-nvidia-open,aurora-dx-surface-nvidia-open
           older-than: 90 days
           delete-orphaned-images: true
           keep-n-tagged: 7
