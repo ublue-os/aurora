@@ -2,262 +2,196 @@
 
 This document provides essential information for coding agents working with the Aurora repository to minimize exploration time and avoid common build failures.
 
+## Repository Overview
 
-## Architecture Overview
+**Aurora** is a cloud-native desktop operating system that reimagines the Linux desktop experience. It's an immutable OS built on Fedora Linux using container technologies with atomic updates.
 
-Aurora uses a multi-stage container build system to create two primary image variants:
-- **aurora** (base): Standard KDE desktop with essential applications via Flatpak
-- **aurora-dx** (developer experience): Extends base with development tools, Docker, Podman, virtualization
+- **Type**: Container-based Linux distribution build system 
+- **Base**: Fedora Linux with KDE Plasma Desktop + Universal Blue infrastructure
+- **Languages**: Bash scripts, JSON configuration, Python utilities
+- **Build System**: Just (command runner), Podman/Docker containers, GitHub Actions
+- **Target**: Immutable desktop OS with two variants (base + developer experience)
 
-### Key Build Pipeline Components
-1. **Base image**: Starts from Fedora Kinoite (`ghcr.io/ublue-os/kinoite-main`)
-2. **Multi-stage Containerfile**: Uses scratch context layer to copy all build assets
-3. **Shared build scripts**: `build_files/shared/build-base.sh` → `build_files/shared/build-dx.sh`
-4. **Package system**: JSON-driven package management with Fedora version-specific overrides
-5. **System file overlay**: Configuration files in `system_files/{shared,dx}/` applied to final image
+## Repository Structure
 
-## Working Effectively
+### Root Directory Files
+- `Containerfile` - Main container build definition (multi-stage: base → dx)
+- `Justfile` - Build automation recipes (33KB - like Makefile but more readable)
+- `packages.json` - Package inclusion/exclusion lists per Fedora version and variant
+- `.pre-commit-config.yaml` - Pre-commit hooks for basic validation
+- `image-versions.yml` - Image version configurations
+- `cosign.pub` - Container signing public key
 
-### Essential Just Commands (REQUIRED: v1.36+ for group syntax)
+### Key Directories
+- `system_files/` (74MB) - User-space files, configurations, fonts, themes
+- `build_files/` - Build scripts organized as base/, dx/, shared/
+- `.github/workflows/` - Comprehensive CI/CD pipelines
+- `just/` - Additional Just recipes for apps and system management
+- `flatpaks/` - Flatpak application lists
+- `iso_files/` - ISO installation configurations
+
+### Architecture
+- **Two Build Targets**: `base` (regular users) and `dx` (developer experience)
+- **Image Flavors**: main, nvidia, nvidia-open, hwe variants, asus, surface
+- **Fedora Versions**: 42 supported
+- **Build Process**: Sequential shell scripts in build_files/ directory
+
+## Build Instructions
+
+### Prerequisites
+**ALWAYS install these tools before attempting any builds:**
+
 ```bash
-just check      # Validate all justfile syntax (<1 second)
-just fix        # Auto-fix justfile formatting (<1 second)  
-just --list     # Show available commands grouped by category
-just clean      # Remove build artifacts
+# Install Just command runner (REQUIRED for build commands, may not be available)
+# If external access is limited, Just commands will not work
+curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# Verify container runtime (usually available)
+podman --version || docker --version
+
+# Install pre-commit for validation (usually works)
+pip install pre-commit
 ```
 
-### Package Management Pattern
-Aurora uses a declarative JSON system in `packages.json`:
-- **Structure**: `{fedora_version: {include: {all: [], dx: []}, exclude: {all: [], dx: []}}}`
-- **Package scripts**: Base uses `.all[]`, DX adds `.dx[]` packages
-- **Version-specific**: Override packages for specific Fedora releases
-- **Build scripts**: `build_files/base/04-packages.sh` and `build_files/dx/03-packages-dx.sh`
+**Note**: In restricted environments, Just command runner may not be installable. Most validation can still be done with pre-commit and manual JSON validation.
 
-Example: Adding development tool to DX variant only:
+### Essential Commands
+
+**Build validation (ALWAYS run before making changes):**
+```bash
+# 1. Validate syntax and formatting (2-3 minutes)
+# Note: .devcontainer.json will fail JSON check due to comments - this is expected
+pre-commit run --all-files
+
+# 2. Check specific JSON files manually:
+python3 -c "import json; json.load(open('packages.json'))"
+
+# 3. Check Just syntax (requires Just installation)
+just check  # Only if Just command runner is available
+
+# 4. Fix formatting issues automatically
+just fix    # Only if Just command runner is available
+```
+
+**Build commands (use with extreme caution - these take 30+ minutes and require significant resources):**
+```bash
+# Build base image (30-60 minutes, requires 20GB+ disk space)
+just build bluefin latest main
+
+# Build developer variant (45-90 minutes, requires 25GB+ disk space)
+just build bluefin-dx latest main
+
+# Build with specific kernel pin
+just build bluefin latest main "" "" "" "6.10.10-200.fc40.x86_64"
+```
+
+**Utility commands:**
+```bash
+# Clean build artifacts (if Just available)
+just clean
+
+# List all available recipes (if Just available)
+just --list
+
+# Validate image/tag/flavor combinations (if Just available)
+just validate bluefin latest main
+```
+
+**Working without Just (when external access is restricted):**
+```bash
+# Manual validation instead of 'just check':
+find . -name "*.just" -exec echo "Checking {}" \; -exec head -5 {} \;
+
+# Manual cleanup instead of 'just clean':
+rm -rf *_build* previous.manifest.json changelog.md output.env
+
+# View Justfile recipes manually:
+grep -n "^[a-zA-Z].*:" Justfile | head -20
+```
+
+### Critical Build Notes
+
+1. **Container builds require massive resources** (20GB+ disk, 8GB+ RAM, 30+ minute runtime)
+2. **Always run `just check` before making changes** - catches syntax errors early
+3. **Pre-commit hooks are mandatory** - run `pre-commit run --all-files` to validate changes
+4. **Never run full builds in CI unless specifically testing container changes**
+5. **Use `just clean` to reset build state if encountering issues**
+
+### Common Build Failures & Workarounds
+
+**Pre-commit failures:**
+```bash
+# Known issue: .devcontainer.json contains comments (invalid for JSON checker)
+# This failure is expected and can be ignored:
+# ".devcontainer.json: Failed to json decode"
+
+# Fix end-of-file and trailing whitespace automatically
+pre-commit run --all-files
+
+# Validate specific JSON files (excluding .devcontainer.json):
+python3 -c "import json; json.load(open('packages.json'))"  # Should pass
+```
+
+**Just syntax errors (if Just is available):**
+```bash
+# Auto-fix formatting
+just fix
+
+# Manual validation
+just check
+```
+
+**Container build failures:**
+- Ensure adequate disk space (25GB+ free)
+- Clean previous builds: `just clean` (if available)
+- Check container runtime: `podman system info` or `docker system info`
+- Build failures often indicate resource constraints rather than code issues
+
+## Validation Pipeline
+
+### Pre-commit Hooks (REQUIRED)
+The repository uses mandatory pre-commit validation:
+- `check-json` - Validates JSON syntax
+- `check-toml` - Validates TOML syntax
+- `check-yaml` - Validates YAML syntax
+- `end-of-file-fixer` - Ensures files end with newline
+- `trailing-whitespace` - Removes trailing whitespace
+
+**Always run:** `pre-commit run --all-files` before committing changes.
+
+### GitHub Actions Workflows
+- `build-image-latest-main.yml` - Builds latest images on main branch changes
+- `build-image-stable.yml` - Builds stable release images
+- `build-image-gts.yml` - Builds GTS (Go-To-Stable) images
+- `reusable-build.yml` - Core build logic for all image variants
+
+### Manual Validation Steps
+1. `pre-commit run --all-files` - Runs validation hooks (2-3 minutes, .devcontainer.json failure is expected)
+2. `python3 -c "import json; json.load(open('packages.json'))"` - Validate critical JSON files
+3. `just check` - Validates Just syntax (if Just is available, 30 seconds)
+4. `just fix` - Auto-fixes formatting issues (if Just is available, 30 seconds)
+5. Test builds only if making container-related changes (30+ minutes)
+
+## Package Management
+
+### packages.json Structure
+The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ```json
 {
   "all": {
     "include": {
-      "dx": ["new-dev-tool"]
+      "all": ["package1", "package2"],  // Base image packages
+      "dx": ["dev-package1", "dev-package2"]  // Developer additions
+    },
+    "exclude": {
+      "all": ["unwanted-package"],
+      "dx": []
     }
+  },
+  "42": {  // Fedora 41 specific overrides
+    "include": {"all": ["fedora41-only-package"]},
+    "exclude": {"all": []}
   }
 }
 ```
-
-### Container Image Building
-**WARNING: Container builds require network access and take 45-90 minutes. NEVER CANCEL. Set timeout to 120+ minutes.**
-
-- Build Aurora base image:
-  ```bash
-  # Build standard Aurora (NEVER CANCEL - takes 60-90 minutes)
-  just build aurora-dx latest main 0 0 0
-  
-  # Build with rechunking (adds 15-30 minutes)
-  just build-rechunk aurora-dx latest flavor
-  ```
-
-- Available image types:
-  - `aurora` - Base KDE desktop
-  - `aurora-dx` - Developer experience variant with additional tools
-
-- Available flavors:
-  - `main` - Standard configuration
-  - `nvidia` - NVIDIA proprietary drivers
-  - `nvidia-open` - NVIDIA open source drivers  
-  - `hwe` - Hardware enablement (newer kernels)
-  - Plus combinations: `hwe-nvidia`, `asus`, `surface`, etc.
-
-- Available tags:
-  - `latest` - Latest builds from main branch
-  - `stable` - Stable release builds
-  - `beta` - Beta testing builds
-
-### Container Operations
-- Run built container:
-  ```bash
-  just run aurora-dx latest main    # Runs interactive bash session
-  ```
-
-- Build validation:
-  ```bash
-  just validate aurora-dx latest main    # Validate image/tag/flavor combination
-  ```
-
-### ISO Building (Advanced)
-**WARNING: ISO builds take 30-45 minutes. NEVER CANCEL. Set timeout to 60+ minutes.**
-```bash
-just build-iso aurora latest main    # Build installable ISO
-just run-iso aurora latest main      # Test ISO in virtual environment
-```
-
-## Network Dependencies and Limitations
-
-### What requires network access:
-- Container image pulls from ghcr.io/ublue-os 
-- Container signature verification with cosign
-- Package installations during builds
-- Changelog generation (pulls remote manifests)
-
-### What works offline:
-- Just syntax validation (`just check`, `just fix`)
-- Repository cleanup (`just clean`)
-- File structure navigation
-- Configuration validation
-
-### Common network-related failures:
-```bash
-# These commands will fail without network access:
-just build aurora-dx latest main     # Fails pulling base images
-just verify-container                 # Fails downloading cosign
-just changelogs                      # Fails pulling manifests
-```
-
-## Validation and Testing
-
-### Always run before committing changes:
-```bash
-just check                           # Validate just syntax
-```
-
-### Manual validation scenarios:
-After making changes to build scripts or configurations:
-1. Validate just syntax: `just check`
-2. Test image building (if network available): `just build aurora-dx latest main`
-3. Verify container runs: `just run aurora-dx latest main`
-4. Test key functionality inside container (if applicable)
-
-### CI/CD validation:
-- All builds are validated in GitHub Actions
-- Builds include security scanning and signature verification
-- Multi-architecture support (x86_64 primarily)
-
-## Project Structure
-
-### Key directories:
-```
-/home/runner/work/aurora/aurora/
-├── .github/               # GitHub workflows and automation
-│   ├── workflows/         # CI/CD build pipelines  
-│   └── changelogs.py      # Automated changelog generation
-├── build_files/           # Container build scripts
-│   ├── base/              # Base image build steps
-│   ├── dx/                # Developer experience additions
-│   └── shared/            # Common build utilities
-├── system_files/          # Files installed into images
-│   ├── shared/            # Common system configurations
-│   └── dx/                # Developer experience specific files
-├── just/                  # Just command definitions
-│   ├── aurora-apps.just   # Application management commands
-│   └── aurora-system.just # System configuration commands
-├── Justfile               # Main just command definitions
-├── Containerfile          # Main container build definition
-├── packages.json          # Package installation definitions
-└── flatpaks/              # Flatpak application lists
-```
-
-### Important files to check when making changes:
-- `Justfile` - Main build commands and workflows
-- `packages.json` - Package installations by Fedora version
-- `Containerfile` - Container build definition
-- `build_files/shared/build-base.sh` - Base image build process
-- `build_files/shared/build-dx.sh` - Developer experience build process
-
-## Common Tasks and Timing
-
-### Syntax validation and formatting:
-```bash
-just check    # <1 second - check all justfile syntax
-just fix      # <1 second - auto-fix formatting issues  
-just --list   # <1 second - show all available commands
-```
-
-### Container builds (NETWORK REQUIRED):
-```bash
-# NEVER CANCEL: Basic build takes 60-90 minutes. Set timeout to 120+ minutes.
-just build aurora-dx latest main
-
-# NEVER CANCEL: Build with rechunking takes 75-120 minutes. Set timeout to 150+ minutes.  
-just build-rechunk aurora-dx latest main
-
-# NEVER CANCEL: ISO building takes 30-45 minutes. Set timeout to 60+ minutes.
-just build-iso aurora latest main
-```
-
-### Development workflow:
-1. Make changes to relevant files
-2. Run `just check` to validate syntax (<1 second)
-3. Run `just fix` if syntax issues found (<1 second)
-4. If changing build scripts, test build process (60-90 minutes with network)
-5. Commit changes
-
-## Build Failures and Troubleshooting
-
-### Network connectivity issues:
-```bash
-# Error: "dial tcp: lookup cgr.dev on 127.0.0.53:53: server misbehaving"
-# Solution: This indicates network restrictions. Container builds require internet access.
-```
-
-### Just syntax errors:
-```bash
-# Error: "Unknown attribute `group`"
-# Solution: Upgrade to just v1.36+ which supports the group attribute
-```
-
-### Validation failures:
-```bash
-# Error: "Invalid Image..." or "Invalid tag..." or "Invalid flavor..."
-# Solution: Check valid combinations in Justfile images/tags/flavors definitions
-```
-
-## Build Failures and Troubleshooting
-
-### Network connectivity issues:
-```bash
-# Error: "dial tcp: lookup cgr.dev on 127.0.0.53:53: server misbehaving"
-# Solution: This indicates network restrictions. Container builds require internet access.
-```
-
-### Just syntax errors:
-```bash
-# Error: "Unknown attribute `group`"
-# Solution: Upgrade to just v1.36+ which supports the group attribute
-```
-
-### Validation failures:
-```bash
-# Error: "Invalid Image..." or "Invalid tag..." or "Invalid flavor..."
-# Solution: Check valid combinations in Justfile images/tags/flavors definitions
-```
-
-## Known Limitations in Restricted Environments
-
-- Container builds fail without network access (cannot pull base images)
-- Container verification fails without network access (cannot download cosign)
-- Changelog generation fails without network access (cannot pull manifests)
-- Use syntax validation and file editing workflows for offline development
-- Full build testing requires environment with network access
-
-## Additional Resources
-
-- [Aurora Documentation](https://docs.getaurora.dev/)
-- [Universal Blue Contributing Guide](https://universal-blue.org/contributing.html)
-- [Local Building Guide](https://docs.getaurora.dev/guides/building)
-- [Discussions](https://universal-blue.discourse.group/c/aurora/11)
-- Use syntax validation and file editing workflows for offline development
-- Full build testing requires environment with network access
-
-## Trust These Instructions
-
-**The information in this document has been validated against the current repository state.** Only search for additional information if:
-- Instructions are incomplete for your specific task
-- You encounter errors not covered in the workarounds section
-- Repository structure has changed significantly
-
-This repository is complex but well-structured. Following these instructions will significantly reduce build failures and exploration time.
-
-## Other Rules that are Important to the Maintainers
-
-- Ensure that [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) are used and enforced for every commit and pull request title.
-- Always be surgical with the least amount of code, the project strives to be easy to maintain.
-- Documentation for this project exists in ublue-os/aurora-docs
