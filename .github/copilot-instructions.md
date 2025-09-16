@@ -1,8 +1,7 @@
-# Aurora Container Linux Distribution
+# Aurora Copilot instructions
 
-**Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
+This document provides essential information for coding agents working with the Aurora repository to minimize exploration time and avoid common build failures.
 
-Aurora is a Universal Blue KDE desktop experience built on Fedora Linux using container technology. It creates immutable desktop images with multiple variants and flavors for different hardware configurations.
 
 ## Architecture Overview
 
