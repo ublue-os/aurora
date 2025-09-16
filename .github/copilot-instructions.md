@@ -256,6 +256,7 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ## Trust These Instructions
 
 **The information in this document has been validated against the current repository state.** Only search for additional information if:
+
 - Instructions are incomplete for your specific task
 - You encounter errors not covered in the workarounds section
 - Repository structure has changed significantly
