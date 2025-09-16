@@ -147,6 +147,7 @@ just check
 ```
 
 **Container build failures:**
+
 - Ensure adequate disk space (25GB+ free)
 - Clean previous builds: `just clean` (if available)
 - Check container runtime: `podman system info` or `docker system info`
@@ -157,6 +158,7 @@ just check
 ### Pre-commit Hooks (REQUIRED)
 
 The repository uses mandatory pre-commit validation:
+
 - `check-json` - Validates JSON syntax
 - `check-toml` - Validates TOML syntax
 - `check-yaml` - Validates YAML syntax
