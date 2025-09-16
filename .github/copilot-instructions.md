@@ -4,28 +4,46 @@
 
 Aurora is a Universal Blue KDE desktop experience built on Fedora Linux using container technology. It creates immutable desktop images with multiple variants and flavors for different hardware configurations.
 
+## Architecture Overview
+
+Aurora uses a multi-stage container build system to create two primary image variants:
+- **aurora** (base): Standard KDE desktop with essential applications via Flatpak
+- **aurora-dx** (developer experience): Extends base with development tools, Docker, Podman, virtualization
+
+### Key Build Pipeline Components
+1. **Base image**: Starts from Fedora Kinoite (`ghcr.io/ublue-os/kinoite-main`)
+2. **Multi-stage Containerfile**: Uses scratch context layer to copy all build assets
+3. **Shared build scripts**: `build_files/shared/build-base.sh` → `build_files/shared/build-dx.sh`
+4. **Package system**: JSON-driven package management with Fedora version-specific overrides
+5. **System file overlay**: Configuration files in `system_files/{shared,dx}/` applied to final image
+
 ## Working Effectively
 
-### Prerequisites and Dependencies
-- Install just command runner v1.36+ (REQUIRED for group syntax support):
-  ```bash
-  curl -sSLO https://github.com/casey/just/releases/download/1.36.0/just-1.36.0-x86_64-unknown-linux-musl.tar.gz
-  tar -zxvf just-1.36.0-x86_64-unknown-linux-musl.tar.gz
-  sudo mv just /usr/local/bin/just
-  chmod +x /usr/local/bin/just
-  ```
-- Podman or Docker for container operations (podman preferred)
-- Python 3.x for changelog scripts
-- Network access for pulling container images and verification
+### Essential Just Commands (REQUIRED: v1.36+ for group syntax)
+```bash
+just check      # Validate all justfile syntax (<1 second)
+just fix        # Auto-fix justfile formatting (<1 second)  
+just --list     # Show available commands grouped by category
+just clean      # Remove build artifacts
+```
 
-### Essential Commands
-- Bootstrap and validate repository:
-  ```bash
-  just check      # Validate just syntax - takes <1 second
-  just fix        # Fix just syntax formatting if needed - takes <1 second
-  just clean      # Clean build artifacts - takes <1 second
-  just --list     # Show all available commands and groups
-  ```
+### Package Management Pattern
+Aurora uses a declarative JSON system in `packages.json`:
+- **Structure**: `{fedora_version: {include: {all: [], dx: []}, exclude: {all: [], dx: []}}}`
+- **Package scripts**: Base uses `.all[]`, DX adds `.dx[]` packages
+- **Version-specific**: Override packages for specific Fedora releases
+- **Build scripts**: `build_files/base/04-packages.sh` and `build_files/dx/03-packages-dx.sh`
+
+Example: Adding development tool to DX variant only:
+```json
+{
+  "all": {
+    "include": {
+      "dx": ["new-dev-tool"]
+    }
+  }
+}
+```
 
 ### Container Image Building
 **WARNING: Container builds require network access and take 45-90 minutes. NEVER CANCEL. Set timeout to 120+ minutes.**
@@ -193,6 +211,26 @@ just build-iso aurora latest main
 # Solution: Check valid combinations in Justfile images/tags/flavors definitions
 ```
 
+## Build Failures and Troubleshooting
+
+### Network connectivity issues:
+```bash
+# Error: "dial tcp: lookup cgr.dev on 127.0.0.53:53: server misbehaving"
+# Solution: This indicates network restrictions. Container builds require internet access.
+```
+
+### Just syntax errors:
+```bash
+# Error: "Unknown attribute `group`"
+# Solution: Upgrade to just v1.36+ which supports the group attribute
+```
+
+### Validation failures:
+```bash
+# Error: "Invalid Image..." or "Invalid tag..." or "Invalid flavor..."
+# Solution: Check valid combinations in Justfile images/tags/flavors definitions
+```
+
 ## Known Limitations in Restricted Environments
 
 - Container builds fail without network access (cannot pull base images)
@@ -207,3 +245,20 @@ just build-iso aurora latest main
 - [Universal Blue Contributing Guide](https://universal-blue.org/contributing.html)
 - [Local Building Guide](https://docs.getaurora.dev/guides/building)
 - [Discussions](https://universal-blue.discourse.group/c/aurora/11)
+- Use syntax validation and file editing workflows for offline development
+- Full build testing requires environment with network access
+
+## Trust These Instructions
+
+**The information in this document has been validated against the current repository state.** Only search for additional information if:
+- Instructions are incomplete for your specific task
+- You encounter errors not covered in the workarounds section
+- Repository structure has changed significantly
+
+This repository is complex but well-structured. Following these instructions will significantly reduce build failures and exploration time.
+
+## Other Rules that are Important to the Maintainers
+
+- Ensure that [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) are used and enforced for every commit and pull request title.
+- Always be surgical with the least amount of code, the project strives to be easy to maintain.
+- Documentation for this project exists in ublue-os/aurora-docs
