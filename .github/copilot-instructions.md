@@ -24,6 +24,7 @@ This document provides essential information for coding agents working with the 
 - `cosign.pub` - Container signing public key
 
 ### Key Directories
+
 - `system_files/` (74MB) - User-space files, configurations, fonts, themes
 - `build_files/` - Build scripts organized as base/, dx/, shared/
 - `.github/workflows/` - Comprehensive CI/CD pipelines
@@ -32,6 +33,7 @@ This document provides essential information for coding agents working with the 
 - `iso_files/` - ISO installation configurations
 
 ### Architecture
+
 - **Two Build Targets**: `base` (regular users) and `dx` (developer experience)
 - **Image Flavors**: main, nvidia, nvidia-open, hwe variants, asus, surface
 - **Fedora Versions**: 42 supported
@@ -40,6 +42,7 @@ This document provides essential information for coding agents working with the 
 ## Build Instructions
 
 ### Prerequisites
+
 **ALWAYS install these tools before attempting any builds:**
 
 ```bash
@@ -152,6 +155,7 @@ just check
 ## Validation Pipeline
 
 ### Pre-commit Hooks (REQUIRED)
+
 The repository uses mandatory pre-commit validation:
 - `check-json` - Validates JSON syntax
 - `check-toml` - Validates TOML syntax
@@ -162,12 +166,14 @@ The repository uses mandatory pre-commit validation:
 **Always run:** `pre-commit run --all-files` before committing changes.
 
 ### GitHub Actions Workflows
+
 - `build-image-latest-main.yml` - Builds latest images on main branch changes
 - `build-image-stable.yml` - Builds stable release images
 - `build-image-gts.yml` - Builds GTS (Go-To-Stable) images
 - `reusable-build.yml` - Core build logic for all image variants
 
 ### Manual Validation Steps
+
 1. `pre-commit run --all-files` - Runs validation hooks (2-3 minutes, .devcontainer.json failure is expected)
 2. `python3 -c "import json; json.load(open('packages.json'))"` - Validate critical JSON files
 3. `just check` - Validates Just syntax (if Just is available, 30 seconds)
@@ -177,6 +183,7 @@ The repository uses mandatory pre-commit validation:
 ## Package Management
 
 ### packages.json Structure
+
 The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ```json
 {
@@ -198,6 +205,7 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ```
 
 ### Making Package Changes
+
 1. Edit `packages.json` following the existing structure
 2. Validate JSON syntax: `pre-commit run check-json --all-files`
 3. Test with container build if critical changes
@@ -205,6 +213,7 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ## Configuration Files
 
 ### Key Configuration Locations
+
 - `system_files/shared/` - System-wide configurations
 - `build_files/base/` - Base image build scripts
 - `build_files/dx/` - Developer experience build scripts
@@ -212,6 +221,7 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 - `.github/workflows/` - CI/CD pipeline definitions
 
 ### Linting/Build Configurations
+
 - `.pre-commit-config.yaml` - Pre-commit hook configuration
 - `Justfile` - Build recipe definitions and validation
 - `.github/renovate.json5` - Automated dependency updates
@@ -220,6 +230,7 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 ## Development Guidelines
 
 ### Making Changes
+
 1. **ALWAYS validate first:** `just check && pre-commit run --all-files`
 2. **Make minimal modifications** - prefer configuration over code changes
 3. **Test formatting:** `just fix` to auto-format
@@ -227,12 +238,14 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
 5. **Focus on system_files/ changes** for most user-facing modifications
 
 ### File Editing Best Practices
+
 - **JSON files**: Validate syntax with `pre-commit run check-json`
 - **YAML files**: Validate syntax with `pre-commit run check-yaml`
 - **Justfile**: Always run `just check` after modifications
 - **Shell scripts**: Follow existing patterns in build_files/
 
 ### Common Modification Patterns
+
 - **Adding packages**: Edit `packages.json`, validate JSON syntax
 - **System configuration**: Modify files in `system_files/shared/`
 - **Build logic**: Edit scripts in `build_files/base/` or `build_files/dx/`
