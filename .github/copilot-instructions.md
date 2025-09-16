@@ -189,9 +189,65 @@ The `packages.json` file defines package inclusion/exclusion per Fedora version:
       "dx": []
     }
   },
-  "42": {  // Fedora 41 specific overrides
+  "42": {  // Fedora 42 specific overrides
     "include": {"all": ["fedora41-only-package"]},
     "exclude": {"all": []}
   }
 }
 ```
+
+### Making Package Changes
+1. Edit `packages.json` following the existing structure
+2. Validate JSON syntax: `pre-commit run check-json --all-files`
+3. Test with container build if critical changes
+
+## Configuration Files
+
+### Key Configuration Locations
+- `system_files/shared/` - System-wide configurations
+- `build_files/base/` - Base image build scripts
+- `build_files/dx/` - Developer experience build scripts
+- `build_files/shared/` - Common build utilities
+- `.github/workflows/` - CI/CD pipeline definitions
+
+### Linting/Build Configurations
+- `.pre-commit-config.yaml` - Pre-commit hook configuration
+- `Justfile` - Build recipe definitions and validation
+- `.github/renovate.json5` - Automated dependency updates
+- `Containerfile` - Container build instructions
+
+## Development Guidelines
+
+### Making Changes
+1. **ALWAYS validate first:** `just check && pre-commit run --all-files`
+2. **Make minimal modifications** - prefer configuration over code changes
+3. **Test formatting:** `just fix` to auto-format
+4. **Avoid full container builds** unless specifically testing container changes
+5. **Focus on system_files/ changes** for most user-facing modifications
+
+### File Editing Best Practices
+- **JSON files**: Validate syntax with `pre-commit run check-json`
+- **YAML files**: Validate syntax with `pre-commit run check-yaml`
+- **Justfile**: Always run `just check` after modifications
+- **Shell scripts**: Follow existing patterns in build_files/
+
+### Common Modification Patterns
+- **Adding packages**: Edit `packages.json`, validate JSON syntax
+- **System configuration**: Modify files in `system_files/shared/`
+- **Build logic**: Edit scripts in `build_files/base/` or `build_files/dx/`
+- **CI/CD**: Modify workflows in `.github/workflows/`
+
+## Trust These Instructions
+
+**The information in this document has been validated against the current repository state.** Only search for additional information if:
+- Instructions are incomplete for your specific task
+- You encounter errors not covered in the workarounds section
+- Repository structure has changed significantly
+
+This repository is complex but well-structured. Following these instructions will significantly reduce build failures and exploration time.
+
+## Other Rules that are Important to the Maintainers
+
+- Ensure that [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) are used and enforced for every commit and pull request title.
+- Always be surgical with the least amount of code, the project strives to be easy to maintain.
+- Documentation for this project exists in ublue-os/aurora-docs
