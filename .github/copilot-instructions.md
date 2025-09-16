@@ -77,13 +77,13 @@ just fix    # Only if Just command runner is available
 **Build commands (use with extreme caution - these take 30+ minutes and require significant resources):**
 ```bash
 # Build base image (30-60 minutes, requires 20GB+ disk space)
-just build bluefin latest main
+just build aurora latest main
 
 # Build developer variant (45-90 minutes, requires 25GB+ disk space)
-just build bluefin-dx latest main
+just build aurora-dx latest main
 
 # Build with specific kernel pin
-just build bluefin latest main "" "" "" "6.10.10-200.fc40.x86_64"
+just build aurora latest main "" "" "" "6.10.10-200.fc40.x86_64"
 ```
 
 **Utility commands:**
@@ -95,7 +95,7 @@ just clean
 just --list
 
 # Validate image/tag/flavor combinations (if Just available)
-just validate bluefin latest main
+just validate aurora latest main
 ```
 
 **Working without Just (when external access is restricted):**
