@@ -15,6 +15,7 @@ This document provides essential information for coding agents working with the 
 ## Repository Structure
 
 ### Root Directory Files
+
 - `Containerfile` - Main container build definition (multi-stage: base → dx)
 - `Justfile` - Build automation recipes (33KB - like Makefile but more readable)
 - `packages.json` - Package inclusion/exclusion lists per Fedora version and variant
