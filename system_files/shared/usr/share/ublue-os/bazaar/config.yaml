@@ -213,6 +213,7 @@ sections:
       - org.mozilla.vpn
       - hu.irl.cameractrls
       - org.gnome.gitlab.YaLTeR.Identity
+      - io.github.BuddySirJava.SSH-Studio
 
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
