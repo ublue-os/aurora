@@ -21,7 +21,8 @@ for app in "${discover_apps[@]}"; do
   fi
 done
 
-mv /etc/xdg/autostart/org.kde.discover.notifier.desktop /etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled
+# These notifications are useless and confusing
+rm /etc/xdg/autostart/org.kde.discover.notifier.desktop
 
 # Replace discover on Panel and Kickoff with bazaar
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
