@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aurora Docs
+Name=Aurora Offline Docs
 Comment=Open the Aurora User Guide (PDF)
 Exec=xdg-open /usr/share/doc/aurora/aurora.pdf
 Icon=help-browser
