@@ -8,7 +8,7 @@ on:
       - ".github/workflows/reusable-build-iso-anaconda.yml"
       - "iso_files/configure_iso_anaconda.sh"
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: "0 0 15 * *"
 
 env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
