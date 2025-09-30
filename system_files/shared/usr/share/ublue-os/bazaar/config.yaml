@@ -214,6 +214,7 @@ sections:
       - hu.irl.cameractrls
       - org.gnome.gitlab.YaLTeR.Identity
       - io.github.BuddySirJava.SSH-Studio
+      - au.stevetech.yafi
 
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
