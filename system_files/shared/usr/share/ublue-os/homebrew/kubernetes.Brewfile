@@ -12,5 +12,3 @@ brew "k9s"
 brew "kubectx"
 brew "pack"
 brew "syft"
-
-
