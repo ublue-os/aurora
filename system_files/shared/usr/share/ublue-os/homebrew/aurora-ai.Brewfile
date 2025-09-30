@@ -1,0 +1,7 @@
+brew "aichat"
+brew "block-goose-cli"
+brew "codex"
+brew "gemini-cli"
+brew "mods"
+brew "ramalama"
+
