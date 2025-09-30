@@ -333,7 +333,6 @@ toggle-software-store ACTION="":
     discover_apps=(
         "org.kde.discover.desktop"
         "org.kde.discover.flatpak.desktop"
-        "org.kde.discover.notifier.desktop"
         "org.kde.discover.urlhandler.desktop"
     )
 
@@ -381,7 +380,7 @@ toggle-software-store ACTION="":
             fi
         done
 
-        # Remove discover notifier
+        # Remove discover notifier (might still exist from before we removed it from the image)
         if [ -f "$HOME/.config/autostart/org.kde.discover.notifier.desktop" ]; then
             rm "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
         fi
@@ -409,10 +408,6 @@ toggle-software-store ACTION="":
                 cp "/usr/share/applications/${app}.disabled" "$HOME/.local/share/applications/${app}"
             fi
         done
-
-        if [ -f "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" ]; then
-            cp "/etc/xdg/autostart/org.kde.discover.notifier.desktop.disabled" "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
-        fi
 
         # bazaar is probably still running
         pkill -f bazaar
