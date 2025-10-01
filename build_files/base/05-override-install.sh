@@ -4,10 +4,6 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-dnf5 -y swap \
-  --repo="terra-extras" \
-  switcheroo-control switcheroo-control
-
 # Fix for ID in fwupd
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
