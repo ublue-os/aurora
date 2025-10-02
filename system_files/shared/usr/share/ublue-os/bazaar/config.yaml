@@ -236,6 +236,7 @@ sections:
       - com.getpostman.Postman
       - org.kde.kdevelop
       - io.dbeaver.DBeaverCommunity
+      - org.gitfourchette.gitfourchette
       - com.mardojai.ForgeSparks
       - com.github.marhkb.Pods
       - cc.arduino.IDE2
