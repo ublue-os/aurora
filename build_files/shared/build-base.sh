@@ -59,6 +59,9 @@ echo "::endgroup::"
 # Regenerate initramfs
 /ctx/build_files/base/19-initramfs.sh
 
+# Simple Tests
+/ctx/build_files/base/20-tests.sh
+
 # Clean Up
 echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
