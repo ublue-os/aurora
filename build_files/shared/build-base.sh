@@ -67,5 +67,5 @@ echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
 mkdir -p /var/tmp &&
     chmod -R 1777 /var/tmp
-ostree container commit
+bootc container lint --fatal-warnings || true
 echo "::endgroup::"
