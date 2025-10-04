@@ -7,7 +7,7 @@ set -eoux pipefail
 IMPORTANT_PACKAGES_DX=(
     code
     containerd.io
-    docker
+    docker-ce
     docker-buildx-plugin
     docker-compose-plugin
     flatpak-builder
