@@ -48,6 +48,12 @@ echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/defau
 # Systemd and Disable Repos
 /ctx/build_files/dx/09-cleanup-dx.sh
 
+# Simple Tests, shared with the base
+/ctx/build_files/base/20-tests.sh
+
+# dx specific tests
+/ctx/build_files/base/20-tests-dx.sh
+
 # Clean Up
 echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
