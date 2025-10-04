@@ -16,7 +16,6 @@ IMPORTANT_PACKAGES_DX=(
     podman-bootc
     qemu
     rocm-runtime
-  )
 )
 
 for package in "${IMPORTANT_PACKAGES_DX[@]}"; do
@@ -26,7 +25,6 @@ done
 IMPORTANT_UNITS=(
     docker.socket
     podman.socket
-  )
 )
 
 for unit in "${IMPORTANT_UNITS[@]}"; do
