@@ -19,7 +19,7 @@ IMPORTANT_PACKAGES_DX=(
   )
 )
 
-for package in "${IMPORTANT_PACKAGES[@]}"; do
+for package in "${IMPORTANT_PACKAGES_DX[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
 done
 
