@@ -52,7 +52,7 @@ echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/defau
 /ctx/build_files/base/20-tests.sh
 
 # dx specific tests
-/ctx/build_files/base/20-tests-dx.sh
+/ctx/build_files/dx/10-tests-dx.sh
 
 # Clean Up
 echo "::group:: Cleanup"
