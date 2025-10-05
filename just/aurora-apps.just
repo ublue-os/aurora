@@ -230,7 +230,8 @@ install-gaming-flatpaks:
                                             runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08 \
                                             runtime/com.obsproject.Studio.Plugin.OBSVkCapture/x86_64/stable \
                                             runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08 \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08
+                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08 \
+                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08
 
 # List installed RPM packages of currently booted system
 [group('Apps')]
