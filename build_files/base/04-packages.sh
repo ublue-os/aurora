@@ -21,60 +21,61 @@ source /ctx/build_files/shared/copr-helpers.sh
 dnf5 versionlock add plasma-desktop
 
 FEDORA_PACKAGES=(
-    adcli
-    borgbackup
-    davfs2
-    evtest
-    fastfetch
-    fish
-    foo2zjs
-    freeipa-client
-    git-credential-libsecret
-    glow
-    gum
-    ifuse
-    igt-gpu-tools
-    input-remapper
-    iwd
-    kcm-fcitx5
-    krb5-workstation
-    ksystemlog
-    libimobiledevice
-    libsss_autofs
-    libxcrypt-compat
-    lm_sensors
-    oddjob-mkhomedir
-    plasma-wallpapers-dynamic
-    powertop
-    ptyxis
-    rclone
-    restic
-    samba-winbind
-    samba-winbind-clients
-    samba-winbind-modules
-    setools-console
-    sssd-ad
-    sssd-ipa
-    sssd-krb5
-    tmux
-    virtualbox-guest-additions
-    wireguard-tools
-    wl-clipboard
-    zsh
+  adcli
+  borgbackup
+  davfs2
+  evtest
+  fastfetch
+  fish
+  foo2zjs
+  freeipa-client
+  git-credential-libsecret
+  glow
+  gum
+  ifuse
+  igt-gpu-tools
+  input-remapper
+  iwd
+  kcm-fcitx5
+  krb5-workstation
+  ksystemlog
+  libimobiledevice
+  libsss_autofs
+  libxcrypt-compat
+  lm_sensors
+  oddjob-mkhomedir
+  plasma-wallpapers-dynamic
+  powertop
+  ptyxis
+  rclone
+  restic
+  samba-winbind
+  samba-winbind-clients
+  samba-winbind-modules
+  setools-console
+  sssd-ad
+  sssd-ipa
+  sssd-krb5
+  speech-dispatcher
+  tmux
+  virtualbox-guest-additions
+  wireguard-tools
+  wl-clipboard
+  zsh
 )
 
 # Version-specific Fedora package additions
 case "$FEDORA_MAJOR_VERSION" in
-    42)
-        FEDORA_PACKAGES+=(
-            google-noto-fonts-all
-            uld
-        )
-        ;;
-    43)
-        FEDORA_PACKAGES+=(
-        )
-        ;;
+42)
+  FEDORA_PACKAGES+=(
+    google-noto-fonts-all
+    uld
+  )
+  ;;
+43)
+  FEDORA_PACKAGES+=(
+  )
+  ;;
 esac
 
 # Install all Fedora packages (bulk - safe from COPR injection)
@@ -91,86 +92,81 @@ dnf -y install --enablerepo='tailscale-stable' tailscale
 echo "Installing COPR packages with isolated repo enablement..."
 
 # OpenRazer from hardware:razer repo (not a COPR)
-        dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-        dnf5 -y install openrazer-daemon
-        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
+dnf5 -y install openrazer-daemon
+sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
 # From ublue-os/staging
 copr_install_isolated "ublue-os/staging" \
-    "fw-fanctrl"
+  "fw-fanctrl"
 
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
-    "aurora-backgrounds" \
-    "krunner-bazaar" \
-    "kcm_ublue" \
-    "ublue-bling" \
-    "ublue-branding-logos" \
-    "ublue-brew" \
-    "ublue-fastfetch" \
-    "ublue-motd" \
-    "ublue-polkit-rules" \
-    "ublue-setup-services" \
-    "uupd"
+  "aurora-backgrounds" \
+  "krunner-bazaar" \
+  "kcm_ublue" \
+  "ublue-bling" \
+  "ublue-branding-logos" \
+  "ublue-brew" \
+  "ublue-fastfetch" \
+  "ublue-motd" \
+  "ublue-polkit-rules" \
+  "ublue-setup-services" \
+  "uupd"
 
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
-    42)
-
-        ;;
-    43)
-
-        ;;
+42) ;;
+43) ;;
 esac
 
 # kAirpods from ledif/kairpods COPR
 copr_install_isolated "ledif/kairpods" \
-    "kairpods"
+  "kairpods"
 
 # Sunshine from lizardbyte/beta COPR
 copr_install_isolated "lizardbyte/beta" \
-    "sunshine"
+  "sunshine"
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
-    fedora-bookmarks
-    fedora-chromium-config
-    fedora-chromium-config-kde
-    firefox
-    firefox-langpacks
-    firewall-config
-    kcharselect
-    krfb
-    krfb-libs
-    plasma-discover-kns
-    plasma-welcome-fedora
-    podman-docker
+  fedora-bookmarks
+  fedora-chromium-config
+  fedora-chromium-config-kde
+  firefox
+  firefox-langpacks
+  firewall-config
+  kcharselect
+  krfb
+  krfb-libs
+  plasma-discover-kns
+  plasma-welcome-fedora
+  podman-docker
 )
 
 # Version-specific package exclusions
 case "$FEDORA_MAJOR_VERSION" in
-    43)
-        EXCLUDED_PACKAGES+=(
+43)
+  EXCLUDED_PACKAGES+=(
 
-        )
-        ;;
+  )
+  ;;
 esac
 
 # Remove excluded packages if they are installed
 if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
-    if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-        dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
-    else
-        echo "No excluded packages found to remove."
-    fi
+  readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
+  if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
+    dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
+  else
+    echo "No excluded packages found to remove."
+  fi
 fi
 
 # we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
 rpm --erase --nodeps plasma-lookandfeel-fedora
 # rpm erase doesn't remove actual files
 rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
-
 
 # https://github.com/ublue-os/bazzite/issues/1400
 # TODO: test if we still need this when upgrading firmware with fwupd
@@ -197,11 +193,11 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
-    plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+  plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 # Swap/install aurora branding packages from ublue-os/packages COPR using isolated enablement
 dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    fedora-logos aurora-logos
+  --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
+  fedora-logos aurora-logos
 
 echo "::endgroup::"
