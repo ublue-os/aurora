@@ -216,6 +216,12 @@ install-ai-tools:
     echo "🧠🤖 Adding AI tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/aurora-ai.Brewfile
 
+# List installed RPM packages of currently booted system
+[group('Apps')]
+list-installed-rpms:
+    rpm -qa
+
+>>>>>>> 6122b68 (chore: add new mangohud runtime (#1051))
 # Setup and configure Sunshine Game Streaming host
 [group('Apps')]
 setup-sunshine ACTION="":
