@@ -10,6 +10,7 @@ on:
       - "iso_files/**"
       - "flatpaks/**"
       - ".github/workflows/*iso*"
+      - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
   schedule:
     - cron: "50 5 * * 0" # 5:50 UTC sunday
   workflow_call:
