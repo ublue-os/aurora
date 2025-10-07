@@ -4,11 +4,7 @@
 			"all": [
 				"adcli",
 				"aurora-backgrounds",
-				"aurora-faces",
-				"aurora-fastfetch",
-				"aurora-schemas",
 				"bazaar",
-				"bcache-tools",
 				"borgbackup",
 				"davfs2",
 				"evtest",
