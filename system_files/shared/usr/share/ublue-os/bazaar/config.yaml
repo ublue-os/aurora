@@ -87,6 +87,7 @@ sections:
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
+      - rocks.shy.VacuumTube
 
   - title: "Content Creation"
     subtitle: "Create your first donut or make some tunes"
@@ -205,11 +206,13 @@ sections:
       - org.localsend.localsend_app
       - com.github.zocker_160.SyncThingy
       - org.deskflow.deskflow
+      - org.keepassxc.KeePassXC
       - io.github.nokse22.asciidraw
       - io.github.radiolamp.mangojuice
       - org.fedoraproject.MediaWriter
       - org.gnome.gitlab.YaLTeR.VideoTrimmer
       - org.raspberrypi.rpi-imager
+      - org.kde.optiimage
       - org.mozilla.vpn
       - hu.irl.cameractrls
       - org.gnome.gitlab.YaLTeR.Identity
