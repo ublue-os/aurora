@@ -205,7 +205,6 @@ sections:
       - app.drey.Warp
       - org.localsend.localsend_app
       - com.github.zocker_160.SyncThingy
-      - org.deskflow.deskflow
       - org.keepassxc.KeePassXC
       - io.github.nokse22.asciidraw
       - io.github.radiolamp.mangojuice
