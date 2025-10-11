@@ -48,6 +48,7 @@
 				"samba-winbind-modules",
 				"scx-scheds",
 				"setools-console",
+				"speech-dispatcher",
 				"sssd-ad",
 				"sssd-ipa",
 				"sssd-krb5",
