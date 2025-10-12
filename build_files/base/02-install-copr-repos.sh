@@ -28,4 +28,7 @@ fi
 # Enable ledifs kAirpods repo
 dnf5 -y copr enable ledif/kairpods
 
+# TODO: remove me on next flatpak release
+dnf5 -y copr enable ublue-os/flatpak-test
+
 echo "::endgroup::"
