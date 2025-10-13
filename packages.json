@@ -148,7 +148,8 @@
 				"kcharselect",
 				"krfb",
 				"krfb-libs",
-				"plasma-discover-kns",
+				"plasma-discover",
+				"plasma-discover-libs",
 				"plasma-welcome-fedora",
 				"podman-docker"
 			],
