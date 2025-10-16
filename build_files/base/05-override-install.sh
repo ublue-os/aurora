@@ -20,6 +20,11 @@ dnf5 -y swap \
 dnf5 -y install \
   plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
+# install packages from sunshine, scx-scheds and openrazer repos
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
+  dnf5 -y install sunshine scx-scheds openrazer-daemon
+fi
+
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf

@@ -35,7 +35,6 @@
 				"make",
 				"nerdfontssymbolsonly-nerd-fonts",
 				"oddjob-mkhomedir",
-				"openrazer-daemon",
 				"plasma-wallpapers-dynamic",
 				"powertop",
 				"ptyxis",
@@ -46,13 +45,11 @@
 				"samba-winbind",
 				"samba-winbind-clients",
 				"samba-winbind-modules",
-				"scx-scheds",
 				"setools-console",
 				"sssd-ad",
 				"sssd-ipa",
 				"sssd-krb5",
 				"starship",
-				"sunshine",
 				"tailscale",
 				"tmux",
 				"ublue-bling",
@@ -178,8 +175,6 @@
 		},
 		"exclude": {
 			"all": [
-			    "sunshine",
-				"openrazer-daemon"
 			],
 			"dx": []
 		}
