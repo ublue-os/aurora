@@ -62,7 +62,6 @@
 				"ublue-motd",
 				"ublue-polkit-rules",
 				"ublue-setup-services",
-				"uld",
 				"uupd",
 				"virtualbox-guest-additions",
 				"wireguard-tools",
@@ -161,7 +160,8 @@
 		"include": {
 			"all": [
 				"google-noto-fonts-all",
-				"fw-fanctrl"
+				"fw-fanctrl",
+				"uld"
       		],
 			"dx": []
 		},
