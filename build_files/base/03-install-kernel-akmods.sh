@@ -30,7 +30,7 @@ fi
 
 # Only touch latest kernel when we need to pin it because of some super bad regression
 # so only replace the latest kernel with the one from akmods when the ublue-os/main kernel differs from ublue-os/akmods, so we pin in Aurora/Bluefin but not in main
-if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" != $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
+if [[ "$AKMODS_FLAVOR" = "main" && "$KERNEL" -ne $(rpm -q --queryformat="%{evr}.%{arch}" kernel-core) ]]; then
   dnf5 -y install /tmp/kernel-rpms/kernel{,-core,-modules,-modules-core,-modules-extra}-"${KERNEL}".rpm
 fi
 
