@@ -177,7 +177,10 @@
 			"dx": []
 		},
 		"exclude": {
-			"all": [],
+			"all": [
+			    "sunshine",
+				"openrazer-daemon"
+			],
 			"dx": []
 		}
 	}
