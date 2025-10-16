@@ -4,6 +4,16 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Beta Updates Testing Repo...
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 config-manager setopt updates-testing.enabled=1
+fi
+
+# Remove Existing Kernel
+for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do
+    rpm --erase $pkg --nodeps
+done
+
 # Fetch Common AKMODS & Kernel RPMS
 skopeo copy --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${AKMODS_FLAVOR}"-"$(rpm -E %fedora)"-"${KERNEL}" dir:/tmp/akmods
 AKMODS_TARGZ=$(jq -r '.layers[].digest' </tmp/akmods/manifest.json | cut -d : -f 2)
