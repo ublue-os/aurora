@@ -12,9 +12,11 @@ dnf5 -y swap \
 fi
 
 # Fix for ID in fwupd
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
+fi
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
