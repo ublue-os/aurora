@@ -20,7 +20,10 @@ dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
 dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
 
 # Enable sunshine repo
+# not yet available for f43
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 dnf5 -y copr enable lizardbyte/beta
+fi
 
 # Enable ledifs kAirpods repo
 dnf5 -y copr enable ledif/kairpods
