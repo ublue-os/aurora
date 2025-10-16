@@ -45,12 +45,16 @@ dnf5 versionlock add kernel{,-core,-modules,-modules-core,-modules-extra,-tools,
 # Everyone
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
 sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
-AKMODS=(
-    /tmp/akmods/kmods/*xone*.rpm
-    /tmp/akmods/kmods/*framework-laptop*.rpm
-    /tmp/akmods/kmods/*openrazer*.rpm
-)
-dnf5 -y install "${AKMODS[@]}"
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 -y install /tmp/akmods/kmods/*xone*.rpm || true
+    dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true
+    dnf5 -y install /tmp/akmods/kmods/*framework-laptop*.rpm || true
+else
+    dnf5 -y install \
+        /tmp/akmods/kmods/*xone*.rpm \
+        /tmp/akmods/kmods/*openrazer*.rpm \
+        /tmp/akmods/kmods/*framework-laptop*.rpm
+fi
 
 # RPMFUSION Dependent AKMODS
 dnf5 -y install \
