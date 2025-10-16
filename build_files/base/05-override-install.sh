@@ -4,9 +4,12 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# switcheroo swap is not needed for F43 ->
+if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
 dnf5 -y swap \
   --repo="terra-extras" \
   switcheroo-control switcheroo-control
+fi
 
 # Fix for ID in fwupd
 dnf5 -y swap \
