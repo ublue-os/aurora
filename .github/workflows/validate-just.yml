@@ -22,7 +22,7 @@ jobs:
       - name: Install Just
         shell: bash
         run: bash .github/workflows/shared/install-just.sh
-        
+
       - name: Check Just Syntax
         shell: bash
         run: |
