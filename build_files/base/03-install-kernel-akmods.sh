@@ -88,7 +88,7 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
       mv /tmp/rpms/* /tmp/akmods-rpms/
 
       # Exclude the Golang Nvidia Container Toolkit in Fedora Repo
-      # Exclude for non-beta.... doesn't appear to exist for F42 yet?
+      # Exclude for non-beta.... doesn't appear to exist for F43 yet?
       if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
           dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
       else
