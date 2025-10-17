@@ -57,7 +57,6 @@ dnf5 -y copr disable ublue-os/staging
 dnf5 -y copr disable ublue-os/packages
 dnf5 -y copr disable phracek/PyCharm
 if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
-dnf5 -y copr disable bieszczaders/kernel-cachyos-addons
 dnf5 -y copr disable lizardbyte/beta
 fi
 dnf5 -y copr disable ledif/kairpods
