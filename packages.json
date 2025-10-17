@@ -46,7 +46,6 @@
 				"samba-winbind",
 				"samba-winbind-clients",
 				"samba-winbind-modules",
-				"scx-scheds",
 				"setools-console",
 				"speech-dispatcher",
 				"sssd-ad",
@@ -63,7 +62,6 @@
 				"ublue-motd",
 				"ublue-polkit-rules",
 				"ublue-setup-services",
-				"uld",
 				"uupd",
 				"virtualbox-guest-additions",
 				"wireguard-tools",
@@ -162,7 +160,8 @@
 		"include": {
 			"all": [
 				"google-noto-fonts-all",
-				"fw-fanctrl"
+				"fw-fanctrl",
+				"uld"
       		],
 			"dx": []
 		},
@@ -178,8 +177,13 @@
 			"dx": []
 		},
 		"exclude": {
-			"all": [],
-			"dx": []
+			"all": [
+			    "sunshine",
+				"openrazer-daemon"
+			],
+			"dx": [
+			    "mozilla-fira-mono-fonts"
+			]
 		}
 	}
 }
