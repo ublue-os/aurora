@@ -38,6 +38,10 @@ fi
 dnf5 versionlock add kernel{,-core,-modules,-modules-core,-modules-extra,-tools,-tools-lib,-headers,-devel,-devel-matched}
 
 # Install RPMS
-dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+    dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm || true
+else
+    dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm
+fi
 
 echo "::endgroup::"

@@ -4,10 +4,19 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# switcheroo swap is not needed for F43 ->
+if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
+dnf5 -y swap \
+  --repo="terra-extras" \
+  switcheroo-control switcheroo-control
+fi
+
 # Fix for ID in fwupd
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
+fi
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \

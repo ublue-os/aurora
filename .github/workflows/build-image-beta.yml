@@ -7,6 +7,7 @@ on:
       - testing
     paths-ignore:
       - "**.md"
+      - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
   workflow_call:
   workflow_dispatch:
 
