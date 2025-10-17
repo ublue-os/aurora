@@ -15,7 +15,7 @@ org.fedoraproject.MediaWriter
 io.missioncenter.MissionCenter
 org.gnome.DejaDup
 com.borgbase.Vorta
-io.github.input_leap.input-leap
+org.deskflow.deskflow
 org.gtk.Gtk3theme.Breeze
 io.github.pwr_solaar.solaar
 org.gustavoperedo.FontDownloader

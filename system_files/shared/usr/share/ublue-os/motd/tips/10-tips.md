@@ -15,3 +15,4 @@ Don't forget to check the [release notes](https://github.com/ublue-os/aurora/rel
 Help keep Aurora alive and healthy, consider [donating](https://docs.getaurora.dev/project-docs/credits)
 KDE powers your desktop! Donate to [KDE](https://kde.org/donate)
 Like dinosaurs? `ujust toggle-dinosaurs`
+Support the app store! Donate to  [Bazaar](https://github.com/kolunmi/bazaar)!
