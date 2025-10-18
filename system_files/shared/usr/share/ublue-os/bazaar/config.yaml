@@ -83,6 +83,7 @@ sections:
       - org.kde.kstars
       - re.sonny.Eloquent
       - io.github.halfmexican.Mingle
+      - org.kde.audiotube
       - app.fotema.Fotema
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
