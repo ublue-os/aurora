@@ -29,6 +29,7 @@ fi
 dnf5 -y copr enable ledif/kairpods
 
 # TODO: remove me on next flatpak release
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
 dnf5 -y copr enable ublue-os/flatpak-test
-
+fi
 echo "::endgroup::"
