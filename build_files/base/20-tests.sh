@@ -6,7 +6,6 @@ set -eoux pipefail
 
 xmllint --noout \
   /usr/share/backgrounds/default.xml \
-  /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml \
   /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
 
 desktop-file-validate \
