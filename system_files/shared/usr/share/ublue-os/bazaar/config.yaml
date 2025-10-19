@@ -189,6 +189,7 @@ sections:
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
+      - org.endlessaccess.threadbare
 
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
