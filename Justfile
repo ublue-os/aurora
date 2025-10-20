@@ -7,7 +7,6 @@ images := '(
 )'
 flavors := '(
     [main]=main
-    [nvidia]=nvidia
     [nvidia-open]=nvidia-open
 )'
 tags := '(

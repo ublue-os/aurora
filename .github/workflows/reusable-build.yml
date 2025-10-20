@@ -3,8 +3,8 @@ on:
   workflow_call:
     inputs:
       image_flavors:
-        description: "JSON string of flavors to build, '[main, nvidia]'"
-        default: "['main', 'nvidia', 'nvidia-open']"
+        description: "JSON string of flavors to build, '[main, nvidia-open]'"
+        default: "['main', 'nvidia-open']"
         type: string
       brand_name:
         description: "The Brand Name: aurora"
