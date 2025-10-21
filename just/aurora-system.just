@@ -26,6 +26,11 @@ benchmark:
         fi
     fi
 
+    echo 'Running a 1 minute benchmark ...'
+    trap popd EXIT
+    pushd $(mktemp -d)
+    stress-ng --matrix 0 -t 1m --times
+
 # Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
 aurora-cli:
