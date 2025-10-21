@@ -12,6 +12,7 @@
 				"fish",
 				"foo2zjs",
 				"freeipa-client",
+				"fw-fanctrl",
 				"git-credential-libsecret",
 				"glow",
 				"gum",
@@ -149,10 +150,7 @@
 	},
 	"42": {
 		"include": {
-			"all": [
-				"google-noto-fonts-all",
-				"fw-fanctrl"
-      		],
+			"all": [],
 			"dx": []
 		},
 		"exclude": {
