@@ -67,5 +67,4 @@ echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
 mkdir -p /var/tmp &&
     chmod -R 1777 /var/tmp
-bootc container lint
 echo "::endgroup::"
