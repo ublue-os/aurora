@@ -50,3 +50,5 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/shared/build-dx.sh
+
+RUN bootc container lint
