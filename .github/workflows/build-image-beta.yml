@@ -23,6 +23,7 @@ jobs:
       matrix:
         brand_name: ["aurora"]
     with:
+      image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
 
