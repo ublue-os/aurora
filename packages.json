@@ -165,7 +165,8 @@
 		"exclude": {
 			"all": [
 			    "sunshine",
-				"openrazer-daemon"
+				"openrazer-daemon",
+				"fw-fanctrl"
 			],
 			"dx": [
 			    "mozilla-fira-mono-fonts"
