@@ -9,6 +9,7 @@ on:
       - "**.md"
       - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
       - "**.Brewfile"
+      - "just/*.just"
   workflow_call:
   workflow_dispatch:
 
