@@ -1,8 +1,9 @@
+tap "gptscript-ai/tap"
+tap "homebrew/cask
 brew "aichat"
 brew "block-goose-cli"
-tap "gptscript-ai/tap"
 brew "clio"
-brew "codex"
+cask "codex"
 brew "gemini-cli"
 brew "mods"
 brew "ramalama"
