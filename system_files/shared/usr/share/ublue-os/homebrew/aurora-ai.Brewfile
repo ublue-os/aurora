@@ -1,5 +1,5 @@
 tap "gptscript-ai/tap"
-tap "homebrew/cask
+tap "homebrew/cask"
 brew "aichat"
 brew "block-goose-cli"
 brew "clio"
