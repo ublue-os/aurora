@@ -44,7 +44,6 @@
 				"samba-winbind",
 				"samba-winbind-clients",
 				"samba-winbind-modules",
-				"scx-scheds",
 				"setools-console",
 				"sssd-ad",
 				"sssd-ipa",
@@ -60,7 +59,6 @@
 				"ublue-motd",
 				"ublue-polkit-rules",
 				"ublue-setup-services",
-				"uld",
 				"uupd",
 				"virtualbox-guest-additions",
 				"wireguard-tools",
@@ -165,8 +163,13 @@
 			"dx": []
 		},
 		"exclude": {
-			"all": [],
-			"dx": []
+			"all": [
+			    "sunshine",
+				"openrazer-daemon"
+			],
+			"dx": [
+			    "mozilla-fira-mono-fonts"
+			]
 		}
 	}
 }

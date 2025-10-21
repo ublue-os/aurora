@@ -11,18 +11,25 @@ dnf5 -y copr enable ublue-os/staging
 dnf5 -y copr enable ublue-os/packages
 
 # Add OpenRazer repo
+# not available for f43 yet
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-
-# Enable repo for scx-scheds
-dnf5 -y copr enable bieszczaders/kernel-cachyos-addons
+fi
 
 # Enable Terra repo
 dnf5 -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras}
 
 # Enable sunshine repo
+# not yet available for f43
+if [[ "${UBLUE_IMAGE_TAG}" != "beta" ]]; then
 dnf5 -y copr enable lizardbyte/beta
+fi
 
 # Enable ledifs kAirpods repo
 dnf5 -y copr enable ledif/kairpods
 
+# TODO: remove me on next flatpak release
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+dnf5 -y copr enable ublue-os/flatpak-test
+fi
 echo "::endgroup::"

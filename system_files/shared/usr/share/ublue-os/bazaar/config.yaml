@@ -83,6 +83,7 @@ sections:
       - org.kde.kstars
       - re.sonny.Eloquent
       - io.github.halfmexican.Mingle
+      - org.kde.audiotube
       - app.fotema.Fotema
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
@@ -188,6 +189,7 @@ sections:
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
+      - org.endlessaccess.threadbare
 
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
