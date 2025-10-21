@@ -18,6 +18,13 @@ dnf5 -y swap \
   fwupd fwupd
 fi
 
+# TODO: remove me on next flatpak release when preinstall landed
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
+fi
+
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
   plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
