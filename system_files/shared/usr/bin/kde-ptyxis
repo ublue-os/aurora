@@ -11,8 +11,6 @@ for arg in ${@}; do
         fi
 done
 
-
- 
 # Dolphin integration requires --new-window to function properly
 if [[ ! "${args[@]}" =~ "--" && ! "${args[@]}" =~ "-h" && ! "${args[@]}" =~ "-x" ]]; then
         /usr/bin/ptyxis --new-window "${args[@]}"
