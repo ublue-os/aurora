@@ -203,3 +203,4 @@ command = 'echo "New deployment staged"'
 symbol = ""
 format = " $symbol [($output)]($style) "
 style = "italic green"
+

@@ -35,3 +35,4 @@ for unit in "${IMPORTANT_UNITS[@]}"; do
 done
 
 echo "::endgroup::"
+
