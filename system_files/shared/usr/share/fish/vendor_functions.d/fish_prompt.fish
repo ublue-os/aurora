@@ -20,7 +20,7 @@ function fish_prompt --description 'Default prompt with container detection'
     if test -n "$CONTAINER_ID"
         set -g prompt_host "[$CONTAINER_ID]"
         set -g prefix_icon "📦 "
-    else 
+    else
     	set -g prompt_host "$hostname"
     	set -g prefix_icon ""
     end
