@@ -32,7 +32,8 @@ for copr in "${COPRS[@]}"; do
         continue
     fi
 
-    repo_id="copr:copr.fedorainfracloud.org:${copr////:}"
+    copr_sanitized="${copr//@/group_}"
+    repo_id="copr:copr.fedorainfracloud.org:${copr_sanitized////:}"
     log "Setting priority=1 for $repo_id"
     if ! dnf5 -y config-manager setopt "${repo_id}.priority=1"; then
         error "Failed to set priority for $repo_id"
