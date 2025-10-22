@@ -56,7 +56,6 @@ echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/defau
 
 # Clean Up
 echo "::group:: Cleanup"
-bootc container lint
 /ctx/build_files/shared/clean-stage.sh
 mkdir -p /var/tmp && \
 chmod -R 1777 /var/tmp

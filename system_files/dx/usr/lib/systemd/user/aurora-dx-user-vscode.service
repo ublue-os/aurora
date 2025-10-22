@@ -1,5 +1,5 @@
 [Unit]
-Description=Run 
+Description=Run
 Wants=network-online.target
 After=network-online.target ublue-user-setup.service
 ConditionUser=!@system
