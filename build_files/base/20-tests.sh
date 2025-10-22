@@ -22,12 +22,20 @@ desktop-file-validate \
 
 IMPORTANT_PACKAGES=(
     bazaar
+    distrobox
     fish
+    flatpak
     krunner-bazaar
+    kwin
+    pipewire
+    plasma-desktop
     ptyxis
+    sddm
     starship
+    systemd
     tailscale
     uupd
+    wireplumber
     zsh
 )
 
