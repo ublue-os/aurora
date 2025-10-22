@@ -54,8 +54,7 @@ else
     log "No COPRs were successfully enabled. Nothing to upgrade."
 fi
 
-
-#dnf5 -y remove plasma-discover-kns
+dnf5 -y remove plasma-discover-kns
 
 dnf5 -y copr disable @kdesig/kde-final
 
