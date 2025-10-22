@@ -9,12 +9,6 @@ if ! jq -e '.["image-tag"] | test("beta")' /usr/share/ublue-os/image-info.json >
     exit 0
 fi
 
-# install sudo-rs
-dnf5 -y install sudo-rs
-ln -sf /usr/bin/su-rs /usr/bin/su
-ln -sf /usr/bin/sudo-rs /usr/bin/sudo
-ln -sf /usr/bin/visudo-rs /usr/bin/visudo
-
 # KDE 6.5
 log() {
     echo -e "\n\033[1;34m==> $1\033[0m\n"
