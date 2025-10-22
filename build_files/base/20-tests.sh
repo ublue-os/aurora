@@ -57,6 +57,18 @@ for package in "${UNWANTED_PACKAGES[@]}"; do
         echo "Unwanted package found: ${package}... Exiting"; exit 1
     fi
 done
+
+if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+  NV_PACKAGES=(
+      libnvidia-container-tools
+      kmod-nvidia
+      nvidia-driver-cuda
+)
+  for package in "${NV_PACKAGES[@]}"; do
+      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
+  done
+fi
+
 IMPORTANT_UNITS=(
     brew-update.timer
     brew-upgrade.timer
