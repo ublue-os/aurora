@@ -43,6 +43,20 @@ for package in "${IMPORTANT_PACKAGES[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
 done
 
+# these packages are supposed to be removed
+# and are considered footguns
+UNWANTED_PACKAGES=(
+    firefox
+    plasma-discover-kns
+    plasma-discover-rpm-ostree
+    podman-docker
+)
+
+for package in "${UNWANTED_PACKAGES[@]}"; do
+    if rpm -q "${package}" >/dev/null 2>&1; then
+        echo "Unwanted package found: ${package}... Exiting"; exit 1
+    fi
+done
 IMPORTANT_UNITS=(
     brew-update.timer
     brew-upgrade.timer
