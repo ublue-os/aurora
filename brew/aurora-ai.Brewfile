@@ -1,8 +1,0 @@
-tap "gptscript-ai/tap"
-brew "aichat"
-brew "block-goose-cli"
-brew "clio"
-cask "codex"
-brew "gemini-cli"
-brew "mods"
-brew "ramalama"
