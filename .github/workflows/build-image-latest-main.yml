@@ -8,7 +8,6 @@ on:
     paths-ignore:
       - "**.md"
       - "iso_files/**"
-      - "flatpaks/**"
       - ".github/workflows/*iso*"
       - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
       - "just/*.just"
