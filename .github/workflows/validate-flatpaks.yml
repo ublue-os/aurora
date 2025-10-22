@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y flatpak
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-      - name: Validate Brewfiles
+      - name: Validate Flatpaks
         shell: bash
         run: |
           echo "Validating flatpak files in flatpaks/ directory..."
