@@ -88,6 +88,7 @@ fi
 copr_install_isolated "ganto/umoci" "umoci"
 copr_install_isolated "karmab/kcli" "kcli"
 copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
+copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
 
 # DX packages to exclude - common to all versions
 EXCLUDED_PACKAGES=()
