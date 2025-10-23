@@ -34,6 +34,7 @@ jobs:
                 # Only output on errors
                 if ! grep -Fxq "$flatpak" "$FLATHUB_LIST"; then
                   echo "$flatpak NOT found on Flathub"
+                  exit 1
                 fi
               done
 
