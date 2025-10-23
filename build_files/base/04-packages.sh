@@ -98,14 +98,12 @@ copr_install_isolated "ublue-os/packages" \
     "ublue-fastfetch" \
     "ublue-motd" \
     "ublue-polkit-rules" \
-    "ublue-setup-services"
+    "ublue-setup-services" \
+    "uupd"
 
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
     42)
-        # uupd from ublue-os/packages for F42
-        copr_install_isolated "ublue-os/packages" "uupd"
-
         # OpenRazer from hardware:razer repo (not a COPR)
         dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
         dnf5 -y install openrazer-daemon
@@ -115,8 +113,7 @@ case "$FEDORA_MAJOR_VERSION" in
         copr_install_isolated "lizardbyte/beta" "sunshine"
         ;;
     43)
-        # No additional COPR packages for F43
-        # nerd fonts, sunshine and openrazer-daemon are excluded for F43
+
         ;;
 esac
 
