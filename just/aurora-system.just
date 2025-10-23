@@ -54,6 +54,10 @@ install-k8s-dev-tools:
 devmode:
     @ujust toggle-devmode
 
+# alias for install-fonts
+aurora-fonts:
+    @ujust install-fonts
+
 # Toggle between Aurora and the Developer Experience
 [group('System')]
 toggle-devmode:
@@ -98,6 +102,8 @@ toggle-devmode:
     fi
     if gum choose "Do you want to also install the default development flatpaks?" ; then
             ujust install-system-flatpaks 1
+    if gum choose "Do you want to install extra fonts?" ; then
+            ujust install-fonts
     fi
 
 # Ptyxis terminal transparency
