@@ -16,12 +16,10 @@ source /ctx/build_files/shared/copr-helpers.sh
 
 # DX packages from Fedora repos - common to all versions
 FEDORA_PACKAGES=(
-    adobe-source-code-pro-fonts
     android-tools
     bcc
     bpftop
     bpftrace
-    cascadia-code-fonts
     cockpit-bridge
     cockpit-machines
     cockpit-networkmanager
@@ -43,9 +41,6 @@ FEDORA_PACKAGES=(
     genisoimage
     git-subtree
     git-svn
-    google-droid-sans-mono-fonts
-    google-go-mono-fonts
-    ibm-plex-mono-fonts
     iotop
     libvirt
     libvirt-nss
@@ -92,7 +87,6 @@ fi
 
 copr_install_isolated "ganto/umoci" "umoci"
 copr_install_isolated "karmab/kcli" "kcli"
-copr_install_isolated "atim/ubuntu-fonts" "ubuntu-family-fonts"
 copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
 
 # DX packages to exclude - common to all versions
@@ -101,7 +95,7 @@ EXCLUDED_PACKAGES=()
 # Version-specific package exclusions for DX
 case "$FEDORA_MAJOR_VERSION" in
     43)
-        EXCLUDED_PACKAGES+=(mozilla-fira-mono-fonts)
+        EXCLUDED_PACKAGES+=()
         ;;
 esac
 
