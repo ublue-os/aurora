@@ -121,7 +121,7 @@ case "$FEDORA_MAJOR_VERSION" in
 esac
 
 # kAirpods from ledif/kairpods COPR
-copr_install_isolated "ledif/kairpods"
+copr_install_isolated "ledif/kairpods" \
     "kairpods"
 
 # Packages to exclude - common to all versions
