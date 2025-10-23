@@ -16,10 +16,12 @@ source /ctx/build_files/shared/copr-helpers.sh
 
 # DX packages from Fedora repos - common to all versions
 FEDORA_PACKAGES=(
+    adobe-source-code-pro-fonts
     android-tools
     bcc
     bpftop
     bpftrace
+    cascadia-code-fonts
     cockpit-bridge
     cockpit-machines
     cockpit-networkmanager
@@ -30,6 +32,7 @@ FEDORA_PACKAGES=(
     cockpit-system
     code
     containerd.io
+    dbus-x11
     docker-buildx-plugin
     docker-ce
     docker-ce-cli
@@ -38,6 +41,11 @@ FEDORA_PACKAGES=(
     edk2-ovmf
     flatpak-builder
     genisoimage
+    git-subtree
+    git-svn
+    google-droid-sans-mono-fonts
+    google-go-mono-fonts
+    ibm-plex-mono-fonts
     iotop
     libvirt
     libvirt-nss
@@ -45,6 +53,7 @@ FEDORA_PACKAGES=(
     numactl
     osbuild-selinux
     p7zip
+    p7zip-plugins
     podman-compose
     podman-machine
     podman-tui
@@ -77,10 +86,24 @@ dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
 echo "Installing DX COPR packages with isolated repo enablement..."
 
-# lxc/incus packages - only for F41 and earlier
 if [[ "${FEDORA_MAJOR_VERSION}" -lt "42" ]]; then
     copr_install_isolated "ganto/lxc4" "incus" "incus-agent" "lxc"
 fi
+
+copr_install_isolated "ganto/umoci" "umoci"
+copr_install_isolated "karmab/kcli" "kcli"
+copr_install_isolated "atim/ubuntu-fonts" "ubuntu-family-fonts"
+copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
+
+# DX packages to exclude - common to all versions
+EXCLUDED_PACKAGES=()
+
+# Version-specific package exclusions for DX
+case "$FEDORA_MAJOR_VERSION" in
+    43)
+        EXCLUDED_PACKAGES+=(mozilla-fira-mono-fonts)
+        ;;
+esac
 
 # Remove excluded packages if they are installed
 if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
