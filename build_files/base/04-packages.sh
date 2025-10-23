@@ -159,6 +159,7 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     else
         echo "No excluded packages found to remove."
     fi
+fi
 
 # Install Terra repo (for switcheroo-control on F42 and earlier)
 # shellcheck disable=SC2016
