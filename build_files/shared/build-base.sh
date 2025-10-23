@@ -48,9 +48,6 @@ echo "::endgroup::"
 # Bazaar workarounds
 /ctx/build_files/base/11-bazaar.sh
 
-# Beta
-# /ctx/build_files/base/10-beta.sh
-
 ## late stage changes
 
 # Systemd and Remove Items
