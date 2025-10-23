@@ -24,7 +24,6 @@ FEDORA_PACKAGES=(
     fish
     foo2zjs
     freeipa-client
-    fw-fanctrl
     git-credential-libsecret
     glow
     gum
