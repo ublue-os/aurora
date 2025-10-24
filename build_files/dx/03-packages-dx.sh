@@ -41,9 +41,12 @@ FEDORA_PACKAGES=(
     genisoimage
     git-subtree
     git-svn
+    incus
+    incus-agent
     iotop
     libvirt
     libvirt-nss
+    lxc
     nicstat
     numactl
     osbuild-selinux
