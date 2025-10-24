@@ -71,9 +71,7 @@ case "$FEDORA_MAJOR_VERSION" in
         )
         ;;
     43)
-        FEDORA_PACKAGES+=(
         # No additional Fedora packages for 43
-        )
         ;;
 esac
 
