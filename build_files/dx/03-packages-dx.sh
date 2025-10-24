@@ -67,7 +67,6 @@ FEDORA_PACKAGES=(
     rocm-opencl
     rocm-smi
     sysprof
-    tiptop
     trace-cmd
     udica
     virt-manager
