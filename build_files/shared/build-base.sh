@@ -12,6 +12,10 @@ cp -r /ctx/just /tmp/just
 cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/shared/ /
 
+# Homebrew files
+mkdir -p /usr/share/ublue-os/homebrew/
+cp /ctx/brew/*.Brewfile /usr/share/ublue-os/homebrew/
+
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_files/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl
 export PATH="/tmp/scripts/helpers:$PATH"
@@ -40,6 +44,9 @@ echo "::endgroup::"
 /ctx/build_files/base/08-firmware.sh
 
 
+
+# Beta
+/ctx/build_files/base/10-beta.sh
 
 # Bazaar workarounds
 /ctx/build_files/base/11-bazaar.sh
