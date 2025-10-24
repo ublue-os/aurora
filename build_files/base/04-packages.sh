@@ -182,6 +182,16 @@ if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep ublue-os
 fi
 
+## Pins and Overrides
+## Use this section to pin packages in order to avoid regressions
+# Remember to leave a note with rationale/link to issue for each pin!
+#
+# Example:
+#if [ "$FEDORA_MAJOR_VERSION" -eq "41" ]; then
+#    Workaround pkcs11-provider regression, see issue #1943
+#    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
+#fi
+
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
