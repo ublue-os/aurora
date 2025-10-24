@@ -171,10 +171,6 @@ if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
         switcheroo-control switcheroo-control
 fi
 
-if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t EXCLUDED_PACKAGES < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}")
-fi
-
 # TODO: remove me on next flatpak release when preinstall landed
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     dnf5 -y copr enable ublue-os/flatpak-test
