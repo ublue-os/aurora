@@ -38,8 +38,6 @@ FEDORA_PACKAGES=(
     docker-model-plugin
     edk2-ovmf
     flatpak-builder
-    git-subtree
-    git-svn
     incus
     incus-agent
     iotop
