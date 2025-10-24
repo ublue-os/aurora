@@ -21,7 +21,6 @@ IMPORTANT_PACKAGES=(
     fish
     krunner-bazaar
     ptyxis
-    starship
     tailscale
     uupd
     zsh

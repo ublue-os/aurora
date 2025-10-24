@@ -12,7 +12,6 @@ IMPORTANT_PACKAGES_DX=(
     docker-compose-plugin
     flatpak-builder
     libvirt
-    lxc
     podman-bootc
     qemu
     rocm-runtime
@@ -35,4 +34,3 @@ for unit in "${IMPORTANT_UNITS[@]}"; do
 done
 
 echo "::endgroup::"
-
