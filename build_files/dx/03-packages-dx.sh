@@ -38,7 +38,6 @@ FEDORA_PACKAGES=(
     docker-model-plugin
     edk2-ovmf
     flatpak-builder
-    genisoimage
     git-subtree
     git-svn
     incus
