@@ -100,13 +100,6 @@ case "$FEDORA_MAJOR_VERSION" in
         ;;
 esac
 
-# Install RPMS
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-    dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm || true
-else
-    dnf5 -y install /tmp/akmods/kmods/*kvmfr*.rpm
-fi
-
 # Remove excluded packages if they are installed
 if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
