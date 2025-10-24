@@ -172,6 +172,11 @@ if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
         switcheroo-control switcheroo-control
 fi
 
+# https://github.com/ublue-os/bazzite/issues/1400
+dnf5 -y swap \
+  --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+  fwupd fwupd
+
 # TODO: remove me on next flatpak release when preinstall landed
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     dnf5 -y copr enable ublue-os/flatpak-test
