@@ -39,7 +39,6 @@ FEDORA_PACKAGES=(
     libsss_autofs
     libxcrypt-compat
     lm_sensors
-    make
     oddjob-mkhomedir
     plasma-wallpapers-dynamic
     powertop
