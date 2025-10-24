@@ -43,8 +43,7 @@ echo "::endgroup::"
 # Get Firmare for Framework
 /ctx/build_files/base/08-firmware.sh
 
-# Make HWE changes
-/ctx/build_files/base/09-hwe-additions.sh
+
 
 # Beta
 /ctx/build_files/base/10-beta.sh
