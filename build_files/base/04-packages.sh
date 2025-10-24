@@ -43,7 +43,6 @@ FEDORA_PACKAGES=(
     plasma-wallpapers-dynamic
     powertop
     ptyxis
-    python3-pip
     rclone
     restic
     samba-winbind
