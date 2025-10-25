@@ -9,7 +9,6 @@ install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # Copy Files to Container
 cp -r /ctx/just /tmp/just
-cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/shared/ /
 
 # Homebrew files
@@ -24,9 +23,6 @@ echo "::endgroup::"
 
 # Generate image-info.json
 /ctx/build_files/base/00-image-info.sh
-
-# Get COPR Repos
-/ctx/build_files/base/02-install-copr-repos.sh
 
 # Install Kernel and Akmods
 /ctx/build_files/base/03-install-kernel-akmods.sh
@@ -43,17 +39,13 @@ echo "::endgroup::"
 # Get Firmare for Framework
 /ctx/build_files/base/08-firmware.sh
 
-# Make HWE changes
-/ctx/build_files/base/09-hwe-additions.sh
+
 
 # Beta
 /ctx/build_files/base/10-beta.sh
 
 # Bazaar workarounds
 /ctx/build_files/base/11-bazaar.sh
-
-# Beta
-# /ctx/build_files/base/10-beta.sh
 
 ## late stage changes
 
@@ -74,4 +66,8 @@ echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
 mkdir -p /var/tmp &&
     chmod -R 1777 /var/tmp
+
+# Validate all repos are disabled before committing
+/ctx/build_files/shared/validate-repos.sh
+
 echo "::endgroup::"

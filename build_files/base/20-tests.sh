@@ -31,7 +31,6 @@ IMPORTANT_PACKAGES=(
     plasma-desktop
     ptyxis
     sddm
-    starship
     systemd
     tailscale
     uupd
