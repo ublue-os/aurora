@@ -43,13 +43,6 @@ install-fonts:
     echo "Installing extra fonts..."
     brew bundle --file /usr/share/ublue-os/homebrew/aurora-fonts.Brewfile
 
-# Install Kubernetes CLI dev tools
-[group('System')]
-install-k8s-dev-tools:
-    #!/usr/bin/bash
-    echo "Adding Kubernetes command line tools..."
-    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
-
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
