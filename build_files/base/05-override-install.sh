@@ -16,6 +16,7 @@ install -c -m 0755 /tmp/starship /usr/bin
 echo 'eval "$(starship init bash)"' >> /etc/bashrc
 
 # Nerdfont symbols
+# to fix motd and prompt atleast temporarily
 ghcurl "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.zip" --retry 3 -o /tmp/nerdfontsymbols.zip
 unzip /tmp/nerdfontsymbols.zip -d /tmp
 mkdir -p /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
