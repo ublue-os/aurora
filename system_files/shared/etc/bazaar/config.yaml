@@ -88,11 +88,12 @@ sections:
       - re.sonny.Eloquent
       - io.github.halfmexican.Mingle
       - org.kde.audiotube
-      - app.fotema.Fotema
+      - io.github.getnf.embellish
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
       - rocks.shy.VacuumTube
+      - com.github.PintaProject.Pinta
 
   - title: "Content Creation"
     subtitle: "Create your first donut or make some tunes"
@@ -117,6 +118,7 @@ sections:
       - com.inochi2d.inochi-session
       - org.gimp.GIMP
       - org.darktable.Darktable
+      - com.feaneron.Boatswain
 
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
@@ -184,16 +186,19 @@ sections:
       - com.valvesoftware.Steam
       - com.valvesoftware.SteamLink
       - com.heroicgameslauncher.hgl
-      - com.discordapp.Discord
+      - io.github.Faugus.faugus-launcher
       - net.lutris.Lutris
       - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
       - org.prismlauncher.PrismLauncher
-      - com.feaneron.Boatswain
+      - com.discordapp.Discord
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
       - org.endlessaccess.threadbare
+      - net.supertuxkart.SuperTuxKart
+      - com.github.k4zmu2a.spacecadetpinball
+      - net.stabyourself.nottetris2
 
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
@@ -223,6 +228,7 @@ sections:
       - org.gnome.gitlab.YaLTeR.Identity
       - io.github.BuddySirJava.SSH-Studio
       - au.stevetech.yafi
+      - io.github.pwr_solaar.solaar
 
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
