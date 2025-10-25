@@ -57,16 +57,17 @@ for package in "${UNWANTED_PACKAGES[@]}"; do
     fi
 done
 
-if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
-  NV_PACKAGES=(
-      libnvidia-container-tools
-      kmod-nvidia
-      nvidia-driver-cuda
-)
-  for package in "${NV_PACKAGES[@]}"; do
-      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
-  done
-fi
+# TODO: Enable when libnvidia-container-tools are on F43
+#if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+#  NV_PACKAGES=(
+#      libnvidia-container-tools
+#      kmod-nvidia
+#      nvidia-driver-cuda
+#)
+#  for package in "${NV_PACKAGES[@]}"; do
+#      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
+#  done
+#fi
 
 IMPORTANT_UNITS=(
     brew-update.timer
