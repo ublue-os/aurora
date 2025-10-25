@@ -58,4 +58,7 @@ dnf5 -y remove plasma-discover-kns
 
 dnf5 -y copr disable @kdesig/kde-final
 
+dnf5 -y install eol-rebaser
+systemctl enable eol-rebaser.timer
+
 echo "::endgroup::"
