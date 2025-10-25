@@ -24,8 +24,8 @@ systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
 systemctl enable input-remapper.service
 
-# Autostart bazaar
-#systemctl --global enable bazaar.service
+# TODO: Reinvestigate when bazaar gains dbus activation
+systemctl --global enable bazaar.service
 
 # run flatpak preinstall once at startup
 systemctl enable flatpak-preinstall.service
