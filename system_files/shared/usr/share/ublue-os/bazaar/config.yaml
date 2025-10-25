@@ -52,6 +52,10 @@ css: |
     background: linear-gradient(0deg, #444445, #00ce75);
   }
 
+  .gaming-section app-tile-installed-indicator {
+    color: #ffffff;
+  }
+
   .utilities-section {
     background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
   }
