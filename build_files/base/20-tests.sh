@@ -31,7 +31,7 @@ IMPORTANT_PACKAGES=(
     plasma-desktop
     ptyxis
     sddm
-    sunshine
+    Sunshine
     systemd
     tailscale
     uupd
