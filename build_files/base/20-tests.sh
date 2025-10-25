@@ -21,7 +21,6 @@ desktop-file-validate \
   /usr/share/applications/system-update.desktop
 
 IMPORTANT_PACKAGES=(
-    bazaar
     distrobox
     fish
     flatpak
