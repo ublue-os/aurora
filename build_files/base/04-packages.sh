@@ -108,8 +108,6 @@ case "$FEDORA_MAJOR_VERSION" in
         dnf5 -y install openrazer-daemon
         sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
-        # Sunshine from lizardbyte/beta COPR
-        copr_install_isolated "lizardbyte/beta" "sunshine"
         ;;
     43)
 
@@ -119,6 +117,10 @@ esac
 # kAirpods from ledif/kairpods COPR
 copr_install_isolated "ledif/kairpods" \
     "kairpods"
+
+# Sunshine from lizardbyte/beta COPR
+copr_install_isolated "lizardbyte/beta" \
+    "sunshine"
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
