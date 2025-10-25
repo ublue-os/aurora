@@ -179,15 +179,12 @@ dnf5 -y swap \
   fwupd fwupd
 
 # TODO: remove me on next flatpak release when preinstall landed
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-    dnf5 -y copr enable ublue-os/flatpak-test
-    dnf5 -y copr disable ublue-os/flatpak-test
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
-    # print information about flatpak package, it should say from our copr
-    rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep ublue-os
-fi
+dnf5 -y copr enable ublue-os/flatpak-test
+dnf5 -y copr disable ublue-os/flatpak-test
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
+rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep -q ublue-os || { echo "Flatpak not from our copr, aborting"; exit 1; }
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
