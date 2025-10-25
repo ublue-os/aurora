@@ -1,0 +1,30 @@
+name: Nightly Integration Tests
+
+on:
+  schedule:
+    - cron: "30 6 * * *" # 6:30 UTC daily
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/integration-test.yml"
+      - ".github/workflows/nightly-integration-tests.yml"
+      - "tests/**"
+
+jobs:
+  integration-test:
+    name: Integration Test
+    uses: ./.github/workflows/integration-test.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_flavor: "aurora"
+          - image_flavor: "aurora-nvidia"
+          - image_flavor: "aurora-nvidia-open"
+          - image_flavor: "aurora-dx"
+          - image_flavor: "aurora-dx-nvidia"
+          - image_flavor: "aurora-dx-nvidia-open"
+    with:
+      image-ref: ghcr.io/${{ github.repository_owner }}/${{ matrix.image_flavor }}:latest
