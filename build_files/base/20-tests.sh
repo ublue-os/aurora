@@ -17,7 +17,6 @@ desktop-file-validate \
   /usr/share/applications/system-update.desktop
 
 IMPORTANT_PACKAGES=(
-    bazaar
     fish
     krunner-bazaar
     ptyxis
