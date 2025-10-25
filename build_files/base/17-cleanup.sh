@@ -24,6 +24,14 @@ systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
 systemctl enable input-remapper.service
 
+# Autostart bazaar
+#systemctl --global enable bazaar.service
+
+# run flatpak preinstall once at startup
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+systemctl enable flatpak-preinstall.service
+fi
+
 # disable sunshine service
 systemctl --global disable sunshine.service
 
@@ -35,9 +43,9 @@ systemctl disable rpm-ostreed-automatic.timer
 systemctl disable flatpak-system-update.timer
 
 # Hide Desktop Files. Hidden removes mime associations
-for file in fish htop nvtop; do
-    if [[ -f "/usr/share/applications/$file.desktop" ]]; then
-        sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nHidden=true@g' /usr/share/applications/"$file".desktop
+for file in htop nvtop; do
+    if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
+        desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
     fi
 done
 
@@ -45,28 +53,48 @@ done
 flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 systemctl disable flatpak-add-fedora-repos.service
 
-# Disable all COPRs and RPM Fusion Repos and terra
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/negativo17-fedora-multimedia.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/tailscale.repo
+# NOTE: With isolated COPR installation, most repos are never enabled globally.
+# We only need to clean up repos that were enabled during the build process.
 
-# Disable terra repos with dnf
-dnf5 -y config-manager setopt "terra*".enabled=false
-
-# Disable coprs
-dnf5 -y copr disable ublue-os/staging
-dnf5 -y copr disable ublue-os/packages
-dnf5 -y copr disable phracek/PyCharm
-dnf5 -y copr disable bieszczaders/kernel-cachyos-addons
-dnf5 -y copr disable lizardbyte/beta
-
-# NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-cisco-openh264.repo
-sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
-for i in /etc/yum.repos.d/rpmfusion-*; do
-    sed -i 's@enabled=1@enabled=0@g' "$i"
+# Disable third-party repos
+for repo in negativo17-fedora-multimedia tailscale fedora-cisco-openh264; do
+    if [[ -f "/etc/yum.repos.d/${repo}.repo" ]]; then
+        sed -i 's@enabled=1@enabled=0@g' "/etc/yum.repos.d/${repo}.repo"
+    fi
 done
 
+# Disable hardware:razer repo if it exists (only on F42)
+if [[ -f "/etc/yum.repos.d/hardware:razer.repo" ]]; then
+    sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+fi
+
+# Disable Terra repos (installed on F42 and earlier)
+for i in /etc/yum.repos.d/terra*.repo; do
+    if [[ -f "$i" ]]; then
+        sed -i 's@enabled=1@enabled=0@g' "$i"
+    fi
+done
+
+# Disable all COPR repos (should already be disabled by helpers, but ensure)
+for i in /etc/yum.repos.d/_copr:*.repo; do
+    if [[ -f "$i" ]]; then
+        sed -i 's@enabled=1@enabled=0@g' "$i"
+    fi
+done
+
+# NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
+if [[ -f "/etc/yum.repos.d/_copr_ublue-os-akmods.repo" ]]; then
+    sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
+fi
+
+# Disable RPM Fusion repos
+for i in /etc/yum.repos.d/rpmfusion-*.repo; do
+    if [[ -f "$i" ]]; then
+        sed -i 's@enabled=1@enabled=0@g' "$i"
+    fi
+done
+
+# Disable fedora-coreos-pool if it exists
 if [ -f /etc/yum.repos.d/fedora-coreos-pool.repo ]; then
     sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-coreos-pool.repo
 fi

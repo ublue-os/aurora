@@ -10,7 +10,7 @@ REGISTRY = "docker://ghcr.io/ublue-os/"
 
 IMAGE_MATRIX_LATEST = {
     "experience": ["base", "dx"],
-    "image_flavor": ["main", "nvidia", "hwe", "hwe-nvidia"],
+    "image_flavor": ["main", "nvidia"],
 }
 IMAGE_MATRIX = {
     "experience": ["base", "dx"],
@@ -33,11 +33,11 @@ OTHER_NAMES = {
     "dx": "### [Dev Experience Images](https://docs.projectbluefin.io/bluefin-dx)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "kde": "### [Aurora Images](https://getaurora.dev/)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "nvidia": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "hwe": "### HWE Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
+
 }
 
-COMMITS_FORMAT = "### Commits\n| Hash | Subject |\n| --- | --- |{commits}\n\n"
-COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/aurora/commit/{githash})** | {subject} |"
+COMMITS_FORMAT = "### Commits\n| Hash | Subject | Author |\n| --- | --- | --- |{commits}\n\n"
+COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/aurora/commit/{githash})** | {subject} | {author} |"
 
 CHANGELOG_TITLE = "{tag}: {pretty}"
 CHANGELOG_FORMAT = """\
@@ -76,8 +76,7 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{cu
 ```
 
 ### Documentation
-Be sure to read the [documentation](https://docs.getaurora.dev/) for more information
-on how to use your cloud native system.
+Be sure to read the [documentation](https://docs.getaurora.dev/) for more information on how to use your cloud native system.
 """
 HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
@@ -208,8 +207,7 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
             if img not in pkg:
                 continue
 
-            if t == "hwe" and "hwe" not in image_flavor:
-                continue
+
             if t == "nvidia" and "nvidia" not in image_flavor:
                 continue
             if t == "base" and experience != "base":
@@ -291,7 +289,7 @@ def get_commits(prev_manifests, manifests, workdir: str):
                 "-C",
                 workdir,
                 "log",
-                "--pretty=format:%H %h %s",
+                "--pretty=format:%H|%h|%an|%s",
                 f"{start}..{finish}",
             ],
             check=True,
@@ -302,7 +300,10 @@ def get_commits(prev_manifests, manifests, workdir: str):
         for commit in commits.split("\n"):
             if not commit:
                 continue
-            githash, short, subject = commit.split(" ", 2)
+            parts = commit.split("|")
+            if len(parts) < 4:
+                continue
+            githash, short, author, subject = parts
 
             if subject.lower().startswith("merge"):
                 continue
@@ -313,6 +314,7 @@ def get_commits(prev_manifests, manifests, workdir: str):
                 COMMIT_FORMAT.replace("{short}", short)
                 .replace("{subject}", subject)
                 .replace("{githash}", githash)
+                .replace("{author}", author)
             )
 
         if out:

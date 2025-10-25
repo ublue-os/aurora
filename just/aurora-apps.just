@@ -202,83 +202,15 @@ install-incus:
 [group('Apps')]
 install-k8s-dev-tools:
     #!/usr/bin/bash
-    echo "Adding Kubernetes command line tools..."
+    echo "☸️🛠️ Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
 
-# Install gaming flatpaks
-# 23.08 runtime versions are needed for Heroic/Lutris
+# Install AI tools
 [group('Apps')]
-install-gaming-flatpaks:
-    #!/usr/bin/env bash
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    flatpak --system -y install --or-update app/com.valvesoftware.Steam/x86_64/stable \
-                                            app/com.heroicgameslauncher.hgl/x86_64/stable \
-                                            app/net.lutris.Lutris/x86_64/stable \
-                                            app/net.davidotek.pupgui2/x86_64/stable \
-                                            app/com.dec05eba.gpu_screen_recorder/x86_64/stable \
-                                            app/io.github.ilya_zlobintsev.LACT/x86_64/stable \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08 \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08 \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08 \
-                                            runtime/com.obsproject.Studio.Plugin.OBSVkCapture/x86_64/stable \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08 \
-                                            runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08
-
-# Set up command-not-found for Homebrew
-[group('Apps')]
-setup-brew-not-found ACTION="":
-    #!/usr/bin/env bash
-    source /usr/lib/ujust/ujust.sh
-
-    OPTION={{ ACTION }}
-    if [ "$OPTION" == "help" ]; then
-        echo "Usage: ujust setup-brew-not-found <option>"
-        echo "  <option>: Specify the quick option to skip the prompt"
-        echo "  Use 'enable' to select Enable Brew Not Found"
-        echo "  Use 'disable' to select Disable Brew Not Found"
-        exit 0
-    elif [ "$OPTION" == "" ]; then
-        echo "${bold}Brew command-not-found Setup${normal}"
-        OPTION=$(Choose "Enable Brew command-not-found" "Disable Brew command-not-found")
-    fi
-
-    set -euo pipefail
-
-    BREW_BINARY=/home/linuxbrew/.linuxbrew/bin/brew
-    HOMEBREW_REPOSITORY=${HOMEBREW_REPOSITORY:-$($BREW_BINARY --repository)}
-    if ! $BREW_BINARY -h > /dev/null; then
-      echo "Make sure Homebrew is installed first. Check journalctl -e -u brew-setup.service"
-      exit
-    fi
-
-    if [[ "${OPTION,,}" =~ ^enable ]]; then
-        $BREW_BINARY tap homebrew/command-not-found
-        pkexec tee /etc/profile.d/brew-command-not-found.sh > /dev/null <<EOF
-    # Check for interactive bash or zsh and that we haven't already been sourced
-    if [[ -d /home/linuxbrew/.linuxbrew && \$- == *i* && BREW_COMMAND_NOT_FOUND != 1 ]] ; then
-      HB_CNF_HANDLER="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
-      [ -f "\$HB_CNF_HANDLER" ] && source "\$HB_CNF_HANDLER"
-      export BREW_COMMAND_NOT_FOUND=1
-    fi
-    EOF
-        # Necessary for fish since just having a script sourcing it does not work
-        pkexec ln -sf "${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-command-not-found/handler.fish" /etc/fish/conf.d/brew-cnf-handler.fish
-        echo "Brew command-not-found has been ${b}${green}enabled${n}"
-    fi
-
-    if [[ "${OPTION,,}" =~ ^disable ]]; then
-        $BREW_BINARY untap homebrew/command-not-found
-        FILES_TO_BE_REMOVED=()
-        [ -f /etc/profile.d/brew-command-not-found.sh ] && FILES_TO_BE_REMOVED+=("/etc/profile.d/brew-command-not-found.sh")
-        [ -f /etc/fish/conf.d/brew-command-not-found.fish ] && FILES_TO_BE_REMOVED+=("/etc/fish/conf.d/brew-command-not-found.fish")
-        pkexec rm -f "${FILES_TO_BE_REMOVED[@]}"
-      echo "Brew command-not-found has been ${b}${red}disabled${n}"
-    fi
-
-# List installed RPM packages of currently booted system
-[group('Apps')]
-list-installed-rpms:
-    rpm -qa
+install-ai-tools:
+    #!/usr/bin/bash
+    echo "🧠🤖 Adding AI tools..."
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-ai.Brewfile
 
 # Setup and configure Sunshine Game Streaming host
 [group('Apps')]
@@ -325,7 +257,6 @@ toggle-software-store ACTION="":
     discover_apps=(
         "org.kde.discover.desktop"
         "org.kde.discover.flatpak.desktop"
-        "org.kde.discover.notifier.desktop"
         "org.kde.discover.urlhandler.desktop"
     )
 
@@ -372,15 +303,24 @@ toggle-software-store ACTION="":
                 rm "$HOME/.local/share/applications/${app}"
             fi
         done
+
+        # Remove discover notifier (might still exist from before we removed it from the image)
+        if [ -f "$HOME/.config/autostart/org.kde.discover.notifier.desktop" ]; then
+            rm "$HOME/.config/autostart/org.kde.discover.notifier.desktop"
+        fi
+
         # Remove Bazaar override if it exists (shows Bazaar)
         if [ -f "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop" ]; then
             rm "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"
         fi
 
+        # discover could still be running
+        pkill -f DiscoverNotifier
+
         # enable bazaar in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled false
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled true
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         echo "${green}${b}Bazaar is now active${n}"
 
@@ -393,10 +333,13 @@ toggle-software-store ACTION="":
             fi
         done
 
+        # bazaar is probably still running
+        pkill -f bazaar
+
         # enable discover in krunner
         kwriteconfig6 --file krunnerrc --group Plugins --key krunner_appstreamEnabled true
         kwriteconfig6 --file krunnerrc --group Plugins --key bazaarrunnerEnabled false
-        systemctl --user restart plasma-krunner.service
+        systemctl --user restart plasma-krunner.service plasma-plasmashell.service
 
         # Hide Bazaar by creating NoDisplay override
         cp /usr/share/applications/io.github.kolunmi.Bazaar.desktop "$HOME/.local/share/applications/io.github.kolunmi.Bazaar.desktop"

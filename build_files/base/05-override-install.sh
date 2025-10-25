@@ -4,33 +4,19 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-dnf5 -y swap \
-  --repo="terra-extras" \
-  switcheroo-control switcheroo-control
-
-# Fix for ID in fwupd
-dnf5 -y swap \
-  --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  fwupd fwupd
-
-# Explicitly install KDE Plasma related packages with the same version as in base image
-dnf5 -y install \
-  plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
-
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 
 # Starship Shell Prompt
+ghcurl "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
+tar -xzf /tmp/starship.tar.gz -C /tmp
+install -c -m 0755 /tmp/starship /usr/bin
 # shellcheck disable=SC2016
 echo 'eval "$(starship init bash)"' >> /etc/bashrc
 
 # Bash Prexec
 curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
-
-dnf5 -y swap fedora-logos aurora-logos
-dnf5 -y install aurora-kde-config
-dnf5 -y install aurora-plymouth
 
 # Consolidate Just Files
 find /tmp/just -iname '*.just' ! -name 'aurora-beta.just' -exec printf "\n\n" \; -exec cat {} \; >>/usr/share/ublue-os/just/60-custom.just

@@ -1,48 +1,69 @@
 css: |
-  .aurora-section banner {
+  .global-section banner {
      margin-top: 30px;
      margin-left: 30px;
      margin-right: 30px;
      border-radius: 10px;
   }
-  .aurora-section banner-text-overlay {
+
+  .global-section banner-text-overlay {
      margin: 30px;
      padding: 20px;
   }
-  .aurora-section banner-text-bg {
-     background-color: var(--accent-color);
-     filter: blur(50px) brightness(0.3);
-     opacity: 0.75;
-     border-radius: 30px;
-     background-color: var(--accent-color);
-  }
-  .aurora-section banner-text {
+
+  .global-section banner-text {
      padding: 50px;
-     color: lighter(var(--accent-color));
-  }
-  .aurora-section title {
      color: #ffffff;
+     text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
-  .aurora-section subtitle {
-    color: var(--accent-color);
-    filter: brightness(1.25);
+
+  .global-section title {
+    color: #ffffff;
+  }
+
+  .global-section subtitle {
+    color: #ffffff;
     font-weight: 400;
   }
-  .aurora-section entry {
-     background: linear-gradient(to right, alpha(var(--accent-color), 0.2), alpha(var(--accent-bg-color), 0.1));
-     transition-property: background;
-     transition-duration: 0.25s;
+
+  .global-section {
+    margin: 15px;
+    border-radius: 25px;
+    color: inherit;
   }
-  .aurora-section entry:hover {
-     background: linear-gradient(to right, alpha(var(--accent-bg-color), 0.5), alpha(var(--accent-color), 0.7));
-     transition-property: background;
-     transition-duration: 0.75s;
+
+  .aurora-section {
+    background: linear-gradient(0deg, #271e7f, #60a5c3);
   }
-  .aurora-section entry:active {
-     background: linear-gradient(to right, alpha(var(--accent-bg-color), 0.5), alpha(var(--accent-color), 0.7));
-     transition-property: background;
-     transition-duration: 0.15s;
+
+  .cc-section {
+    background: linear-gradient(0deg, #392946, #050815);
   }
+
+  .music-section {
+    background: linear-gradient(45deg, #e97e4f, #565d8d);
+  }
+
+  .office-section {
+    background: linear-gradient(to left bottom, #8c1790, #a81b8d, #c0258a, #d63386, #e94482, #e7457c, #e54777, #e24872, #cc3969, #b72960, #a21757, #8d004d);
+  }
+
+  .gaming-section {
+    background: linear-gradient(0deg, #444445, #00ce75);
+  }
+
+  .utilities-section {
+    background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
+  }
+
+  .dev-section {
+    background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
+  }
+
+  .ai-section {
+    background: linear-gradient(0deg, #0055b1, #ff7843);
+  }
+
 sections:
   - title: "Aurora Recommends"
     subtitle: "Our Favorite Applications"
@@ -53,21 +74,24 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
+      - global-section
+    dark-classes:
       - aurora-section
     appids:
       - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
       - org.kde.kstars
       - re.sonny.Eloquent
-      - be.alexandervanhee.gradia
+      - io.github.halfmexican.Mingle
+      - org.kde.audiotube
       - app.fotema.Fotema
-      - app.drey.Damask
       - io.github.pleromix.IceBox
       - io.github.nozwock.Packet
       - com.github.ADBeveridge.Raider
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
-  - title: "Browsers"
-    subtitle: "Explore the web with your favorite browser"
+      - rocks.shy.VacuumTube
+
+  - title: "Content Creation"
+    subtitle: "Create your first donut or make some tunes"
     rows: 2
     banner: file:///usr/share/ublue-os/bazaar/02-aurora-bazaar.jxl
     banner-fit: cover
@@ -75,14 +99,21 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - cc-section
     appids:
-      - com.brave.Browser
-      - com.google.Chrome
-      - com.microsoft.Edge
-      - com.opera.Opera
-      - com.vivaldi.Vivaldi
-      - app.zen_browser.zen
+      - org.kde.krita
+      - org.ardour.Ardour
+      - org.kde.kdenlive
+      - org.blender.Blender
+      - org.inkscape.Inkscape
+      - org.audacityteam.Audacity
+      - com.obsproject.Studio
+      - com.inochi2d.inochi-session
+      - org.gimp.GIMP
+      - org.darktable.Darktable
+
   - title: "Music & Media"
     subtitle: "Let me break it down for you"
     rows: 2
@@ -92,7 +123,9 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - music-section
     appids:
       - org.kde.elisa
       - com.spotify.Client
@@ -106,6 +139,7 @@ sections:
       - io.github.mhogomchungu.media-downloader
       - com.github.wwmm.easyeffects
       - me.timschneeberger.jdsp4linux
+
   - title: "Office & Productivity"
     subtitle: "Let's do some work"
     rows: 3
@@ -115,22 +149,21 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - office-section
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
+      - org.onlyoffice.desktopeditors
       - org.libreoffice.LibreOffice
       - io.github.alainm23.planify
-      - org.gimp.GIMP
-      - org.kde.krita
-      - org.kde.kdenlive
-      - org.inkscape.Inkscape
-      - org.blender.Blender
       - io.github.nokse22.Exhibit
-      - org.audacityteam.Audacity
       - io.gitlab.theevilskeleton.Upscaler
-      - org.ardour.Ardour
-      - org.gnome.gitlab.YaLTeR.VideoTrimmer
+      - com.bambulab.BambuStudio
+      - com.github.IsmaelMartinez.teams_for_linux
+      - com.super_productivity.SuperProductivity
+
   - title: "Games"
     subtitle: "The cake is a lie"
     rows: 3
@@ -140,19 +173,24 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - gaming-section
     appids:
       - com.valvesoftware.Steam
       - com.valvesoftware.SteamLink
       - com.heroicgameslauncher.hgl
       - com.discordapp.Discord
       - net.lutris.Lutris
+      - org.vinegarhq.Sober
       - com.dec05eba.gpu_screen_recorder
       - com.github.Matoking.protontricks
-      - com.obsproject.Studio
+      - org.prismlauncher.PrismLauncher
       - com.feaneron.Boatswain
       - com.parsecgaming.parsec
       - net.davidotek.pupgui2
+      - org.endlessaccess.threadbare
+
   - title: "Utilities"
     subtitle: "Stuff you didn't need until now"
     rows: 2
@@ -162,17 +200,26 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - utilities-section
     appids:
       - app.drey.Warp
       - org.localsend.localsend_app
       - com.github.zocker_160.SyncThingy
-      - org.deskflow.deskflow
-      - io.github.lawstorant.boxflat
+      - org.keepassxc.KeePassXC
+      - io.github.nokse22.asciidraw
       - io.github.radiolamp.mangojuice
       - org.fedoraproject.MediaWriter
+      - org.gnome.gitlab.YaLTeR.VideoTrimmer
       - org.raspberrypi.rpi-imager
+      - org.kde.optiimage
       - org.mozilla.vpn
+      - hu.irl.cameractrls
+      - org.gnome.gitlab.YaLTeR.Identity
+      - io.github.BuddySirJava.SSH-Studio
+      - au.stevetech.yafi
+
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
@@ -182,16 +229,24 @@ sections:
     banner-text-valign: center
     banner-height: 400
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - dev-section
     appids:
       - io.podman_desktop.PodmanDesktop
       - io.kinvolk.Headlamp
       - sh.loft.devpod
       - org.gnome.Builder
       - com.getpostman.Postman
+      - org.kde.kdevelop
       - io.dbeaver.DBeaverCommunity
+      - org.gitfourchette.gitfourchette
+      - com.mardojai.ForgeSparks
       - com.github.marhkb.Pods
       - cc.arduino.IDE2
+      - io.github.plrigaux.sysd-manager
+      - me.iepure.devtoolbox
+
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
@@ -201,7 +256,9 @@ sections:
     banner-text-valign: center
     banner-height: 500
     classes:
-      - aurora-section
+      - global-section
+    dark-classes:
+      - ai-section
     appids:
       - com.jeffser.Alpaca
       - io.github.qwersyk.Newelle

@@ -25,6 +25,7 @@ systemctl disable uupd.timer
 systemctl disable ublue-system-setup.service
 systemctl disable ublue-guest-user.service
 systemctl disable check-sb-key.service
+systemctl disable flatpak-preinstall.service
 systemctl --global disable ublue-flatpak-manager.service
 systemctl --global disable podman-auto-update.timer
 systemctl --global disable ublue-user-setup.service
@@ -40,17 +41,6 @@ SPECS=(
     "anaconda-webui"
 )
 dnf install -y "${SPECS[@]}"
-
-# swap anaconda packages to copr
-dnf5 -y copr enable @rhinstaller/Anaconda
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda \
-    anaconda-core anaconda-core
-
-dnf5 -y copr enable @rhinstaller/Anaconda-webui
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:group_rhinstaller:Anaconda-webui \
-    anaconda-webui anaconda-webui
 
 # Anaconda Profile Detection
 

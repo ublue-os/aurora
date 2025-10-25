@@ -10,8 +10,11 @@ on:
       - "iso_files/**"
       - "flatpaks/**"
       - ".github/workflows/*iso*"
-  schedule:
-    - cron: "50 5 * * 0" # 5:50 UTC sunday
+      - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
+      - "**.Brewfile"
+      - "just/*.just"
+  # schedule:
+  #  - cron: "50 5 * * 0" # 5:50 UTC sunday
   workflow_call:
   workflow_dispatch:
 
@@ -25,7 +28,7 @@ jobs:
       matrix:
         brand_name: ["aurora"]
     with:
-      kernel_pin: 6.14.11-300.fc42.x86_64 ## This is where kernels get pinned.
+      #kernel_pin: 6.14.11-300.fc42.x86_64 ## This is where kernels get pinned.
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
 

@@ -2,13 +2,6 @@
 
 set -eoux pipefail
 
-echo "::group:: ===Install dnf5==="
-if [ "${FEDORA_MAJOR_VERSION}" -lt 41 ]; then
-    rpm-ostree install --idempotent dnf5 dnf5-plugins
-fi
-
-echo "::endgroup::"
-
 echo "::group:: Copy Files"
 
 # Copy ISO list for `install-system-flatpaks`
@@ -16,8 +9,11 @@ install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # Copy Files to Container
 cp -r /ctx/just /tmp/just
-cp /ctx/packages.json /tmp/packages.json
 rsync -rvK /ctx/system_files/shared/ /
+
+# Homebrew files
+mkdir -p /usr/share/ublue-os/homebrew/
+cp /ctx/brew/*.Brewfile /usr/share/ublue-os/homebrew/
 
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_files/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl
@@ -27,9 +23,6 @@ echo "::endgroup::"
 
 # Generate image-info.json
 /ctx/build_files/base/00-image-info.sh
-
-# Get COPR Repos
-/ctx/build_files/base/02-install-copr-repos.sh
 
 # Install Kernel and Akmods
 /ctx/build_files/base/03-install-kernel-akmods.sh
@@ -46,14 +39,13 @@ echo "::endgroup::"
 # Get Firmare for Framework
 /ctx/build_files/base/08-firmware.sh
 
-# Make HWE changes
-/ctx/build_files/base/09-hwe-additions.sh
+
+
+# Beta
+/ctx/build_files/base/10-beta.sh
 
 # Bazaar workarounds
 /ctx/build_files/base/11-bazaar.sh
-
-# Beta
-# /ctx/build_files/base/10-beta.sh
 
 ## late stage changes
 
@@ -66,10 +58,16 @@ echo "::endgroup::"
 # Regenerate initramfs
 /ctx/build_files/base/19-initramfs.sh
 
+# Simple Tests
+/ctx/build_files/base/20-tests.sh
+
 # Clean Up
 echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
 mkdir -p /var/tmp &&
     chmod -R 1777 /var/tmp
-ostree container commit
+
+# Validate all repos are disabled before committing
+/ctx/build_files/shared/validate-repos.sh
+
 echo "::endgroup::"
