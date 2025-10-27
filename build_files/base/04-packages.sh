@@ -76,6 +76,11 @@ esac
 echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
+# Install tailscale from their repo
+dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+dnf config-manager setopt tailscale-stable.enabled=0
+dnf -y install --enablerepo='tailscale-stable' tailscale
+
 # Install COPR packages using isolated enablement (secure)
 echo "Installing COPR packages with isolated repo enablement..."
 
