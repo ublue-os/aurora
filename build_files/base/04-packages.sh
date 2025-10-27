@@ -109,7 +109,7 @@ case "$FEDORA_MAJOR_VERSION" in
     42)
         # OpenRazer from hardware:razer repo (not a COPR)
         dnf -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-        dnf config-manager setopt hardware_razer.enable=0
+        dnf config-manager setopt hardware_razer.enabled=0
         dnf -y install --enablerepo='hardware_razer' openrazer-daemon
 
         ;;
