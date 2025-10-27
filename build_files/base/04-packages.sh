@@ -147,7 +147,6 @@ case "$FEDORA_MAJOR_VERSION" in
     43)
         EXCLUDED_PACKAGES+=(
             fw-fanctrl
-            sunshine
             openrazer-daemon
         )
         ;;
