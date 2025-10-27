@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 
-set -eou pipefail
-
-mkdir -p /var/roothome
+set -xeou pipefail
 
 echo "::group:: Copy Files"
 
@@ -22,7 +20,8 @@ sysctl -p
 # See:
 #   - https://github.com/ublue-os/bluefin/issues/2365
 #   - https://github.com/devcontainers/features/issues/1235
-mkdir -p /etc/modules-load.d && cat >>/etc/modules-load.d/ip_tables.conf <<EOF
+mkdir -p /etc/modules-load.d
+tee /etc/modules-load.d/ip_tables.conf <<EOF
 iptable_nat
 EOF
 
