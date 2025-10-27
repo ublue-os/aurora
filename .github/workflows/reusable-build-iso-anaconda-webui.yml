@@ -8,7 +8,7 @@ on:
       - ".github/workflows/reusable-build-iso-anaconda-webui.yml"
       - "iso_files/configure_iso_anaconda-webui.sh"
   schedule:
-    - cron: "30 0 * * 1"
+    - cron: "0 0 15 * *"
 
 env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload to Job Artifacts
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: ${{ steps.image_ref.outputs.artifact_format }}
           if-no-files-found: error

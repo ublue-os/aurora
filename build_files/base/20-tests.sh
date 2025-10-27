@@ -6,8 +6,11 @@ set -eoux pipefail
 
 xmllint --noout \
   /usr/share/backgrounds/default.xml \
-  /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml \
   /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+
+# If this file is not on the image bazaar will automatically be removed from users systems :(
+# See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
+test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 
 desktop-file-validate \
   /usr/share/applications/Discourse.desktop \
@@ -19,18 +22,53 @@ desktop-file-validate \
 
 IMPORTANT_PACKAGES=(
     bazaar
+    distrobox
     fish
+    flatpak
     krunner-bazaar
+    kwin
+    pipewire
+    plasma-desktop
     ptyxis
-    starship
+    sddm
+    Sunshine
+    systemd
     tailscale
     uupd
+    wireplumber
     zsh
 )
 
 for package in "${IMPORTANT_PACKAGES[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
 done
+
+# these packages are supposed to be removed
+# and are considered footguns
+UNWANTED_PACKAGES=(
+    firefox
+    plasma-discover-kns
+    plasma-discover-rpm-ostree
+    podman-docker
+)
+
+for package in "${UNWANTED_PACKAGES[@]}"; do
+    if rpm -q "${package}" >/dev/null 2>&1; then
+        echo "Unwanted package found: ${package}... Exiting"; exit 1
+    fi
+done
+
+# TODO: Enable when libnvidia-container-tools are on F43
+#if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+#  NV_PACKAGES=(
+#      libnvidia-container-tools
+#      kmod-nvidia
+#      nvidia-driver-cuda
+#)
+#  for package in "${NV_PACKAGES[@]}"; do
+#      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
+#  done
+#fi
 
 IMPORTANT_UNITS=(
     brew-update.timer

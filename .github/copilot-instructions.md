@@ -6,7 +6,7 @@ This document provides essential information for coding agents working with the 
 
 **Aurora** is a cloud-native desktop operating system that reimagines the Linux desktop experience. It's an immutable OS built on Fedora Linux using container technologies with atomic updates.
 
-- **Type**: Container-based Linux distribution build system 
+- **Type**: Container-based Linux distribution build system
 - **Base**: Fedora Linux with KDE Plasma Desktop + Universal Blue infrastructure
 - **Languages**: Bash scripts, JSON configuration, Python utilities
 - **Build System**: Just (command runner), Podman/Docker containers, GitHub Actions
@@ -35,7 +35,7 @@ This document provides essential information for coding agents working with the 
 ### Architecture
 
 - **Two Build Targets**: `base` (regular users) and `dx` (developer experience)
-- **Image Flavors**: main, nvidia, nvidia-open, hwe variants, asus, surface
+- **Image Flavors**: main, nvidia-open
 - **Fedora Versions**: 42, 43 supported
 - **Build Process**: Sequential shell scripts in build_files/ directory
 

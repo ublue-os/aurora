@@ -26,6 +26,11 @@ benchmark:
         fi
     fi
 
+    echo 'Running a 1 minute benchmark ...'
+    trap popd EXIT
+    pushd $(mktemp -d)
+    stress-ng --matrix 0 -t 1m --times
+
 # Configure Aurora-CLI Terminal Experience with Brew
 [group('System')]
 aurora-cli:
@@ -38,16 +43,13 @@ install-fonts:
     echo "Installing extra fonts..."
     brew bundle --file /usr/share/ublue-os/homebrew/aurora-fonts.Brewfile
 
-# Install Kubernetes CLI dev tools
-[group('System')]
-install-k8s-dev-tools:
-    #!/usr/bin/bash
-    echo "Adding Kubernetes command line tools..."
-    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
-
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
+
+# alias for install-fonts
+aurora-fonts:
+    @ujust install-fonts
 
 # Toggle between Aurora and the Developer Experience
 [group('System')]
@@ -93,6 +95,8 @@ toggle-devmode:
     fi
     if gum choose "Do you want to also install the default development flatpaks?" ; then
             ujust install-system-flatpaks 1
+    if gum choose "Do you want to install extra fonts?" ; then
+            ujust install-fonts
     fi
 
 # Ptyxis terminal transparency
@@ -138,110 +142,6 @@ dx-group:
 [group('System')]
 setup-vfio:
     @ujust configure-vfio
-
-# Configure system to use vfio and kvmfr
-[group('System')]
-configure-vfio ACTION="":
-    #!/usr/bin/bash
-    source /usr/lib/ujust/ujust.sh
-    CURRENT_IMAGE=$(rpm-ostree status -b --json | jq -r '.deployments[0]."container-image-reference"')
-    if grep -q "dx" <<< $CURRENT_IMAGE ; then
-        DEVMODE="enabled"
-    else
-        DEVMODE="disabled"
-    fi
-    if [ "$DEVMODE" == "disabled" ]; then
-        echo "Please run "ujust devmode" first"
-        exit 0
-    fi
-    OPTION={{ ACTION }}
-    if [ "$OPTION" == "help" ]; then
-        bash -c "cat <<EOF
-    Usage: ujust configure-vfio <option>
-      <option>: Specify the quick option to skip the prompt
-      Use 'vfio-on' to select Enable VFIO drivers
-      Use 'vfio-off' to select Disable VFIO drivers
-      Use 'kvmfr' to enable kvmfr module for looking-glass
-    EOF"
-        exit 0
-    elif [ "$OPTION" == "" ]; then
-        bash -c "cat <<EOF
-    ${bold}VFIO and kvmfr Configuration${normal}
-    This is only used for GPU passthrough of a secondary dGPU.
-    It will enable vfio and configure kvmfr for use with $(Urllink "https://looking-glass.io" "Looking Glass").
-    If you do not plan to use any of this then press ESC.
-    ${bold}NOTE:${normal} Since this is a niche use case, support will be ${b}very limited${n}
-    EOF"
-        OPTION=$(Choose \
-          "Enable VFIO drivers" \
-          "Disable VFIO drivers" \
-          "Enable kvmfr module" \
-        )
-    fi
-    if [[ "${OPTION,,}" =~ (^enable[[:space:]]vfio|vfio-on) ]]; then
-        echo "Enabling VFIO..."
-        CPU_VENDOR=$(grep "vendor_id" "/proc/cpuinfo" | uniq | awk -F": " '{ print $2 }')
-        VENDOR_KARG="unset"
-        if [[ ${CPU_VENDOR} == "AuthenticAMD" ]]; then
-            VENDOR_KARG="amd_iommu=on"
-        elif [[ ${CPU_VENDOR} == "GenuineIntel" ]]; then
-            VENDOR_KARG="intel_iommu=on"
-        fi
-        if [[ ${VENDOR_KARG} == "unset" ]]; then
-            echo "Failed to get CPU vendor, exiting..."
-            exit 1
-        else
-            rpm-ostree kargs \
-                --append-if-missing="${VENDOR_KARG}" \
-                --append-if-missing="iommu=pt" \
-                --append-if-missing="rd.driver.pre=vfio_pci" \
-                --append-if-missing="vfio_pci.disable_vga=1" \
-                --append-if-missing="kvm.ignore_msrs=1" \
-                --append-if-missing="kvm.report_ignored_msrs=0"
-            if sudo test ! -f "/etc/libvirt/hooks/qemu"; then
-                echo "Adding libvirt qemu hooks"
-                sudo wget 'https://raw.githubusercontent.com/PassthroughPOST/VFIO-Tools/master/libvirt_hooks/qemu' -O /etc/libvirt/hooks/qemu
-                sudo chmod +x /etc/libvirt/hooks/qemu
-                sudo grep -A1 -B1 "# Add" /etc/libvirt/hooks/qemu | sed 's/^# //g'
-                echo ""
-                if sudo test ! -d "/etc/libvirt/hooks/qemu.d"; then
-                    sudo mkdir /etc/libvirt/hooks/qemu.d
-                fi
-            fi
-            echo "VFIO will be enabled on next boot, make sure you enable IOMMU, VT-d or AMD-v in your BIOS!"
-            echo "Please understand that since this is such a niche use case, support will be very limited!"
-            echo "To add your unused/second GPU device ids to the vfio driver by running"
-            echo 'rpm-ostree kargs --append-if-missing="vfio-pci.ids=xxxx:yyyy,xxxx:yyzz"'
-            echo 'you can find these using "ls-iommu -gr" or "ls-iommu -grr"'
-            echo 'for a dedicated gpu there will be at least 1 vga device and 1 audio device.'
-            echo "NOTE: The GPU you bound to vfio-pci will not be usable by the host after you do this!"
-        fi
-    elif [[ "${OPTION,,}" =~ (^disable[[:space:]]vfio|vfio-off) ]]; then
-        echo ""
-        echo "Make sure you have ${b}disabled autostart of all VMs using VFIO${n} before continuing!"
-        CONFIRM=$(Choose Cancel Continue)
-        if [ "$CONFIRM" == "Continue" ]; then
-            echo "Disabling VFIO..."
-            VFIO_IDS="$(rpm-ostree kargs | sed -E 's/.+(vfio_pci.ids=.+\s)/\1/' | awk '{ print $1 }' | grep vfio_pci.ids)"
-            VFIO_IDS_KARG=""
-            if [ -n "$VFIO_IDS" ]; then
-                echo "Found VFIO ids in kargs, adding the below line to removal list"
-                echo "$VFIO_IDS"
-                VFIO_IDS_KARG="--delete-if-present=\"$VFIO_IDS\""
-            fi
-            rpm-ostree kargs \
-                --delete-if-present="iommu=pt" \
-                --delete-if-present="iommu=on" \
-                --delete-if-present="amd_iommu=on" \
-                --delete-if-present="intel_iommu=on" \
-                --delete-if-present="rd.driver.pre=vfio_pci" \
-                --delete-if-present="vfio_pci.disable_vga=1" \
-                --delete-if-present="vfio_pci.disable_vga=0" \
-            $VFIO_IDS_KARG
-        fi
-    elif [[ "${OPTION,,}" =~ kvmfr ]]; then
-        sudo /usr/libexec/aurora-dx-kvmfr-setup
-    fi
 
 # Install system flatpaks for rebasers
 [group('System')]

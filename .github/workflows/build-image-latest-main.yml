@@ -11,6 +11,8 @@ on:
       - "flatpaks/**"
       - ".github/workflows/*iso*"
       - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
+      - "**.Brewfile"
+      - "just/*.just"
   workflow_call:
   workflow_dispatch:
 
@@ -24,7 +26,7 @@ jobs:
       matrix:
         brand_name: ["aurora"]
     with:
-      image_flavors: '["main", "nvidia", "nvidia-open"]'
+      image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: latest
       #kernel_pin: 6.12.15-200.fc41.x86_64

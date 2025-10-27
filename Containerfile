@@ -9,7 +9,7 @@ COPY /build_files /build_files
 COPY /iso_files /iso_files
 COPY /just /just
 COPY /flatpaks /flatpaks
-COPY packages.json /
+COPY /brew /brew
 
 ## aurora image section
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
@@ -50,3 +50,5 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/shared/build-dx.sh
+
+RUN bootc container lint
