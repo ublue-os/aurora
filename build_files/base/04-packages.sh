@@ -108,9 +108,9 @@ copr_install_isolated "ublue-os/packages" \
 case "$FEDORA_MAJOR_VERSION" in
     42)
         # OpenRazer from hardware:razer repo (not a COPR)
-        dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-        dnf5 -y install openrazer-daemon
-        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+        dnf -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
+        dnf config-manager setopt hardware_razer.enable=0
+        dnf -y install --enablerepo='hardware_razer' openrazer-daemon
 
         ;;
     43)
