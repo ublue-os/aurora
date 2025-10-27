@@ -51,7 +51,6 @@ FEDORA_PACKAGES=(
     sssd-ad
     sssd-ipa
     sssd-krb5
-    tailscale
     tmux
     virtualbox-guest-additions
     wireguard-tools
