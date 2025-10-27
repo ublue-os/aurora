@@ -33,9 +33,6 @@ echo "::endgroup::"
 # Install Overrides and Fetch Install
 /ctx/build_files/base/05-override-install.sh
 
-# Base Image Changes
-/ctx/build_files/base/07-base-image-changes.sh
-
 # Get Firmare for Framework
 /ctx/build_files/base/08-firmware.sh
 
