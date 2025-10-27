@@ -28,14 +28,7 @@ FEDORA_PACKAGES=(
     cockpit-selinux
     cockpit-storaged
     cockpit-system
-    code
-    containerd.io
     dbus-x11
-    docker-buildx-plugin
-    docker-ce
-    docker-ce-cli
-    docker-compose-plugin
-    docker-model-plugin
     edk2-ovmf
     flatpak-builder
     incus
@@ -75,6 +68,33 @@ FEDORA_PACKAGES=(
 
 echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
+
+# Install dockker packages from the repo
+echo "Installing docker packages"
+dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
+dnf -y install --enablerepo=docker-ce-stable \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-ce \
+    docker-ce-cli \
+    docker-compose-plugin \
+    docker-model-plugin
+
+# Add vscode repo and install
+echo "Installing VSCode from their repo"
+tee /etc/yum.repos.d/vscode.repo <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/vscode.repo
+
+dnf -y install --enablerepo=code \
+    code
 
 echo "Installing DX COPR packages with isolated repo enablement..."
 
