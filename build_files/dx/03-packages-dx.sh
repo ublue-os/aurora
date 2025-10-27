@@ -98,10 +98,6 @@ dnf -y install --enablerepo=code \
 
 echo "Installing DX COPR packages with isolated repo enablement..."
 
-if [[ "${FEDORA_MAJOR_VERSION}" -lt "42" ]]; then
-    copr_install_isolated "ganto/lxc4" "incus" "incus-agent" "lxc"
-fi
-
 copr_install_isolated "karmab/kcli" "kcli"
 copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
 copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
