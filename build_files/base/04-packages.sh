@@ -32,7 +32,6 @@ FEDORA_PACKAGES=(
     input-remapper
     iwd
     kcm-fcitx5
-    kde-runtime-docs
     krb5-workstation
     ksystemlog
     libimobiledevice
@@ -108,8 +107,6 @@ case "$FEDORA_MAJOR_VERSION" in
         dnf5 -y install openrazer-daemon
         sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
-        # Sunshine from lizardbyte/beta COPR
-        copr_install_isolated "lizardbyte/beta" "sunshine"
         ;;
     43)
 
@@ -119,6 +116,10 @@ esac
 # kAirpods from ledif/kairpods COPR
 copr_install_isolated "ledif/kairpods" \
     "kairpods"
+
+# Sunshine from lizardbyte/beta COPR
+copr_install_isolated "lizardbyte/beta" \
+    "sunshine"
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
@@ -178,15 +179,12 @@ dnf5 -y swap \
   fwupd fwupd
 
 # TODO: remove me on next flatpak release when preinstall landed
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-    dnf5 -y copr enable ublue-os/flatpak-test
-    dnf5 -y copr disable ublue-os/flatpak-test
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
-    dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
-    # print information about flatpak package, it should say from our copr
-    rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep ublue-os
-fi
+dnf5 -y copr enable ublue-os/flatpak-test
+dnf5 -y copr disable ublue-os/flatpak-test
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
+dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
+rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep -q ublue-os || { echo "Flatpak not from our copr, aborting"; exit 1; }
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
