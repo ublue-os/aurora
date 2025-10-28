@@ -87,7 +87,6 @@ copr_install_isolated "ublue-os/staging" \
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
     "aurora-backgrounds" \
-    "bazaar" \
     "krunner-bazaar" \
     "kcm_ublue" \
     "ublue-bling" \
@@ -142,7 +141,6 @@ case "$FEDORA_MAJOR_VERSION" in
     43)
         EXCLUDED_PACKAGES+=(
             fw-fanctrl
-            sunshine
             openrazer-daemon
         )
         ;;
