@@ -318,8 +318,8 @@ Scripts in `build_files/base/` execute in numerical order:
 - **Shell scripts**: Follow existing patterns in build_files/
 
 ### Common Modification Patterns
-**Adding packages**: Edit `build_files/base/04-packages.sh`, add to appropriate array
-**System configuration**: Modify files in `system_files/shared/`
+- **Adding packages**: Edit `build_files/base/04-packages.sh`, add to appropriate array
+- **System configuration**: Modify files in `system_files/shared/`
 - **Build logic**: Edit scripts in `build_files/base/` or `build_files/dx/`
 - **CI/CD**: Modify workflows in `.github/workflows/`
 
