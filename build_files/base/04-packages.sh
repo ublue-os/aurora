@@ -156,21 +156,6 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
-# Install Terra repo (for switcheroo-control on F42 and earlier)
-# shellcheck disable=SC2016
-thirdparty_repo_install "terra" \
-                       'terra,https://repos.fyralabs.com/terra$releasever' \
-                       "terra-release" \
-                       "terra-release-extras" \
-                       "terra*"
-
-# switcheroo swap is not needed for F43 ->
-if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
-    dnf5 -y swap \
-        --repo=terra-extras \
-        switcheroo-control switcheroo-control
-fi
-
 # https://github.com/ublue-os/bazzite/issues/1400
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
