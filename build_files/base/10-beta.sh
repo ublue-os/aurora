@@ -4,17 +4,18 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
-PLASMA_VERSION=$(rpm -q --qf %{VERSION} plasma-desktop)
-
-# We don't want to install the copr version if it's in fedora repos
-if [[ "${PLASMA_VERSION}" =~ "^6\.5" ]]; then
-  echo "Skipping installing 6.5 when we are already on 6.5"
-  exit 0
-fi
 
 if ! jq -e '.["image-tag"] | test("beta|latest")' /usr/share/ublue-os/image-info.json >/dev/null; then
     echo "We only run this on latest and beta"
     exit 0
+fi
+
+PLASMA_VERSION="6.5.1"
+
+# We don't want to install the copr version if it's in fedora repos
+if [[ "${PLASMA_VERSION}" =~ "^6\.5" ]]; then
+  echo "Skipping installing 6.5 when we are already on 6.5"
+  exit 1
 fi
 
 # KDE 6.5
