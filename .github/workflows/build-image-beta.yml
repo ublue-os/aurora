@@ -1,18 +1,19 @@
 name: Beta Images
 on:
-  merge_group:
-  pull_request:
-    branches:
-      - main
-      - testing
-    paths-ignore:
-      - "**.md"
-      - "flatpaks/**"
-      - "system_files/etc/bazaar/config.yaml"
-      - "**.Brewfile"
-      - "just/*.just"
-  workflow_call:
-  workflow_dispatch:
+  # All triggers disabled to stop beta builds
+  # merge_group:
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - testing
+  #   paths-ignore:
+  #     - "**.md"
+  #     - "flatpaks/**"
+  #     - "system_files/etc/bazaar/config.yaml"
+  #     - "**.Brewfile"
+  #     - "just/*.just"
+  # workflow_call:
+  # workflow_dispatch:
 
 jobs:
   build-image-beta:
