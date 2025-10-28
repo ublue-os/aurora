@@ -8,7 +8,7 @@ on:
     paths-ignore:
       - "**.md"
       - "flatpaks/**"
-      - "system_files/shared/usr/share/ublue-os/bazaar/config.yaml"
+      - "system_files/etc/bazaar/config.yaml"
       - "**.Brewfile"
       - "just/*.just"
   workflow_call:
