@@ -26,9 +26,9 @@ This document provides essential information for coding agents working with the 
 
 - `system_files/` (74MB) - User-space files, configurations, fonts, themes
 - `build_files/` - Build scripts organized as base/, dx/, shared/
-    - `base/` - Base image build scripts (00-image-info.sh through 19-initramfs.sh)
-    - `dx/` - Developer experience build scripts
-    - `shared/` - Common build utilities and helper scripts
+  - `base/` - Base image build scripts (00-image-info.sh through 19-initramfs.sh)
+  - `dx/` - Developer experience build scripts
+  - `shared/` - Common build utilities and helper scripts
 - `.github/workflows/` - Comprehensive CI/CD pipelines
 - `just/` - Additional Just recipes for apps and system management
 - `brew/` - Homebrew Brewfile definitions for various tool collections
@@ -178,6 +178,7 @@ The repository uses mandatory pre-commit validation:
 - `moderator.yml` - Repository moderation tasks
 
 **Workflow Architecture:**
+
 - Stream-specific workflows (stable, latest, beta) call `reusable-build.yml`
 - `reusable-build.yml` builds both base and dx variants for all flavors (main, nvidia-open)
 - Fedora version is dynamically detected based on stream tag
@@ -193,7 +194,9 @@ The repository uses mandatory pre-commit validation:
 ## Package Management
 
 ### Package Configuration
+
 Packages are defined directly in build scripts rather than in a central configuration file:
+
 - `build_files/base/04-packages.sh` - Core package installations
 - `FEDORA_PACKAGES` array - Packages from official Fedora repos (installed in bulk)
 - `COPR_PACKAGES` array - Packages from COPR repos (installed individually with isolated enablement)
@@ -201,12 +204,14 @@ Packages are defined directly in build scripts rather than in a central configur
 - `build_files/dx/00-dx.sh` - Developer experience package additions
 
 ### COPR Package Installation
+
 COPR packages use the `copr_install_isolated()` helper function from `build_files/shared/copr-helpers.sh`:
 ```bash
 # Install packages from COPR with isolated repo enablement
 copr_install_isolated "ublue-os/staging" package1 package2
 ```
 This function:
+
 1. Enables the COPR repo
 2. Immediately disables it
 3. Installs packages with `--enablerepo` flag to prevent repo conflicts
@@ -221,26 +226,32 @@ This function:
 6. Test with container build if making critical changes
 
 ### Package Security Model
+
 **CRITICAL**: Packages are split into separate arrays to prevent COPR repos from injecting malicious versions of Fedora packages:
+
 - Fedora packages are installed first in bulk (safe)
 - COPR packages are installed individually with isolated repo enablement
 
 ## Build System Deep Dive
 
 ### Justfile Structure
+
 The `Justfile` is the central build orchestration tool with these key recipes:
 
 **Validation Recipes:**
+
 - `just check` - Validates Just syntax across all .just files
 - `just fix` - Auto-formats Just files
 - `just validate <image> <tag> <flavor>` - Validates image/tag/flavor combinations
 
 **Build Recipes:**
+
 - `just build <image> <tag> <flavor>` - Main build command (calls build.sh)
 - `just build-ghcr <image> <tag> <flavor>` - Build for GHCR (GitHub Container Registry)
 - `just rechunk <image> <tag> <flavor>` - Rechunk image for optimization
 
 **Image/Tag Definitions:**
+
 ```bash
 images: aurora, aurora-dx
 flavors: main, nvidia-open
@@ -248,12 +259,14 @@ tags: stable, latest, beta
 ```
 
 **Version Detection:**
+
 - `just fedora_version <image> <tag> <flavor>` - Dynamically detects Fedora version from upstream base images
 - For `stable`: Checks `ghcr.io/ublue-os/base-main:<tag>`
 - For `latest`/`beta`: Checks corresponding upstream tags
 - Returns the Fedora major version (e.g., 42, 43)
 
 ### Containerfile Multi-Stage Build
+
 The `Containerfile` uses a multi-stage build process:
 
 1. **Stage `ctx`** (FROM scratch): Copies all build context (system_files, build_files, etc.)
@@ -263,6 +276,7 @@ The `Containerfile` uses a multi-stage build process:
 3. **Stage `dx`** (optional, in full Containerfile): Developer experience layer
 
 **Build Arguments:**
+
 - `BASE_IMAGE_NAME` - Upstream base (silverblue/kinoite)
 - `FEDORA_MAJOR_VERSION` - Dynamically set by Just (42/43)
 - `IMAGE_NAME` - Target image name (aurora/aurora-dx)
@@ -270,7 +284,9 @@ The `Containerfile` uses a multi-stage build process:
 - `UBLUE_IMAGE_TAG` - Stream tag (stable/latest/beta)
 
 ### Build Script Execution Order
+
 Scripts in `build_files/base/` execute in numerical order:
+
 1. `00-image-info.sh` - Sets image metadata and os-release info
 2. `03-install-kernel-akmods.sh` - Installs kernel and akmod packages
 3. `04-packages.sh` - Installs Fedora and COPR packages
@@ -281,6 +297,7 @@ Scripts in `build_files/base/` execute in numerical order:
 8. `19-initramfs.sh` - Regenerates initramfs
 
 ### Additional Recipe Collections
+
 - `just/aurora-apps.just` - User-facing app management recipes
 - `just/aurora-system.just` - System management recipes
 - `brew/*.Brewfile` - Homebrew package collections (ai, cli, fonts, k8s)
