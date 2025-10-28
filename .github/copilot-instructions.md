@@ -270,7 +270,7 @@ tags: stable, latest, beta
 The `Containerfile` uses a multi-stage build process:
 
 1. **Stage `ctx`** (FROM scratch): Copies all build context (system_files, build_files, etc.)
-2. **Stage `base`** (FROM silverblue-main): Base Bluefin image
+2. **Stage `base`** (FROM kinoite-main): Base Aurora/Kinoite image
    - Mounts build context from `ctx` stage
    - Runs `/ctx/build_files/shared/build.sh` which executes all scripts in order
 3. **Stage `dx`** (optional, in full Containerfile): Developer experience layer
