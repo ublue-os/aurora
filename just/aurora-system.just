@@ -95,6 +95,7 @@ toggle-devmode:
     fi
     if gum choose "Do you want to also install the default development flatpaks?" ; then
             ujust install-system-flatpaks 1
+    fi
     if gum choose "Do you want to install extra fonts?" ; then
             ujust install-fonts
     fi
