@@ -13,7 +13,7 @@ ghcurl "https://github.com/starship/starship/releases/latest/download/starship-x
 tar -xzf /tmp/starship.tar.gz -C /tmp
 install -c -m 0755 /tmp/starship /usr/bin
 # shellcheck disable=SC2016
-echo 'eval "$(starship init bash)"' >> /etc/bashrc
+echo 'eval "$(starship init bash)"' >>/etc/bashrc
 
 # Nerdfont symbols
 # to fix motd and prompt atleast temporarily
@@ -33,8 +33,8 @@ setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
 # ######
 
 # Branding for Images
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-6/contents/images/3840x2160.jxl /usr/share/backgrounds/default.png
-ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-6/contents/images/3840x2160.jxl /usr/share/backgrounds/default-dark.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-7/contents/images/3840x2160.jxl /usr/share/backgrounds/default.png
+ln -sf /usr/share/backgrounds/aurora/aurora-wallpaper-7/contents/images/3840x2160.jxl /usr/share/backgrounds/default-dark.png
 ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.xml
 
 # /usr/share/sddm/themes/01-breeze-fedora/theme.conf uses default.jxl for the background
@@ -71,6 +71,5 @@ setsebool -P samba_enable_home_dirs=1
 setsebool -P samba_export_all_ro=1
 setsebool -P samba_export_all_rw=1
 sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
-
 
 echo "::endgroup::"
