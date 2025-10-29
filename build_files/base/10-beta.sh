@@ -10,7 +10,7 @@ if ! jq -e '.["image-tag"] | test("beta|latest")' /usr/share/ublue-os/image-info
     exit 0
 fi
 
-PLASMA_VERSION="6.5.1"
+PLASMA_VERSION=$(rpm -q --qf %{VERSION} plasma-desktop)
 
 # We don't want to install the copr version if it's in fedora repos
 if [[ "${PLASMA_VERSION}" =~ "^6\.5" ]]; then
