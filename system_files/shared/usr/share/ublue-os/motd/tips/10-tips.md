@@ -22,7 +22,7 @@ Switch shells safely: change your shell in [Terminal settings instead of system-
 VS Code comes with devcontainers extension pre-installed - perfect for containerized development
 Container development is OS-agnostic - your devcontainers work on Linux, macOS, and Windows
 Use `docker compose` for multi-container development if devcontainers don't fit your workflow
-Check out DevPod for open-source, client-only development environments that work with any IDE
+Check out [DevPod](https://flathub.org/en/apps/sh.loft.devpod) for open-source, client-only development environments that work with any IDE
 `ujust aurora-k8s` gets you started with Kubernetes development tools like `kind` and `kubectl`
 `ujust aurora-ai` installs a selection of AI tools
 `ujust aurora-fonts` installs a well-curated collection of monospace fonts
