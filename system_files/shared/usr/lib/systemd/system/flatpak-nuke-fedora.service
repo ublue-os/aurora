@@ -10,7 +10,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/flatpak remote-delete --system fedora
 ExecStart=/usr/bin/flatpak remote-delete --system fedora-testing
-# Make sure even if flatpak-add-fedora-repos.service  exists, it
+# Make sure even if flatpak-add-fedora-repos.service exists, it
 # won't run.
 ExecStart=/usr/bin/touch /var/lib/flatpak/.fedora-initialized
 # Flatpak will fail if the remote doesn't exist, but we don't mind
