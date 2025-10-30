@@ -18,7 +18,7 @@ KDE powers your desktop! Donate to [KDE](https://kde.org/donate)
 Like dinosaurs? `ujust toggle-dinosaurs`
 Support the app store! Donate to  [Bazaar](https://github.com/kolunmi/bazaar)!
 Performance profiling tools are built-in: try `sysprof`, `bpftrace`, and other debugging tools
-Switch shells safely: change your shell in Terminal settings instead of system-wide
+Switch shells safely: change your shell in [Terminal settings instead of system-wide](https://tim.siosm.fr/blog/2023/12/22/dont-change-defaut-login-shell/)
 VS Code comes with devcontainers extension pre-installed - perfect for containerized development
 Container development is OS-agnostic - your devcontainers work on Linux, macOS, and Windows
 Use `docker compose` for multi-container development if devcontainers don't fit your workflow
