@@ -198,6 +198,10 @@ install-incus:
     echo 'Installing and configuring Incus.'
     /usr/libexec/aurora-incus
 
+# alias for install-fonts
+aurora-k8s:
+    @ujust install-k8s-dev-tools
+
 # Install Kubernetes CLI dev tools
 [group('Apps')]
 install-k8s-dev-tools:
