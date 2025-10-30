@@ -205,6 +205,10 @@ install-k8s-dev-tools:
     echo "☸️🛠️ Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
 
+# alias for install-fonts
+aurora-ai:
+    @ujust install-ai-tools
+
 # Install AI tools
 [group('Apps')]
 install-ai-tools:
