@@ -2,7 +2,7 @@ Follow us on 󰫑 [@UniversalBlue@fosstodon.org](https://fosstodon.org/@Universa
 Aurora is your gateway to Kubernetes 󱃾 `kind create cluster` to [get started](https://kind.sigs.k8s.io/)
 `ujust install-k8s-dev-tools` gets you started with Kubernetes development tools like kind and kubectl
 Aurora is your gateway to Cloud Native - find your flock at [landscape.cncf.io](https://l.cncf.io)
-Need more indepth technical information?~Check out the [Aurora docs](https://docs.getaurora.dev)
+Need more in-depth technical information?~Check out the [Aurora docs](https://docs.getaurora.dev)
 Like servers? Check out [ucore](https://github.com/ublue-os/ucore)
 Update break something? You can roll back with `bootc rollback`
 Use `brew search` and `brew install` to install packages. Aurora will take care of the updates automatically
