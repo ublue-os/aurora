@@ -24,6 +24,9 @@ systemctl --global enable podman-auto-update.timer
 systemctl enable check-sb-key.service
 systemctl enable input-remapper.service
 
+# Nuke possible Fedora flatpak repos
+systemctl enable flatpak-nuke-fedora.service
+
 # TODO: Reinvestigate when bazaar gains dbus activation
 systemctl --global enable bazaar.service
 
