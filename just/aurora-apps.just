@@ -198,12 +198,20 @@ install-incus:
     echo 'Installing and configuring Incus.'
     /usr/libexec/aurora-incus
 
+# alias for k8s-dev-tools
+aurora-k8s:
+    @ujust install-k8s-dev-tools
+
 # Install Kubernetes CLI dev tools
 [group('Apps')]
 install-k8s-dev-tools:
     #!/usr/bin/bash
     echo "☸️🛠️ Adding Kubernetes command line tools..."
     brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+
+# alias for install-ai-tools
+aurora-ai:
+    @ujust install-ai-tools
 
 # Install AI tools
 [group('Apps')]
