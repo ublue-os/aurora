@@ -198,7 +198,7 @@ install-incus:
     echo 'Installing and configuring Incus.'
     /usr/libexec/aurora-incus
 
-# alias for install-fonts
+# alias for k8s-dev-tools
 aurora-k8s:
     @ujust install-k8s-dev-tools
 
