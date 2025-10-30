@@ -36,6 +36,11 @@ benchmark:
 aurora-cli:
     @/usr/libexec/ublue-bling
 
+
+# alias for install-fonts
+aurora-fonts:
+    @ujust install-fonts
+
 # Install fonts from brew
 [group('System')]
 install-fonts:
@@ -46,10 +51,6 @@ install-fonts:
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
-
-# alias for install-fonts
-aurora-fonts:
-    @ujust install-fonts
 
 # Toggle between Aurora and the Developer Experience
 [group('System')]
