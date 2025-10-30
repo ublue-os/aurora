@@ -141,8 +141,7 @@ EXCLUDED_PACKAGES=(
 case "$FEDORA_MAJOR_VERSION" in
     43)
         EXCLUDED_PACKAGES+=(
-            fw-fanctrl
-            openrazer-daemon
+
         )
         ;;
 esac
