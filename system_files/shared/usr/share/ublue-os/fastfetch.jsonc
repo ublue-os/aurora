@@ -44,6 +44,21 @@
     },
     "break",
     {
+      "type": "command",
+      "key": "",
+      "keyColor": "#9b59b6",
+      "text": "echo Stargazers: $(cat /usr/share/ublue-os/fastfetch-user-count)",
+      "shell": "/bin/bash"
+    },
+    {
+      "type": "command",
+      "key": "",
+      "keyColor": "#ff5c00",
+      "text": "echo Bazaar Installs: $(cat /usr/share/ublue-os/bazaar-install-count)",
+      "shell": "/bin/bash"
+    },
+    "break",
+    {
       "type": "host",
       "key": "󰾰"
     },
