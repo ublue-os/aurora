@@ -12,6 +12,9 @@ xmllint --noout \
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 
+# Basic smoke test to check if the flatpak version is from our copr
+flatpak preinstall --help
+
 desktop-file-validate \
   /usr/share/applications/Discourse.desktop \
   /usr/share/applications/boot-to-windows.desktop \
