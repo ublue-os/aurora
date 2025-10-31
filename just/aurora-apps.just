@@ -203,7 +203,7 @@ install-incus:
 aurora-k8s:
     #!/usr/bin/bash
     echo "☸️🛠️ Adding Kubernetes command line tools..."
-    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-k8s.Brewfile
 
 # alias for install-ai-tools
 aurora-ai:
