@@ -1,5 +1,5 @@
-name: Beta Images
-on:
+#name: Beta Images
+#on:
   # All triggers disabled to stop beta builds
   # merge_group:
   # pull_request:
