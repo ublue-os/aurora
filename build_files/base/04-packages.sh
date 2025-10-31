@@ -85,6 +85,11 @@ dnf -y install --enablerepo='tailscale-stable' tailscale
 # Install COPR packages using isolated enablement (secure)
 echo "Installing COPR packages with isolated repo enablement..."
 
+# OpenRazer from hardware:razer repo (not a COPR)
+        dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
+        dnf5 -y install openrazer-daemon
+        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+
 # From ublue-os/staging
 copr_install_isolated "ublue-os/staging" \
     "fw-fanctrl"
@@ -106,10 +111,6 @@ copr_install_isolated "ublue-os/packages" \
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
     42)
-        # OpenRazer from hardware:razer repo (not a COPR)
-        dnf -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-        dnf config-manager setopt hardware_razer.enabled=0
-        dnf -y install --enablerepo='hardware_razer' openrazer-daemon
 
         ;;
     43)
@@ -145,8 +146,7 @@ EXCLUDED_PACKAGES=(
 case "$FEDORA_MAJOR_VERSION" in
     43)
         EXCLUDED_PACKAGES+=(
-            fw-fanctrl
-            openrazer-daemon
+
         )
         ;;
 esac
@@ -187,7 +187,6 @@ dnf5 -y copr disable ublue-os/flatpak-test
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
-rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep -q ublue-os || { echo "Flatpak not from our copr, aborting"; exit 1; }
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions

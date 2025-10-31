@@ -43,5 +43,4 @@ echo "::group:: Cleanup"
 
 # Validate all repos are disabled before committing
 /ctx/build_files/shared/validate-repos.sh
-
 echo "::endgroup::"
