@@ -51,7 +51,6 @@ FEDORA_PACKAGES=(
     sssd-ad
     sssd-ipa
     sssd-krb5
-    tailscale
     tmux
     virtualbox-guest-additions
     wireguard-tools
@@ -76,6 +75,12 @@ esac
 # Install all Fedora packages (bulk - safe from COPR injection)
 echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
+
+# Install tailscale package from their repo
+echo "Installing tailscale from official repo..."
+dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+dnf config-manager setopt tailscale-stable.enabled=0
+dnf -y install --enablerepo='tailscale-stable' tailscale
 
 # Install COPR packages using isolated enablement (secure)
 echo "Installing COPR packages with isolated repo enablement..."
@@ -106,7 +111,7 @@ copr_install_isolated "ublue-os/packages" \
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
     42)
-        
+
         ;;
     43)
 

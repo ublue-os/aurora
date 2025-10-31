@@ -107,13 +107,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Base Image
     base_image_name="kinoite"
 
-    # Target
-    if [[ "${image}" =~ dx ]]; then
-        target="dx"
-    else
-        target="base"
-    fi
-
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
@@ -168,6 +161,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Build Arguments
     BUILD_ARGS=()
+    # Target
+    if [[ "${image}" =~ dx ]]; then
+           BUILD_ARGS+=("--build-arg" "IMAGE_FLAVOR=dx")
+           target="dx"
+    fi
     BUILD_ARGS+=("--build-arg" "AKMODS_FLAVOR=${akmods_flavor}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
     BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
@@ -207,10 +205,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"NiHaiden\", \"email\": \"me@nhaiden.io\"}]")
 
     echo "::endgroup::"
-    echo "::group:: Build Container"
-
-    # Build Image
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --target "${target}" --tag localhost/"${image_name}:${tag}" --file Containerfile)
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile)
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
@@ -490,7 +485,7 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     # if [[ "$tag" != lts ]]; then
     #     FEDORA_VERSION=$(${PODMAN} inspect ${IMAGE_FULL} | jq -r '.[]["Config"]["Labels"]["ostree.linux"]' | grep -oP 'fc\K[0-9]+')
     # else
-    FEDORA_VERSION=41
+    FEDORA_VERSION=42
     # fi
 
     # Load Image into rootful podman
