@@ -64,7 +64,7 @@ for repo in negativo17-fedora-multimedia tailscale fedora-cisco-openh264; do
     fi
 done
 
-# Disable hardware:razer repo if it exists (only on F42)
+# Disable hardware:razer repo if it exists
 if [[ -f "/etc/yum.repos.d/hardware:razer.repo" ]]; then
     sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 fi
