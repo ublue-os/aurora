@@ -52,6 +52,4 @@ chmod -R 1777 /var/tmp
 
 # Validate all repos are disabled before committing
 /ctx/build_files/shared/validate-repos.sh
-
-ostree container commit
 echo "::endgroup::"
