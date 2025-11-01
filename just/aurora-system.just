@@ -140,11 +140,6 @@ dx-group:
 
     echo "Reboot system and log back in to use docker, libvirt, incus, and serial connections."
 
-# alias for configure-vfio
-[group('System')]
-setup-vfio:
-    @ujust configure-vfio
-
 # Install system flatpaks for rebasers
 [group('System')]
 install-system-flatpaks $dx="dynamic":
