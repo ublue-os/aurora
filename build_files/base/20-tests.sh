@@ -31,7 +31,7 @@ desktop-file-validate \
 # everything except a few packages, breaking SDDM and shell
 
 KDE_VER="$(rpm -q --qf '%{VERSION}' plasma-desktop)"
-# packaged picked by failures in the past
+# package picked by failures in the past
 KSCREEN_VERS="$(rpm -q --qf '%{VERSION}' kscreen)"
 
 # Doing QT as well just in case, we have a versionlock in main
@@ -49,6 +49,7 @@ if [[ "$QT_VER" != "$QTFS_VER" ]]; then
     echo "QT Version mismatch"
     exit 1
 fi
+
 IMPORTANT_PACKAGES=(
     distrobox
     fish
