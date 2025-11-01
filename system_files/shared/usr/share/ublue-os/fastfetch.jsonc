@@ -24,7 +24,7 @@
     },
     {
       "type": "os",
-      "key": "󰣛",
+      "key": "󱝂",
       "format": "{pretty-name}"
     },
     {
@@ -47,15 +47,17 @@
       "type": "command",
       "key": "",
       "keyColor": "#9b59b6",
-      "text": "echo Stargazers: $(cat /usr/share/ublue-os/fastfetch-user-count)",
-      "shell": "/bin/bash"
+      "text": "cat /usr/share/ublue-os/fastfetch-user-count",
+      "shell": "/bin/bash",
+      "format": "Stargazers: {1} (weekly)"
     },
     {
       "type": "command",
       "key": "",
       "keyColor": "#ff5c00",
-      "text": "echo Bazaar Installs: $(cat /usr/share/ublue-os/bazaar-install-count)",
-      "shell": "/bin/bash"
+      "text": "cat /usr/share/ublue-os/bazaar-install-count",
+      "shell": "/bin/bash",
+      "format": "Bazaar Installs: {1} (weekly)"
     },
     "break",
     {
