@@ -15,7 +15,8 @@ source /ctx/build_files/shared/copr-helpers.sh
 # COPR packages are installed individually with isolated enablement.
 
 # Base packages from Fedora repos - common to all versions
-#
+
+# Prevent partial upgrading
 dnf5 versionlock add plasma-desktop
 
 FEDORA_PACKAGES=(
