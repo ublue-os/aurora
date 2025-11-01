@@ -12,4 +12,7 @@ fi
 
 
 
+dnf5 -y install eol-rebaser
+systemctl enable eol-rebaser.timer
+
 echo "::endgroup::"
