@@ -42,9 +42,6 @@ ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.x
 ln -sf /usr/share/backgrounds/default.png /usr/share/backgrounds/default.jxl
 ln -sf /usr/share/backgrounds/default-dark.png /usr/share/backgrounds/default-dark.jxl
 
-# Favorites for Panel
-sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
-
 # Ptyxis Terminal
 sed -i 's@\[Desktop Action new-window\]@\[Desktop Action new-window\]\nX-KDE-Shortcuts=Ctrl+Alt+T@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxis.desktop

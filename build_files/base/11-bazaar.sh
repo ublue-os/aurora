@@ -24,8 +24,5 @@ done
 # These notifications are useless and confusing
 rm /etc/xdg/autostart/org.kde.discover.notifier.desktop
 
-# Replace discover on Panel and Kickoff with bazaar
-sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
-
 # Use Bazaar for Flatpak refs
 echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/share/applications/mimeapps.list

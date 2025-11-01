@@ -5,8 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 xmllint --noout \
-  /usr/share/backgrounds/default.xml \
-  /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+  /usr/share/backgrounds/default.xml
 
 # If this file is not on the image bazaar will automatically be removed from users systems :(
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
