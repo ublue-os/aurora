@@ -56,9 +56,6 @@ echo "::endgroup::"
 # Regenerate initramfs
 /ctx/build_files/base/19-initramfs.sh
 
-# Simple Tests
-/ctx/build_files/base/20-tests.sh
-
 if [ "${IMAGE_FLAVOR}" == "dx" ] ; then
   # Now we build DX!
   /ctx/build_files/shared/build-dx.sh
@@ -72,3 +69,6 @@ echo "::group:: Cleanup"
 /ctx/build_files/shared/clean-stage.sh
 
 echo "::endgroup::"
+
+# Simple Tests
+/ctx/build_files/base/20-tests.sh
