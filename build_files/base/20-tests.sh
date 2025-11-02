@@ -26,6 +26,30 @@ desktop-file-validate \
   /usr/share/applications/org.gnome.Ptyxis.desktop \
   /usr/share/applications/system-update.desktop
 
+# Check for KDE Plasma version mismatch
+# Fedora Repos have gotten the newer one, trying to upgrade
+# everything except a few packages, breaking SDDM and shell
+
+KDE_VER="$(rpm -q --qf '%{VERSION}' plasma-desktop)"
+# package picked by failures in the past
+KSCREEN_VERS="$(rpm -q --qf '%{VERSION}' kscreen)"
+
+# Doing QT as well just in case, we have a versionlock in main
+QT_VER="$(rpm -q --qf '%{VERSION}' qt6-qtbase)"
+# Not an important package in itself, just a good indicator
+QTFS_VER="$(rpm -q --qf '%{VERSION}' qt6-filesystem)"
+
+# Compare Plasma with kscreen
+if [[ "$KDE_VER" != "$KSCREEN_VERS" ]]; then
+    echo "KDE Version mismatch"
+    exit 1
+fi
+
+if [[ "$QT_VER" != "$QTFS_VER" ]]; then
+    echo "QT Version mismatch"
+    exit 1
+fi
+
 IMPORTANT_PACKAGES=(
     distrobox
     fish
