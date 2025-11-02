@@ -24,7 +24,7 @@ export PATH="/tmp/scripts/helpers:$PATH"
 
 echo "::endgroup::"
 
-# Generate image-info.json
+# Generate image-info.json, os-release
 /ctx/build_files/base/00-image-info.sh
 
 # Wallpapers/Apperance
