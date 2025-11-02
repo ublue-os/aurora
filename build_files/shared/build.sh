@@ -27,6 +27,9 @@ echo "::endgroup::"
 # Generate image-info.json
 /ctx/build_files/base/00-image-info.sh
 
+# Wallpapers/Apperance
+/ctx/build_files/base/01-branding.sh
+
 # Install Kernel and Akmods
 /ctx/build_files/base/03-install-kernel-akmods.sh
 
