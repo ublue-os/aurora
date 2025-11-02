@@ -7,6 +7,7 @@ set -eoux pipefail
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
+cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/
 
 # Starship Shell Prompt
 ghcurl "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
@@ -58,7 +59,6 @@ sed -i 's@\[Desktop Action new-window\]@\[Desktop Action new-window\]\nX-KDE-Sho
 sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 sed -i 's@Keywords=@Keywords=konsole;console;@g' /usr/share/applications/org.gnome.Ptyxis.desktop
 cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop
-cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/dev.getaurora.aurora-docs.desktop
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
