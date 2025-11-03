@@ -35,6 +35,7 @@ jobs:
   generate-release:
     name: Generate Release
     needs: [build-image-stable]
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event_name == 'workflow_call'
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
