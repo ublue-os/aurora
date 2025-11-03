@@ -197,9 +197,9 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 # Remember to leave a note with rationale/link to issue for each pin!
 #
 # Example:
-#if [ "$FEDORA_MAJOR_VERSION" -eq "41" ]; then
+#if [ "$FEDORA_MAJOR_VERSION" -eq "42" ]; then
 #    Workaround pkcs11-provider regression, see issue #1943
-#    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
+#    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
