@@ -12,9 +12,9 @@ if [[ "${UBLUE_IMAGE_TAG}" == "latest" ]]; then
         https://kojipkgs.fedoraproject.org/packages/kwin/6.5.1/2.fc43/x86_64/kwin-libs-6.5.1-2.fc43.x86_64.rpm
 else
     dnf5 -y install --allowerasing \
-        https://kojipkgs.fedoraproject.org//packages/kwin/6.5.1/2.fc42/x86_64/kwin-6.5.1-2.fc42.x86_64.rpm \
-        https://kojipkgs.fedoraproject.org//packages/kwin/6.5.1/2.fc42/x86_64/kwin-common-6.5.1-2.fc42.x86_64.rpm \
-        https://kojipkgs.fedoraproject.org//packages/kwin/6.5.1/2.fc42/x86_64/kwin-libs-6.5.1-2.fc42.x86_64.rpm
+        https://kojipkgs.fedoraproject.org/packages/kwin/6.5.1/2.fc42/x86_64/kwin-6.5.1-2.fc42.x86_64.rpm \
+        https://kojipkgs.fedoraproject.org/packages/kwin/6.5.1/2.fc42/x86_64/kwin-common-6.5.1-2.fc42.x86_64.rpm \
+        https://kojipkgs.fedoraproject.org/packages/kwin/6.5.1/2.fc42/x86_64/kwin-libs-6.5.1-2.fc42.x86_64.rpm
 fi
 
 
