@@ -40,6 +40,11 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/shared/build.sh
 
+# Makes `/opt` writeable by default
+# Needs to be here to make the main image build strict (no /opt there)
+# This is for downstream images/stuff like k0s
+RUN rm -rf /opt && ln -s /var/opt /opt
+
 CMD ["/sbin/init"]
 
 RUN bootc container lint
