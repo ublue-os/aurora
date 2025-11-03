@@ -10,7 +10,7 @@ install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/
 
 # Starship Shell Prompt
-ghcurl "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
+ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
 tar -xzf /tmp/starship.tar.gz -C /tmp
 install -c -m 0755 /tmp/starship /usr/bin
 # shellcheck disable=SC2016
