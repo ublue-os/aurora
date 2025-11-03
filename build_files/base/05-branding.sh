@@ -13,7 +13,7 @@ ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.x
 
 # sets default/pinned applications on the taskmanager applet on the panel, there is no nice way to do this
 # https://bugs.kde.org/show_bug.cgi?id=511560
-sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
 
 # the themes read from relative directories
 gzip -c /usr/share/icons/hicolor/scalable/places/distributor-logo.svg > /usr/share/plasma/look-and-feel/dev.getaurora.aurora.desktop/contents/splash/images/aurora_logo.svgz
