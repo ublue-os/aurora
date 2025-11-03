@@ -8,7 +8,6 @@ org.fedoraproject.MediaWriter
 org.fkoehler.KTailctl
 org.gnome.DejaDup
 org.gtk.Gtk3theme.Breeze
-org.gustavoperedo.FontDownloader
 org.kde.gwenview
 org.kde.haruna
 org.kde.kcalc
