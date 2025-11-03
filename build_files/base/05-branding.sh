@@ -15,4 +15,9 @@ ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.x
 # https://bugs.kde.org/show_bug.cgi?id=511560
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
 
+# the themes read from relative directories
+gzip -c /usr/share/icons/hicolor/scalable/places/distributor-logo.svg > /usr/share/plasma/look-and-feel/dev.getaurora.aurora.desktop/contents/splash/images/aurora_logo.svgz
+
+ln -sr /usr/share/icons/hicolor/scalable/places/distributor-logo.svg /usr/share/sddm/themes/01-breeze-aurora/default-logo.svg
+
 echo "::endgroup::"

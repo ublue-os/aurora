@@ -27,14 +27,14 @@ echo "::endgroup::"
 # Generate image-info.json, os-release
 /ctx/build_files/base/00-image-info.sh
 
-# Wallpapers/Apperance
-/ctx/build_files/base/01-branding.sh
-
 # Install Kernel and Akmods
 /ctx/build_files/base/03-install-kernel-akmods.sh
 
 # Install Additional Packages
 /ctx/build_files/base/04-packages.sh
+
+# Wallpapers/Apperance
+/ctx/build_files/base/05-branding.sh
 
 # Install Overrides and Fetch Install
 /ctx/build_files/base/05-override-install.sh
