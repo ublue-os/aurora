@@ -33,14 +33,14 @@ desktop-file-validate \
 KDE_VER="$(rpm -q --qf '%{VERSION}' plasma-desktop)"
 # package picked by failures in the past
 KSCREEN_VERS="$(rpm -q --qf '%{VERSION}' kscreen)"
+KWIN_VERS="$(rpm -q --qf '%{VERSION}' kwin)"
 
 # Doing QT as well just in case, we have a versionlock in main
 QT_VER="$(rpm -q --qf '%{VERSION}' qt6-qtbase)"
 # Not an important package in itself, just a good indicator
 QTFS_VER="$(rpm -q --qf '%{VERSION}' qt6-filesystem)"
 
-# Compare Plasma with kscreen
-if [[ "$KDE_VER" != "$KSCREEN_VERS" ]]; then
+if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
     echo "KDE Version mismatch"
     exit 1
 fi
