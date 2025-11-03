@@ -16,7 +16,8 @@ source /ctx/build_files/shared/copr-helpers.sh
 
 # Base packages from Fedora repos - common to all versions
 
-# Prevent partial upgrading
+# Prevent partial upgrading, major kde version updates black screened
+# https://github.com/ublue-os/aurora/issues/1227
 dnf5 versionlock add plasma-desktop
 
 FEDORA_PACKAGES=(
@@ -181,6 +182,7 @@ if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
 fi
 
 # https://github.com/ublue-os/bazzite/issues/1400
+# TODO: test if we still need this when upgrading firmware with fwupd
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
