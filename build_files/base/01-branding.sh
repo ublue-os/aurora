@@ -15,8 +15,4 @@ ln -sf /usr/share/backgrounds/aurora/aurora.xml /usr/share/backgrounds/default.x
 # https://bugs.kde.org/show_bug.cgi?id=511560
 sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
 
-# we use our own theme
-# we can't remove plasma-lookandfeel-fedora package because it is a dependency for plasma-desktop
-rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
-
 echo "::endgroup::"

@@ -166,6 +166,11 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
+# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
+rpm --erase --nodeps plasma-lookandfeel-fedora
+# rpm erase doesn't remove actual files
+rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
+
 # Install Terra repo (for switcheroo-control on F42 and earlier)
 # shellcheck disable=SC2016
 thirdparty_repo_install "terra" \
