@@ -27,3 +27,4 @@ Check out [DevPod](https://flathub.org/en/apps/sh.loft.devpod) for open-source, 
 `ujust aurora-fonts` installs a well-curated collection of monospace fonts
 Open a folder with Clapgrep (Found in the Bazaar App Store) for super powerful search
 Aurora separates the OS from your development environment - embrace the cloud-native workflow
+Really love our wallpapers? Donate to [Chandeleer](https://ko-fi.com/chandeleer)
