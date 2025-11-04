@@ -101,6 +101,7 @@ desktop-file-edit --set-key=Icon --set-value=/usr/share/pixmaps/scope_installer.
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
 mkdir -p /usr/share/anaconda/pixmaps/
 cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
+cp /root/packages/aurora/fedora-logos/src/misc/scope_installer.png /usr/share/pixmaps/
 rm -rf /root/packages
 
 # Interactive Kickstart
