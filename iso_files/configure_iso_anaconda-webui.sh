@@ -114,20 +114,6 @@ ostreecontainer --url=$IMAGE_REF:$IMAGE_TAG --transport=containers-storage --no-
 %include /usr/share/anaconda/post-scripts/secureboot-enroll-key.ks
 EOF
 
-# see if this actually saves anything
-# some of this could be shared with the embedded container image
-# maybe keep some backup tools? I can see that being useful for recovery
-rm -rf \
-  /usr/bin/cosign-linux-* \
-  /usr/bin/lto-dump \
-  /usr/bin/rclone \
-  /usr/bin/restic \
-  /usr/share/GeoIP/ \
-  /usr/share/docs/ \
-  /usr/share/man/ \
-  /usr/share/rpm/ \
-  /usr/share/vim/
-
 # Signed Images
 tee /usr/share/anaconda/post-scripts/install-configure-upgrade.ks <<EOF
 %post --erroronfail
