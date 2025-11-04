@@ -24,7 +24,7 @@
     },
     {
       "type": "os",
-      "key": "󰣛",
+      "key": "󱝂",
       "format": "{pretty-name}"
     },
     {
@@ -41,6 +41,23 @@
       "key": "󰔠",
       "text": "date -d$(ls -alct /var/log --time-style=full-iso|tail -1|awk '{print $6}') +'Forged on %b %d %G'",
       "shell": "/bin/bash"
+    },
+    "break",
+    {
+      "type": "command",
+      "key": "",
+      "keyColor": "#9b59b6",
+      "text": "cat /usr/share/ublue-os/fastfetch-user-count",
+      "shell": "/bin/bash",
+      "format": "Stargazers: {1} (weekly)"
+    },
+    {
+      "type": "command",
+      "key": "",
+      "keyColor": "#ff5c00",
+      "text": "cat /usr/share/ublue-os/bazaar-install-count",
+      "shell": "/bin/bash",
+      "format": "Bazaar Installs: {1} (weekly)"
     },
     "break",
     {

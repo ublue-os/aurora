@@ -36,6 +36,11 @@ benchmark:
 aurora-cli:
     @/usr/libexec/ublue-bling
 
+
+# alias for install-fonts
+aurora-fonts:
+    @ujust install-fonts
+
 # Install fonts from brew
 [group('System')]
 install-fonts:
@@ -46,10 +51,6 @@ install-fonts:
 # alias for toggle-devmode
 devmode:
     @ujust toggle-devmode
-
-# alias for install-fonts
-aurora-fonts:
-    @ujust install-fonts
 
 # Toggle between Aurora and the Developer Experience
 [group('System')]
@@ -95,6 +96,7 @@ toggle-devmode:
     fi
     if gum choose "Do you want to also install the default development flatpaks?" ; then
             ujust install-system-flatpaks 1
+    fi
     if gum choose "Do you want to install extra fonts?" ; then
             ujust install-fonts
     fi
@@ -137,11 +139,6 @@ dx-group:
     done
 
     echo "Reboot system and log back in to use docker, libvirt, incus, and serial connections."
-
-# alias for configure-vfio
-[group('System')]
-setup-vfio:
-    @ujust configure-vfio
 
 # Install system flatpaks for rebasers
 [group('System')]

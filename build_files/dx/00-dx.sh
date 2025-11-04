@@ -28,14 +28,7 @@ FEDORA_PACKAGES=(
     cockpit-selinux
     cockpit-storaged
     cockpit-system
-    code
-    containerd.io
     dbus-x11
-    docker-buildx-plugin
-    docker-ce
-    docker-ce-cli
-    docker-compose-plugin
-    docker-model-plugin
     edk2-ovmf
     flatpak-builder
     incus
@@ -76,11 +69,34 @@ FEDORA_PACKAGES=(
 echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
-echo "Installing DX COPR packages with isolated repo enablement..."
+# Docker packages from their repo
+echo "Installing Docker from official repo..."
+dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
+dnf -y install --enablerepo=docker-ce-stable \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-ce \
+    docker-ce-cli \
+    docker-compose-plugin \
+    docker-model-plugin
 
-if [[ "${FEDORA_MAJOR_VERSION}" -lt "42" ]]; then
-    copr_install_isolated "ganto/lxc4" "incus" "incus-agent" "lxc"
-fi
+# VSCode package from Microsoft repo
+echo "Installing VSCode from official repo..."
+tee /etc/yum.repos.d/vscode.repo <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/vscode.repo
+dnf -y install --enablerepo=code \
+    code
+
+# DX Copr packages using isolated enablement (secure)
+echo "Installing DX COPR packages with isolated repo enablement..."
 
 copr_install_isolated "karmab/kcli" "kcli"
 copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
@@ -105,5 +121,26 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
         echo "No excluded packages found to remove."
     fi
 fi
+
+# Enable DX services
+if rpm -q docker-ce >/dev/null; then
+    systemctl enable docker.socket
+fi
+systemctl enable podman.socket
+systemctl enable swtpm-workaround.service
+systemctl enable ublue-os-libvirt-workarounds.service
+systemctl enable aurora-dx-groups.service
+systemctl enable --global aurora-dx-user-vscode.service
+
+# NOTE: With isolated COPR installation, most repos are never enabled globally.
+# We only need to clean up repos that were enabled during the build process.
+sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-cisco-openh264.repo
+
+# NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
+sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
+
+for i in /etc/yum.repos.d/rpmfusion-*; do
+    sed -i 's@enabled=1@enabled=0@g' "$i"
+done
 
 echo "::endgroup::"

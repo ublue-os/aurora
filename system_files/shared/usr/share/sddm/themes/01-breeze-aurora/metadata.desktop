@@ -1,0 +1,16 @@
+[SddmGreeterTheme]
+Name=Breeze Aurora
+Description=Breeze Aurora Theme
+Author=Aurora Contributors
+Copyright=(c) 2014, David Edmundson
+License=CC-BY-SA
+Type=sddm-theme
+Version=1.0
+Website=https://getaurora.dev
+Screenshot=preview.png
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations
+Theme-Id=01-breeze-aurora
+Theme-API=2.0
+QtVersion=6

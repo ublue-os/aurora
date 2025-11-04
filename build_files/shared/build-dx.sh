@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 
-set -eou pipefail
-
-mkdir -p /var/roothome
+set -xeou pipefail
 
 echo "::group:: Copy Files"
 
@@ -22,36 +20,20 @@ sysctl -p
 # See:
 #   - https://github.com/ublue-os/bluefin/issues/2365
 #   - https://github.com/devcontainers/features/issues/1235
-mkdir -p /etc/modules-load.d && cat >>/etc/modules-load.d/ip_tables.conf <<EOF
+mkdir -p /etc/modules-load.d
+tee /etc/modules-load.d/ip_tables.conf <<EOF
 iptable_nat
 EOF
 
-# Install Packages
-/ctx/build_files/dx/03-packages-dx.sh
-
-# Fetch Install
-/ctx/build_files/dx/04-override-install-dx.sh
+# Install Packages and setup DX
+/ctx/build_files/dx/00-dx.sh
 
 # Branding Changes
 echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/default/xdg/kcm-about-distrorc
 
-# Systemd and Disable Repos
-/ctx/build_files/dx/09-cleanup-dx.sh
-
-# Simple Tests, shared with the base
-/ctx/build_files/base/20-tests.sh
+# Validate all repos are disabled before committing
+/ctx/build_files/shared/validate-repos.sh
+echo "::endgroup::"
 
 # dx specific tests
 /ctx/build_files/dx/10-tests-dx.sh
-
-# Clean Up
-echo "::group:: Cleanup"
-/ctx/build_files/shared/clean-stage.sh
-mkdir -p /var/tmp && \
-chmod -R 1777 /var/tmp
-
-# Validate all repos are disabled before committing
-/ctx/build_files/shared/validate-repos.sh
-
-ostree container commit
-echo "::endgroup::"

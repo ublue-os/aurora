@@ -1,6 +1,6 @@
 repo_organization := "ublue-os"
 rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.4@sha256:8a84bd5a029681aa8db523f927b7c53b5aded9b078b81605ac0a2fedc969f528"
-iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.3.0@sha256:c5a44ee1b752fd07309341843f8d9f669d0604492ce11b28b966e36d8297ad29"
+iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.4.0@sha256:a6b52ef0b410a625d7abd16f0467d257ef8db1ec94f672a89d5b95cb25487de1"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -107,13 +107,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Base Image
     base_image_name="kinoite"
 
-    # Target
-    if [[ "${image}" =~ dx ]]; then
-        target="dx"
-    else
-        target="base"
-    fi
-
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
@@ -168,6 +161,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Build Arguments
     BUILD_ARGS=()
+    # Target
+    if [[ "${image}" =~ dx ]]; then
+           BUILD_ARGS+=("--build-arg" "IMAGE_FLAVOR=dx")
+           target="dx"
+    fi
     BUILD_ARGS+=("--build-arg" "AKMODS_FLAVOR=${akmods_flavor}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
     BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
@@ -207,10 +205,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"NiHaiden\", \"email\": \"me@nhaiden.io\"}]")
 
     echo "::endgroup::"
-    echo "::group:: Build Container"
-
-    # Build Image
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --target "${target}" --tag localhost/"${image_name}:${tag}" --file Containerfile)
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile)
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
@@ -490,7 +485,7 @@ build-iso $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     # if [[ "$tag" != lts ]]; then
     #     FEDORA_VERSION=$(${PODMAN} inspect ${IMAGE_FULL} | jq -r '.[]["Config"]["Labels"]["ostree.linux"]' | grep -oP 'fc\K[0-9]+')
     # else
-    FEDORA_VERSION=41
+    FEDORA_VERSION=42
     # fi
 
     # Load Image into rootful podman
