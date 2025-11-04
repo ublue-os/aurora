@@ -31,16 +31,9 @@ EOF
 # Branding Changes
 echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/default/xdg/kcm-about-distrorc
 
-# Clean Up
-echo "::group:: Cleanup"
-/ctx/build_files/shared/clean-stage.sh
-
 # Validate all repos are disabled before committing
 /ctx/build_files/shared/validate-repos.sh
 echo "::endgroup::"
-
-# Simple Tests, shared with the base
-/ctx/build_files/base/20-tests.sh
 
 # dx specific tests
 /ctx/build_files/dx/10-tests-dx.sh

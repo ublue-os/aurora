@@ -8,6 +8,7 @@ set -eoux pipefail
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
     dnf5 config-manager setopt updates-testing.enabled=1
 fi
+# Here we are installing kernels/kernel modules/nvidia
 
 # Remove Existing Kernel
 for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do
