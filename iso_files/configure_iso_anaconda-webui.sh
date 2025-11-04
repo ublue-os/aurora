@@ -29,6 +29,7 @@ systemctl disable flatpak-preinstall.service
 systemctl --global disable ublue-flatpak-manager.service
 systemctl --global disable podman-auto-update.timer
 systemctl --global disable ublue-user-setup.service
+rm /usr/share/applications/system-update.desktop
 
 # Configure Anaconda
 
