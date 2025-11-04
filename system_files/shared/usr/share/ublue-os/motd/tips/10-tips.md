@@ -1,4 +1,3 @@
-Follow us on 󰫑 [@UniversalBlue@fosstodon.org](https://fosstodon.org/@UniversalBlue)
 Aurora is your gateway to Kubernetes 󱃾 `kind create cluster` to [get started](https://kind.sigs.k8s.io/)
 `ujust install-k8s-dev-tools` gets you started with Kubernetes development tools like kind and kubectl
 Aurora is your gateway to Cloud Native - find your flock at [landscape.cncf.io](https://l.cncf.io)
@@ -27,3 +26,4 @@ Check out [DevPod](https://flathub.org/en/apps/sh.loft.devpod) for open-source, 
 `ujust aurora-fonts` installs a well-curated collection of monospace fonts
 Open a folder with Clapgrep (Found in the Bazaar App Store) for super powerful search
 Aurora separates the OS from your development environment - embrace the cloud-native workflow
+Really love our wallpapers? Donate to [Chandeleer](https://ko-fi.com/chandeleer)
