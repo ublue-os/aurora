@@ -24,7 +24,7 @@ export PATH="/tmp/scripts/helpers:$PATH"
 
 echo "::endgroup::"
 
-# Generate image-info.json
+# Generate image-info.json, os-release
 /ctx/build_files/base/00-image-info.sh
 
 # Install Kernel and Akmods
@@ -32,6 +32,9 @@ echo "::endgroup::"
 
 # Install Additional Packages
 /ctx/build_files/base/04-packages.sh
+
+# Wallpapers/Apperance
+/ctx/build_files/base/05-branding.sh
 
 # Install Overrides and Fetch Install
 /ctx/build_files/base/05-override-install.sh
@@ -41,9 +44,6 @@ echo "::endgroup::"
 
 # Beta
 # /ctx/build_files/base/10-beta.sh
-
-# Bazaar workarounds
-/ctx/build_files/base/11-bazaar.sh
 
 ## late stage changes
 
