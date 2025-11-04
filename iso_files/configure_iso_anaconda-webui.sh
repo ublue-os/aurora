@@ -81,9 +81,6 @@ hidden_spokes =
 hidden_webui_pages =
     root-password
     network
-
-[Localization]
-use_geolocation = False
 EOF
 
 # Add installer + rpm firefox + docs to panel
