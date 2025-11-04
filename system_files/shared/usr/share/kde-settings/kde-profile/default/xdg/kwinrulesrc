@@ -1,3 +1,5 @@
+# https://github.com/ublue-os/bluefin/pull/1579
+# We still need this as of Nov 2025
 [chrome-dev]
 Description=chrome-dev
 desktopfile=com.google.ChromeDev
