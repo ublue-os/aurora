@@ -64,9 +64,6 @@ jobs:
           sudo rm -rf /usr/lib/mono
           sudo apt-get clean || true
           sudo rm -rf /var/lib/apt/lists/*
-          timeout 5 df -hHl || true
-          timeout 5 free -h --giga || true
-          timeout 120 sudo du -xh --max-depth=3 / 2>/dev/null | sort -rh | head -40 || true
 
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
