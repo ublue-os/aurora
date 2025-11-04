@@ -27,11 +27,11 @@ jobs:
       matrix:
         platform: [amd64]
         flavor: ["main", "nvidia-open"]
-        image_version: ["stable"]
+        image_version: ["latest"]
         include:
           - platform: amd64
             flavor: "main"
-            image_version: stable
+            image_version: latest
     permissions:
       contents: read
       packages: read
@@ -101,7 +101,7 @@ jobs:
           path: ${{ steps.rename.outputs.output_directory }}
 
       - name: Upload to CloudFlare
-        if: contains(matrix.image_version, 'stable') && github.event_name != 'pull_request'
+        if: contains(matrix.image_version, 'latest') && github.event_name != 'pull_request'
         shell: bash
         env:
           RCLONE_CONFIG_R2_TYPE: s3
