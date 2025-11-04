@@ -12,6 +12,20 @@ sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 ## Remove packages from liveCD to save space
 dnf remove -y google-noto-fonts-all ublue-brew ublue-motd || true
 
+# see if this actually saves anything
+# some of this could be shared with the embedded container image
+# maybe keep some backup tools? I can see that being useful for recovery
+rm -rf \
+  /usr/bin/cosign-linux-* \
+  /usr/bin/lto-dump \
+  /usr/bin/rclone \
+  /usr/bin/restic \
+  /usr/share/GeoIP/ \
+  /usr/share/docs/ \
+  /usr/share/man/ \
+  /usr/share/rpm/ \
+  /usr/share/vim/
+
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
 systemctl disable rpm-ostree-countme.service
