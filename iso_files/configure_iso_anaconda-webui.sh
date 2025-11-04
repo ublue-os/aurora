@@ -94,12 +94,14 @@ sed -i '2s/$/;liveinst.desktop/' /usr/share/kde-settings/kde-profile/default/xdg
 echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
-sed -i 's|^Icon=.*|Icon=/usr/share/anaconda/pixmaps/fedora-logo-icon.png|' /usr/share/applications/liveinst.desktop || true
+
+desktop-file-edit --set-key=Icon --set-value=/usr/share/pixmaps/scope_installer.png /usr/share/applications/liveinst.desktop
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
 mkdir -p /usr/share/anaconda/pixmaps/
 cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
+cp /root/packages/aurora/fedora-logos/src/misc/scope_installer.png /usr/share/pixmaps/
 rm -rf /root/packages
 
 # Interactive Kickstart
