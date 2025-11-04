@@ -10,7 +10,7 @@ sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 
 # Configure Live Environment
 ## Remove packages from liveCD to save space
-dnf remove -y google-noto-fonts-all ublue-brew ublue-motd || true
+dnf remove -y ublue-brew ublue-motd || true
 
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
