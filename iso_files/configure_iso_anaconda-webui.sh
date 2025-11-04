@@ -85,6 +85,12 @@ hidden_webui_pages =
 use_geolocation = False
 EOF
 
+# Add installer icon to panel
+sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>applications:firefox.desktop,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager,applications:liveinst.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+
+# same thing for kickoff
+sed -i '2s/$/;liveinst.desktop/' /usr/share/kde-settings/kde-profile/default/xdg/kicker-extra-favoritesrc
+
 # Configure
 . /etc/os-release
 echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
