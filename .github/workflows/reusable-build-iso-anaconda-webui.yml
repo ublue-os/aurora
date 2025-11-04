@@ -38,32 +38,11 @@ jobs:
       id-token: write
 
     steps:
-      - name: Free up disk space
-        run: |
-          sudo swapoff -a || true
-          sudo rm -rf /opt/ghc /usr/local/.ghcup || true
-          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
-          sudo rm -rf /opt/hostedtoolcache/PyPy
-          sudo rm -rf /usr/share/gradle-*
-          sudo rm -rf /usr/local/julia* /usr/share/java /usr/share/kotlinc
-          sudo rm -rf /opt/hostedtoolcache/go /opt/az /opt/microsoft /opt/pipx
-          sudo rm -rf /usr/share/miniconda /home/runner/.rustup /home/packer/.rustup /home/runneradmin/.rustup
-          sudo rm -rf /etc/skel/.rustup /opt/hostedtoolcache/node /opt/google-cloud-sdk
-          sudo rm -rf /usr/share/az_* /opt/google /usr/lib/firefox /usr/local/aws-*
-          sudo rm -rf /usr/libexec/gcc /opt/actionarchivecache /opt/hostedtoolcache/Ruby
-          sudo rm -rf /var/lib/mysql /usr/local/n
-          sudo rm -rf /swapfile || true
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet /usr/share/swift
-          sudo rm -rf /usr/local/share/boost /usr/local/share/powershell
-          sudo rm -rf /usr/lib/google-cloud-sdk /usr/lib/jvm
-          sudo rm -rf /usr/local/graalvm /usr/local/share/chromium
-          sudo rm -rf /usr/local/lib/node_modules
-          sudo rm -rf /usr/lib/dotnet /usr/lib/php /usr/share/mysql
-          sudo rm -rf /usr/lib/llvm-*
-          sudo rm -rf /usr/lib/mono
-          sudo apt-get clean || true
-          sudo rm -rf /var/lib/apt/lists/*
+      - name: Maximize build space
+        if: matrix.platform != 'arm64'
+        uses: ublue-os/remove-unwanted-software@cc0becac701cf642c8f0a6613bbdaf5dc36b259e # v9
+        with:
+          remove-codeql: true
 
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
