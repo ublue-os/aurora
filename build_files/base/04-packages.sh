@@ -16,7 +16,8 @@ source /ctx/build_files/shared/copr-helpers.sh
 
 # Base packages from Fedora repos - common to all versions
 
-# Prevent partial upgrading
+# Prevent partial upgrading, major kde version updates black screened
+# https://github.com/ublue-os/aurora/issues/1227
 dnf5 versionlock add plasma-desktop
 
 FEDORA_PACKAGES=(
@@ -165,6 +166,11 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
+# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
+rpm --erase --nodeps plasma-lookandfeel-fedora
+# rpm erase doesn't remove actual files
+rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
+
 # Install Terra repo (for switcheroo-control on F42 and earlier)
 # shellcheck disable=SC2016
 thirdparty_repo_install "terra" \
@@ -181,6 +187,7 @@ if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
 fi
 
 # https://github.com/ublue-os/bazzite/issues/1400
+# TODO: test if we still need this when upgrading firmware with fwupd
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
@@ -197,9 +204,9 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 # Remember to leave a note with rationale/link to issue for each pin!
 #
 # Example:
-#if [ "$FEDORA_MAJOR_VERSION" -eq "41" ]; then
+#if [ "$FEDORA_MAJOR_VERSION" -eq "42" ]; then
 #    Workaround pkcs11-provider regression, see issue #1943
-#    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
+#    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
@@ -212,7 +219,6 @@ dnf5 -y swap \
     fedora-logos aurora-logos
 dnf5 -y install \
     --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    aurora-kde-config \
     aurora-plymouth
 
 echo "::endgroup::"
