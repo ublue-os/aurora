@@ -8,7 +8,7 @@ on:
       - ".github/workflows/reusable-build-iso-anaconda-webui.yml"
       - "iso_files/configure_iso_anaconda-webui.sh"
   schedule:
-    - cron: "0 0 15 * *"
+    - cron: "0 2 1 * *" # First day of each month at 2:00 AM UTC
 
 env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
