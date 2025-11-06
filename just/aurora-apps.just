@@ -200,10 +200,14 @@ install-incus:
 
 # Install Kubernetes CLI dev tools
 [group('Apps')]
-install-k8s-dev-tools:
+aurora-k8s:
     #!/usr/bin/bash
     echo "☸️🛠️ Adding Kubernetes command line tools..."
-    brew bundle --file /usr/share/ublue-os/homebrew/kubernetes.Brewfile
+    brew bundle --file /usr/share/ublue-os/homebrew/aurora-k8s.Brewfile
+
+# alias for install-ai-tools
+aurora-ai:
+    @ujust install-ai-tools
 
 # Install AI tools
 [group('Apps')]

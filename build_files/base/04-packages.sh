@@ -15,6 +15,11 @@ source /ctx/build_files/shared/copr-helpers.sh
 # COPR packages are installed individually with isolated enablement.
 
 # Base packages from Fedora repos - common to all versions
+
+# Prevent partial upgrading, major kde version updates black screened
+# https://github.com/ublue-os/aurora/issues/1227
+dnf5 versionlock add plasma-desktop
+
 FEDORA_PACKAGES=(
     adcli
     borgbackup
@@ -51,7 +56,6 @@ FEDORA_PACKAGES=(
     sssd-ad
     sssd-ipa
     sssd-krb5
-    tailscale
     tmux
     virtualbox-guest-additions
     wireguard-tools
@@ -77,8 +81,19 @@ esac
 echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
+# Install tailscale package from their repo
+echo "Installing tailscale from official repo..."
+dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+dnf config-manager setopt tailscale-stable.enabled=0
+dnf -y install --enablerepo='tailscale-stable' tailscale
+
 # Install COPR packages using isolated enablement (secure)
 echo "Installing COPR packages with isolated repo enablement..."
+
+# OpenRazer from hardware:razer repo (not a COPR)
+        dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
+        dnf5 -y install openrazer-daemon
+        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
 # From ublue-os/staging
 copr_install_isolated "ublue-os/staging" \
@@ -101,10 +116,6 @@ copr_install_isolated "ublue-os/packages" \
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
     42)
-        # OpenRazer from hardware:razer repo (not a COPR)
-        dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-        dnf5 -y install openrazer-daemon
-        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
         ;;
     43)
@@ -140,8 +151,7 @@ EXCLUDED_PACKAGES=(
 case "$FEDORA_MAJOR_VERSION" in
     43)
         EXCLUDED_PACKAGES+=(
-            fw-fanctrl
-            openrazer-daemon
+
         )
         ;;
 esac
@@ -156,7 +166,14 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
+# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
+rpm --erase --nodeps plasma-lookandfeel-fedora
+# rpm erase doesn't remove actual files
+rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
+
+
 # https://github.com/ublue-os/bazzite/issues/1400
+# TODO: test if we still need this when upgrading firmware with fwupd
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
@@ -167,16 +184,15 @@ dnf5 -y copr disable ublue-os/flatpak-test
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak flatpak
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-libs flatpak-libs
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
-rpm -q flatpak --qf "%{NAME} %{VENDOR}\n" | grep -q ublue-os || { echo "Flatpak not from our copr, aborting"; exit 1; }
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
 # Remember to leave a note with rationale/link to issue for each pin!
 #
 # Example:
-#if [ "$FEDORA_MAJOR_VERSION" -eq "41" ]; then
+#if [ "$FEDORA_MAJOR_VERSION" -eq "42" ]; then
 #    Workaround pkcs11-provider regression, see issue #1943
-#    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
+#    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
@@ -189,7 +205,6 @@ dnf5 -y swap \
     fedora-logos aurora-logos
 dnf5 -y install \
     --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    aurora-kde-config \
     aurora-plymouth
 
 echo "::endgroup::"
