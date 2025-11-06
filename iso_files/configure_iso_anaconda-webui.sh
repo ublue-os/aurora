@@ -41,6 +41,7 @@ SPECS=(
     "anaconda-live"
     "anaconda-webui"
     "firefox"
+    "kiss"
 )
 dnf install -y "${SPECS[@]}"
 
