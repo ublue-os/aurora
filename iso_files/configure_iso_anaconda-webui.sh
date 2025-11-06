@@ -78,9 +78,11 @@ custom_stylesheet = /usr/share/anaconda/pixmaps/fedora.css
 hidden_spokes =
     NetworkSpoke
     PasswordSpoke
+    UserSpoke
 hidden_webui_pages =
     root-password
     network
+    anaconda-screen-accounts
 EOF
 
 # Add installer + docs + discourse to panel
