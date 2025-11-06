@@ -41,6 +41,7 @@ SPECS=(
     "anaconda-live"
     "anaconda-webui"
     "firefox"
+    "kiss"
 )
 dnf install -y "${SPECS[@]}"
 
@@ -78,9 +79,11 @@ custom_stylesheet = /usr/share/anaconda/pixmaps/fedora.css
 hidden_spokes =
     NetworkSpoke
     PasswordSpoke
+    UserSpoke
 hidden_webui_pages =
     root-password
     network
+    anaconda-screen-accounts
 EOF
 
 # Add installer + docs + discourse to panel
@@ -168,3 +171,8 @@ mokutil --timeout -1 || :
 echo -e "$ENROLLMENT_PASSWORD\n$ENROLLMENT_PASSWORD" | mokutil --import "$SECUREBOOT_KEY" || :
 %end
 EOF
+
+# no idea if this works like I want it to
+systemd-sysusers
+
+systemctl enable kde-initial-system-setup.service
