@@ -173,6 +173,6 @@ echo -e "$ENROLLMENT_PASSWORD\n$ENROLLMENT_PASSWORD" | mokutil --import "$SECURE
 EOF
 
 # no idea if this works like I want it to
-systemd-sysuser
+systemd-sysusers
 
 systemctl enable kde-initial-system-setup.service
