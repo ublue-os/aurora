@@ -171,3 +171,8 @@ mokutil --timeout -1 || :
 echo -e "$ENROLLMENT_PASSWORD\n$ENROLLMENT_PASSWORD" | mokutil --import "$SECUREBOOT_KEY" || :
 %end
 EOF
+
+# no idea if this works like I want it to
+systemd-sysuser
+
+systemctl enable kde-initial-system-setup.service
