@@ -217,8 +217,5 @@ dnf5 -y install \
 dnf5 -y swap \
     --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
     fedora-logos aurora-logos
-dnf5 -y install \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    aurora-plymouth
 
 echo "::endgroup::"
