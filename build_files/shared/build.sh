@@ -37,7 +37,7 @@ echo "::endgroup::"
 /ctx/build_files/base/05-branding.sh
 
 # Install Overrides and Fetch Install
-/ctx/build_files/base/05-override-install.sh
+/ctx/build_files/base/06-override-install.sh
 
 # Get Firmare for Framework
 /ctx/build_files/base/08-firmware.sh
