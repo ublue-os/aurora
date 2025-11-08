@@ -766,7 +766,7 @@ generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr
     set -eou pipefail
 
     TODAY="$(date +%A)"
-    WEEKLY="Sunday"
+    WEEKLY="Tuesday"
     if [[ {{ ghcr }} == "0" ]]; then
         rm -f /tmp/manifest.json
     fi
