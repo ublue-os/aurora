@@ -21,4 +21,9 @@ gzip -c /usr/share/icons/hicolor/scalable/distributor-logo.svg > /usr/share/plas
 
 ln -sr /usr/share/icons/hicolor/scalable/places/distributor-logo.svg /usr/share/sddm/themes/01-breeze-aurora/default-logo.svg
 
+# generate plymouth logos
+mkdir -p /usr/share/plymouth/themes/spinner/
+magick -background none /usr/share/pixmaps/fedora-logo.svg -quality 90 -resize $((128-3*2))x32 -gravity center -extent 128x32 /usr/share/plymouth/themes/spinner/watermark.png
+cp /usr/share/plymouth/themes/spinner/watermark.png /usr/share/plymouth/themes/spinner/kinoite-watermark.png
+
 echo "::endgroup::"
