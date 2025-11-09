@@ -11,6 +11,9 @@ cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobala
 
 # Starship Shell Prompt
 ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
+ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz.sha256" --retry 3 -o /tmp/starship.tar.gz.sha256
+
+echo "$(cat /tmp/starship.tar.gz.sha256) /tmp/starship.tar.gz" | sha256sum --check
 tar -xzf /tmp/starship.tar.gz -C /tmp
 install -c -m 0755 /tmp/starship /usr/bin
 # shellcheck disable=SC2016
@@ -23,8 +26,8 @@ unzip /tmp/nerdfontsymbols.zip -d /tmp
 mkdir -p /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 mv /tmp/SymbolsNerdFont*.ttf /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 
-# Bash Prexec
-curl --retry 3 -Lo /usr/share/bash-prexec https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh
+# Bash Prexec v0.6.0
+ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-prexec
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
