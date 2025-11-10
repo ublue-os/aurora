@@ -35,7 +35,10 @@ css: |
     color: #ffffff;
   }
 
-  .aurora-section {
+  .rec-section {
+    background: linear-gradient(0deg, #54a3d8, #72c4e7);
+  }
+
     background: linear-gradient(0deg, #271e7f, #60a5c3);
   }
 
