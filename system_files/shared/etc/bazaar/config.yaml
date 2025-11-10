@@ -13,23 +13,23 @@ css: |
 
   .global-section banner-text {
      padding: 50px;
-     color: #ffffff;
      text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
 
   .global-section title {
-    color: #ffffff;
+    text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
 
   .global-section subtitle {
-    color: #ffffff;
     font-weight: 400;
+    text-shadow: 4px 4px 8px rgba(0, 0, 5, 1);
+  }
   }
 
   .global-section {
     margin: 15px;
     border-radius: 25px;
-    color: inherit;
+    color: #ffffff;
   }
 
   .aurora-section {
