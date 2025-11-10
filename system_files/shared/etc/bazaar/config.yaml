@@ -24,6 +24,9 @@ css: |
     font-weight: 400;
     text-shadow: 4px 4px 8px rgba(0, 0, 5, 1);
   }
+
+  .global-section app-tile > button {
+    background-color: alpha(white, 0.1);
   }
 
   .global-section {
