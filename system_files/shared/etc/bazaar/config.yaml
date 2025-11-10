@@ -76,7 +76,7 @@ css: |
   }
 
   .music-section-dark {
-    background: linear-gradient(to bottom, #F56217, #6b4f2a);
+    background: linear-gradient(to bottom, #F56217, #912906);
   }
 
   .music-section-dark app-tile-installed-indicator {
