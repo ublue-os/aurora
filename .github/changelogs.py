@@ -32,7 +32,7 @@ OTHER_NAMES = {
     "base": "### Base Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "dx": "### [Dev Experience Images](https://docs.projectbluefin.io/bluefin-dx)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "kde": "### [Aurora Images](https://getaurora.dev/)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "nvidia": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
+    "nvidia-open": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
 
 }
 
@@ -208,7 +208,7 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
                 continue
 
 
-            if t == "nvidia" and "nvidia" not in image_flavor:
+            if t == "nvidia-open" and "nvidia-open" not in image_flavor:
                 continue
             if t == "base" and experience != "base":
                 continue
