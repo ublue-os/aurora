@@ -101,6 +101,7 @@ echo "Installing DX COPR packages with isolated repo enablement..."
 copr_install_isolated "karmab/kcli" "kcli"
 copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
 copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
+copr_install_isolated "hikariknight" "looking-glass-kvmfr"
 
 # DX packages to exclude - common to all versions
 EXCLUDED_PACKAGES=()
