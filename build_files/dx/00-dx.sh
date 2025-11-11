@@ -11,6 +11,7 @@ source /ctx/build_files/shared/copr-helpers.sh
 # NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
 sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
 
+# We need all this stuff for the kernel to not have 2 kernels in /usr/lib/modules on stable images
 # Fetch AKMODS & Kernel RPMS
 skopeo copy --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${AKMODS_FLAVOR}"-"$(rpm -E %fedora)"-"${KERNEL}" dir:/tmp/akmods
 AKMODS_TARGZ=$(jq -r '.layers[].digest' </tmp/akmods/manifest.json | cut -d : -f 2)

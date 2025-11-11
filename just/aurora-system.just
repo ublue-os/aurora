@@ -238,6 +238,8 @@ toggle-tailscale:
 configure-vfio ACTION="":
     #!/usr/bin/bash
     source /usr/lib/ujust/ujust.sh
+    echo "This script is not supported by the Aurora team, if something breaks you are on your own. Please don't report any issues"
+    echo "See: https://github.com/ublue-os/aurora/issues/1239#issuecomment-3481220083"
     CURRENT_IMAGE=$(rpm-ostree status -b --json | jq -r '.deployments[0]."container-image-reference"')
     if grep -q "dx" <<< $CURRENT_IMAGE ; then
         DEVMODE="enabled"
