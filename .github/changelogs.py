@@ -10,11 +10,11 @@ REGISTRY = "docker://ghcr.io/ublue-os/"
 
 IMAGE_MATRIX_LATEST = {
     "experience": ["base", "dx"],
-    "image_flavor": ["main", "nvidia"],
+    "image_flavor": ["main", "nvidia-open"],
 }
 IMAGE_MATRIX = {
     "experience": ["base", "dx"],
-    "image_flavor": ["main", "nvidia"],
+    "image_flavor": ["main", "nvidia-open"],
 }
 
 RETRIES = 3
