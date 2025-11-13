@@ -731,8 +731,8 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
     if [[ ! -f /tmp/manifest.json ]]; then
         if [[ "{{ tag }}" =~ stable ]]; then
-            # CoreOS does not uses cosign
-            skopeo inspect --retry-times 3 docker://quay.io/fedora/fedora-coreos:stable > /tmp/manifest.json
+            # Query akmods image - CoreOS F43+ doesn't have ostree.linux label
+            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:coreos-stable-43 > /tmp/manifest.json
         elif [[ "{{ tag }}" =~ beta ]]; then
             skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:beta > /tmp/manifest.json
         else
