@@ -732,7 +732,10 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     if [[ ! -f /tmp/manifest.json ]]; then
         if [[ "{{ tag }}" =~ stable ]]; then
             # Query akmods image - CoreOS F43+ doesn't have ostree.linux label
-            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:coreos-stable-43 > /tmp/manifest.json
+            # Dynamically find the highest available coreos-stable version
+            latest_version=$(skopeo list-tags docker://ghcr.io/ublue-os/akmods | \
+                jq -r '.Tags[] | select(test("^coreos-stable-[0-9]+$")) | sub("coreos-stable-"; "")'
+            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:coreos-stable-${latest_version} > /tmp/manifest.json
         elif [[ "{{ tag }}" =~ beta ]]; then
             skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:beta > /tmp/manifest.json
         else
