@@ -10,7 +10,7 @@ sbkey='https://github.com/ublue-os/akmods/raw/main/certs/public_key.der'
 
 # Configure Live Environment
 ## Remove packages from liveCD to save space
-dnf remove -y google-noto-fonts-all ublue-brew ublue-motd || true
+dnf remove -y ublue-brew ublue-motd || true
 
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
@@ -29,6 +29,7 @@ systemctl disable flatpak-preinstall.service
 systemctl --global disable ublue-flatpak-manager.service
 systemctl --global disable podman-auto-update.timer
 systemctl --global disable ublue-user-setup.service
+rm /usr/share/applications/system-update.desktop
 
 # Configure Anaconda
 
@@ -39,6 +40,8 @@ SPECS=(
     "libblockdev-dm"
     "anaconda-live"
     "anaconda-webui"
+    "firefox"
+    "kiss"
 )
 dnf install -y "${SPECS[@]}"
 
@@ -76,25 +79,32 @@ custom_stylesheet = /usr/share/anaconda/pixmaps/fedora.css
 hidden_spokes =
     NetworkSpoke
     PasswordSpoke
+    UserSpoke
 hidden_webui_pages =
     root-password
     network
-
-[Localization]
-use_geolocation = False
+    anaconda-screen-accounts
 EOF
+
+# Add installer + docs + discourse to panel
+sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:org.gnome.Ptyxis.desktop,applications:io.github.kolunmi.Bazaar.desktop,preferred:\/\/filemanager,applications:Discourse.desktop,applications:documentation.desktop,applications:liveinst.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+
+# add intaller to kickoff
+sed -i '2s/$/;liveinst.desktop/' /usr/share/kde-settings/kde-profile/default/xdg/kicker-extra-favoritesrc
 
 # Configure
 . /etc/os-release
 echo "Aurora release $VERSION_ID ($VERSION_CODENAME)" >/etc/system-release
 
 sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/liveinst || true
-sed -i 's|^Icon=.*|Icon=/usr/share/anaconda/pixmaps/fedora-logo-icon.png|' /usr/share/applications/liveinst.desktop || true
+
+desktop-file-edit --set-key=Icon --set-value=/usr/share/pixmaps/scope_installer.png /usr/share/applications/liveinst.desktop
 
 # Get Artwork
 git clone --depth=1 https://github.com/ublue-os/packages.git /root/packages
 mkdir -p /usr/share/anaconda/pixmaps/
 cp -r /root/packages/aurora/fedora-logos/src/anaconda/* /usr/share/anaconda/pixmaps/
+cp /root/packages/aurora/fedora-logos/src/misc/scope_installer.png /usr/share/pixmaps/
 rm -rf /root/packages
 
 # Interactive Kickstart
@@ -161,3 +171,8 @@ mokutil --timeout -1 || :
 echo -e "$ENROLLMENT_PASSWORD\n$ENROLLMENT_PASSWORD" | mokutil --import "$SECUREBOOT_KEY" || :
 %end
 EOF
+
+# no idea if this works like I want it to
+systemd-sysusers
+
+systemctl enable kde-initial-system-setup.service
