@@ -36,7 +36,6 @@ benchmark:
 aurora-cli:
     @/usr/libexec/ublue-bling
 
-
 # alias for install-fonts
 aurora-fonts:
     @ujust install-fonts
