@@ -171,20 +171,6 @@ rpm --erase --nodeps plasma-lookandfeel-fedora
 # rpm erase doesn't remove actual files
 rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
 
-# Install Terra repo (for switcheroo-control on F42 and earlier)
-# shellcheck disable=SC2016
-thirdparty_repo_install "terra" \
-                       'terra,https://repos.fyralabs.com/terra$releasever' \
-                       "terra-release" \
-                       "terra-release-extras" \
-                       "terra*"
-
-# switcheroo swap is not needed for F43 ->
-if [[ "${FEDORA_MAJOR_VERSION}" -lt "43" ]]; then
-    dnf5 -y swap \
-        --repo=terra-extras \
-        switcheroo-control switcheroo-control
-fi
 
 # https://github.com/ublue-os/bazzite/issues/1400
 # TODO: test if we still need this when upgrading firmware with fwupd
