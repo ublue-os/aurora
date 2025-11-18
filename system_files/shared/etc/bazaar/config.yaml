@@ -13,59 +13,154 @@ css: |
 
   .global-section banner-text {
      padding: 50px;
-     color: #ffffff;
      text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
 
   .global-section title {
-    color: #ffffff;
+    text-shadow: 1px 1px 4px rgba(0, 0, 5, 1);
   }
 
   .global-section subtitle {
-    color: #ffffff;
     font-weight: 400;
+    text-shadow: 4px 4px 8px rgba(0, 0, 5, 1);
+  }
+
+  .global-section app-tile > button {
+    background-color: alpha(white, 0.1);
   }
 
   .global-section {
     margin: 15px;
     border-radius: 25px;
-    color: inherit;
+    color: #ffffff;
   }
 
-  .aurora-section {
+  .rec-section {
+    background: linear-gradient(0deg, #80cfe3, #54a3d8);
+  }
+
+  .rec-section app-tile-installed-indicator {
+    color: #2d2f9b;
+  }
+
+  .rec-section-dark {
     background: linear-gradient(0deg, #271e7f, #60a5c3);
   }
 
+  .rec-section-dark app-tile-installed-indicator {
+    color: #a8e6ff;
+  }
+
   .cc-section {
+    background: linear-gradient(0deg, #b8a0cf, #9b59b6);
+  }
+
+  .cc-section app-tile-installed-indicator {
+    color: #000a55;
+  }
+
+  .cc-section-dark {
     background: linear-gradient(0deg, #392946, #050815);
   }
 
+  .cc-section-dark app-tile-installed-indicator {
+    color: #dbcaf3;
+  }
+
   .music-section {
-    background: linear-gradient(45deg, #e97e4f, #565d8d);
+    background: linear-gradient(to bottom, #F56217, #ffab7b);
+  }
+
+  .music-section app-tile-installed-indicator {
+    color: #4b5b64;
+  }
+
+  .music-section-dark {
+    background: linear-gradient(to bottom, #F56217, #912906);
+  }
+
+  .music-section-dark app-tile-installed-indicator {
+    color: #ffe6df;
   }
 
   .office-section {
-    background: linear-gradient(to left bottom, #8c1790, #a81b8d, #c0258a, #d63386, #e94482, #e7457c, #e54777, #e24872, #cc3969, #b72960, #a21757, #8d004d);
+    background: linear-gradient(to bottom, #ff3e82, #f7caf0);
+  }
+
+  .office-section app-tile-installed-indicator {
+    color: #4a0052;
+  }
+
+  .office-section-dark {
+    background: linear-gradient(to bottom, #750051, #fa486b);
+  }
+
+  .office-section-dark app-tile-installed-indicator {
+    color: #007fd9;
   }
 
   .gaming-section {
-    background: linear-gradient(0deg, #444445, #00ce75);
+    background: linear-gradient(0deg, #888a90, #67c29a);
   }
 
   .gaming-section app-tile-installed-indicator {
+    color: #355c00;
+  }
+
+  .gaming-section-dark {
+    background: linear-gradient(0deg, #003a00, #444445);
+  }
+
+  .gaming-section-dark app-tile-installed-indicator {
     color: #ffffff;
   }
 
   .utilities-section {
+    background: linear-gradient(0deg, #888a90, #48659a);
+  }
+
+  .utilities-section app-tile-installed-indicator {
+    color: #002542;
+  }
+
+  .utilities-section-dark {
     background: linear-gradient(to right bottom, #00389e, #1d3283, #242d6a, #262851, #24233a, #282636, #2b2a31, #2d2d2d, #3a3a3a, #474748, #555556, #646364);
   }
 
+  .utilities-section-dark app-tile-installed-indicator {
+    color: #dddddc;
+  }
+
   .dev-section {
-    background-image: linear-gradient(to right top, #392946, #2e243d, #241f34, #1b1a2b, #131421, #171b29, #1b2131, #1e2839, #2c3f57, #3a5876, #467296, #508eb7);
+    background-image: linear-gradient(to right bottom, #8b6fab, #7a77b3, #687fb6, #5985b6, #4d8bb3, #4892b4, #4698b3, #499eb1, #4da8b3, #55b2b4, #61bbb4, #6fc4b3);
+  }
+
+  .dev-section app-tile-installed-indicator {
+    color: #9b59b6;
+  }
+
+  .dev-section-dark {
+    background: linear-gradient(to right bottom, #8b6fab, #7a68a6, #6861a0, #555a9a, #405494, #315c9a, #1f649e, #006ca1, #0084ac, #089ab1, #43b0b2, #6fc4b3);
+  }
+
+  .dev-section-dark app-tile-installed-indicator {
+    color: #8c007c;
   }
 
   .ai-section {
-    background: linear-gradient(0deg, #0055b1, #ff7843);
+    background: linear-gradient(0deg, #cc773e, #d05a00);
+  }
+
+  .ai-section app-tile-installed-indicator {
+    color: #002c55;
+  }
+
+  .ai-section-dark {
+    background: linear-gradient(0deg, #4a1c00, #eb8000);
+  }
+
+  .ai-section-dark app-tile-installed-indicator {
+    color: #577bad;
   }
 
 sections:
@@ -79,8 +174,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
+    light-classes:
+      - rec-section
     dark-classes:
-      - aurora-section
+      - rec-section-dark
     appids:
       - io.github.DenysMb.Kontainer
       - com.pixelomer.ShijimaQt
@@ -105,8 +202,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - cc-section
+    dark-classes:
+      - cc-section-dark
     appids:
       - org.kde.krita
       - org.ardour.Ardour
@@ -130,8 +229,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - music-section
+    dark-classes:
+      - music-section-dark
     appids:
       - org.kde.elisa
       - com.spotify.Client
@@ -156,8 +257,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - office-section
+    dark-classes:
+      - office-section-dark
     appids:
       - com.slack.Slack
       - md.obsidian.Obsidian
@@ -180,8 +283,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - gaming-section
+    dark-classes:
+      - gaming-section-dark
     appids:
       - com.valvesoftware.Steam
       - com.valvesoftware.SteamLink
@@ -210,8 +315,10 @@ sections:
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - utilities-section
+    dark-classes:
+      - utilities-section-dark
     appids:
       - app.drey.Warp
       - org.localsend.localsend_app
@@ -233,19 +340,20 @@ sections:
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
     rows: 2
-    banner: file:///run/host/etc/bazaar/favourites.jxl
+    banner: file:///run/host/etc/bazaar/07-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: center
     banner-height: 400
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - dev-section
+    dark-classes:
+      - dev-section-dark
     appids:
       - io.podman_desktop.PodmanDesktop
       - io.kinvolk.Headlamp
-      - sh.loft.devpod
       - org.gnome.Builder
       - com.getpostman.Postman
       - org.kde.kdevelop
@@ -260,15 +368,17 @@ sections:
   - title: "AI and Machine Learning"
     subtitle: "Experience the best of open source AI"
     rows: 1
-    banner: file:///run/host/etc/bazaar/browse.jxl
+    banner: file:///run/host/etc/bazaar/08-aurora-bazaar.jxl
     banner-fit: cover
     banner-text-halign: start
     banner-text-valign: center
     banner-height: 500
     classes:
       - global-section
-    dark-classes:
+    light-classes:
       - ai-section
+    dark-classes:
+      - ai-section-dark
     appids:
       - com.jeffser.Alpaca
       - io.github.qwersyk.Newelle

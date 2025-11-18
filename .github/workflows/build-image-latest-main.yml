@@ -10,7 +10,7 @@ on:
       - "iso_files/**"
       - "flatpaks/**"
       - ".github/workflows/*iso*"
-      - "system_files/etc/bazaar/config.yaml"
+      - "system_files/shared/etc/bazaar/**"
       - "**.Brewfile"
       - "just/*.just"
   workflow_call:

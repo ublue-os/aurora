@@ -36,7 +36,6 @@ benchmark:
 aurora-cli:
     @/usr/libexec/ublue-bling
 
-
 # alias for install-fonts
 aurora-fonts:
     @ujust install-fonts
@@ -265,7 +264,7 @@ toggle-dinosaurs hemisphere="north":
                 echo "The wallpaper will update automatically each month."
                 filename="$HOME/.local/share/wallpapers/Bluefin/{{ hemisphere }}.avif"
 
-                qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+                qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
                     var allDesktops = desktops();
                     for (var i = 0; i < allDesktops.length; i++) {
                         var d = allDesktops[i];
