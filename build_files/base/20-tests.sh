@@ -115,4 +115,7 @@ for unit in "${IMPORTANT_UNITS[@]}"; do
     fi
 done
 
+# remove me
+df -h
+
 echo "::endgroup::"
