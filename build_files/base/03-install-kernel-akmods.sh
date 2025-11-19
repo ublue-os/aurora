@@ -53,6 +53,7 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
     tar -xvzf /tmp/akmods-rpms/"$NVIDIA_TARGZ" -C /tmp/
     mv /tmp/rpms/* /tmp/akmods-rpms/
 
+    # Not available for Fedora 43 yet
     dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
 
     # Install Nvidia RPMs
