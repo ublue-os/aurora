@@ -14,7 +14,7 @@ on:
       - "**.Brewfile"
       - "just/*.just"
   schedule:
-    - cron: "15 1 * * 2" # Every Tuesday at 1:15 AM
+    - cron: "15 1 * * TUE" # Every Tuesday at 1:15 AM
   workflow_call:
   workflow_dispatch:
 
