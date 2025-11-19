@@ -53,7 +53,6 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
     tar -xvzf /tmp/akmods-rpms/"$NVIDIA_TARGZ" -C /tmp/
     mv /tmp/rpms/* /tmp/akmods-rpms/
 
-
     dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
 
     # Monkey patch right now...
