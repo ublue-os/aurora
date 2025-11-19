@@ -55,12 +55,6 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
 
     dnf5 config-manager setopt excludepkgs=golang-github-nvidia-container-toolkit
 
-    # Monkey patch right now...
-    if ! grep -q negativo17 <(rpm -qi mesa-dri-drivers); then
-        dnf5 -y swap --repo=updates-testing \
-            mesa-dri-drivers mesa-dri-drivers
-    fi
-
     # Install Nvidia RPMs
     ghcurl "https://raw.githubusercontent.com/ublue-os/main/main/build_files/nvidia-install.sh" -o /tmp/nvidia-install.sh
     chmod +x /tmp/nvidia-install.sh
