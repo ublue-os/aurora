@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Documentation is available online
+rm -rf /usr/share/doc
+
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf

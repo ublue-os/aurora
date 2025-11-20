@@ -8,7 +8,4 @@ set -eoux pipefail
 mkdir -p /usr/share/ublue-os/aurora-cli
 cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/aurora-cli
 
-# Try removing just docs (is it actually promblematic?)
-rm -rf /usr/share/doc/just/README.*.md
-
 echo "::endgroup::"
