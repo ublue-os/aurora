@@ -60,6 +60,7 @@ IMPORTANT_PACKAGES=(
     kwin
     pipewire
     plasma-desktop
+    podman
     ptyxis
     sddm
     Sunshine
