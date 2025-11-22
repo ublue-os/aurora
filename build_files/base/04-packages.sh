@@ -37,6 +37,7 @@ FEDORA_PACKAGES=(
     input-remapper
     iwd
     kcm-fcitx5
+    kiss
     krb5-workstation
     ksystemlog
     libimobiledevice
