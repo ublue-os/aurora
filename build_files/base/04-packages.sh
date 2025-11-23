@@ -195,6 +195,15 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
+# Fix for plasma-workspace crashing after Qt 6.10.1 update
+# https://bodhi.fedoraproject.org/updates/FEDORA-2025-614a882af4
+# https://koji.fedoraproject.org/koji/buildinfo?buildID=2864797
+dnf5 -y install \
+    https://kojipkgs.fedoraproject.org/packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-6.5.3-2.fc43.x86_64.rpm \
+    https://kojipkgs.fedoraproject.org/packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-libs-6.5.3-2.fc43.x86_64.rpm \
+    https://kojipkgs.fedoraproject.org//packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-common-6.5.3-2.fc43.x86_64.rpm
+
+
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
