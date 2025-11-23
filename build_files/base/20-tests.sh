@@ -4,6 +4,10 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+test -f /usr/share/icons/hicolor/scalable/distributor-logo.svg
+test -f /usr/share/pixmaps/system-logo-white.png
+test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
+
 xmllint --noout \
   /usr/share/backgrounds/default.xml \
   /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
@@ -76,6 +80,7 @@ done
 # these packages are supposed to be removed
 # and are considered footguns
 UNWANTED_PACKAGES=(
+    fedora-logos
     firefox
     plasma-discover-kns
     plasma-discover-rpm-ostree
