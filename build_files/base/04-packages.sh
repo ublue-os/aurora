@@ -105,7 +105,6 @@ copr_install_isolated "ublue-os/packages" \
     "krunner-bazaar" \
     "kcm_ublue" \
     "ublue-bling" \
-    "ublue-branding-logos" \
     "ublue-brew" \
     "ublue-fastfetch" \
     "ublue-motd" \
