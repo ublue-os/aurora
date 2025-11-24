@@ -132,6 +132,7 @@ copr_install_isolated "lizardbyte/beta" \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
+    cosign
     fedora-bookmarks
     fedora-chromium-config
     fedora-chromium-config-kde
