@@ -10,6 +10,7 @@ COPY /iso_files /iso_files
 COPY /just /just
 COPY /flatpaks /flatpaks
 COPY /brew /brew
+COPY /logos /logos
 
 ## aurora image section
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
