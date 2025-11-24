@@ -165,6 +165,8 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
+rpm --erase --nodeps fedora-logos
+
 # we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
 rpm --erase --nodeps plasma-lookandfeel-fedora
 # rpm erase doesn't remove actual files
@@ -197,10 +199,5 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
-
-# Swap/install aurora branding packages from ublue-os/packages COPR using isolated enablement
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    fedora-logos aurora-logos
 
 echo "::endgroup::"
