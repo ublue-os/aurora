@@ -98,7 +98,7 @@ sed -i 's/ANACONDA_PRODUCTVERSION=.*/ANACONDA_PRODUCTVERSION=""/' /usr/{,s}bin/l
 desktop-file-edit --set-key=Icon --set-value=/usr/share/pixmaps/scope_installer.png /usr/share/applications/liveinst.desktop
 
 # Scope Fetcher, used as the icon in plasma-welcome and as the app icon itself for the installer
-cp /ctx/iso_files/scope_installer.png /usr/share/pixmaps/
+curl --retry 3 -Lo /usr/share/pixmaps/scope_installer.png https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/iso_files/scope_installer.png
 
 # Interactive Kickstart
 tee -a /usr/share/anaconda/interactive-defaults.ks <<EOF
