@@ -140,6 +140,7 @@ EXCLUDED_PACKAGES=(
     firefox-langpacks
     firewall-config
     kcharselect
+    khelpcenter
     krfb
     krfb-libs
     plasma-discover-kns

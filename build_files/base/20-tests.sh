@@ -23,6 +23,8 @@ test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 # Basic smoke test to check if the flatpak version is from our copr
 flatpak preinstall --help
 
+test -f /usr/share/doc/aurora/aurora.pdf
+
 desktop-file-validate \
   /usr/share/applications/Discourse.desktop \
   /usr/share/applications/boot-to-windows.desktop \
