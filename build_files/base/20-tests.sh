@@ -87,7 +87,6 @@ UNWANTED_PACKAGES=(
     firefox
     plasma-discover-kns
     plasma-discover-rpm-ostree
-    plasma-lookandfeel-fedora
     podman-docker
 )
 
