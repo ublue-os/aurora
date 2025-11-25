@@ -88,6 +88,7 @@ UNWANTED_PACKAGES=(
     plasma-discover-kns
     plasma-discover-rpm-ostree
     podman-docker
+    plasma-lookandfeel-fedora
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
