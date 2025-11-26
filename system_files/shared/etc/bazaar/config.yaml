@@ -336,6 +336,7 @@ sections:
       - io.github.BuddySirJava.SSH-Studio
       - au.stevetech.yafi
       - io.github.pwr_solaar.solaar
+      - com.infinipaint.infinipaint
 
   - title: "Developers"
     subtitle: "Developers, developers, developers!"
