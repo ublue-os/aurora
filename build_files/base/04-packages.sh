@@ -101,7 +101,6 @@ copr_install_isolated "ublue-os/staging" \
 
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
-    "aurora-backgrounds" \
     "krunner-bazaar" \
     "kcm_ublue" \
     "ublue-bling" \
