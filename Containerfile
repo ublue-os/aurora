@@ -11,8 +11,8 @@ COPY /just /just
 COPY /flatpaks /flatpaks
 COPY /brew /brew
 COPY /logos /logos
-# FIXME: put this into the org
-COPY --from=ghcr.io/hanthor/aurora-oci:latest@sha256:e9d42f7aadcf763f1970d472bfb6915ddf2588e2ceb414be60e7763e81585b5a /wallpapers /system_files/shared
+# TODO: verify this with cosign on build
+COPY --from=ghcr.io/get-aurora-dev/common:latest@sha256:72dbe6fad063b4b58ee05e28da0d9e6e29edf03a0d77322330829a2ef1eda663 /wallpapers /system_files/shared
 
 ## aurora image section
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
