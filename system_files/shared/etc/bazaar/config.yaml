@@ -348,6 +348,7 @@ rows:
             - io.github.BuddySirJava.SSH-Studio
             - au.stevetech.yafi
             - io.github.pwr_solaar.solaar
+            - com.infinipaint.infinipaint
 
   - sections:
       - expand-horizontally: true

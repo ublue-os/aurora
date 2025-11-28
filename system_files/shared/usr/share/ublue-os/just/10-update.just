@@ -46,7 +46,7 @@ toggle-updates ACTION="prompt":
     if [ "$OPTION" == "prompt" ]; then
         echo "Automatic updates are currently: ${bold}${CURRENT_STATE}${normal}"
         echo "Enable or Disable automatic updates?"
-        OPTION=$(ugum choose Enable Disable)
+        OPTION=$(gum choose Enable Disable)
     elif [ "$OPTION" == "help" ]; then
         echo "Usage: ujust toggle-updates <option>"
         echo "  <option>: Specify the quick option - 'enable' or 'disable'"

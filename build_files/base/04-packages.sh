@@ -105,7 +105,6 @@ copr_install_isolated "ublue-os/packages" \
     "krunner-bazaar" \
     "kcm_ublue" \
     "ublue-bling" \
-    "ublue-branding-logos" \
     "ublue-brew" \
     "ublue-fastfetch" \
     "ublue-motd" \
@@ -133,6 +132,7 @@ copr_install_isolated "lizardbyte/beta" \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
+    cosign
     fedora-bookmarks
     fedora-chromium-config
     fedora-chromium-config-kde
@@ -140,6 +140,7 @@ EXCLUDED_PACKAGES=(
     firefox-langpacks
     firewall-config
     kcharselect
+    khelpcenter
     krfb
     krfb-libs
     plasma-discover-kns
@@ -165,6 +166,8 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
         echo "No excluded packages found to remove."
     fi
 fi
+
+rpm --erase --nodeps fedora-logos
 
 # we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
 rpm --erase --nodeps plasma-lookandfeel-fedora
@@ -198,10 +201,5 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
-
-# Swap/install aurora branding packages from ublue-os/packages COPR using isolated enablement
-dnf5 -y swap \
-    --repo=copr:copr.fedorainfracloud.org:ublue-os:packages \
-    fedora-logos aurora-logos
 
 echo "::endgroup::"
