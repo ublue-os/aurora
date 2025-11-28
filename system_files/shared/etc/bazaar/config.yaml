@@ -37,16 +37,16 @@ css: |
     color: #ffffff;
   }
 
+  .global-section app-tile-verified-check {
+    color: var(--fg-color);
+  }
+
   .rec-section {
     background: linear-gradient(0deg, #80cfe3, #54a3d8);
   }
 
   .rec-section app-tile-installed-indicator {
     color: #2d2f9b;
-  }
-
-  .rec-section app-tile-verified-check {
-    color: #413a75;
   }
 
   .rec-section-dark {
@@ -57,10 +57,6 @@ css: |
     color: #a8e6ff;
   }
 
-  .rec-section-dark app-tile-verified-check {
-    color: #fe937b;
-  }
-
   .cc-section {
     background: linear-gradient(0deg, #b8a0cf, #9b59b6);
   }
@@ -69,20 +65,12 @@ css: |
     color: #000a55;
   }
 
-  .cc-section app-tile-verified-check {
-    color: #f5ac47;
-  }
-
   .cc-section-dark {
     background: linear-gradient(0deg, #392946, #050815);
   }
 
   .cc-section-dark app-tile-installed-indicator {
     color: #dbcaf3;
-  }
-
-  .cc-section-dark app-tile-verified-check {
-    color: #ffdfa4;
   }
 
   .music-section {
@@ -125,10 +113,6 @@ css: |
     color: #355c00;
   }
 
-  .gaming-section app-tile-verified-check {
-    color: #41413d;
-  }
-
   .gaming-section-dark {
     background: linear-gradient(0deg, #003a00, #444445);
   }
@@ -139,10 +123,6 @@ css: |
 
   .utilities-section {
     background: linear-gradient(0deg, #888a90, #48659a);
-  }
-
-  .utilities-section app-tile-verified-check {
-    color: #272727;
   }
 
   .utilities-section app-tile-installed-indicator {
@@ -165,20 +145,12 @@ css: |
     color: #9b59b6;
   }
 
-  .dev-section app-tile-verified-check {
-    color: #d98c28;
-  }
-
   .dev-section-dark {
     background: linear-gradient(to right bottom, #8b6fab, #7a68a6, #6861a0, #555a9a, #405494, #315c9a, #1f649e, #006ca1, #0084ac, #089ab1, #43b0b2, #6fc4b3);
   }
 
   .dev-section-dark app-tile-installed-indicator {
     color: #8c007c;
-  }
-
-  .dev-section-dark app-tile-verified-check {
-    color: #d98c28;
   }
 
   .ai-section {
