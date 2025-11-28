@@ -8,7 +8,7 @@ echo "::group:: Copy Files"
 install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # Copy Files to Container
-rsync -rvK /ctx/system_files/shared/ /
+rsync -rvKl /ctx/system_files/shared/ /
 
 # Homebrew files
 mkdir -p /usr/share/ublue-os/homebrew/

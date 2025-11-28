@@ -4,10 +4,15 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# branding related changes
 test -f /usr/share/icons/hicolor/scalable/distributor-logo.svg
 test -f /usr/share/pixmaps/system-logo-white.png
 test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
 test -f /usr/share/pixmaps/fedora-logo.svg
+
+test -f /usr/share/backgrounds/aurora/aurora-wallpaper-7/contents/images/3840x2160.jxl
+test -f /usr/share/wallpapers/aurora-wallpaper-7/contents/images/3840x2160.jxl
+test -L /usr/share/backgrounds/default.jxl
 
 xmllint --noout \
   /usr/share/backgrounds/default.xml \
