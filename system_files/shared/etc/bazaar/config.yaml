@@ -5,7 +5,7 @@ css: |
      margin-top: 30px;
      margin-left: 30px;
      margin-right: 30px;
-     border-radius: 10px;
+     border-radius: 12px;
   }
 
   .global-section banner-text-overlay {
@@ -33,7 +33,7 @@ css: |
 
   .global-section {
     margin: 15px;
-    border-radius: 25px;
+    border-radius: 12px;
     color: #ffffff;
   }
 
