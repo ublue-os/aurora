@@ -3,7 +3,7 @@ ARG FEDORA_MAJOR_VERSION="41"
 ARG SOURCE_IMAGE="${BASE_IMAGE_NAME}-main"
 ARG BASE_IMAGE="ghcr.io/ublue-os/${SOURCE_IMAGE}"
 ARG COMMON_IMAGE="ghcr.io/get-aurora-dev/common:latest"
-ARG COMMON_IMAGE_SHA="sha256:72dbe6fad063b4b58ee05e28da0d9e6e29edf03a0d77322330829a2ef1eda663"
+ARG COMMON_IMAGE_SHA=""
 
 # TODO: verify this with cosign on build
 FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
