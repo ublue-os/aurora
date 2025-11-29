@@ -247,7 +247,19 @@ toggle-dinosaurs hemisphere="north":
         OPTION=$(Choose Disable Cancel)
         if [ "$OPTION" = "Disable" ]; then
             systemctl --user disable --now bluefin-wallpaper@{{ hemisphere }}.service
+
+            # set the default wallpaper again when disabling
+            qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+                var allDesktops = desktops();
+                for (var i = 0; i < allDesktops.length; i++) {
+                    var d = allDesktops[i];
+                    d.wallpaperPlugin = \"org.kde.image\";
+                    d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");
+                    d.writeConfig(\"Image\", \"file:///usr/share/backgrounds/default.jxl\");
+                }
+              "
             echo "${b}${red}Bluefin dinosaur wallpapers ({{ hemisphere }}ern hemisphere) disabled.${n}"
+            echo "Disabling Dinosaurs. Deploying Coneheads again."
             echo "Wallpaper files remain in ~/.local/share/wallpapers/Bluefin/"
         fi
     else
