@@ -1,6 +1,8 @@
 repo_organization := "ublue-os"
 rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.4@sha256:8a84bd5a029681aa8db523f927b7c53b5aded9b078b81605ac0a2fedc969f528"
 iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.4.0@sha256:a6b52ef0b410a625d7abd16f0467d257ef8db1ec94f672a89d5b95cb25487de1"
+common_image := "ghcr.io/get-aurora-dev/common:latest"
+common_image_sha := "sha256:72dbe6fad063b4b58ee05e28da0d9e6e29edf03a0d77322330829a2ef1eda663"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -168,6 +170,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
     BUILD_ARGS+=("--build-arg" "AKMODS_FLAVOR=${akmods_flavor}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
+    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE={{ common_image }}")
+    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE_SHA={{ common_image_sha }}")
     BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
     BUILD_ARGS+=("--build-arg" "IMAGE_NAME=${image_name}")
     BUILD_ARGS+=("--build-arg" "IMAGE_VENDOR={{ repo_organization }}")
