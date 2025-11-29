@@ -5,7 +5,6 @@ ARG BASE_IMAGE="ghcr.io/ublue-os/${SOURCE_IMAGE}"
 ARG COMMON_IMAGE="ghcr.io/get-aurora-dev/common:latest"
 ARG COMMON_IMAGE_SHA=""
 
-# TODO: verify this with cosign on build
 FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
 
 FROM scratch AS ctx

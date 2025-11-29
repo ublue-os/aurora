@@ -144,6 +144,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         {{ just }} verify-container "akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
 
+    just verify-container common ghcr.io/get-aurora-dev https://raw.githubusercontent.com/get-aurora-dev/common/refs/heads/main/cosign.pub
+
     # Get Version
     if [[ "${tag}" =~ stable ]]; then
         ver="${fedora_version}.$(date +%Y%m%d)"
