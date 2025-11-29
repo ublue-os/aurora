@@ -38,6 +38,11 @@
       "automerge": true,
       "matchUpdateTypes": ["digest"],
       "matchDepNames": ["ghcr.io/ublue-os/kinoite-main"],
+    },
+    {
+      "automerge": true,
+      "matchUpdateTypes": ["digest"],
+      "matchDepNames": ["ghcr.io/get-aurora-dev/common"],
     }
   ]
 }
