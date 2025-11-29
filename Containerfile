@@ -12,7 +12,7 @@ COPY /flatpaks /flatpaks
 COPY /brew /brew
 COPY /logos /logos
 # TODO: verify this with cosign on build
-COPY --from=ghcr.io/get-aurora-dev/common:latest@sha256:72dbe6fad063b4b58ee05e28da0d9e6e29edf03a0d77322330829a2ef1eda663 /wallpapers /system_files/shared
+COPY --from=ghcr.io/get-aurora-dev/common:latest@sha256:ad0b6c8fd986bcf5e63162cd79397168170f197065b39278370f23dddc67a65a /wallpapers /system_files/shared
 
 ## aurora image section
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
