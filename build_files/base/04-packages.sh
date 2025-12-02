@@ -113,10 +113,10 @@ copr_install_isolated "ublue-os/packages" \
 
 # Version-specific COPR packages
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
 
         ;;
-    43)
+    44)
 
         ;;
 esac
@@ -131,6 +131,8 @@ copr_install_isolated "lizardbyte/beta" \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
+    akonadi-server
+    akonadi-server-mysql
     cosign
     fedora-bookmarks
     fedora-chromium-config
@@ -142,6 +144,13 @@ EXCLUDED_PACKAGES=(
     khelpcenter
     krfb
     krfb-libs
+    mariadb
+    mariadb-backup
+    mariadb-common
+    mariadb-cracklib-password-check
+    mariadb-errmsg
+    mariadb-gssapi-server
+    mariadb-server
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
@@ -150,9 +159,10 @@ EXCLUDED_PACKAGES=(
 # Version-specific package exclusions
 case "$FEDORA_MAJOR_VERSION" in
     43)
-        EXCLUDED_PACKAGES+=(
 
-        )
+        ;;
+    44)
+
         ;;
 esac
 
