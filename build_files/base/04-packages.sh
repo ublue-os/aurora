@@ -65,13 +65,11 @@ FEDORA_PACKAGES=(
 
 # Version-specific Fedora package additions
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
         FEDORA_PACKAGES+=(
-            google-noto-fonts-all
-            uld
         )
         ;;
-    43)
+    44)
         FEDORA_PACKAGES+=(
         )
         ;;
@@ -112,6 +110,8 @@ copr_install_isolated "ublue-os/packages" \
     "uupd"
 
 # Version-specific COPR packages
+# Example:
+# copr_install_isolated "ublue-os/packages" "bazaar" "uupd"
 case "$FEDORA_MAJOR_VERSION" in
     43)
 
@@ -159,10 +159,10 @@ EXCLUDED_PACKAGES=(
 # Version-specific package exclusions
 case "$FEDORA_MAJOR_VERSION" in
     43)
-
+        EXCLUDED_PACKAGES+=()
         ;;
     44)
-
+        EXCLUDED_PACKAGES+=()
         ;;
 esac
 
