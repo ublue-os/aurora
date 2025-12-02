@@ -57,6 +57,7 @@ FEDORA_PACKAGES=(
     sssd-ipa
     sssd-krb5
     tmux
+    uld
     virtualbox-guest-additions
     wireguard-tools
     wl-clipboard
