@@ -2,7 +2,7 @@
 Type=Application
 Name=System Update
 Comment=Update Aurora, Flatpaks, Distrobox containers, and more
-Icon=ublue-update
+Icon=aurora-update
 Categories=ConsoleOnly;System;
 Terminal=true
 Exec=/usr/bin/ujust update
