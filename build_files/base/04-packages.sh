@@ -57,6 +57,7 @@ FEDORA_PACKAGES=(
     sssd-ipa
     sssd-krb5
     tmux
+    uld
     virtualbox-guest-additions
     wireguard-tools
     wl-clipboard
@@ -68,7 +69,6 @@ case "$FEDORA_MAJOR_VERSION" in
     42)
         FEDORA_PACKAGES+=(
             google-noto-fonts-all
-            uld
         )
         ;;
     43)
