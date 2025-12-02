@@ -57,6 +57,7 @@ FEDORA_PACKAGES=(
     sssd-ipa
     sssd-krb5
     tmux
+    uld
     virtualbox-guest-additions
     wireguard-tools
     wl-clipboard
@@ -65,13 +66,11 @@ FEDORA_PACKAGES=(
 
 # Version-specific Fedora package additions
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
         FEDORA_PACKAGES+=(
-            google-noto-fonts-all
-            uld
         )
         ;;
-    43)
+    44)
         FEDORA_PACKAGES+=(
         )
         ;;
@@ -112,11 +111,13 @@ copr_install_isolated "ublue-os/packages" \
     "uupd"
 
 # Version-specific COPR packages
+# Example:
+# copr_install_isolated "ublue-os/packages" "bazaar" "uupd"
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
 
         ;;
-    43)
+    44)
 
         ;;
 esac
@@ -131,6 +132,8 @@ copr_install_isolated "lizardbyte/beta" \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
+    akonadi-server
+    akonadi-server-mysql
     cosign
     fedora-bookmarks
     fedora-chromium-config
@@ -142,6 +145,9 @@ EXCLUDED_PACKAGES=(
     khelpcenter
     krfb
     krfb-libs
+    mariadb
+    mariadb-common
+    mariadb-errmsg
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
@@ -150,9 +156,10 @@ EXCLUDED_PACKAGES=(
 # Version-specific package exclusions
 case "$FEDORA_MAJOR_VERSION" in
     43)
-        EXCLUDED_PACKAGES+=(
-
-        )
+        EXCLUDED_PACKAGES+=()
+        ;;
+    44)
+        EXCLUDED_PACKAGES+=()
         ;;
 esac
 
