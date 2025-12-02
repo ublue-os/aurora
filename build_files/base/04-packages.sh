@@ -145,12 +145,8 @@ EXCLUDED_PACKAGES=(
     krfb
     krfb-libs
     mariadb
-    mariadb-backup
     mariadb-common
-    mariadb-cracklib-password-check
     mariadb-errmsg
-    mariadb-gssapi-server
-    mariadb-server
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
