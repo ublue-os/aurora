@@ -88,12 +88,13 @@ done
 # these packages are supposed to be removed
 # and are considered footguns
 UNWANTED_PACKAGES=(
+    akonadi-server
     fedora-logos
     firefox
     plasma-discover-kns
     plasma-discover-rpm-ostree
-    podman-docker
     plasma-lookandfeel-fedora
+    podman-docker
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
