@@ -10,8 +10,8 @@ test -f /usr/share/pixmaps/system-logo-white.png
 test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
 test -f /usr/share/pixmaps/fedora-logo.svg
 
-test -f /usr/share/backgrounds/aurora/aurora-wallpaper-7/contents/images/3840x2160.jxl
-test -f /usr/share/wallpapers/aurora-wallpaper-7/contents/images/3840x2160.jxl
+test -f /usr/share/backgrounds/aurora/aurora-wallpaper-8/contents/images/3840x2160.jxl
+test -f /usr/share/wallpapers/aurora-wallpaper-8/contents/images/3840x2160.jxl
 test -L /usr/share/backgrounds/default.jxl
 
 xmllint --noout \
@@ -88,12 +88,13 @@ done
 # these packages are supposed to be removed
 # and are considered footguns
 UNWANTED_PACKAGES=(
+    akonadi-server
     fedora-logos
     firefox
     plasma-discover-kns
     plasma-discover-rpm-ostree
-    podman-docker
     plasma-lookandfeel-fedora
+    podman-docker
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
@@ -102,17 +103,16 @@ for package in "${UNWANTED_PACKAGES[@]}"; do
     fi
 done
 
-# TODO: Enable when libnvidia-container-tools are on F43
-#if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
-#  NV_PACKAGES=(
-#      libnvidia-container-tools
-#      kmod-nvidia
-#      nvidia-driver-cuda
-#)
-#  for package in "${NV_PACKAGES[@]}"; do
-#      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
-#  done
-#fi
+if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+  NV_PACKAGES=(
+      kmod-nvidia
+      libnvidia-container-tools
+      nvidia-driver-cuda
+)
+  for package in "${NV_PACKAGES[@]}"; do
+      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
+  done
+fi
 
 IMPORTANT_UNITS=(
     brew-update.timer
