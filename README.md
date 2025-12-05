@@ -20,7 +20,7 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 3. [Contributing Guide](https://universal-blue.org/contributing.html)
 4. [Local Building Guide](https://docs.getaurora.dev/guides/building)
 
-The `system_files`, `flatpak` and `logos` directory have been moved to https://github.com/get-aurora-dev/common.
+The `system_files`, `flatpak` and `logos` directory have been moved to [here](https://github.com/get-aurora-dev/common).
 
 ### Secure Boot
 
