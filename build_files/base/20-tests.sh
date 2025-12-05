@@ -9,6 +9,7 @@ test -f /usr/share/icons/hicolor/scalable/distributor-logo.svg
 test -f /usr/share/pixmaps/system-logo-white.png
 test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
 test -f /usr/share/pixmaps/fedora-logo.svg
+test -d /usr/share/plasma/look-and-feel/dev.getaurora.aurora.desktop
 
 test -f /usr/share/backgrounds/aurora/aurora-wallpaper-8/contents/images/3840x2160.jxl
 test -f /usr/share/wallpapers/aurora-wallpaper-8/contents/images/3840x2160.jxl
