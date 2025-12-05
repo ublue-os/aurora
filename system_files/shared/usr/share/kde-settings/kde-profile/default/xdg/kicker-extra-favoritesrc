@@ -1,3 +1,0 @@
-[General]
-Prepend=preferred://browser;systemsettings.desktop;org.kde.dolphin.desktop;org.kde.kate.desktop;org.gnome.Ptyxis.desktop;dev.getaurora.aurora-docs.desktop;io.github.kolunmi.Bazaar.desktop
-IgnoreDefaults=true

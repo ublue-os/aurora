@@ -20,6 +20,8 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 3. [Contributing Guide](https://universal-blue.org/contributing.html)
 4. [Local Building Guide](https://docs.getaurora.dev/guides/building)
 
+The `system_files`, `flatpak` and `logos` directory have been moved to https://github.com/get-aurora-dev/common.
+
 ### Secure Boot
 
 Secure Boot is supported by default on our systems, providing an additional layer of security. After the first installation, you will be prompted to enroll the secure boot key in the BIOS.

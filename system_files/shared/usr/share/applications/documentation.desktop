@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-NoDisplay=false
-Terminal=false
-Exec=xdg-open https://docs.getaurora.dev/guides/basic-usage
-Icon=aurora-docs
-Name=Documentation
-Comment=Aurora documentation
-Categories=Utility;
