@@ -8,4 +8,8 @@ set -eoux pipefail
 mkdir -p /usr/share/ublue-os/aurora-cli
 cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/aurora-cli
 
+# Remove the akmods recipes from ujust, which at the moment only contains
+# the broken broadcom wl module recipe
+sed -i 's|^import "/usr/share/ublue-os/just/50-akmods.just"|#import "/usr/share/ublue-os/just/50-akmods.just"|' /usr/share/ublue-os/justfile
+
 echo "::endgroup::"
