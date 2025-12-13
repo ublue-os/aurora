@@ -10,8 +10,6 @@ FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
 FROM scratch AS ctx
 COPY /build_files /build_files
 COPY /iso_files /iso_files
-COPY /just /just
-COPY /brew /brew
 
 # https://github.com/get-aurora-dev/common
 COPY --from=common /flatpaks /flatpaks

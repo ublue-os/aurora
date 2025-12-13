@@ -36,6 +36,7 @@ FEDORA_PACKAGES=(
     igt-gpu-tools
     input-remapper
     iwd
+    just
     kcm-fcitx5
     krb5-workstation
     ksystemlog
@@ -45,6 +46,7 @@ FEDORA_PACKAGES=(
     lm_sensors
     oddjob-mkhomedir
     plasma-wallpapers-dynamic
+    powerstat
     powertop
     ptyxis
     rclone
