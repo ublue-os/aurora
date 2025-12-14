@@ -106,7 +106,6 @@ copr_install_isolated "ublue-os/packages" \
     "ublue-brew" \
     "ublue-fastfetch" \
     "ublue-motd" \
-    "ublue-polkit-rules" \
     "ublue-setup-services" \
     "uupd"
 
