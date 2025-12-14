@@ -150,6 +150,7 @@ EXCLUDED_PACKAGES=(
     plasma-welcome-fedora
     podman-docker
     ublue-os-udev-rules
+    ublue-os-signing
 )
 
 # Version-specific package exclusions
