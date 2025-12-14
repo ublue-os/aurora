@@ -106,7 +106,6 @@ copr_install_isolated "ublue-os/packages" \
     "kcm_ublue" \
     "ublue-bling" \
     "ublue-brew" \
-    "ublue-motd" \
     "ublue-polkit-rules" \
     "ublue-setup-services" \
     "uupd"
