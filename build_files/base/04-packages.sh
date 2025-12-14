@@ -106,7 +106,6 @@ copr_install_isolated "ublue-os/packages" \
     "kcm_ublue" \
     "ublue-bling" \
     "ublue-brew" \
-    "ublue-polkit-rules" \
     "ublue-setup-services" \
     "uupd"
 
@@ -151,6 +150,9 @@ EXCLUDED_PACKAGES=(
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
+    ublue-os-luks
+    ublue-os-udev-rules
+    ublue-os-signing
 )
 
 # Version-specific package exclusions
