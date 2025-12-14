@@ -104,7 +104,6 @@ copr_install_isolated "ublue-os/staging" \
 copr_install_isolated "ublue-os/packages" \
     "krunner-bazaar" \
     "kcm_ublue" \
-    "ublue-bling" \
     "ublue-brew" \
     "ublue-setup-services" \
     "uupd"
