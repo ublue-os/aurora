@@ -14,8 +14,6 @@ KEY1=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[0]' /etc/contain
 BACKUP_KEY=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[1]' /etc/containers/policy.json)
 KEY1_SHA256="af78ecfda6eb21c35195af3739341715e9cfc3f2f5911dd9c10b0670547bf6e8"
 BACKUP_KEY_SHA256="b723467015ba562d40b4645c98c51c65d8254bb59444f6e9962debcfe2315da0"
-test -f $KEY1
-test -f $BACKUP_KEY
 
 echo "${KEY1_SHA256}  ${KEY1}" | sha256sum -c -
 echo "${BACKUP_KEY_SHA256}  ${BACKUP_KEY}" | sha256sum -c -
