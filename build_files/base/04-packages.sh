@@ -150,7 +150,6 @@ EXCLUDED_PACKAGES=(
     podman-docker
     ublue-os-luks
     ublue-os-udev-rules
-    ublue-os-signing
 )
 
 # Version-specific package exclusions
