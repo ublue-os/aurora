@@ -130,31 +130,90 @@ jobs:
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
           sudo rm -rf ${OCI_DIR}
 
-      - name: Rechunk Image
-        id: rechunk-image
-        shell: bash
+      # this tries to make delta updates smaller by pulling
+      # the last image we published under this tag to the registry
+      # by minimizing the shuffling of content into different layers
+      - name: Check Base Image Availability
+        id: check-baseline
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
-          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          BASELINE_IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
         run: |
-          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "1"
+          # TODO: check if this pulls stable-daily when we run stable-daily and stable for weeklies
+          # checks if image is rechunked here:
+          # https://github.com/coreos/rpm-ostree/blob/653e6ee0ba5953665b2bc2606bd6ab89c3871454/rust/src/compose.rs#L511-L519
+          if skopeo inspect docker://"${BASELINE_IMAGE}" | jq -e '.LayersData[1:] | all(.Annotations?["ostree.components"]?)'; then
+            echo "found ${BASELINE_IMAGE} in registry."
+            echo "BASELINE_IMAGE=${BASELINE_IMAGE}" >> "$GITHUB_OUTPUT"
+            echo "PULL_BASELINE_IMAGE=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "no baseline image with tag $BASELINE_IMAGE found in registry"
+            BASELINE_IMAGE="localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+            echo "BASELINE_IMAGE=${BASELINE_IMAGE}" >> "$GITHUB_OUTPUT"
+            echo "PULL_BASELINE_IMAGE=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Load Image into Podman
-        id: load-rechunk
-        shell: bash
+      - name: Pull Baseline Image For Rechunker
+        id: pull-baseline
+        if: steps.check-baseline.outputs.PULL_BASELINE_IMAGE == 'true'
         env:
-          MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
-          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          BASELINE_IMAGE: ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
         run: |
-          sudo -E $(command -v just) load-rechunk "${MATRIX_BASE_NAME}" \
-                            "${DEFAULT_TAG}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+          sudo podman pull ${BASELINE_IMAGE}
+          echo "BASELINE_IMAGE=${BASELINE_IMAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: debug
+        run: sudo podman images
+
+      - name: Add debug symbols for rpm-ostree
+        run: |
+          cat <<'EOF' > debug.Containerfile
+          FROM quay.io/fedora/fedora-bootc:latest
+          RUN dnf install -y dnf5-plugins && \
+            dnf5 config-manager setopt updates-debuginfo.enabled=1 && \
+            dnf5 config-manager setopt fedora-debuginfo.enabled=1 && \
+            dnf install -y rpm-ostree-debuginfo
+          EOF
+
+          sudo podman build -t localhost/fedora-bootc-debug:latest -f debug.Containerfile .
+
+      # This happens to rename localhost/aurora:stable to :stable-daily
+      # same behavior as before, we have to redo this logic when we are doing
+      # stable, testing, next anyway, leave the mess for now
+      - name: Rechunk Image with rpm-ostree
+        id: rechunker
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          BASELINE_IMAGE: ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+        run: |
+          sudo podman run --rm \
+            --privileged \
+            --env=RUST_BACKTRACE=full \
+            -v /var/lib/containers:/var/lib/containers \
+            "localhost/fedora-bootc-debug:latest" \
+            /usr/libexec/bootc-base-imagectl rechunk \
+                localhost/${IMAGE_NAME}:${MATRIX_STREAM_NAME} \
+                ${BASELINE_IMAGE}
+
+      # we are prodcucing ghcr.io/ublue-os/aurora with the rechunker if we have a baseline image
+      # the rechunker needs to have the same target image tag for it to work
+      # ghcr.io/ublue-os/aurora:stable -> localhost/aurora
+      # later build steps expect localhost/aurora, this is essentially renaming the image again
+      - name: Rename Rechunker Baseline Image
+        id: retag-rechunk
+        if: steps.check-baseline.outputs.PULL_BASELINE_IMAGE == 'true'
+        env:
+          BASELINE_IMAGE: ${{ steps.pull-baseline.outputs.BASELINE_IMAGE }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+        run: |
+          sudo podman tag \
+            ${BASELINE_IMAGE} \
+            localhost/${IMAGE_NAME}:${DEFAULT_TAG}
+          sudo podman image rm -i ${BASELINE_IMAGE}
+
+      - name: debug
+        run: sudo podman images
 
       - name: Secureboot Check
         id: secureboot
