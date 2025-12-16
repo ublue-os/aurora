@@ -36,6 +36,7 @@ FEDORA_PACKAGES=(
     igt-gpu-tools
     input-remapper
     iwd
+    just
     kcm-fcitx5
     krb5-workstation
     ksystemlog
@@ -45,6 +46,7 @@ FEDORA_PACKAGES=(
     lm_sensors
     oddjob-mkhomedir
     plasma-wallpapers-dynamic
+    powerstat
     powertop
     ptyxis
     rclone
@@ -102,12 +104,7 @@ copr_install_isolated "ublue-os/staging" \
 copr_install_isolated "ublue-os/packages" \
     "krunner-bazaar" \
     "kcm_ublue" \
-    "ublue-bling" \
     "ublue-brew" \
-    "ublue-fastfetch" \
-    "ublue-motd" \
-    "ublue-polkit-rules" \
-    "ublue-setup-services" \
     "uupd"
 
 # Version-specific COPR packages
@@ -151,6 +148,8 @@ EXCLUDED_PACKAGES=(
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
+    ublue-os-luks
+    ublue-os-udev-rules
 )
 
 # Version-specific package exclusions
