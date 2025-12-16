@@ -105,6 +105,7 @@ done
 UNWANTED_PACKAGES=(
     akonadi-server
     fedora-logos
+    fedora-third-party
     firefox
     plasma-discover-kns
     plasma-discover-rpm-ostree
