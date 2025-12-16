@@ -114,24 +114,16 @@ jobs:
           sudo $SYFT_CMD ${IMAGE}:${STREAM_NAME} -o spdx-json=${OUTPUT_PATH}
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
 
-      - name: Rechunk Image
-        id: rechunk-image
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Rechunk Image with rpm-ostree
+        id: rechunker
         run: |
-          sudo -E $(command -v just) rechunk "${{ matrix.base_name }}" \
-                            "${{ matrix.stream_name }}" \
-                            "${{ matrix.image_flavor }}" \
-                            "1"
-
-      - name: Load Image into Podman
-        id: load-rechunk
-        shell: bash
-        run: |
-          sudo -E $(command -v just) load-rechunk "${{ matrix.base_name }}" \
-                            "${{ env.DEFAULT_TAG }}" \
-                            "${{ matrix.image_flavor }}"
+          sudo podman run --rm \
+            --privileged \
+            -v /var/lib/containers:/var/lib/containers \
+            "quay.io/fedora/fedora-bootc:latest" \
+            /usr/libexec/bootc-base-imagectl rechunk  \
+                localhost/${{ env.IMAGE_NAME }}:${{ matrix.stream_name }} \
+                localhost/${{ env.IMAGE_NAME }}:${{ ENV.DEFAULT_TAG }}
 
       - name: Secureboot Check
         id: secureboot
