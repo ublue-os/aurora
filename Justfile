@@ -1,5 +1,5 @@
 repo_organization := "ublue-os"
-rechunker_image := "ghcr.io/hhd-dev/rechunk:v1.2.4@sha256:8a84bd5a029681aa8db523f927b7c53b5aded9b078b81605ac0a2fedc969f528"
+rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.0@sha256:1d2b0c2e99afbdc2eb06788ae28e157a88b03d70"
 iso_builder_image := "ghcr.io/jasonn3/build-container-installer:v1.4.0@sha256:a6b52ef0b410a625d7abd16f0467d257ef8db1ec94f672a89d5b95cb25487de1"
 common_image := "ghcr.io/get-aurora-dev/common:latest"
 images := '(
