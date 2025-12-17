@@ -63,5 +63,8 @@ fi
 # Clean Up
 /ctx/build_files/shared/clean-stage.sh
 
+# Set filesystem properties for rechunker
+/ctx/build_files/base/20-layer-definitions.sh
+
 # Simple Tests
-/ctx/build_files/base/20-tests.sh
+/ctx/build_files/base/21-tests.sh
