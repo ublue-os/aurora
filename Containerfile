@@ -17,6 +17,9 @@ COPY --from=common /logos /logos
 COPY --from=common /system_files /system_files
 COPY --from=common /wallpapers /system_files/shared
 
+# Overwrite files from common if necessary
+COPY /system_files /system_files
+
 ## aurora image section
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
 
