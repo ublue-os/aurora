@@ -36,6 +36,7 @@ FEDORA_PACKAGES=(
     igt-gpu-tools
     input-remapper
     iwd
+    just
     kcm-fcitx5
     krb5-workstation
     ksystemlog
@@ -45,6 +46,7 @@ FEDORA_PACKAGES=(
     lm_sensors
     oddjob-mkhomedir
     plasma-wallpapers-dynamic
+    powerstat
     powertop
     ptyxis
     rclone
@@ -57,6 +59,7 @@ FEDORA_PACKAGES=(
     sssd-ipa
     sssd-krb5
     tmux
+    uld
     virtualbox-guest-additions
     wireguard-tools
     wl-clipboard
@@ -65,13 +68,11 @@ FEDORA_PACKAGES=(
 
 # Version-specific Fedora package additions
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
         FEDORA_PACKAGES+=(
-            google-noto-fonts-all
-            uld
         )
         ;;
-    43)
+    44)
         FEDORA_PACKAGES+=(
         )
         ;;
@@ -101,23 +102,19 @@ copr_install_isolated "ublue-os/staging" \
 
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
-    "aurora-backgrounds" \
     "krunner-bazaar" \
     "kcm_ublue" \
-    "ublue-bling" \
     "ublue-brew" \
-    "ublue-fastfetch" \
-    "ublue-motd" \
-    "ublue-polkit-rules" \
-    "ublue-setup-services" \
     "uupd"
 
 # Version-specific COPR packages
+# Example:
+# copr_install_isolated "ublue-os/packages" "bazaar" "uupd"
 case "$FEDORA_MAJOR_VERSION" in
-    42)
+    43)
 
         ;;
-    43)
+    44)
 
         ;;
 esac
@@ -132,6 +129,9 @@ copr_install_isolated "lizardbyte/beta" \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
+    akonadi-server
+    akonadi-server-mysql
+    cosign
     fedora-bookmarks
     fedora-chromium-config
     fedora-chromium-config-kde
@@ -139,19 +139,26 @@ EXCLUDED_PACKAGES=(
     firefox-langpacks
     firewall-config
     kcharselect
+    khelpcenter
     krfb
     krfb-libs
+    mariadb
+    mariadb-common
+    mariadb-errmsg
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
+    ublue-os-luks
+    ublue-os-udev-rules
 )
 
 # Version-specific package exclusions
 case "$FEDORA_MAJOR_VERSION" in
     43)
-        EXCLUDED_PACKAGES+=(
-
-        )
+        EXCLUDED_PACKAGES+=()
+        ;;
+    44)
+        EXCLUDED_PACKAGES+=()
         ;;
 esac
 
@@ -166,6 +173,12 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
 fi
 
 rpm --erase --nodeps fedora-logos
+
+# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
+rpm --erase --nodeps plasma-lookandfeel-fedora
+# rpm erase doesn't remove actual files
+rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
+
 
 # https://github.com/ublue-os/bazzite/issues/1400
 # TODO: test if we still need this when upgrading firmware with fwupd
@@ -189,19 +202,6 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 #    Workaround pkcs11-provider regression, see issue #1943
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
-
-# Fix for plasma-workspace crashing after Qt 6.10.1 update
-# https://bodhi.fedoraproject.org/updates/FEDORA-2025-614a882af4
-# https://koji.fedoraproject.org/koji/buildinfo?buildID=2864797
-dnf5 -y install -x plasma-discover-kns \
-    https://kojipkgs.fedoraproject.org/packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-6.5.3-2.fc43.x86_64.rpm \
-    https://kojipkgs.fedoraproject.org/packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-libs-6.5.3-2.fc43.x86_64.rpm \
-    https://kojipkgs.fedoraproject.org//packages/plasma-workspace/6.5.3/2.fc43/x86_64/plasma-workspace-common-6.5.3-2.fc43.x86_64.rpm
-
-# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
-rpm --erase --nodeps plasma-lookandfeel-fedora
-# rpm erase doesn't remove actual files
-rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \

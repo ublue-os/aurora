@@ -30,7 +30,7 @@ PATTERN_PKGREL = "{version}"
 COMMON_PAT = "### All Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n"
 OTHER_NAMES = {
     "base": "### Base Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "dx": "### [Dev Experience Images](https://docs.projectbluefin.io/bluefin-dx)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
+    "dx": "### [Dev Experience Images](https://docs.getaurora.dev/dx/aurora-dx-intro)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "kde": "### [Aurora Images](https://getaurora.dev/)\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
     "nvidia-open": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
 

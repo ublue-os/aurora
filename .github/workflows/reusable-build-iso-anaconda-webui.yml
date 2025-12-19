@@ -43,7 +43,7 @@ jobs:
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6 # v10
 
       - name: Checkout
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Setup Just
         uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3
@@ -52,6 +52,13 @@ jobs:
         shell: bash
         run: |
           just check
+
+      - name: Checkout Common Repo
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        with:
+          repository: get-aurora-dev/common
+          ref: main
+          path: common
 
       - name: Format image ref
         id: image_ref
@@ -71,7 +78,7 @@ jobs:
         uses: ublue-os/titanoboa@main
         with:
           image-ref: ${{ steps.image_ref.outputs.image_ref }}:${{ matrix.image_version }}
-          flatpaks-list: ${{ github.workspace }}/flatpaks/system-flatpaks.list
+          flatpaks-list: ${{ github.workspace }}/common/flatpaks/system-flatpaks.list
           hook-post-rootfs: ${{ github.workspace }}/iso_files/configure_iso_anaconda-webui.sh
           kargs: ${{ steps.image_ref.outputs.kargs }}
 
@@ -92,7 +99,7 @@ jobs:
 
       - name: Upload to Job Artifacts
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: ${{ steps.image_ref.outputs.artifact_format }}
           if-no-files-found: error

@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices",
+    "config:best-practices"
   ],
 
   // Do not rebase when the default branch is updated
@@ -37,7 +37,10 @@
     {
       "automerge": true,
       "matchUpdateTypes": ["digest"],
-      "matchDepNames": ["ghcr.io/ublue-os/kinoite-main"],
+      "matchDepNames": [
+        "ghcr.io/ublue-os/kinoite-main",
+        "ghcr.io/get-aurora-dev/common"
+      ]
     }
   ]
 }
