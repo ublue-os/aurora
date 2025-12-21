@@ -229,7 +229,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     elif [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" ]]; then
         ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1
     elif [[ "{{ rechunk }}" == "1" ]]; then
-        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}"
+        {{ just }} rechunk "${image}" "${tag}" "${flavor}"
     fi
 
 # Build Image and Rechunk
@@ -274,10 +274,16 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         {{ just }} build "${image}" "${tag}" "${flavor}"
     fi
 
+    # Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
+    if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
+      ${SUDOIF} ${PODMAN} image rm -f "localhost/${image_name}:${tag}-chunked"
+    fi
+
     # Load into Rootful Podman
-    ID=$(${SUDOIF} ${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
-    if [[ -z "$ID" && ! ${PODMAN} =~ docker ]]; then
-      ${PODMAN} image scp $(whoami)@localhost::localhost/"${image_name}":"${tag}"
+    ID=$(${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
+    ID_ROOT=$(sudo ${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
+    if [[ ! "${PODMAN}" =~ "docker" ]] && [[ -n "$ID" ]] && [[ "$ID" != "$ID_ROOT" ]]; then
+        ${PODMAN} image scp $(whoami)@localhost::localhost/"${image_name}":"${tag}"
     fi
 
     ${SUDOIF} ${PODMAN} run --rm \
@@ -536,8 +542,6 @@ tag-images image_name="" default_tag="" tags="":
     for tag in {{ tags }}; do
         ${PODMAN} tag $IMAGE {{ image_name }}:${tag}
     done
-
-
 
     # Show Images
     ${PODMAN} images

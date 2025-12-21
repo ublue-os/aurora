@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-
 # to reduce the indiviual layer size we put big files that are not shipped with RPMs in their own layers
 # See: https://coreos.github.io/rpm-ostree/build-chunked-oci/
 
