@@ -40,4 +40,6 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/shared/build.sh
 
+CMD ["/sbin/init"]
+
 RUN bootc container lint
