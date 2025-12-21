@@ -14,6 +14,7 @@ rm -rf /.gitkeep
 # https://bootc-dev.github.io/bootc/filesystem.html#filesystem
 find /var -mindepth 1 -delete
 find /boot -mindepth 1 -delete
-mkdir -p /var /boot
+find /tmp -mindepth 1 -delete
+mkdir -p /var /boot /tmp
 
 echo "::endgroup::"
