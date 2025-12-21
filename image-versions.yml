@@ -6,4 +6,4 @@ images:
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:c45fbf2c1bc5af2eec044aef649d8922983efe7fa9e9f5f6464d86b953d7f555
+    digest: sha256:c8532c6e1cea35a51b1d5b0bf89e068f1324680e11d78813ffac74919a7bc885
