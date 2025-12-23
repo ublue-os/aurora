@@ -275,6 +275,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fi
 
     # Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
+    # workaround for https://github.com/coreos/rpm-ostree/issues/5545
     if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
       ${SUDOIF} ${PODMAN} image rm -f "localhost/${image_name}:${tag}-chunked"
     fi
