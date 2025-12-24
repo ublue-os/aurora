@@ -168,6 +168,14 @@ jobs:
         with:
           string: ${{ env.IMAGE_REGISTRY }}
 
+      # TODO: remove me when we have a new podman in 26.04 runners
+      # needed because old podman doesn't push layer annotations for
+      # the rpm-ostree rechunker at all
+      - name: install podman from brew
+        if: github.event_name != 'pull_request'
+        run: |
+          /home/linuxbrew/.linuxbrew/bin/brew install podman
+
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
@@ -183,12 +191,16 @@ jobs:
           attempt_delay: 15000
           command: |
             set -euox pipefail
+            # HACK: push a second time so layer annotations are pushed
+            # TODO: remove me when https://github.com/containers/podman/issues/27796 fixed
 
             for tag in ${{ steps.generate-tags.outputs.alias_tags }}; do
-              sudo -E podman push ${{ env.IMAGE_NAME }}:${tag} ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${tag}
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push ${{ env.IMAGE_NAME }}:${tag} ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${tag}
             done
 
-
+            for tag in ${{ steps.generate-tags.outputs.alias_tags }}; do
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push ${{ env.IMAGE_NAME }}:${tag} ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${tag}
+            done
 
             digest=$(skopeo inspect docker://${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }} --format '{{.Digest}}')
 
