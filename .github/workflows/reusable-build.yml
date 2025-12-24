@@ -114,6 +114,52 @@ jobs:
           sudo $SYFT_CMD ${IMAGE}:${STREAM_NAME} -o spdx-json=${OUTPUT_PATH}
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
 
+      # this tries to make delta updates smaller by pulling
+      # the last image we published under this tag to the registry
+      # by minimizing the shuffling of content into different layers
+      - name: check if base image available
+        id: check-baseline
+        run: |
+          # TODO: check if this pulls stable-daily when we run stable-daily and stable for weeklies
+          BASELINE_IMAGE=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
+          if skopeo inspect docker://"${BASELINE_IMAGE}" | jq -e '.Labels["rpmostree.inputhash"]'; then
+            echo "found ${BASELINE_IMAGE} in registry."
+            echo "BASELINE_IMAGE=${BASELINE_IMAGE}" >> "$GITHUB_OUTPUT"
+            echo "PULL_BASELINE_IMAGE=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "no baseline image with tag $BASELINE_IMAGE found in registry"
+            BASELINE_IMAGE="localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+            echo "BASELINE_IMAGE=${BASELINE_IMAGE}" >> "$GITHUB_OUTPUT"
+            echo "PULL_BASELINE_IMAGE=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pull baseline image for rechunk
+        id: pull-baseline
+        if: steps.check-baseline.outputs.PULL_BASELINE_IMAGE == 'true'
+        run: |
+          sudo podman pull ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+
+      - name: debug
+        run: sudo podman images
+
+      # we are prodcucing ghcr.io/ublue-os/aurora with the rechunker if we have a baseline image
+      # the rechunker needs to have the same target image tag for it to work
+      # ghcr.io/ublue-os/aurora:stable -> localhost/aurora
+      # later build steps expect localhost/aurora, this is essentially renaming the image again
+      - name: retag and cleanup rechunked image
+        id: retag-rechunk
+        if: steps.check-baseline.PULL_BASELINE_IMAGE == 'true'
+        run: |
+          sudo podman tag \
+            ${{ steps.pull-baseline.outputs.BASELINE_IMAGE }} \
+            localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
+
+          sudo podman image rm -i ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+
+
+      # This happens to rename localhost/aurora:stable to :stable-daily
+      # same behavior as before, we have to redo this logic when we are doing
+      # stable, testing, next anyway, leave the mess for now
       - name: Rechunk Image with rpm-ostree
         id: rechunker
         run: |
@@ -121,9 +167,12 @@ jobs:
             --privileged \
             -v /var/lib/containers:/var/lib/containers \
             "quay.io/fedora/fedora-bootc:latest" \
-            /usr/libexec/bootc-base-imagectl rechunk  \
+            /usr/libexec/bootc-base-imagectl rechunk \
                 localhost/${{ env.IMAGE_NAME }}:${{ matrix.stream_name }} \
-                localhost/${{ env.IMAGE_NAME }}:${{ ENV.DEFAULT_TAG }}
+                ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+
+      - name: debug
+        run: sudo podman images
 
       - name: Secureboot Check
         id: secureboot
@@ -218,8 +267,6 @@ jobs:
           TAGS: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
-
-
 
       - name: Add SBOM Attestation
         if: false
