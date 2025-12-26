@@ -119,9 +119,10 @@ jobs:
       # by minimizing the shuffling of content into different layers
       - name: check if base image available
         id: check-baseline
+        env:
+          BASELINE_IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
         run: |
           # TODO: check if this pulls stable-daily when we run stable-daily and stable for weeklies
-          BASELINE_IMAGE=${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
           # checks if image is rechunked here:
           # https://github.com/coreos/rpm-ostree/blob/653e6ee0ba5953665b2bc2606bd6ab89c3871454/rust/src/compose.rs#L511-L519
           if skopeo inspect docker://"${BASELINE_IMAGE}" | jq -e '.LayersData[1:] | all(.Annotations?["ostree.components"]?)'
@@ -138,8 +139,10 @@ jobs:
       - name: Pull baseline image for rechunk
         id: pull-baseline
         if: steps.check-baseline.outputs.PULL_BASELINE_IMAGE == 'true'
+        env:
+          BASELINE_IMAGE: ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
         run: |
-          sudo podman pull ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+          sudo podman pull ${BASELINE_IMAGE}
 
       - name: debug
         run: sudo podman images
@@ -151,27 +154,33 @@ jobs:
       - name: retag and cleanup rechunked image
         id: retag-rechunk
         if: steps.check-baseline.PULL_BASELINE_IMAGE == 'true'
+        env:
+          BASELINE_IMAGE: ${{ steps.pull-baseline.outputs.BASELINE_IMAGE }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
         run: |
           sudo podman tag \
-            ${{ steps.pull-baseline.outputs.BASELINE_IMAGE }} \
-            localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
-
-          sudo podman image rm -i ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
-
+            ${BASELINE_IMAGE} \
+            localhost/${IMAGE_NAME}:${DEFAULT_TAG}
+          sudo podman image rm -i ${BASELINE_IMAGE}
 
       # This happens to rename localhost/aurora:stable to :stable-daily
       # same behavior as before, we have to redo this logic when we are doing
       # stable, testing, next anyway, leave the mess for now
       - name: Rechunk Image with rpm-ostree
         id: rechunker
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          BASELINE_IMAGE: ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
         run: |
           sudo podman run --rm \
             --privileged \
             -v /var/lib/containers:/var/lib/containers \
             "quay.io/fedora/fedora-bootc:latest" \
             /usr/libexec/bootc-base-imagectl rechunk \
-                localhost/${{ env.IMAGE_NAME }}:${{ matrix.stream_name }} \
-                ${{ steps.check-baseline.outputs.BASELINE_IMAGE }}
+                localhost/${IMAGE_NAME}:${MATRIX_STREAM_NAME} \
+                ${BASELINE_IMAGE}
 
       - name: debug
         run: sudo podman images
