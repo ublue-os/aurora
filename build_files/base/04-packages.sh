@@ -148,8 +148,6 @@ EXCLUDED_PACKAGES=(
     plasma-discover-kns
     plasma-welcome-fedora
     podman-docker
-    ublue-os-luks
-    ublue-os-udev-rules
 )
 
 # Version-specific package exclusions
