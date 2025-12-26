@@ -117,7 +117,7 @@ jobs:
       # this tries to make delta updates smaller by pulling
       # the last image we published under this tag to the registry
       # by minimizing the shuffling of content into different layers
-      - name: check if base image available
+      - name: Check Base Image Availability
         id: check-baseline
         env:
           BASELINE_IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
@@ -136,7 +136,7 @@ jobs:
             echo "PULL_BASELINE_IMAGE=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Pull baseline image for rechunk
+      - name: Pull Baseline Image For Rechunker
         id: pull-baseline
         if: steps.check-baseline.outputs.PULL_BASELINE_IMAGE == 'true'
         env:
@@ -151,7 +151,7 @@ jobs:
       # the rechunker needs to have the same target image tag for it to work
       # ghcr.io/ublue-os/aurora:stable -> localhost/aurora
       # later build steps expect localhost/aurora, this is essentially renaming the image again
-      - name: retag and cleanup rechunked image
+      - name: Rename Rechunker Baseline Image
         id: retag-rechunk
         if: steps.check-baseline.PULL_BASELINE_IMAGE == 'true'
         env:
