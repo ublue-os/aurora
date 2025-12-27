@@ -292,7 +292,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --privileged \
         -v "/var/lib/containers:/var/lib/containers" \
         "quay.io/fedora/fedora-bootc:latest" \
-        /usr/libexec/bootc-base-imagectl rechunk \
+        /usr/libexec/bootc-base-imagectl rechunk --max-layers 499 \
         "localhost/${image_name}":"${tag}" \
         "localhost/${image_name}":"${tag}-chunked"
 

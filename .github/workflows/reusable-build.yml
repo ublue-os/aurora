@@ -178,7 +178,7 @@ jobs:
             --privileged \
             -v /var/lib/containers:/var/lib/containers \
             "quay.io/fedora/fedora-bootc:latest" \
-            /usr/libexec/bootc-base-imagectl rechunk \
+            /usr/libexec/bootc-base-imagectl rechunk --max-layers 499 \
                 localhost/${IMAGE_NAME}:${MATRIX_STREAM_NAME} \
                 ${BASELINE_IMAGE}
 
