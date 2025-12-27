@@ -67,15 +67,21 @@ jobs:
 
       - name: Image Name
         shell: bash
+        env:
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          IMAGE_NAME="$(just image_name ${{ matrix.base_name }} ${{ matrix.stream_name }} ${{ matrix.image_flavor }})"
+          IMAGE_NAME="$(just image_name ${MATRIX_BASE_NAME} ${MATRIX_STREAM_NAME} ${MATRIX_IMAGE_FLAVOR})"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: Default Tag
         shell: bash
+        env:
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
         run: |
           DEFAULT_TAG="$(just generate-default-tag \
-                       ${{ matrix.stream_name }} \
+                       "${MATRIX_STREAM_NAME}" \
                        "1")"
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
@@ -85,12 +91,16 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          INPUTS_KERNEL_PIN: ${{ inputs.kernel_pin }}
         run: |
           sudo -E $(command -v just) repo_organization="${{ github.repository_owner }}" \
-                    build-ghcr "${{ matrix.base_name }}" \
-                               "${{ matrix.stream_name }}" \
-                               "${{ matrix.image_flavor }}" \
-                               "${{ inputs.kernel_pin }}"
+                    build-ghcr "${MATRIX_BASE_NAME}" \
+                               "${MATRIX_STREAM_NAME}" \
+                               "${MATRIX_IMAGE_FLAVOR}" \
+                               "${INPUTS_KERNEL_PIN}"
 
       - name: Setup Syft
         id: setup-syft
@@ -119,41 +129,61 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) rechunk "${{ matrix.base_name }}" \
-                            "${{ matrix.stream_name }}" \
-                            "${{ matrix.image_flavor }}" \
+          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
+                            "${MATRIX_STREAM_NAME}" \
+                            "${MATRIX_IMAGE_FLAVOR}" \
                             "1"
 
       - name: Load Image into Podman
         id: load-rechunk
         shell: bash
+        env:
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) load-rechunk "${{ matrix.base_name }}" \
-                            "${{ env.DEFAULT_TAG }}" \
-                            "${{ matrix.image_flavor }}"
+          sudo -E $(command -v just) load-rechunk "${MATRIX_BASE_NAME}" \
+                            "${DEFAULT_TAG}" \
+                            "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Secureboot Check
         id: secureboot
         shell: bash
+        env:
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) secureboot "${{ matrix.base_name }}" \
-                          "${{ env.DEFAULT_TAG }}" \
-                          "${{ matrix.image_flavor }}"
+          sudo -E $(command -v just) secureboot "${MATRIX_BASE_NAME}" \
+                            "${DEFAULT_TAG}" \
+                            "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Generate tags
         id: generate-tags
         shell: bash
+        env:
+          MATRIX_BASE_NAME: "${{ matrix.base_name }}"
+          MATRIX_STREAM_NAME: "${{ matrix.stream_name }}"
+          MATRIX_IMAGE_FLAVOR: "${{ matrix.image_flavor }}"
+          INPUTS_KERNEL_PIN: "${{ inputs.kernel_pin }}"
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_NUMBER: ${{ github.event.number }}
         run: |
           alias_tags="$(just generate-build-tags \
-                     "${{ matrix.base_name }}" \
-                     "${{ matrix.stream_name }}" \
-                     "${{ matrix.image_flavor }}" \
-                     "${{ inputs.kernel_pin }}" \
+                     "${MATRIX_BASE_NAME}" \
+                     "${MATRIX_STREAM_NAME}" \
+                     "${MATRIX_IMAGE_FLAVOR}" \
+                     "${INPUTS_KERNEL_PIN}" \
                      "1" \
-                     "$(podman inspect ${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
-                     "${{ github.event_name }}" \
-                     "${{ github.event.number }}")"
+                     "$(podman inspect ${IMAGE_NAME}:${DEFAULT_TAG} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
+                     "${GITHUB_EVENT_NAME}" \
+                     "${GITHUB_EVENT_NUMBER}")"
 
           echo "Tags for this Action..."
           echo "$alias_tags"
@@ -162,11 +192,15 @@ jobs:
       # Tag Images
       - name: Tag Images
         shell: bash
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
-          sudo -E $(command -v just) tag-images "${{ env.IMAGE_NAME }}" \
-                          "${{ env.DEFAULT_TAG }}" \
-                          "${{ steps.generate-tags.outputs.alias_tags }}"
+          sudo -E $(command -v just) tag-images "${IMAGE_NAME}" \
+                          "${DEFAULT_TAG}" \
+                          "${ALIAS_TAGS}"
 
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
@@ -186,19 +220,22 @@ jobs:
         id: push
         if: github.event_name != 'pull_request'
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
+        env:
+          ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          LOWERCASE: ${{ steps.registry_case.outputs.lowercase }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
         with:
           attempt_limit: 3
           attempt_delay: 15000
           command: |
             set -euox pipefail
 
-            for tag in ${{ steps.generate-tags.outputs.alias_tags }}; do
-              sudo -E podman push ${{ env.IMAGE_NAME }}:${tag} ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${tag}
+            for tag in ${ALIAS_TAGS}; do
+              sudo -E podman push ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
             done
 
-
-
-            digest=$(skopeo inspect docker://${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }} --format '{{.Digest}}')
+            digest=$(skopeo inspect docker://${LOWERCASE}/${IMAGE_NAME}:${DEFAULT_TAG} --format '{{.Digest}}')
 
             echo "digest=${digest}" >> $GITHUB_OUTPUT
 
@@ -209,13 +246,13 @@ jobs:
       - name: Sign container image
         if: github.event_name != 'pull_request'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}@${TAGS}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${LOWERCASE}/${IMAGE_NAME}@${TAGS}
         env:
           TAGS: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
-
-
+          LOWERCASE: ${{ steps.registry_case.outputs.lowercase }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
 
       - name: Add SBOM Attestation
         if: false
