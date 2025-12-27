@@ -23,6 +23,7 @@ dnf5 versionlock add plasma-desktop
 FEDORA_PACKAGES=(
     adcli
     borgbackup
+    containerd
     davfs2
     evtest
     fastfetch
