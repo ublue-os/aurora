@@ -39,6 +39,7 @@
       "matchUpdateTypes": ["digest"],
       "matchDepNames": [
         "ghcr.io/ublue-os/kinoite-main",
+        "ghcr.io/ublue-os/brew",
         "ghcr.io/get-aurora-dev/common"
       ]
     }
