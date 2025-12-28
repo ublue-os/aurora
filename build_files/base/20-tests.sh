@@ -44,6 +44,7 @@ test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 flatpak preinstall --help
 
 test -f /usr/share/doc/aurora/aurora.pdf
+test -f /usr/share/homebrew.tar.zst
 
 desktop-file-validate \
   /usr/share/applications/Discourse.desktop \
