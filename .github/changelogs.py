@@ -164,34 +164,25 @@ def get_packages(target: str, images: list[tuple[str, str, str]]):
     packages = {}
     for j, (img, _, _) in enumerate(images):
         print(f"Getting packages for {img}:{target} ({j+1}/{len(images)})")
-        for i in range(RETRIES):
-            try:
-                result = subprocess.run(
-                    [
-                        "podman", "run", "--rm",
-                        f"ghcr.io/ublue-os/{img}:{target}",
-                        "rpm", "-qa", "--qf", "%{NAME}\t%{VERSION}-%{RELEASE}\n"
-                    ],
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-                pkg_dict = {}
-                for line in result.stdout.decode("utf-8").strip().split("\n"):
-                    if "\t" in line:
-                        name, version = line.split("\t", 1)
-                        pkg_dict[name] = version
-                packages[img] = pkg_dict
-                break
-            except subprocess.CalledProcessError as e:
-                print(
-                    f"Failed to get packages for {img}:{target}, retrying in {RETRY_WAIT} seconds ({i+1}/{RETRIES})"
-                )
-                if e.stderr:
-                    print(f"  Error: {e.stderr.decode('utf-8').strip()}")
-                time.sleep(RETRY_WAIT)
-        if img not in packages:
-            print(f"Failed to get packages for {img}:{target}, skipping")
+        try:
+            result = subprocess.run(
+                [
+                    "podman", "run", "--rm",
+                    f"ghcr.io/ublue-os/{img}:{target}",
+                    "rpm", "-qa", "--qf", "%{NAME}\t%{VERSION}-%{RELEASE}\n"
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            pkg_dict = {}
+            for line in result.stdout.decode("utf-8").strip().split("\n"):
+                if "\t" in line:
+                    name, version = line.split("\t", 1)
+                    pkg_dict[name] = version
+            packages[img] = pkg_dict
+        except Exception as e:
+            print(f"Failed to get packages for {img}:{target}, skipping: {e}")
     return packages
 
 
