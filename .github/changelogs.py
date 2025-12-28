@@ -160,24 +160,48 @@ def get_tags(target: str, manifests: dict[str, Any]):
     return tags[-2], tags[-1]
 
 
-def get_packages(manifests: dict[str, Any]):
+def get_packages(target: str, images: list[tuple[str, str, str]]):
     packages = {}
-    for img, manifest in manifests.items():
-        try:
-            packages[img] = json.loads(manifest["Labels"]["dev.hhd.rechunk.info"])[
-                "packages"
-            ]
-        except Exception as e:
-            print(f"Failed to get packages for {img}:\n{e}")
+    for j, (img, _, _) in enumerate(images):
+        print(f"Getting packages for {img}:{target} ({j+1}/{len(images)})")
+        for i in range(RETRIES):
+            try:
+                result = subprocess.run(
+                    [
+                        "podman", "run", "--rm",
+                        f"ghcr.io/ublue-os/{img}:{target}",
+                        "rpm", "-qa", "--qf", "%{NAME}\t%{VERSION}-%{RELEASE}\n"
+                    ],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                pkg_dict = {}
+                for line in result.stdout.decode("utf-8").strip().split("\n"):
+                    if "\t" in line:
+                        name, version = line.split("\t", 1)
+                        pkg_dict[name] = version
+                packages[img] = pkg_dict
+                break
+            except subprocess.CalledProcessError as e:
+                print(
+                    f"Failed to get packages for {img}:{target}, retrying in {RETRY_WAIT} seconds ({i+1}/{RETRIES})"
+                )
+                if e.stderr:
+                    print(f"  Error: {e.stderr.decode('utf-8').strip()}")
+                time.sleep(RETRY_WAIT)
+        if img not in packages:
+            print(f"Failed to get packages for {img}:{target}, skipping")
     return packages
 
 
-def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, Any]):
+def get_package_groups(target: str, prev_tag: str, curr_tag: str):
     common = set()
     others = {k: set() for k in OTHER_NAMES.keys()}
 
-    npkg = get_packages(manifests)
-    ppkg = get_packages(prev)
+    images = list(get_images(target))
+    npkg = get_packages(curr_tag, images)
+    ppkg = get_packages(prev_tag, images)
 
     keys = set(npkg.keys()) | set(ppkg.keys())
     pkg = defaultdict(set)
@@ -226,13 +250,13 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
 
             first = False
 
-    return sorted(common), {k: sorted(v) for k, v in others.items()}
+    return sorted(common), {k: sorted(v) for k, v in others.items()}, npkg, ppkg
 
 
-def get_versions(manifests: dict[str, Any]):
+def get_versions(packages: dict[str, dict[str, str]]):
+    """Extract version info from packages dict, stripping Fedora version suffix."""
     versions = {}
-    pkgs = get_packages(manifests)
-    for img_pkgs in pkgs.values():
+    for img_pkgs in packages.values():
         for pkg, v in img_pkgs.items():
             versions[pkg] = re.sub(FEDORA_PATTERN, "", v)
     return versions
@@ -330,14 +354,16 @@ def generate_changelog(
     target: str,
     pretty: str | None,
     workdir: str,
+    prev_tag: str,
+    curr_tag: str,
     prev_manifests,
     manifests,
 ):
-    common, others = get_package_groups(target, prev_manifests, manifests)
-    versions = get_versions(manifests)
-    prev_versions = get_versions(prev_manifests)
+    common, others, curr_packages, prev_packages = get_package_groups(target, prev_tag, curr_tag)
+    versions = get_versions(curr_packages)
+    prev_versions = get_versions(prev_packages)
 
-    prev, curr = get_tags(target, manifests)
+    prev, curr = prev_tag, curr_tag
 
     if not pretty:
         # Generate pretty version since we dont have it
@@ -439,6 +465,8 @@ def main():
         target,
         args.pretty,
         args.workdir,
+        prev,
+        curr,
         prev_manifests,
         manifests,
     )
