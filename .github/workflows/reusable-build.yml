@@ -94,11 +94,13 @@ jobs:
 
       - name: Setup Syft
         id: setup-syft
+        if: github.event_name != 'pull_request'
         uses: anchore/sbom-action/download-syft@a930d0ac434e3182448fe678398ba5713717112a # v0
         with:
           syft-version: v1.39.0
 
       - name: Generate SBOM
+        if: github.event_name != 'pull_request'
         id: generate-sbom
         env:
           IMAGE: ${{ env.IMAGE_NAME }}
@@ -223,6 +225,7 @@ jobs:
 
 
       - name: Add SBOM Attestation
+        if: github.event_name != 'pull_request'
         env:
           IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           DIGEST: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
