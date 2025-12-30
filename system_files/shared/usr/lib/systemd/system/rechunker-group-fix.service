@@ -23,6 +23,7 @@ Type=oneshot
 ExecStart=rechunker-group-fix /etc/group
 ExecStart=rechunker-group-fix /etc/gshadow
 ExecStart=systemd-sysusers
+ExecStart=systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
 
 [Install]
 WantedBy=default.target multi-user.target
