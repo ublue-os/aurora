@@ -182,6 +182,7 @@ jobs:
         run: |
           sudo podman run --rm \
             --privileged \
+            --env=RUST_BACKTRACE=full \
             -v /var/lib/containers:/var/lib/containers \
             "localhost/fedora-bootc-debug:latest" \
             /usr/libexec/bootc-base-imagectl rechunk \
