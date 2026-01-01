@@ -187,12 +187,12 @@ def get_sbom(image: str, digest: str) -> dict:
         check=True
     )
 
-    # Parse the attestation - it's JSON with base64-encoded payload
+    # The attestation is JSON with base64-encoded payload
     attestation = json.loads(result.stdout)
     payload = base64.b64decode(attestation["payload"]).decode("utf-8")
     payload_json = json.loads(payload)
 
-    # The SBOM is in the predicate field
+    # The SBOM is in the predicate field for some reason
     return payload_json["predicate"]
 
 
