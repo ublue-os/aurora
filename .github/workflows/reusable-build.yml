@@ -126,7 +126,7 @@ jobs:
           OUTPUT_PATH="$(mktemp -d)/sbom.json"
           export SYFT_PARALLELISM=$(($(nproc)*2))
           sudo $SYFT_CMD --source-name "${IMAGE}"-"${STREAM_NAME}" --select-catalogers=rpm ${OCI_DIR} -o spdx-json=${OUTPUT_PATH}
-          cat ${OUTPUT_PATH}
+          ls -lh ${OUTPUT_PATH}
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
           sudo rm -rf ${OCI_DIR}
 
