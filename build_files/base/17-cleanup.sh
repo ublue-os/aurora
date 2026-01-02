@@ -11,7 +11,6 @@ set -eoux pipefail
 systemctl enable rpm-ostree-countme.service
 systemctl enable tailscaled.service
 systemctl enable dconf-update.service
-systemctl enable ublue-guest-user.service
 systemctl enable brew-setup.service
 systemctl enable brew-upgrade.timer
 systemctl enable brew-update.timer
