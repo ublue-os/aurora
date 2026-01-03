@@ -16,7 +16,6 @@ systemctl enable brew-upgrade.timer
 systemctl enable brew-update.timer
 systemctl enable aurora-groups.service
 systemctl enable usr-share-sddm-themes.mount
-systemctl enable ublue-fix-hostname.service
 systemctl enable ublue-system-setup.service
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
@@ -36,10 +35,6 @@ systemctl --global disable sunshine.service
 
 # Updater
 systemctl enable uupd.timer
-
-# Disable the old update timer
-systemctl disable rpm-ostreed-automatic.timer
-systemctl disable flatpak-system-update.timer
 
 # Hide Desktop Files. Hidden removes mime associations
 for file in htop nvtop; do
