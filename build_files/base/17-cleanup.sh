@@ -37,10 +37,6 @@ systemctl --global disable sunshine.service
 # Updater
 systemctl enable uupd.timer
 
-# Disable the old update timer
-systemctl disable rpm-ostreed-automatic.timer
-systemctl disable flatpak-system-update.timer
-
 # Hide Desktop Files. Hidden removes mime associations
 for file in htop nvtop; do
     if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
