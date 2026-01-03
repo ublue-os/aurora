@@ -38,6 +38,7 @@ FEDORA_PACKAGES=(
     iwd
     just
     kcm-fcitx5
+    kiss
     krb5-workstation
     ksystemlog
     libimobiledevice
