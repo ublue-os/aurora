@@ -60,8 +60,11 @@ fi
 # Validate all repos are disabled before committing
 /ctx/build_files/shared/validate-repos.sh
 
+# Set filesystem properties for rechunker
+/ctx/build_files/base/20-layer-definitions.sh
+
 # Clean Up
 /ctx/build_files/shared/clean-stage.sh
 
 # Simple Tests
-/ctx/build_files/base/20-tests.sh
+/ctx/build_files/base/21-tests.sh

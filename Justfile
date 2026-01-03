@@ -1,5 +1,4 @@
 repo_organization := "ublue-os"
-rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.0-x86_64@sha256:1ee0b4ad0eee9b300cca1afd8cf78b78ce77bcc0d5aa16b07a195c6c22f1c9b4"
 common_image := "ghcr.io/get-aurora-dev/common:latest"
 brew_image := "ghcr.io/ublue-os/brew:latest"
 images := '(
@@ -236,7 +235,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     elif [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" ]]; then
         ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1
     elif [[ "{{ rechunk }}" == "1" ]]; then
-        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}"
+        {{ just }} rechunk "${image}" "${tag}" "${flavor}"
     fi
 
 # Build Image and Rechunk
@@ -281,133 +280,27 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         {{ just }} build "${image}" "${tag}" "${flavor}"
     fi
 
+    # Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
+    # workaround for https://github.com/coreos/rpm-ostree/issues/5545
+    if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
+      ${SUDOIF} ${PODMAN} image rm -f "localhost/${image_name}:${tag}-chunked"
+    fi
+
     # Load into Rootful Podman
-    ID=$(${SUDOIF} ${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
-    if [[ -z "$ID" && ! ${PODMAN} =~ docker ]]; then
-        COPYTMP=$(mktemp -p "${PWD}" -d -t podman_scp.XXXXXXXXXX)
-        ${SUDOIF} TMPDIR=${COPYTMP} ${PODMAN} image scp ${UID}@localhost::localhost/"${image_name}":"${tag}" root@localhost::localhost/"${image_name}":"${tag}"
-        rm -rf "${COPYTMP}"
+    ID=$(${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
+    ID_ROOT=$(sudo ${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
+    if [[ ! "${PODMAN}" =~ "docker" ]] && [[ -n "$ID" ]] && [[ "$ID" != "$ID_ROOT" ]]; then
+        ${PODMAN} image scp $(whoami)@localhost::localhost/"${image_name}":"${tag}"
     fi
 
-    # Prep Container
-    CREF=$(${SUDOIF} ${PODMAN} create localhost/"${image_name}":"${tag}" bash)
-    OLD_IMAGE=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Image')
-    OUT_NAME="${image_name}_build"
-    MOUNT=$(${SUDOIF} ${PODMAN} mount "${CREF}")
-
-    # Fedora Version
-    fedora_version=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Config.Labels["ostree.linux"]' | grep -oP 'fc\K[0-9]+')
-
-    # Label Version
-    VERSION=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')
-
-    # Git SHA
-    SHA="dedbeef"
-    if [[ -z "$(git status -s)" ]]; then
-        SHA=$(git rev-parse HEAD)
-    fi
-
-    # Rest of Labels
-    LABELS="
-        io.artifacthub.package.deprecated=false
-        io.artifacthub.package.keywords=bootc,fedora,aurora,ublue,universal-blue
-        io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4
-        io.artifacthub.package.maintainers=[{\"name\": \"NiHaiden\", \"email\": \"me@nhaiden.io\"}]
-        io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/README.md
-        org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)
-        org.opencontainers.image.license=Apache-2.0
-        org.opencontainers.image.source=https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/Containerfile
-        org.opencontainers.image.title=${image_name}
-        org.opencontainers.image.url=https://getaurora.dev
-        org.opencontainers.image.vendor={{ repo_organization }}
-        ostree.linux=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Config.Labels["ostree.linux"]')
-        containers.bootc=1
-    "
-
-    # Cleanup Space during Github Action
-    if [[ "{{ ghcr }}" == "1" ]]; then
-        base_image_name=kinoite-main
-        if [[ "${tag}" =~ stable ]]; then
-            tag="stable-daily"
-        fi
-        ID=$(${SUDOIF} ${PODMAN} images --filter reference=ghcr.io/{{ repo_organization }}/"${base_image_name}":${fedora_version} --format "{{ '{{.ID}}' }}")
-        if [[ -n "$ID" ]]; then
-            ${PODMAN} rmi "$ID"
-        fi
-    fi
-
-    # Rechunk Container
-    rechunker="{{ rechunker_image }}"
-
-    echo "::endgroup::"
-    echo "::group:: Prune"
-
-    # Run Rechunker's Prune
     ${SUDOIF} ${PODMAN} run --rm \
         --pull=${PULL_POLICY} \
-        --security-opt label=disable \
-        --volume "$MOUNT":/var/tree \
-        --env TREE=/var/tree \
-        --user 0:0 \
-        "${rechunker}" \
-        /sources/rechunk/1_prune.sh
-
-    echo "::endgroup::"
-    echo "::group:: Create ostree tree"
-
-    # Run Rechunker's Create
-    ${SUDOIF} ${PODMAN} run --rm \
-        --security-opt label=disable \
-        --volume "$MOUNT":/var/tree \
-        --volume "cache_ostree:/var/ostree" \
-        --env TREE=/var/tree \
-        --env REPO=/var/ostree/repo \
-        --env RESET_TIMESTAMP=1 \
-        --user 0:0 \
-        "${rechunker}" \
-        /sources/rechunk/2_create.sh
-
-    # Cleanup Temp Container Reference
-    ${SUDOIF} ${PODMAN} unmount "$CREF"
-    ${SUDOIF} ${PODMAN} rm "$CREF"
-    ${SUDOIF} ${PODMAN} rmi "$OLD_IMAGE"
-
-    echo "::endgroup::"
-    echo "::group:: Rechunker"
-
-    # Run Rechunker
-    ${SUDOIF} ${PODMAN} run --rm \
-        --pull=${PULL_POLICY} \
-        --security-opt label=disable \
-        --volume "$PWD:/workspace" \
-        --volume "$PWD:/var/git" \
-        --volume cache_ostree:/var/ostree \
-        --env REPO=/var/ostree/repo \
-        --env PREV_REF=ghcr.io/ublue-os/"${image_name}":"${tag}" \
-        --env OUT_NAME="$OUT_NAME" \
-        --env LABELS="${LABELS}" \
-        --env "DESCRIPTION='The ultimate productivity workstation'" \
-        --env "VERSION=${VERSION}" \
-        --env VERSION_FN=/workspace/version.txt \
-        --env OUT_REF="oci:$OUT_NAME" \
-        --env GIT_DIR="/var/git" \
-        --env REVISION="$SHA" \
-        --user 0:0 \
-        "${rechunker}" \
-        /sources/rechunk/3_chunk.sh
-
-    # Fix Permissions of OCI
-    ${SUDOIF} find ${OUT_NAME} -type d -exec chmod 0755 {} \; || true
-    ${SUDOIF} find ${OUT_NAME}* -type f -exec chmod 0644 {} \; || true
-
-    if [[ "${UID}" -gt "0" ]]; then
-        ${SUDOIF} chown "${UID}:${GROUPS}" -R "${PWD}"
-    elif [[ -n "${SUDO_UID:-}" ]]; then
-        chown "${SUDO_UID}":"${SUDO_GID}" -R "${PWD}"
-    fi
-
-    # Remove cache_ostree
-    ${SUDOIF} ${PODMAN} volume rm cache_ostree
+        --privileged \
+        -v "/var/lib/containers:/var/lib/containers" \
+        "quay.io/fedora/fedora-bootc:latest" \
+        /usr/libexec/bootc-base-imagectl rechunk \
+        "localhost/${image_name}":"${tag}" \
+        "localhost/${image_name}":"${tag}-chunked"
 
     echo "::endgroup::"
 
@@ -416,27 +309,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         sudo -u "${SUDO_USER}" {{ just }} load-rechunk "${image}" "${tag}" "${flavor}"
         sudo -u "${SUDO_USER}" {{ just }} secureboot "${image}" "${tag}" "${flavor}"
     fi
-
-# Load OCI into Podman Store
-[group('Image')]
-load-rechunk image="aurora" tag="latest" flavor="main":
-    #!/usr/bin/bash
-    set -eou pipefail
-
-    # Validate
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
-    # Load Image
-    OUT_NAME="${image_name}_build"
-    IMAGE=$(${PODMAN} pull oci:"${PWD}"/"${OUT_NAME}")
-    ${PODMAN} tag ${IMAGE} localhost/"${image_name}":{{ tag }}
-
-    # Cleanup
-    rm -rf "${OUT_NAME}*"
-    rm -f previous.manifest.json
 
 # Run Container
 [group('Image')]
@@ -677,8 +549,6 @@ tag-images image_name="" default_tag="" tags="":
     for tag in {{ tags }}; do
         ${PODMAN} tag $IMAGE {{ image_name }}:${tag}
     done
-
-
 
     # Show Images
     ${PODMAN} images
