@@ -16,7 +16,7 @@ COPY /iso_files /iso_files
 
 # https://github.com/get-aurora-dev/common
 COPY --from=common /flatpaks /flatpaks
-COPY --from=common /logos /logos
+COPY --from=common /logos /system_files/shared
 COPY --from=common /system_files /system_files
 COPY --from=common /wallpapers /system_files/shared
 
