@@ -2,8 +2,12 @@ images:
   - name: kinoite-main
     image: ghcr.io/ublue-os/kinoite-main
     tag: latest
-    digest: sha256:bc8c72e546e4af7dd834a4aa237cf9a45eb0d338cd4f171608d28745c680b07f
+    digest: sha256:6b83b828242e90c23210402afbe3204ce5f48c12410e25bc2689128a2fae8c4a
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:bda2a80b71b0118ec6d087185f746862b953c03f74310cef6139d9c6ba9648ba
+    digest: sha256:b7b46d9be3e0bd12a8c35fb1f024d6fcb6893b66dc0e59b9b878dba76fdb5cb0
+  - name: brew
+    image: ghcr.io/ublue-os/brew
+    tag: latest
+    digest: sha256:39ae355175326b16c328e570d5f44fba0a1702937732983e3a02c5bacfdac354
