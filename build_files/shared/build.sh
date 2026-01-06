@@ -9,7 +9,7 @@ install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # We need to remove this package here because lots of files we add from `projectbluefin/common` override the rpm files and they also go away when you do `dnf remove`
 # TODO: this can be removed whenever we stop doing FROM ublue-os/kinoite-main
-dnf remove -y ublue-os-just ublue-os-signing ublue-os-udev-rules ublue-os-luks
+dnf remove -y ublue-os-just ublue-os-signing ublue-os-udev-rules ublue-os-luks ublue-os-update-services
 
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
