@@ -4,6 +4,34 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
+# use negativo17 for 3rd party packages with higher priority than default
+if ! grep -q fedora-multimedia <(dnf5 repolist); then
+    # Enable or Install Repofile
+    dnf5 config-manager setopt fedora-multimedia.enabled=1 ||
+        dnf5 config-manager addrepo --from-repofile="https://negativo17.org/repos/fedora-multimedia.repo"
+fi
+# Set higher priority
+dnf5 config-manager setopt fedora-multimedia.priority=90
+
+# use override to replace mesa and others with less crippled versions
+OVERRIDES=(
+    "intel-gmmlib"
+    "intel-mediasdk"
+    "intel-vpl-gpu-rt"
+    "libheif"
+    "libva"
+    "libva-intel-media-driver"
+    "mesa-dri-drivers"
+    "mesa-filesystem"
+    "mesa-libEGL"
+    "mesa-libGL"
+    "mesa-libgbm"
+    "mesa-va-drivers"
+    "mesa-vulkan-drivers"
+)
+
+dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
+dnf5 versionlock add "${OVERRIDES[@]}"
 # All DNF-related operations should be done here whenever possible
 #shellcheck source=build_files/shared/copr-helpers.sh
 source /ctx/build_files/shared/copr-helpers.sh
