@@ -219,13 +219,16 @@ copr_install_isolated "lizardbyte/beta" \
 EXCLUDED_PACKAGES=(
     akonadi-server
     akonadi-server-mysql
-    cosign
+    default-fonts-cjk-sans
     fedora-bookmarks
     fedora-chromium-config
     fedora-chromium-config-kde
+    fedora-third-party
+    ffmpegthumbnailer
     firefox
     firefox-langpacks
     firewall-config
+    google-noto-sans-cjk-vf-fonts
     kcharselect
     khelpcenter
     krfb
@@ -234,6 +237,7 @@ EXCLUDED_PACKAGES=(
     mariadb-common
     mariadb-errmsg
     plasma-discover-kns
+    plasma-discover-rpm-ostree
     plasma-welcome-fedora
     podman-docker
 )
