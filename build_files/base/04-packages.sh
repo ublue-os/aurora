@@ -60,29 +60,72 @@ dnf5 versionlock add plasma-desktop
 
 FEDORA_PACKAGES=(
     adcli
+    alsa-firmware
+    apr
+    apr-util
     borgbackup
     davfs2
+    distrobox
     evtest
     fastfetch
+    fcitx5-chinese-addons
+    fcitx5-configtool
+    fcitx5-gtk
+    fcitx5-hangul
+    fcitx5-libthai
+    fcitx5-mozc
+    fcitx5-qt
+    fcitx5-sayura
+    fcitx5-unikey
+    fdk-aac
+    ffmpeg
+    ffmpeg-libs
     fish
+    flatpak-spawn
     foo2zjs
     freeipa-client
     git-credential-libsecret
     glow
+    google-noto-sans-balinese-fonts
+    google-noto-sans-cjk-fonts
+    google-noto-sans-javanese-fonts
+    google-noto-sans-sundanese-fonts
+    grub2-tools-extra
     gum
+    heif-pixbuf-loader
+    htop
+    icoutils
     ifuse
     igt-gpu-tools
     input-remapper
+    intel-vaapi-driver
     iwd
     just
+    kate
     kcm-fcitx5
     krb5-workstation
+    ksshaskpass
     ksystemlog
+    libavcodec
+    libcamera-gstreamer
+    libcamera-tools
+    libfdk-aac
+    libheif
     libimobiledevice
+    libimobiledevice-utils
+    libratbag-ratbagd
     libsss_autofs
+    libva-utils
     libxcrypt-compat
     lm_sensors
+    lshw
+    nvtop
     oddjob-mkhomedir
+    openrgb-udev-rules
+    pam-u2f
+    pam_yubico
+    pamu2fcfg
+    pipewire-libs-extra
     plasma-wallpapers-dynamic
     powerstat
     powertop
@@ -93,14 +136,21 @@ FEDORA_PACKAGES=(
     samba-winbind-clients
     samba-winbind-modules
     setools-console
+    solaar-udev
+    squashfs-tools
     sssd-ad
     sssd-ipa
     sssd-krb5
+    symlinks
+    tcpdump
     tmux
+    traceroute
     uld
+    vim
     virtualbox-guest-additions
     wireguard-tools
     wl-clipboard
+    yubikey-manager
     zsh
 )
 
@@ -140,8 +190,9 @@ copr_install_isolated "ublue-os/staging" \
 
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
-    "krunner-bazaar" \
     "kcm_ublue" \
+    "krunner-bazaar" \
+    "oversteer-udev" \
     "uupd"
 
 # Version-specific COPR packages
