@@ -19,6 +19,10 @@ curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub
 
 # Fedora Flatpak service is a part of the flatpak package, ensure it's overridden by moving to replace it at the end of the build.
 mv -f /usr/lib/systemd/system/flatpak-add-flathub-repos.service /usr/lib/systemd/system/flatpak-add-fedora-repos.service
+
+# may break SDDM/KWin when upgraded
+dnf5 versionlock add "qt6-*"
+
 # use override to replace mesa and others with less crippled versions
 OVERRIDES=(
     "intel-gmmlib"
@@ -232,6 +236,11 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    Workaround pkcs11-provider regression, see issue #1943
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
+
+# mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
+# swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
+dnf5 -y swap --repo='fedora' \
+    OpenCL-ICD-Loader ocl-icd
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 dnf5 -y install \

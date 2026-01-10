@@ -4,6 +4,12 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Footgun, See: https://github.com/ublue-os/main/issues/598
+rm -f /usr/bin/chsh /usr/bin/lchsh
+
+# https://github.com/ublue-os/main/pull/334
+ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
+
 # Documentation is available online
 rm -rf /usr/share/doc
 
