@@ -7,6 +7,10 @@ set -eoux pipefail
 # Footgun, See: https://github.com/ublue-os/main/issues/598
 rm -f /usr/bin/chsh /usr/bin/lchsh
 
+# Add linuxbrew to the list of paths usable by `sudo`
+# not a sudoers.d override because we want to get updates from upstream and not break everything
+sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers
+
 # https://github.com/ublue-os/main/pull/334
 ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
 
