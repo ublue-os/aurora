@@ -31,9 +31,7 @@ dnf5 -y install \
 
 dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-# Everyone
-# NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
-sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
+dnf copr enable -y ublue-os/akmods
 
 # RPMFUSION Dependent AKMODS
 dnf5 -y install \
@@ -47,6 +45,8 @@ dnf5 -y install \
     v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
 dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
 
+mkdir -p /etc/pki/akmods/certs
+ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.der" --retry 3 -Lo /etc/pki/akmods/certs/akmods-ublue.der
 
 # Nvidia AKMODS
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then

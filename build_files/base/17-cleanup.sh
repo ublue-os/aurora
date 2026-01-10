@@ -52,7 +52,7 @@ systemctl disable flatpak-add-fedora-repos.service
 # We only need to clean up repos that were enabled during the build process.
 
 # Disable third-party repos
-for repo in negativo17-fedora-multimedia tailscale fedora-cisco-openh264; do
+for repo in fedora-multimedia tailscale fedora-cisco-openh264; do
     if [[ -f "/etc/yum.repos.d/${repo}.repo" ]]; then
         sed -i 's@enabled=1@enabled=0@g' "/etc/yum.repos.d/${repo}.repo"
     fi
