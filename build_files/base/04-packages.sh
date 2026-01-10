@@ -13,6 +13,10 @@ fi
 # Set higher priority
 dnf5 config-manager setopt fedora-multimedia.priority=90
 
+# Add Flathub to the image for eventual application
+mkdir -p /etc/flatpak/remotes.d/
+curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
+
 # use override to replace mesa and others with less crippled versions
 OVERRIDES=(
     "intel-gmmlib"
