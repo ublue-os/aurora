@@ -127,8 +127,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    {{ just }} verify-container "${base_image_name}-main:${fedora_version}"
-
+    {{ just }} verify-container ${base_image_name}:${fedora_version} quay.io/fedora-ostree-desktops "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -196,7 +195,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Pull in most recent upstream base image
     # if building locally/not ghcr pull the new image
     if [[ {{ ghcr }} == "0" ]]; then
-        ${PODMAN} pull "ghcr.io/ublue-os/kinoite-main:${fedora_version}"
+        ${PODMAN} pull "quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}"
     fi
 
     # Labels
@@ -326,7 +325,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     # Cleanup Space during Github Action
     if [[ "{{ ghcr }}" == "1" ]]; then
-        base_image_name=kinoite-main
+        base_image_name=kinoite
         if [[ "${tag}" =~ stable ]]; then
             tag="stable-daily"
         fi

@@ -8,8 +8,6 @@ echo "::group:: Copy Files"
 install -Dm0644 -t /etc/ublue-os/ /ctx/flatpaks/*.list
 
 # We need to remove this package here because lots of files we add from `{projectbluefin,get-aurora-dev}/common` override the rpm files and they also go away when you do `dnf remove`
-# TODO: this can be removed whenever we stop doing FROM ublue-os/kinoite-main
-dnf remove -y ublue-os-just ublue-os-signing ublue-os-udev-rules ublue-os-luks ublue-os-update-services
 rpm --erase --nodeps fedora-logos
 
 # Copy Files to Container
