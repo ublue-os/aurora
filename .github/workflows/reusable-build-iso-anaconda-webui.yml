@@ -77,7 +77,7 @@ jobs:
         run: |
           set -eoux pipefail
           FILE_LIST="$(mktemp)"
-          find common/system_files/shared/usr/share/ublue-os/homebrew -iname "*flatpaks.Brewfile" -exec cat '{}' ';' | grep -v '#' | grep -F -e "flatpak" | sed 's/flatpak //' | tr -d '"' | tee "${FILE_LIST}"
+          cat common/system_files/shared/usr/share/ublue-os/homebrew/system-flatpaks.Brewfile | grep -v '#' | grep -F -e "flatpak" | sed 's/flatpak //' | tr -d '"' | tee "${FILE_LIST}"
           echo "file_list_path=${FILE_LIST}" | tee "${GITHUB_OUTPUT}"
 
       - name: Build ISO
