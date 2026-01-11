@@ -53,13 +53,6 @@ jobs:
         run: |
           just check
 
-      - name: Checkout Common Repo
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-        with:
-          repository: get-aurora-dev/common
-          ref: main
-          path: common
-
       - name: Format image ref
         id: image_ref
         env:
@@ -73,12 +66,21 @@ jobs:
           echo "artifact_format="$image_name-${{ matrix.image_version }}-webui-$(uname -m)"" >> "${GITHUB_OUTPUT}"
           echo "kargs=$KARGS" >> "${GITHUB_OUTPUT}"
 
+      - name: Generate titanoboa-compatible file list
+        id: flatpak_list
+        run: |
+          set -eoux pipefail
+          FILE_LIST="$(mktemp)"
+          git clone https://github.com/get-aurora-dev/common.git common
+          find common -iname "*system-flatpaks.Brewfile" -exec cat '{}' ';' | grep -v '#' | grep -F -e "flatpak" | sed 's/flatpak //' | tr -d '"' | tee "${FILE_LIST}"
+          echo "file_list_path=${FILE_LIST}" | tee "${GITHUB_OUTPUT}"
+
       - name: Build ISO
         id: build
         uses: ublue-os/titanoboa@main
         with:
           image-ref: ${{ steps.image_ref.outputs.image_ref }}:${{ matrix.image_version }}
-          flatpaks-list: ${{ github.workspace }}/common/flatpaks/system-flatpaks.list
+          flatpaks-list: ${{ steps.flatpak_list.outputs.file_list_path }}
           hook-post-rootfs: ${{ github.workspace }}/iso_files/configure_iso_anaconda-webui.sh
           kargs: ${{ steps.image_ref.outputs.kargs }}
 
