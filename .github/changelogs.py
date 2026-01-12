@@ -61,7 +61,7 @@ From previous `{target}` version `{prev}` there have been the following changes.
 | --- | --- |
 | **Incus** | {pkgrel:incus} |
 | **Docker** | {pkgrel:docker-ce} |
-
+| **ROCm** | {pkgrel:rocm-runtime} |
 {changes}
 
 ### How to rebase
