@@ -197,11 +197,13 @@ def get_sbom(image: str, digest: str) -> dict:
 
 
 def parse_sbom_packages(sbom: dict) -> dict[str, str]:
-    """Extract package name -> version mapping from SBOM."""
     packages = {}
-    for pkg in sbom.get("packages", []):
-        name = pkg.get("name")
-        version = pkg.get("versionInfo")
+    for artifact in sbom.get("artifacts", []):
+        # Only process RPM packages
+        if artifact.get("type") != "rpm":
+            continue
+        name = artifact.get("name")
+        version = artifact.get("version")
         if name and version:
             # If we see the same package, keep the one with epoch (more specific)
             if name not in packages or ":" in version:
