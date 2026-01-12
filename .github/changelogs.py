@@ -223,6 +223,7 @@ def get_packages(target: str, images: list[tuple[str, str, str]]):
             print(f"  Found {len(packages[img])} packages")
         except Exception as e:
             print(f"  Failed to get packages for {img}:{target}: {e}")
+            raise e
     return packages
 
 
