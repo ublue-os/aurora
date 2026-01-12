@@ -206,7 +206,7 @@ def parse_sbom_packages(sbom: dict) -> dict[str, str]:
         version = artifact.get("version")
         if name and version:
             # If we see the same package, keep the one with epoch (more specific)
-            if name not in packages or ":" in version:
+            if name not in packages or (":" in version and ":" not in packages[name]):
                 packages[name] = version
     return packages
 
