@@ -2,11 +2,13 @@ from itertools import product
 import subprocess
 import json
 import time
+import base64
 from typing import Any
 import re
 from collections import defaultdict
 
-REGISTRY = "docker://ghcr.io/ublue-os/"
+REGISTRY = "ghcr.io/ublue-os/"
+COSIGN_KEY = "https://raw.githubusercontent.com/ublue-os/aurora/refs/heads/main/cosign.pub"
 
 IMAGE_MATRIX_LATEST = {
     "experience": ["base", "dx"],
@@ -59,7 +61,7 @@ From previous `{target}` version `{prev}` there have been the following changes.
 | --- | --- |
 | **Incus** | {pkgrel:incus} |
 | **Docker** | {pkgrel:docker-ce} |
-
+| **ROCm** | {pkgrel:rocm-runtime} |
 {changes}
 
 ### How to rebase
@@ -120,7 +122,7 @@ def get_manifests(target: str):
         for i in range(RETRIES):
             try:
                 output = subprocess.run(
-                    ["skopeo", "inspect", REGISTRY + img + ":" + target],
+                    ["skopeo", "inspect", f"docker://{REGISTRY}{img}:{target}"],
                     check=True,
                     stdout=subprocess.PIPE,
                 ).stdout
@@ -160,24 +162,80 @@ def get_tags(target: str, manifests: dict[str, Any]):
     return tags[-2], tags[-1]
 
 
-def get_packages(manifests: dict[str, Any]):
+def get_image_digest(image: str, tag: str) -> str:
+    """Get image digest using skopeo."""
+    result = subprocess.run(
+        ["skopeo", "inspect", f"docker://{image}:{tag}"],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+    return json.loads(result.stdout)["Digest"]
+
+
+def get_sbom(image: str, digest: str) -> dict:
+    """Fetch and verify SBOM using cosign."""
+    result = subprocess.run(
+        [
+            "cosign", "verify-attestation",
+            "--type", "spdxjson",
+            "--key", COSIGN_KEY,
+            f"{image}@{digest}"
+        ],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+
+    # The attestation is JSON with base64-encoded payload
+    attestation = json.loads(result.stdout)
+    payload = base64.b64decode(attestation["payload"]).decode("utf-8")
+    payload_json = json.loads(payload)
+
+    # The SBOM is in the predicate field for some reason
+    return payload_json["predicate"]
+
+
+def parse_sbom_packages(sbom: dict) -> dict[str, str]:
     packages = {}
-    for img, manifest in manifests.items():
-        try:
-            packages[img] = json.loads(manifest["Labels"]["dev.hhd.rechunk.info"])[
-                "packages"
-            ]
-        except Exception as e:
-            print(f"Failed to get packages for {img}:\n{e}")
+    for artifact in sbom.get("artifacts", []):
+        # Only process RPM packages
+        if artifact.get("type") != "rpm":
+            continue
+        name = artifact.get("name")
+        version = artifact.get("version")
+        if name and version:
+            # If we see the same package, keep the one with epoch (more specific)
+            if name not in packages or (":" in version and ":" not in packages[name]):
+                packages[name] = version
     return packages
 
 
-def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, Any]):
+def get_packages(target: str, images: list[tuple[str, str, str]]):
+    packages = {}
+    for j, (img, _, _) in enumerate(images):
+        print(f"Getting packages for {img}:{target} via SBOM ({j+1}/{len(images)})")
+        try:
+            full_image = f"{REGISTRY}{img}"
+            digest = get_image_digest(full_image, target)
+            sbom = get_sbom(full_image, digest)
+            packages[img] = parse_sbom_packages(sbom)
+            print(f"  Found {len(packages[img])} packages")
+        except Exception as e:
+            print(f"  Failed to get packages for {img}:{target}: {e}")
+            raise e
+    return packages
+
+
+def get_package_groups(target: str, prev_tag: str, curr_tag: str):
     common = set()
     others = {k: set() for k in OTHER_NAMES.keys()}
 
-    npkg = get_packages(manifests)
-    ppkg = get_packages(prev)
+    images = list(get_images(target))
+    print(f"\nFetching current packages for {curr_tag}...")
+    npkg = get_packages(curr_tag, images)
+    print(f"\nFetching previous packages for {prev_tag}...")
+    ppkg = get_packages(prev_tag, images)
 
     keys = set(npkg.keys()) | set(ppkg.keys())
     pkg = defaultdict(set)
@@ -226,13 +284,13 @@ def get_package_groups(target: str, prev: dict[str, Any], manifests: dict[str, A
 
             first = False
 
-    return sorted(common), {k: sorted(v) for k, v in others.items()}
+    return sorted(common), {k: sorted(v) for k, v in others.items()}, npkg, ppkg
 
 
-def get_versions(manifests: dict[str, Any]):
+def get_versions(packages: dict[str, dict[str, str]]):
+    """Extract version info from packages dict, stripping Fedora version suffix."""
     versions = {}
-    pkgs = get_packages(manifests)
-    for img_pkgs in pkgs.values():
+    for img_pkgs in packages.values():
         for pkg, v in img_pkgs.items():
             versions[pkg] = re.sub(FEDORA_PATTERN, "", v)
     return versions
@@ -330,14 +388,16 @@ def generate_changelog(
     target: str,
     pretty: str | None,
     workdir: str,
+    prev_tag: str,
+    curr_tag: str,
     prev_manifests,
     manifests,
 ):
-    common, others = get_package_groups(target, prev_manifests, manifests)
-    versions = get_versions(manifests)
-    prev_versions = get_versions(prev_manifests)
+    common, others, curr_packages, prev_packages = get_package_groups(target, prev_tag, curr_tag)
+    versions = get_versions(curr_packages)
+    prev_versions = get_versions(prev_packages)
 
-    prev, curr = get_tags(target, manifests)
+    prev, curr = prev_tag, curr_tag
 
     if not pretty:
         # Generate pretty version since we dont have it
@@ -439,6 +499,8 @@ def main():
         target,
         args.pretty,
         args.workdir,
+        prev,
+        curr,
         prev_manifests,
         manifests,
     )
