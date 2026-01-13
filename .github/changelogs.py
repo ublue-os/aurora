@@ -22,6 +22,7 @@ IMAGE_MATRIX = {
 RETRIES = 3
 RETRY_WAIT = 5
 FEDORA_PATTERN = re.compile(r"\.fc\d\d")
+EPOCH_PATTERN = re.compile(r"^\d+:")
 START_PATTERN = lambda target: re.compile(rf"{target}-\d\d\d+")
 
 PATTERN_ADD = "\n| ✨ | {name} | | {version} |"
@@ -288,11 +289,15 @@ def get_package_groups(target: str, prev_tag: str, curr_tag: str):
 
 
 def get_versions(packages: dict[str, dict[str, str]]):
-    """Extract version info from packages dict, stripping Fedora version suffix."""
+    """Extract version info from packages dict, stripping epoch prefix and Fedora suffix."""
     versions = {}
     for img_pkgs in packages.values():
         for pkg, v in img_pkgs.items():
-            versions[pkg] = re.sub(FEDORA_PATTERN, "", v)
+            # Strip epoch prefix (e.g., "1:25.2.7-1" -> "25.2.7-1")
+            v = re.sub(EPOCH_PATTERN, "", v)
+            # Strip Fedora version suffix (e.g., ".fc43")
+            v = re.sub(FEDORA_PATTERN, "", v)
+            versions[pkg] = v
     return versions
 
 
