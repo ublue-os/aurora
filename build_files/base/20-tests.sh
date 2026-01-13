@@ -105,6 +105,7 @@ done
 # and are considered footguns
 UNWANTED_PACKAGES=(
     akonadi-server
+    fedora-flathub-remote
     fedora-logos
     fedora-third-party
     firefox
