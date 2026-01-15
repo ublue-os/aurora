@@ -90,6 +90,7 @@ FEDORA_PACKAGES=(
     grub2-tools-extra
     gum
     gvfs
+    gvfs-fuse
     heif-pixbuf-loader
     htop
     icoutils
