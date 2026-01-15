@@ -89,6 +89,7 @@ FEDORA_PACKAGES=(
     google-noto-sans-sundanese-fonts
     grub2-tools-extra
     gum
+    gvfs
     heif-pixbuf-loader
     htop
     icoutils
