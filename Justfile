@@ -110,12 +110,15 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Base Image
     base_image_name="kinoite"
+    if [[ "${tag}" =~ beta ]]; then
+        base_image_name="kinoite-beta"
+    fi
 
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
     elif [[ "${tag}" =~ beta ]]; then
-        akmods_flavor="main"
+        akmods_flavor="coreos-stable"
     else
         akmods_flavor="main"
     fi
