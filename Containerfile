@@ -12,7 +12,6 @@ FROM ${BREW_IMAGE}@${BREW_IMAGE_SHA} AS brew
 
 FROM scratch AS ctx
 COPY /build_files /build_files
-COPY /iso_files /iso_files
 
 # https://github.com/get-aurora-dev/common
 COPY --from=common /logos /system_files/shared
