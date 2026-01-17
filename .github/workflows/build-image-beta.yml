@@ -24,11 +24,3 @@ jobs:
       image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
-
-  generate-release:
-    name: Generate Release
-    needs: [build-image-beta]
-    secrets: inherit
-    uses: ./.github/workflows/generate-release.yml
-    with:
-      stream_name: '["beta"]'
