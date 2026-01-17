@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# See /usr/lib/systemd/system/rechunker-group-fix.service for more details
+# https://github.com/zirconium-dev/zirconium/commit/85cc566697b3337d37e2b6c6305c51b7f1a9e9b1
+# thanks @tullilirockz
+
+IGNORE_MANUAL="wheel|root|sudo|nobody"
+for manually_created_user in $(grep -E -e ".*:[1-3][[:digit:]]{3}:.*" "$1") ; do
+  # `grep` matched on a group with GID [1-3]000 or so 
+  if [ ! -z "$(cut -f4 -d: <<< "${manually_created_user}")" ] ; then
+    continue
+  fi
+  IGNORE_MANUAL="$(cut -f1,3 -d: --output-delimiter="|" <<< "${manually_created_user}")|${IGNORE_MANUAL:-}"
+  for related_group in $(grep "$(cut -f1 -d: <<< ${manually_created_user})" "$1"); do
+    # Deduplicates matches for the same group/user
+    if [ "$(cut -f1 <<< "${related_group}")" == "$(cut -f1 <<< "${manually_created_user}")" ] ; then
+      continue
+    fi
+    IGNORE_MANUAL="$(cut -f1 -d: <<< "${related_group}")|${IGNORE_MANUAL:-}"
+  done
+done
+
+grep --no-filename -e "^g" /usr/lib/sysusers.d/*.conf | grep -v -E -e "${IGNORE_MANUAL}" | tr -s " " | cut -d" " -f2 | uniq | xargs -I{} sed -i "/{}/d" "${1}"
