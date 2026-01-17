@@ -1,0 +1,3 @@
+[[customizations.user]]
+name = "aurora-ci-user"
+groups = ["wheel"]
