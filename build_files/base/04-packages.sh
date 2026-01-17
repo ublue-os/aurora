@@ -300,7 +300,7 @@ dnf5 -y swap --repo='fedora' \
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
   dnf -y copr enable @kdesig/kde-beta
   dnf -y copr disable @kdesig/kde-beta
-  dnf -y --repo=copr:copr.fedorainfracloud.org:group_kdesig:kde-beta swap plasma-firewall plasma-firewall
+  dnf -y --repo=copr:copr.fedorainfracloud.org:group_kdesig:kde-beta install plasma-firewall
 else
   dnf -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
