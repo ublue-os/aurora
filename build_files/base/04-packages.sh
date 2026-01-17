@@ -297,7 +297,13 @@ dnf5 -y swap --repo='fedora' \
     OpenCL-ICD-Loader ocl-icd
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
-dnf5 -y install \
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+  dnf -y copr enable @kdesig/kde-beta
+  dnf -y copr disable @kdesig/kde-beta
+  dnf -y --repo=copr:copr.fedorainfracloud.org:group_kdesig:kde-beta install plasma-firewall
+else
+  dnf -y install \
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+fi
 
 echo "::endgroup::"

@@ -8,11 +8,6 @@ on:
        - testing
      paths-ignore:
        - "**.md"
-       - "flatpaks/**"
-       - "system_files/etc/bazaar/**"
-       - "system_files/shared/etc/bazaar/**"
-       - "**.Brewfile"
-       - "just/*.just"
    workflow_call:
    workflow_dispatch:
 
