@@ -25,13 +25,12 @@ test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
 test -f /usr/share/pixmaps/fedora-logo.svg
 test -d /usr/share/plasma/look-and-feel/dev.getaurora.aurora.desktop
 
-test -f /usr/share/backgrounds/aurora/aurora-wallpaper-8/contents/images/3840x2160.jxl
-test -f /usr/share/wallpapers/aurora-wallpaper-8/contents/images/3840x2160.jxl
+test -f /usr/share/backgrounds/aurora/aurora-wallpaper-9/contents/images/3840x2160.jxl
+test -f /usr/share/wallpapers/aurora-wallpaper-9/contents/images/3840x2160.jxl
 test -L /usr/share/backgrounds/default.jxl
 
 xmllint --noout \
-  /usr/share/backgrounds/default.xml \
-  /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml
+  /usr/share/backgrounds/default.xml
 
 # If this file is not on the image bazaar will automatically be removed from users systems :(
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
@@ -105,6 +104,7 @@ done
 # and are considered footguns
 UNWANTED_PACKAGES=(
     akonadi-server
+    fedora-flathub-remote
     fedora-logos
     fedora-third-party
     firefox
@@ -132,8 +132,6 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
 fi
 
 IMPORTANT_UNITS=(
-    brew-update.timer
-    brew-upgrade.timer
     rpm-ostree-countme.timer
     tailscaled.service
     ublue-system-setup.service

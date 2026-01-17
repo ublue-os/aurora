@@ -1,4 +1,5 @@
 repo_organization := "ublue-os"
+rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.1-x86_64@sha256:2627cbf92ca60ab7372070dcf93b40f457926f301509ffba47a04d6a9e1ddaf7"
 common_image := "ghcr.io/get-aurora-dev/common:latest"
 brew_image := "ghcr.io/ublue-os/brew:latest"
 images := '(
@@ -109,6 +110,9 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Base Image
     base_image_name="kinoite"
+    if [[ "${tag}" =~ beta ]]; then
+        base_image_name="kinoite-beta"
+    fi
 
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
@@ -126,8 +130,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    {{ just }} verify-container "${base_image_name}-main:${fedora_version}"
-
+    {{ just }} verify-container ${base_image_name}:${fedora_version} quay.io/fedora-ostree-desktops "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -195,7 +198,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Pull in most recent upstream base image
     # if building locally/not ghcr pull the new image
     if [[ {{ ghcr }} == "0" ]]; then
-        ${PODMAN} pull "ghcr.io/ublue-os/kinoite-main:${fedora_version}"
+        ${PODMAN} pull "quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}"
     fi
 
     # Labels

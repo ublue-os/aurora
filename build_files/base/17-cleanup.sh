@@ -11,13 +11,9 @@ set -eoux pipefail
 systemctl enable rpm-ostree-countme.service
 systemctl enable tailscaled.service
 systemctl enable dconf-update.service
-systemctl enable ublue-guest-user.service
 systemctl enable brew-setup.service
-systemctl enable brew-upgrade.timer
-systemctl enable brew-update.timer
 systemctl enable aurora-groups.service
 systemctl enable usr-share-sddm-themes.mount
-systemctl enable ublue-fix-hostname.service
 systemctl enable ublue-system-setup.service
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
@@ -40,7 +36,6 @@ systemctl enable uupd.timer
 
 # Disable the old update timer
 systemctl disable rpm-ostreed-automatic.timer
-systemctl disable flatpak-system-update.timer
 
 # Hide Desktop Files. Hidden removes mime associations
 for file in htop nvtop; do
@@ -57,7 +52,7 @@ systemctl disable flatpak-add-fedora-repos.service
 # We only need to clean up repos that were enabled during the build process.
 
 # Disable third-party repos
-for repo in negativo17-fedora-multimedia tailscale fedora-cisco-openh264; do
+for repo in fedora-multimedia tailscale fedora-cisco-openh264; do
     if [[ -f "/etc/yum.repos.d/${repo}.repo" ]]; then
         sed -i 's@enabled=1@enabled=0@g' "/etc/yum.repos.d/${repo}.repo"
     fi
@@ -81,11 +76,6 @@ for i in /etc/yum.repos.d/_copr:*.repo; do
         sed -i 's@enabled=1@enabled=0@g' "$i"
     fi
 done
-
-# NOTE: we won't use dnf5 copr plugin for ublue-os/akmods until our upstream provides the COPR standard naming
-if [[ -f "/etc/yum.repos.d/_copr_ublue-os-akmods.repo" ]]; then
-    sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
-fi
 
 # Disable RPM Fusion repos
 for i in /etc/yum.repos.d/rpmfusion-*.repo; do

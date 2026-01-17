@@ -38,7 +38,7 @@
       "automerge": true,
       "matchUpdateTypes": ["digest"],
       "matchDepNames": [
-        "ghcr.io/ublue-os/kinoite-main",
+        "quay.io/fedora-ostree-desktops/kinoite",
         "ghcr.io/ublue-os/brew",
         "ghcr.io/get-aurora-dev/common"
       ]

@@ -1,13 +1,13 @@
 images:
-  - name: kinoite-main
-    image: ghcr.io/ublue-os/kinoite-main
-    tag: latest
-    digest: sha256:cdb67496c0ee26b7d5fa08bbd0fc71ee7df5241a2a835d1b7413d704fcfbc638
+  - name: kinoite
+    image: quay.io/fedora-ostree-desktops/kinoite
+    tag: 43
+    digest: sha256:6e1485cc0186bcbde1de90978c42e70af06728ba3be0aaf57155d2360308bea8
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:d43dd71bfaab54554a09cad214bc4a264c74e3f4899fa2a137b17377f8978ba7
+    digest: sha256:2b3e2a51742a127784888c7d951818d7f502c120b431b4be8615e494c3cb6631
   - name: brew
     image: ghcr.io/ublue-os/brew
     tag: latest
-    digest: sha256:216b36dd07c1e617d4a42c3654aab387b10a60679f7ee22ecef30cb202376594
+    digest: sha256:e730ecddc6bbea35ac439a40a653a95279e2a1f3d6cd7406caf96a767a965cc3

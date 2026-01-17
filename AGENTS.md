@@ -32,7 +32,6 @@ This document provides essential information for coding agents working with the 
 - `.github/workflows/` - Comprehensive CI/CD pipelines
 - `just/` - Additional Just recipes for apps and system management
 - `brew/` - Homebrew Brewfile definitions for various tool collections
-- `flatpaks/` - Flatpak application lists
 - `iso_files/` - ISO installation configurations
 
 ### Architecture
@@ -173,7 +172,6 @@ The repository uses mandatory pre-commit validation:
 - `reusable-build.yml` - Core build logic for all image variants
 - `generate-release.yml` - Generates release artifacts and changelogs
 - `validate-brewfiles.yml` - Validates Homebrew Brewfile syntax
-- `validate-flatpaks.yml` - Validates Flatpak list files
 - `clean.yml` - Cleanup old images and artifacts
 - `moderator.yml` - Repository moderation tasks
 

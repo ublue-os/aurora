@@ -4,6 +4,16 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Footgun, See: https://github.com/ublue-os/main/issues/598
+rm -f /usr/bin/chsh /usr/bin/lchsh
+
+# Add linuxbrew to the list of paths usable by `sudo`
+# not a sudoers.d override because we want to get updates from upstream and not break everything
+sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bin/" /etc/sudoers
+
+# https://github.com/ublue-os/main/pull/334
+ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
+
 # Documentation is available online
 rm -rf /usr/share/doc
 
@@ -31,6 +41,12 @@ mv /tmp/SymbolsNerdFont*.ttf /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 
 # Bash Prexec v0.6.0
 ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-prexec
+
+# use CoreOS' generator for emergency/rescue boot
+# see detail: https://github.com/ublue-os/main/issues/653
+mkdir -p /usr/lib/systemd/system-generators
+ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" --retry 3 -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 # Caps
 setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
