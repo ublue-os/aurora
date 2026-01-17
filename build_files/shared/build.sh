@@ -20,19 +20,16 @@ echo "::endgroup::"
 /ctx/build_files/base/00-image-info.sh
 
 # Install Kernel and Akmods
-/ctx/build_files/base/03-install-kernel-akmods.sh
+/ctx/build_files/base/01-install-kernel-akmods.sh
 
 # Install Additional Packages
-/ctx/build_files/base/04-packages.sh
-
-# Wallpapers/Apperance
-/ctx/build_files/base/05-branding.sh
+/ctx/build_files/base/02-packages.sh
 
 # Install Overrides and Fetch Install
-/ctx/build_files/base/06-override-install.sh
+/ctx/build_files/base/03-override-install.sh
 
 # Get Firmare for Framework
-/ctx/build_files/base/08-firmware.sh
+/ctx/build_files/base/04-firmware.sh
 
 # Beta
 # /ctx/build_files/base/10-beta.sh
