@@ -109,8 +109,6 @@ FEDORA_PACKAGES=(
     libcamera-gstreamer
     libcamera-tools
     libfdk-aac
-    libheif
-    libimobiledevice
     libimobiledevice-utils
     libratbag-ratbagd
     libsss_autofs
@@ -146,9 +144,6 @@ FEDORA_PACKAGES=(
     traceroute
     uld
     vim
-    virtualbox-guest-additions
-    wireguard-tools
-    wl-clipboard
     yubikey-manager
     zsh
 )
