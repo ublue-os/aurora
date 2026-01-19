@@ -4,8 +4,12 @@ set -eoux pipefail
 
 echo "::group:: Copy Files"
 
-# We need to remove this package here because lots of files we add from `{projectbluefin,get-aurora-dev}/common` override the rpm files and they also go away when you do `dnf remove`
-rpm --erase --nodeps fedora-logos
+# We need to remove this package here because lots of files we add from `{projectbluefin,get-aurora-dev}/common` override the rpm files
+# they go away when you do dnf remove
+# Keep *-logos in RPM DB for downstream package installations
+# We are not allowed to ship an empty fedora-logos package
+dnf -y swap fedora-logos generic-logos
+rpm --erase --nodeps --nodb generic-logos
 
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
