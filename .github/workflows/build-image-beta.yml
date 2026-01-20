@@ -8,11 +8,6 @@ on:
        - testing
      paths-ignore:
        - "**.md"
-       - "flatpaks/**"
-       - "system_files/etc/bazaar/**"
-       - "system_files/shared/etc/bazaar/**"
-       - "**.Brewfile"
-       - "just/*.just"
    workflow_call:
    workflow_dispatch:
 
@@ -29,11 +24,3 @@ jobs:
       image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
-
-  generate-release:
-    name: Generate Release
-    needs: [build-image-beta]
-    secrets: inherit
-    uses: ./.github/workflows/generate-release.yml
-    with:
-      stream_name: '["beta"]'
