@@ -9,5 +9,6 @@ previous.manifest.json
 changelog.md
 output.env
 version.txt
+cosign.key
 
 devcontainer
