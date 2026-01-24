@@ -146,6 +146,7 @@ FEDORA_PACKAGES=(
     vim
     yubikey-manager
     zsh
+    mc
 )
 
 # Version-specific Fedora package additions
