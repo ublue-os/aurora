@@ -193,9 +193,9 @@ echo "Installing COPR packages with isolated repo enablement..."
         sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
 # firefox devel
-dnf -y copr enable the4runner/firefox-dev
-dnf -y check-update
-dnf -y install firefox-dev
+#dnf -y copr enable the4runner/firefox-dev
+#dnf -y check-update
+#dnf -y install firefox-dev
 
 # From ublue-os/staging
 copr_install_isolated "ublue-os/staging" \
