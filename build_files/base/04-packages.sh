@@ -147,6 +147,11 @@ FEDORA_PACKAGES=(
     yubikey-manager
     zsh
     mc
+    tigervnc
+    tigervnc-server
+    terminator
+    autossh
+    wine
 )
 
 # Version-specific Fedora package additions
