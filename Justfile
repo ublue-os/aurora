@@ -130,7 +130,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    {{ just }} verify-container ${base_image_name}:${fedora_version} quay.io/fedora-ostree-desktops "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
+    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}
+
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -139,17 +140,17 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
 
     # Verify Containers with Cosign
-    {{ just }} verify-container "akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
     if [[ "${akmods_flavor}" =~ coreos ]]; then
-        {{ just }} verify-container "akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
     if [[ "${flavor}" =~ nvidia-open ]]; then
-        {{ just }} verify-container "akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
 
-    {{ just }} verify-container "common:latest@${common_image_sha}" ghcr.io/get-aurora-dev https://raw.githubusercontent.com/get-aurora-dev/common/refs/heads/main/cosign.pub
+    {{ just }} verify-container ghcr.io-get-aurora-dev.pub "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
 
-    {{ just }} verify-container "brew:latest@${brew_image_sha}"
+    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
 
     # Get Version
     if [[ "${tag}" =~ stable ]]; then
@@ -470,7 +471,7 @@ changelogs branch="stable" handwritten="":
 
 # Verify Container with Cosign
 [group('Utility')]
-verify-container container="" registry="ghcr.io/ublue-os" key="":
+verify-container key="" container="":
     #!/usr/bin/bash
     set -eou pipefail
 
@@ -489,14 +490,8 @@ verify-container container="" registry="ghcr.io/ublue-os" key="":
         fi
     fi
 
-    # Public Key for Container Verification
-    key={{ key }}
-    if [[ -z "${key:-}" ]]; then
-        key="https://raw.githubusercontent.com/ublue-os/main/main/cosign.pub"
-    fi
-
     # Verify Container using cosign public key
-    if ! cosign verify --key "${key}" "{{ registry }}"/"{{ container }}" >/dev/null; then
+    if ! cosign verify --key "{{ key }}" "{{ container }}" >/dev/null; then
         echo "NOTICE: Verification failed. Please ensure your public key is correct."
         exit 1
     fi
