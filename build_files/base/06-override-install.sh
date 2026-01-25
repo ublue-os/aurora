@@ -48,9 +48,6 @@ mkdir -p /usr/lib/systemd/system-generators
 ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" --retry 3 -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
-# Caps
-setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
-
 # ######
 # BASE IMAGE CHANGES
 # ######
