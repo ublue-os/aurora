@@ -151,7 +151,6 @@ FEDORA_PACKAGES=(
     tigervnc-server
     terminator
     autossh
-    wine
     dnf-plugins-core
     fluxbox
     xterm
