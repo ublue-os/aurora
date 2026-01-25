@@ -194,7 +194,7 @@ echo "Installing COPR packages with isolated repo enablement..."
 
 # firefox devel
 dnf -y copr enable the4runner/firefox-dev
-dnf -y dnf check-update
+dnf -y check-update
 dnf -y install firefox-dev
 
 # From ublue-os/staging
