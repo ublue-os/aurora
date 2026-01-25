@@ -44,8 +44,6 @@ for file in htop nvtop; do
     fi
 done
 
-#Add the Flathub Flatpak remote and remove the Fedora Flatpak remote
-flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 systemctl disable flatpak-add-fedora-repos.service
 
 # NOTE: With isolated COPR installation, most repos are never enabled globally.
