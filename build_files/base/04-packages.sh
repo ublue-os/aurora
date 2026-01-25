@@ -152,6 +152,14 @@ FEDORA_PACKAGES=(
     terminator
     autossh
     wine
+    dnf-plugins-core
+    fluxbox
+    xterm
+    rofi
+    krusader
+    freerdp
+    rdesktop
+    autossh
 )
 
 # Version-specific Fedora package additions
@@ -183,6 +191,11 @@ echo "Installing COPR packages with isolated repo enablement..."
         dnf5 -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
         dnf5 -y install openrazer-daemon
         sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+
+# firefox devel
+dnf -y copr enable the4runner/firefox-dev
+dnf -y dnf check-update
+dnf -y install firefox-dev
 
 # From ublue-os/staging
 copr_install_isolated "ublue-os/staging" \
