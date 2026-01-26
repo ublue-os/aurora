@@ -178,10 +178,6 @@ echo "Installing COPR packages with isolated repo enablement..."
         dnf5 -y install openrazer-daemon
         sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
-# From ublue-os/staging
-copr_install_isolated "ublue-os/staging" \
-    "fw-fanctrl"
-
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
     "kcm_ublue" \
