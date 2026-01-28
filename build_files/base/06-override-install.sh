@@ -25,6 +25,14 @@ ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/
 
+# Weekly user count for fastfetch
+ghcurl https://raw.githubusercontent.com/ublue-os/countme/main/badge-endpoints/aurora.json | jq -r ".message" > /usr/share/ublue-os/fastfetch-user-count
+
+# bazaar weekly downloads used for fastfetch
+curl -X 'GET' \
+'https://flathub.org/api/v2/stats/io.github.kolunmi.Bazaar?all=false&days=1' \
+-H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
+
 # Starship Shell Prompt
 ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
 ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz.sha256" --retry 3 -o /tmp/starship.tar.gz.sha256
