@@ -40,8 +40,6 @@ ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$
 echo "$(cat /tmp/starship.tar.gz.sha256) /tmp/starship.tar.gz" | sha256sum --check
 tar -xzf /tmp/starship.tar.gz -C /tmp
 install -c -m 0755 /tmp/starship /usr/bin
-# shellcheck disable=SC2016
-echo 'eval "$(starship init bash)"' >>/etc/bashrc
 
 # Nerdfont symbols
 # to fix motd and prompt atleast temporarily
