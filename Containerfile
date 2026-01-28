@@ -49,7 +49,8 @@ RUN --mount=type=tmpfs,dst=/boot \
 ENV PATH="/tmp/scripts/helpers:${PATH}"
 
 # Generate image-info.json, os-release
-RUN --mount=type=tmpfs,dst=/boot \
+RUN --network=none \
+    --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/base/00-image-info.sh
