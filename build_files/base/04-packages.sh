@@ -102,6 +102,7 @@ FEDORA_PACKAGES=(
     just
     kate
     kcm-fcitx5
+    kdepim-addons
     krb5-workstation
     ksshaskpass
     ksystemlog
