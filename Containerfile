@@ -42,7 +42,6 @@ ARG IMAGE_FLAVOR=""
 RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/shared/build.sh
 
 # so ghcurl wrapper is available to all later RUNs
@@ -52,7 +51,6 @@ ENV PATH="/tmp/scripts/helpers:${PATH}"
 RUN --network=none \
     --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/base/00-image-info.sh
 
 # Install Kernel and Akmods
