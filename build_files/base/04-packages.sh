@@ -286,11 +286,6 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-# mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
-# swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
-dnf5 -y swap --repo='fedora' \
-    OpenCL-ICD-Loader ocl-icd
-
 # Explicitly install KDE Plasma related packages with the same version as in base image
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
   dnf -y copr enable @kdesig/kde-beta
