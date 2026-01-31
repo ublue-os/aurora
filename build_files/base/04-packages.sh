@@ -65,11 +65,13 @@ FEDORA_PACKAGES=(
     distrobox
     evtest
     fastfetch
+    fcitx5-chewing
     fcitx5-chinese-addons
     fcitx5-configtool
     fcitx5-gtk
     fcitx5-hangul
     fcitx5-libthai
+    fcitx5-m17n
     fcitx5-mozc
     fcitx5-qt
     fcitx5-sayura
