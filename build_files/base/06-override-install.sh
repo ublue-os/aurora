@@ -17,8 +17,8 @@ sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bi
 # https://github.com/ublue-os/main/pull/334
 ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
 
-# Documentation is available online
-rm -rf /usr/share/doc
+# KDE Documentation is available online
+rm -rf /usr/share/doc/HTML
 
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
