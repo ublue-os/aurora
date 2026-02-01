@@ -53,18 +53,18 @@ RUN --network=none \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build_files/base/00-image-info.sh
 
+# Install Additional Packages
+RUN --mount=type=tmpfs,dst=/boot \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    /ctx/build_files/base/03-packages.sh
+
 # Install Kernel and Akmods
 RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_files/base/03-install-kernel-akmods.sh
-
-# Install Additional Packages
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/04-packages.sh
+    /ctx/build_files/base/04-install-kernel-akmods.sh
 
 # Wallpapers/Apperance
 RUN --network=none \

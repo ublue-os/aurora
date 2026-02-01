@@ -37,6 +37,11 @@ EOF
 # OS Release File
 sed -i "s|^VARIANT_ID=.*|VARIANT_ID=$IMAGE_NAME|" /usr/lib/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"${IMAGE_PRETTY_NAME} (Version: ${VERSION})\"|" /usr/lib/os-release
+
+if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+  sed -i "s|^RELEASE_TYPE=.*|RELEASE_TYPE=${UBLUE_IMAGE_TAG}|" /usr/lib/os-release
+fi
+
 sed -i "s|^NAME=.*|NAME=\"$IMAGE_PRETTY_NAME\"|" /usr/lib/os-release
 sed -i "s|^HOME_URL=.*|HOME_URL=\"$HOME_URL\"|" /usr/lib/os-release
 sed -i "s|^DOCUMENTATION_URL=.*|DOCUMENTATION_URL=\"$DOCUMENTATION_URL\"|" /usr/lib/os-release
@@ -58,6 +63,9 @@ fi
 # https://www.freedesktop.org/software/systemd/man/latest/os-release.html#IMAGE_ID=
 echo "IMAGE_ID=\"${IMAGE_NAME}\"" >> /usr/lib/os-release
 echo "IMAGE_VERSION=\"${VERSION}\"" >> /usr/lib/os-release
+
+# Debugging
+cat /usr/lib/os-release
 
 # Fix issues caused by ID no longer being fedora
 sed -i "s|^EFIDIR=.*|EFIDIR=\"fedora\"|" /usr/sbin/grub2-switch-to-blscfg
