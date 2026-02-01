@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Enable Flathub
+flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 # Footgun, See: https://github.com/ublue-os/main/issues/598
 rm -f /usr/bin/chsh /usr/bin/lchsh
 
@@ -14,13 +17,21 @@ sed -Ei "s/secure_path = (.*)/secure_path = \1:\/home\/linuxbrew\/.linuxbrew\/bi
 # https://github.com/ublue-os/main/pull/334
 ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
 
-# Documentation is available online
-rm -rf /usr/share/doc
+# KDE Documentation is available online
+rm -rf /usr/share/doc/HTML
 
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/
+
+# Weekly user count for fastfetch
+ghcurl https://raw.githubusercontent.com/ublue-os/countme/main/badge-endpoints/aurora.json | jq -r ".message" > /usr/share/ublue-os/fastfetch-user-count
+
+# bazaar weekly downloads used for fastfetch
+curl -X 'GET' \
+'https://flathub.org/api/v2/stats/io.github.kolunmi.Bazaar?all=false&days=1' \
+-H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
 
 # Starship Shell Prompt
 ghcurl "https://github.com/starship/starship/releases/latest/download/starship-$(uname -m)-unknown-linux-gnu.tar.gz" --retry 3 -o /tmp/starship.tar.gz
@@ -47,9 +58,6 @@ ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b9
 mkdir -p /usr/lib/systemd/system-generators
 ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" --retry 3 -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
-
-# Caps
-setcap 'cap_net_raw+ep' /usr/libexec/ksysguard/ksgrd_network_helper
 
 # ######
 # BASE IMAGE CHANGES

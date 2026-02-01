@@ -65,11 +65,13 @@ FEDORA_PACKAGES=(
     distrobox
     evtest
     fastfetch
+    fcitx5-chewing
     fcitx5-chinese-addons
     fcitx5-configtool
     fcitx5-gtk
     fcitx5-hangul
     fcitx5-libthai
+    fcitx5-m17n
     fcitx5-mozc
     fcitx5-qt
     fcitx5-sayura
@@ -285,11 +287,6 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    Workaround pkcs11-provider regression, see issue #1943
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
-
-# mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
-# swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
-dnf5 -y swap --repo='fedora' \
-    OpenCL-ICD-Loader ocl-icd
 
 # Explicitly install KDE Plasma related packages with the same version as in base image
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then

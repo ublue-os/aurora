@@ -2,6 +2,9 @@ repo_organization := "ublue-os"
 rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.1-x86_64@sha256:2627cbf92ca60ab7372070dcf93b40f457926f301509ffba47a04d6a9e1ddaf7"
 common_image := "ghcr.io/get-aurora-dev/common:latest"
 brew_image := "ghcr.io/ublue-os/brew:latest"
+stable_version := "43"
+latest_version := "43"
+beta_version := "43"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -130,7 +133,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    {{ just }} verify-container ${base_image_name}:${fedora_version} quay.io/fedora-ostree-desktops "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
+    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}
+
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -139,17 +143,17 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
 
     # Verify Containers with Cosign
-    {{ just }} verify-container "akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
     if [[ "${akmods_flavor}" =~ coreos ]]; then
-        {{ just }} verify-container "akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
     if [[ "${flavor}" =~ nvidia-open ]]; then
-        {{ just }} verify-container "akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
 
-    {{ just }} verify-container "common:latest@${common_image_sha}" ghcr.io/get-aurora-dev https://raw.githubusercontent.com/get-aurora-dev/common/refs/heads/main/cosign.pub
+    {{ just }} verify-container ghcr.io-get-aurora-dev.pub "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
 
-    {{ just }} verify-container "brew:latest@${brew_image_sha}"
+    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
 
     # Get Version
     if [[ "${tag}" =~ stable ]]; then
@@ -343,7 +347,7 @@ changelogs branch="stable" handwritten="":
 
 # Verify Container with Cosign
 [group('Utility')]
-verify-container container="" registry="ghcr.io/ublue-os" key="":
+verify-container key="" container="":
     #!/usr/bin/bash
     set -eou pipefail
 
@@ -362,14 +366,8 @@ verify-container container="" registry="ghcr.io/ublue-os" key="":
         fi
     fi
 
-    # Public Key for Container Verification
-    key={{ key }}
-    if [[ -z "${key:-}" ]]; then
-        key="https://raw.githubusercontent.com/ublue-os/main/main/cosign.pub"
-    fi
-
     # Verify Container using cosign public key
-    if ! cosign verify --key "${key}" "{{ registry }}"/"{{ container }}" >/dev/null; then
+    if ! cosign verify --key "{{ key }}" "{{ container }}" >/dev/null; then
         echo "NOTICE: Verification failed. Please ensure your public key is correct."
         exit 1
     fi
@@ -433,14 +431,31 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     set -eou pipefail
     {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
     if [[ ! -f /tmp/manifest.json ]]; then
+        # Determine Version
         if [[ "{{ tag }}" =~ stable ]]; then
-            # CoreOS does not uses cosign
-            skopeo inspect --retry-times 3 docker://quay.io/fedora/fedora-coreos:stable > /tmp/manifest.json
+            VERSION="{{ stable_version }}"
         elif [[ "{{ tag }}" =~ beta ]]; then
-            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:beta > /tmp/manifest.json
+            VERSION="{{ beta_version }}"
         else
-            skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:"{{ tag }}" > /tmp/manifest.json
+            VERSION="{{ latest_version }}"
         fi
+
+        # Determine Akmods Flavor
+        if [[ "{{ tag }}" =~ stable ]]; then
+            AKMODS_FLAVOR="coreos-stable"
+        else
+            AKMODS_FLAVOR="main"
+        fi
+
+        # Verify akmods existence
+        echo "Checking for akmods: ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${VERSION}" >&2
+        if ! skopeo inspect --retry-times 3 "docker://ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${VERSION}" > /dev/null; then
+             echo "Error: Akmods not found for flavor ${AKMODS_FLAVOR} and version ${VERSION}" >&2
+             exit 1
+        fi
+
+        # Write cache
+        echo "{\"Labels\": {\"org.opencontainers.image.version\": \"${VERSION}\"}}" > /tmp/manifest.json
     fi
     fedora_version=$(jq -r '.Labels["org.opencontainers.image.version"]' < /tmp/manifest.json | grep -oP '^[0-9]+')
     if [[ -n "${kernel_pin:-}" ]]; then
