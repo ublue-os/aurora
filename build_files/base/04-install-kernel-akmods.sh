@@ -48,6 +48,11 @@ dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
 mkdir -p /etc/pki/akmods/certs
 ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.der" --retry 3 -Lo /etc/pki/akmods/certs/akmods-ublue.der
 
+# OpenRazer from hardware:razer repo (not a COPR)
+        dnf -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
+        dnf -y install openrazer-daemon
+        sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
+
 # Nvidia AKMODS
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
     # Fetch Nvidia RPMs
