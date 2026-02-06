@@ -23,7 +23,7 @@ rm -rf /usr/share/doc/HTML
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
-cp /usr/share/applications/dev.getaurora.aurora-docs.desktop /usr/share/kglobalaccel/
+cp /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
 
 # Weekly user count for fastfetch
 ghcurl https://raw.githubusercontent.com/ublue-os/countme/main/badge-endpoints/aurora.json | jq -r ".message" > /usr/share/ublue-os/fastfetch-user-count
