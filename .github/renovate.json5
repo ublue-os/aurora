@@ -42,6 +42,11 @@
         "ghcr.io/ublue-os/brew",
         "ghcr.io/get-aurora-dev/common"
       ]
+    },
+    {
+      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
