@@ -14,7 +14,6 @@ IMPORTANT_PACKAGES_DX=(
     libvirt
     podman-bootc
     qemu
-    rocm-runtime
 )
 
 for package in "${IMPORTANT_PACKAGES_DX[@]}"; do
