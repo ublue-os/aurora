@@ -61,6 +61,7 @@ FEDORA_PACKAGES=(
     apr
     apr-util
     borgbackup
+	containerd
     davfs2
     distrobox
     evtest
