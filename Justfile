@@ -282,6 +282,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}')
 
     # Check if image is already built
     ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
@@ -289,27 +290,33 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         {{ just }} build "${image}" "${tag}" "${flavor}"
     fi
 
-    # Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
-    # workaround for https://github.com/coreos/rpm-ostree/issues/5545
-    if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
-      ${SUDOIF} ${PODMAN} image rm -f "localhost/${image_name}:${tag}-chunked"
-    fi
+    ## Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
+    ## workaround for https://github.com/coreos/rpm-ostree/issues/5545
+    #if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
+    #  ${SUDOIF} ${PODMAN} image rm -f "localhost/${image_name}:${tag}-chunked"
+    #fi
 
     # Load into Rootful Podman
-    ID=$(${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
-    ID_ROOT=$(sudo ${PODMAN} inspect --format={{ '{{.Digest}}' }} localhost/"${image_name}":"${tag}")
+    ID_ROOT=$(${SUDOIF} ${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
     if [[ ! "${PODMAN}" =~ "docker" ]] && [[ -n "$ID" ]] && [[ "$ID" != "$ID_ROOT" ]]; then
         ${PODMAN} image scp $(whoami)@localhost::localhost/"${image_name}":"${tag}"
     fi
 
+    # 96 layers, conservative default, same what ci-test is using
+    # 499 is podman run limit
+    # not using base-imagectl, to avoid pulling 2GiB image for a wrapper script
     ${SUDOIF} ${PODMAN} run --rm \
         --pull=${PULL_POLICY} \
         --privileged \
         -v "/var/lib/containers:/var/lib/containers" \
-        "quay.io/fedora/fedora-bootc:latest" \
-        /usr/libexec/bootc-base-imagectl rechunk \
-        "localhost/${image_name}":"${tag}" \
-        "localhost/${image_name}":"${tag}-chunked"
+        --entrypoint /usr/bin/rpm-ostree \
+        "${base_image_org}/${base_image_name}:${fedora_version}" \
+        compose build-chunked-oci \
+        --max-layers 96 \
+        --format-version=2 \
+        --bootc \
+        --from "localhost/${image_name}":"${tag}" \
+        --output containers-storage:"localhost/${image_name}":"${tag}-chunked"
 
     echo "::endgroup::"
 
