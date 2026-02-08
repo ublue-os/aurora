@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6 # v10
@@ -93,7 +93,7 @@ jobs:
       - name: Setup Syft
         id: setup-syft
         if: github.event_name != 'pull_request'
-        uses: anchore/sbom-action/download-syft@deef08a0db64bfad603422135db61477b16cef56 # v0
+        uses: anchore/sbom-action/download-syft@28d71544de8eaf1b958d335707167c5f783590ad # v0
         with:
           syft-version: v1.39.0
 

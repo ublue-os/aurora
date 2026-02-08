@@ -25,8 +25,8 @@ test -f /usr/share/icons/hicolor/scalable/apps/start-here.svg
 test -f /usr/share/pixmaps/fedora-logo.svg
 test -d /usr/share/plasma/look-and-feel/dev.getaurora.aurora.desktop
 
-test -f /usr/share/backgrounds/aurora/aurora-wallpaper-9/contents/images/3840x2160.jxl
-test -f /usr/share/wallpapers/aurora-wallpaper-9/contents/images/3840x2160.jxl
+test -f /usr/share/backgrounds/aurora/aurora-wallpaper-10/contents/images/3840x2160.jxl
+test -f /usr/share/wallpapers/aurora-wallpaper-10/contents/images/3840x2160.jxl
 test -L /usr/share/backgrounds/default.jxl
 
 xmllint --noout \
@@ -46,12 +46,12 @@ test -f /usr/share/doc/aurora/aurora.pdf
 test -f /usr/share/homebrew.tar.zst
 
 desktop-file-validate \
-  /usr/share/applications/Discourse.desktop \
-  /usr/share/applications/boot-to-windows.desktop \
-  /usr/share/applications/dev.getaurora.aurora-docs.desktop \
-  /usr/share/applications/documentation.desktop \
-  /usr/share/applications/org.gnome.Ptyxis.desktop \
-  /usr/share/applications/system-update.desktop
+  /usr/share/applications/dev.getaurora.discussions.desktop \
+  /usr/share/applications/dev.getaurora.boot-to-windows.desktop \
+  /usr/share/applications/dev.getaurora.offline-docs.desktop \
+  /usr/share/applications/dev.getaurora.documentation.desktop \
+  /usr/share/applications/dev.getaurora.system-update.desktop \
+  /usr/share/applications/org.gnome.Ptyxis.desktop
 
 # Check for KDE Plasma version mismatch
 # Fedora Repos have gotten the newer one, trying to upgrade

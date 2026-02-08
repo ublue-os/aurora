@@ -1,7 +1,9 @@
-repo_organization := "ublue-os"
+export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
+export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
+export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
+export common_image := env("COMMON_IMAGE", "ghcr.io/get-aurora-dev/common:latest")
+export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
 rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.1-x86_64@sha256:2627cbf92ca60ab7372070dcf93b40f457926f301509ffba47a04d6a9e1ddaf7"
-common_image := "ghcr.io/get-aurora-dev/common:latest"
-brew_image := "ghcr.io/ublue-os/brew:latest"
 stable_version := "43"
 latest_version := "43"
 beta_version := "43"
@@ -111,8 +113,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     common_image_sha=$(yq -r '.images[] | select(.name == "common") | .digest' image-versions.yml)
     brew_image_sha=$(yq -r '.images[] | select(.name == "brew") | .digest' image-versions.yml)
 
-    # Base Image
-    base_image_name="kinoite"
+    # Base image override if needed
     if [[ "${tag}" =~ beta ]]; then
         base_image_name="kinoite-beta"
     fi
@@ -133,7 +134,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}
+    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub ${base_image_org}/${base_image_name}:${fedora_version}
 
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
@@ -181,12 +182,13 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
            target="dx"
     fi
     BUILD_ARGS+=("--build-arg" "AKMODS_FLAVOR=${akmods_flavor}")
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE_ORG=${base_image_org}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
+    BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
     BUILD_ARGS+=("--build-arg" "COMMON_IMAGE={{ common_image }}")
     BUILD_ARGS+=("--build-arg" "COMMON_IMAGE_SHA=${common_image_sha}")
     BUILD_ARGS+=("--build-arg" "BREW_IMAGE={{ brew_image }}")
     BUILD_ARGS+=("--build-arg" "BREW_IMAGE_SHA=${brew_image_sha}")
-    BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
     BUILD_ARGS+=("--build-arg" "IMAGE_NAME=${image_name}")
     BUILD_ARGS+=("--build-arg" "IMAGE_VENDOR={{ repo_organization }}")
     BUILD_ARGS+=("--build-arg" "KERNEL=${kernel_release}")
@@ -202,7 +204,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Pull in most recent upstream base image
     # if building locally/not ghcr pull the new image
     if [[ {{ ghcr }} == "0" ]]; then
-        ${PODMAN} pull "quay.io/fedora-ostree-desktops/${base_image_name}:${fedora_version}"
+        ${PODMAN} pull "${base_image_org}/${base_image_name}:${fedora_version}"
     fi
 
     # Labels
