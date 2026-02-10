@@ -302,6 +302,14 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         ${PODMAN} image scp $(whoami)@localhost::localhost/"${image_name}":"${tag}"
     fi
 
+
+    # In CI this will replace the unrechunked image
+    if [[ {{ ghcr }} == "1" ]]; then
+      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}""
+    else
+      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}"-chunked"
+    fi
+
     # 96 layers, conservative default, same what ci-test is using
     # 499 is podman run limit
     # not using base-imagectl, to avoid pulling 2GiB image for a wrapper script
@@ -315,8 +323,8 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --max-layers 96 \
         --format-version=2 \
         --bootc \
-        --from "localhost/${image_name}":"${tag}" \
-        --output containers-storage:"localhost/${image_name}":"${tag}-chunked"
+        --from "localhost/"${image_name}":"${tag}"" \
+        --output containers-storage:${CHUNKED_IMAGE}
 
     echo "::endgroup::"
 
