@@ -45,7 +45,7 @@ jobs:
       # mount /mnt as /var/lib/containers
       - name: Mount BTRFS for podman storage
         id: container-storage-action
-        uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
+        uses: ublue-os/container-storage-action@dc1f4c8f17b672069e921f001132f7cf98a423a6
         continue-on-error: true
         with:
           target-dir: /var/lib/containers
