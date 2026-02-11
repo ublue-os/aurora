@@ -23,7 +23,7 @@ systemctl enable input-remapper.service
 systemctl enable flatpak-nuke-fedora.service
 
 # TODO: Reinvestigate when bazaar gains dbus activation
-systemctl --global enable bazaar.service
+# systemctl --global enable bazaar.service
 
 # run flatpak preinstall once at startup
 systemctl enable flatpak-preinstall.service
