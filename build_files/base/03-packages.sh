@@ -90,7 +90,6 @@ FEDORA_PACKAGES=(
     gum
     gvfs
     gvfs-fuse
-    heif-pixbuf-loader
     htop
     icoutils
     ifuse
