@@ -76,9 +76,6 @@ FEDORA_PACKAGES=(
     fcitx5-qt
     fcitx5-sayura
     fcitx5-unikey
-    fdk-aac
-    ffmpeg
-    ffmpeg-libs
     fish
     flatpak-spawn
     foo2zjs
@@ -99,7 +96,6 @@ FEDORA_PACKAGES=(
     ifuse
     igt-gpu-tools
     input-remapper
-    intel-vaapi-driver
     iwd
     just
     kate
@@ -114,7 +110,6 @@ FEDORA_PACKAGES=(
     libimobiledevice-utils
     libratbag-ratbagd
     libsss_autofs
-    libva-utils
     libxcrypt-compat
     lm_sensors
     lshw
@@ -124,7 +119,6 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    pipewire-libs-extra
     plasma-wallpapers-dynamic
     powerstat
     powertop
@@ -144,7 +138,6 @@ FEDORA_PACKAGES=(
     tcpdump
     tmux
     traceroute
-    uld
     vim
     yubikey-manager
     zsh
@@ -162,9 +155,19 @@ case "$FEDORA_MAJOR_VERSION" in
         ;;
 esac
 
+NEGATIVO_PACKAGES=(
+    ffmpeg
+    ffmpeg-libs
+    intel-vaapi-driver
+    libfdk-aac
+    libva-utils
+    pipewire-libs-extra
+    uld
+  )
+
 # Install all Fedora packages (bulk - safe from COPR injection)
-echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos..."
-dnf5 -y install "${FEDORA_PACKAGES[@]}"
+echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos and ${#NEGATIVO_PACKAGES[@]} from Negativo..."
+dnf5 -y install "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}"
 
 # Install tailscale package from their repo
 echo "Installing tailscale from official repo..."
