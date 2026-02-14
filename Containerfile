@@ -79,12 +79,6 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=secret,id=GITHUB_TOKEN \
     /ctx/build_files/base/06-override-install.sh
 
-# Get Firmare for Framework
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/08-firmware.sh
-
 # Beta
 RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
