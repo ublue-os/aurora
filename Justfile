@@ -284,6 +284,11 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
     fedora_version=$(jq -r '.Labels["org.opencontainers.image.version"]' < /tmp/manifest.json | grep -oP '^[0-9]+')
 
+    # Base image override if needed
+    if [[ "${tag}" =~ beta ]]; then
+        base_image_name="kinoite-beta"
+    fi
+
     # Check if image is already built
     ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
     if [[ -z "$ID" ]]; then
