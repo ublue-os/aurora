@@ -81,6 +81,14 @@ jobs:
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
+      - name: Setup DNF package cache
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: /var/tmp/buildah-cache-*
+          key: ${{ runner.os }}-buildah-cache-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-buildah-cache-
+
       - name: Build Image
         id: build-image
         shell: bash
