@@ -278,6 +278,12 @@ jobs:
             --key env://COSIGN_PRIVATE_KEY \
             "${IMAGE}@${DIGEST}"
 
+      # https://github.com/actions/cache/issues/1533
+      - name: Hack around permission issue caching
+        id: cache-perms
+        run: |
+          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
+
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
     if: always()
