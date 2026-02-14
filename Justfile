@@ -290,9 +290,11 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fi
 
     # Check if image is already built
-    ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
-    if [[ -z "$ID" ]]; then
-        {{ just }} build "${image}" "${tag}" "${flavor}"
+    if [[ {{ ghcr }} == "0" ]]; then
+        ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
+        if [[ -z "$ID" ]]; then
+            {{ just }} build "${image}" "${tag}" "${flavor}"
+        fi
     fi
 
     ## Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
