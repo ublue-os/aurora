@@ -289,14 +289,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         base_image_name="kinoite-beta"
     fi
 
-    # Check if image is already built
-    if [[ {{ ghcr }} == "0" ]]; then
-        ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
-        if [[ -z "$ID" ]]; then
-            {{ just }} build "${image}" "${tag}" "${flavor}"
-        fi
-    fi
-
     ## Delete the rechunked image if present, rpm-ostree shits itself for whatever reason
     ## workaround for https://github.com/coreos/rpm-ostree/issues/5545
     #if ${SUDOIF} ${PODMAN} image exists "localhost/${image_name}:${tag}-chunked"; then
