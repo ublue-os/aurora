@@ -17,6 +17,10 @@ rpm --erase --nodeps --nodb generic-logos
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
+if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+  /ctx/build_files/shared/build-dx.sh
+fi
+
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_files/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl
 

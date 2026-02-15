@@ -295,4 +295,9 @@ else
     plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 fi
 
+# Install DX specific packages
+if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+  /ctx/build_files/dx/00-dx.sh
+fi
+
 echo "::endgroup::"

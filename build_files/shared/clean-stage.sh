@@ -13,13 +13,6 @@ rm -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service
 
 rm -rf /.gitkeep
 
-# https://bootc-dev.github.io/bootc/filesystem.html#filesystem
-rm -rf /{var,tmp,boot}
-mkdir -p /{var,tmp,boot}
-find /run/* -maxdepth 0 -type d \
-  \! -name .containerenv \
-  \! -name secrets \
-  \! -name systemd \
-  -exec rm -fr {} \;
+rm -rf /var/ && mkdir -p /var/tmp
 
 echo "::endgroup::"

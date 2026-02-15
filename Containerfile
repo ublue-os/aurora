@@ -38,108 +38,34 @@ ARG UBLUE_IMAGE_TAG="stable"
 ARG VERSION=""
 ARG IMAGE_FLAVOR=""
 
-# Prep
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/shared/build.sh
-
 # so ghcurl wrapper is available to all later RUNs
 ENV PATH="/tmp/scripts/helpers:${PATH}"
 
-# Generate image-info.json, os-release
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/00-image-info.sh
-
-# Install Additional Packages
+# Copy files from common/from system_files
+# Install Packages, miscellaneous things that need a network
 RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/03-packages.sh
-
-# Install Kernel and Akmods
-RUN --mount=type=tmpfs,dst=/boot \
+    --mount=type=tmpfs,dst=/var \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_files/base/04-install-kernel-akmods.sh
+    /ctx/build_files/shared/build.sh && \
+    /ctx/build_files/base/01-packages.sh && \
+    /ctx/build_files/base/02-install-kernel-akmods.sh && \
+    /ctx/build_files/base/03-fetch.sh
 
-# Wallpapers/Apperance
+# Everything that can be done offline after things are in place should be done here
 RUN --network=none \
     --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/05-branding.sh
-
-# Install Overrides and Fetch Install
-RUN --mount=type=tmpfs,dst=/boot \
+    --mount=type=tmpfs,dst=/run \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_files/base/06-override-install.sh
-
-# Beta
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    if [ "${UBLUE_IMAGE_TAG}" == "beta" ] ; then \
-      /ctx/build_files/base/10-beta.sh; \
-    fi
-
-# Enable systemd services and Remove Items
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/17-cleanup.sh
-
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/18-workarounds.sh
-
-# Regenerate initramfs
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/19-initramfs.sh
-
-# Aurora-DX
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/shared/build-dx.sh; \
-    fi
-
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/dx/00-dx.sh; \
-    fi
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/shared/validate-repos.sh
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/shared/clean-stage.sh
-
-# Sanity checks
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    /ctx/build_files/base/16-override-install.sh && \
+    /ctx/build_files/base/17-cleanup.sh && \
+    /ctx/build_files/base/18-image-info.sh && \
+    /ctx/build_files/base/19-initramfs.sh && \
+    /ctx/build_files/shared/validate-repos.sh && \
+    /ctx/build_files/shared/clean-stage.sh && \
     /ctx/build_files/base/20-tests.sh
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/dx/10-tests-dx.sh; \
-    fi
 
 # Needs to be here to make the main image build strict (no /opt there)
 # This is for downstream images/stuff like k0s
