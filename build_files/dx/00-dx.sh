@@ -28,7 +28,6 @@ FEDORA_PACKAGES=(
     cockpit-selinux
     cockpit-storaged
     cockpit-system
-    dbus-x11
     edk2-ovmf
     flatpak-builder
     incus
