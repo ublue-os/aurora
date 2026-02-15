@@ -84,12 +84,12 @@ jobs:
       - name: Setup DNF package cache
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         env:
-          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-buildah-${{ env.MATRIX_BASE_NAME }}
+          key: ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
           restore-keys: |
-            ${{ runner.os }}-buildah-${{ env.MATRIX_BASE_NAME }}
+            ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
 
       - name: Build Image
         id: build-image
