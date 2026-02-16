@@ -67,10 +67,6 @@ RUN --network=none \
     /ctx/build_files/shared/clean-stage.sh && \
     /ctx/build_files/base/20-tests.sh
 
-# Needs to be here to make the main image build strict (no /opt there)
-# This is for downstream images/stuff like k0s
-RUN rm -rf /opt && ln -s /var/opt /opt
-
 CMD ["/sbin/init"]
 
 RUN bootc container lint

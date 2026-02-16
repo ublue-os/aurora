@@ -15,4 +15,8 @@ rm -rf /.gitkeep
 
 rm -rf /var/ && mkdir -p /var/tmp
 
+# Needs to be here to make the main image build strict (no /opt there)
+# This is for downstream images/stuff like k0s
+rm -rf /opt && ln -s /var/opt /opt
+
 echo "::endgroup::"
