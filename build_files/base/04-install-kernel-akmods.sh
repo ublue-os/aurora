@@ -37,12 +37,12 @@ dnf copr enable -y ublue-os/akmods
 dnf5 -y install \
     /tmp/akmods/kmods/*xone*.rpm \
     /tmp/akmods/kmods/*openrazer*.rpm \
-    /tmp/akmods/kmods/*framework-laptop*.rpm
+    /tmp/akmods/kmods/*framework-laptop*.rpm || true
 dnf5 -y install \
     https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
     https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
 dnf5 -y install \
-    v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm
+    v4l2loopback /tmp/akmods/kmods/*v4l2loopback*.rpm || true
 dnf5 -y remove rpmfusion-free-release rpmfusion-nonfree-release
 
 mkdir -p /etc/pki/akmods/certs
@@ -50,7 +50,7 @@ ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.
 
 # OpenRazer from hardware:razer repo (not a COPR)
 dnf -y config-manager addrepo --from-repofile=https://openrazer.github.io/hardware:razer.repo
-dnf -y install openrazer-daemon
+dnf -y install openrazer-daemon || true
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
 
 # Nvidia AKMODS
