@@ -130,10 +130,15 @@ RUN --network=none \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build_files/shared/clean-stage.sh
 
+# Set filesystem properties for rechunker
+RUN --network=none \
+    --mount=type=bind,from=ctx,source=/,target=/ctx \
+    /ctx/build_files/base/20-layer-definitions.sh
+
 # Sanity checks
 RUN --network=none \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/20-tests.sh
+    /ctx/build_files/base/21-tests.sh
 
 RUN --network=none \
     --mount=type=bind,from=ctx,source=/,target=/ctx \

@@ -125,31 +125,22 @@ jobs:
           echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
           sudo rm -rf ${OCI_DIR}
 
-      - name: Rechunk Image
-        id: rechunk-image
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
-          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-        run: |
-          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "1"
+      - name: debug
+        run: sudo podman images
 
-      - name: Load Image into Podman
-        id: load-rechunk
-        shell: bash
+      - name: Rechunk Image with rpm-ostree
+        id: rechunker
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) load-rechunk "${MATRIX_BASE_NAME}" \
+          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
                             "${DEFAULT_TAG}" \
                             "${MATRIX_IMAGE_FLAVOR}"
+
+      - name: debug
+        run: sudo podman images
 
       - name: Secureboot Check
         id: secureboot
@@ -211,6 +202,14 @@ jobs:
         with:
           string: ${{ env.IMAGE_REGISTRY }}
 
+      # TODO: remove me when we have a new podman in 26.04 runners
+      # needed because old podman doesn't push layer annotations for
+      # the rpm-ostree rechunker at all
+      - name: install podman from brew
+        if: github.event_name != 'pull_request'
+        run: |
+          /home/linuxbrew/.linuxbrew/bin/brew install podman
+
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
@@ -231,9 +230,15 @@ jobs:
           attempt_delay: 15000
           command: |
             set -euox pipefail
+            # HACK: push a second time so layer annotations are pushed
+            # TODO: remove me when https://github.com/containers/podman/issues/27796 fixed
 
             for tag in ${ALIAS_TAGS}; do
-              sudo -E podman push ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
+            done
+
+            for tag in ${ALIAS_TAGS}; do
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
             done
 
             digest=$(skopeo inspect docker://${LOWERCASE}/${IMAGE_NAME}:${DEFAULT_TAG} --format '{{.Digest}}')
