@@ -6,7 +6,7 @@ images:
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:318e1fb57e7413e70d632c0be337dd4f1692805097c82ca49d61357ae45b1bc5
+    digest: sha256:e7edb400d421f322b74bf52397e1a0b987d08f57909c96084da4dcdf58e13f9a
   - name: brew
     image: ghcr.io/ublue-os/brew
     tag: latest
