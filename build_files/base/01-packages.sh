@@ -135,6 +135,7 @@ FEDORA_PACKAGES=(
     sssd-krb5
     symlinks
     tcpdump
+    tesseract-devel
     tmux
     traceroute
     vim
