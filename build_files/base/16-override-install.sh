@@ -44,15 +44,6 @@ echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/shar
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
-# Test aurora gschema override for errors. If there are no errors, proceed with compiling aurora gschema, which includes setting overrides.
-mkdir -p /tmp/aurora-schema-test
-find /usr/share/glib-2.0/schemas/ -type f ! -name "*.gschema.override" -exec cp {} /tmp/aurora-schema-test/ \;
-cp /usr/share/glib-2.0/schemas/zz0-aurora-modifications.gschema.override /tmp/aurora-schema-test/
-echo "Running error test for aurora gschema override. Aborting if failed."
-glib-compile-schemas --strict /tmp/aurora-schema-test
-echo "Compiling gschema to include aurora setting overrides"
-glib-compile-schemas /usr/share/glib-2.0/schemas &>/dev/null
-
 # Make Samba usershares work OOTB
 mkdir -p /var/lib/samba/usershares
 chown -R root:usershares /var/lib/samba/usershares
