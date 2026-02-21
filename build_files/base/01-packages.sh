@@ -136,6 +136,7 @@ FEDORA_PACKAGES=(
     symlinks
     tcpdump
     tesseract-devel
+    tesseract-langpack-*
     tmux
     traceroute
     vim
