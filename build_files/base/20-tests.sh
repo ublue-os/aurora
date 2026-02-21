@@ -148,6 +148,18 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
   done
 fi
 
+if [[ ${AKMODS_FLAVOR} =~ coreos ]]; then
+  ZFS_PACKAGES=(
+      kmod-zfs
+      libzfs6
+      zfs
+      python3-pyzfs
+)
+  for package in "${ZFS_PACKAGES[@]}"; do
+      rpm -q "${package}" >/dev/null || { echo "Missing ZFS package: ${package}... Exiting"; exit 1 ; }
+  done
+fi
+
 IMPORTANT_UNITS=(
     rpm-ostree-countme.timer
     tailscaled.service
