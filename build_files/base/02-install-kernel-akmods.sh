@@ -34,10 +34,9 @@ dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel
 dnf copr enable -y ublue-os/akmods
 
 # RPMFUSION Dependent AKMODS
-dnf5 -y install \
-    /tmp/akmods/kmods/*xone*.rpm \
-    /tmp/akmods/kmods/*openrazer*.rpm \
-    /tmp/akmods/kmods/*framework-laptop*.rpm || true
+dnf5 -y install /tmp/akmods/kmods/*xone*.rpm || true
+dnf5 -y install /tmp/akmods/kmods/*openrazer*.rpm || true
+
 dnf5 -y install \
     https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
     https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
