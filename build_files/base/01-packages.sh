@@ -79,7 +79,6 @@ FEDORA_PACKAGES=(
     fish
     flatpak-spawn
     foo2zjs
-    freeipa-client
     git-credential-libsecret
     glow
     google-noto-sans-balinese-fonts
