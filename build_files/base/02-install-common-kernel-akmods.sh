@@ -13,26 +13,20 @@ done
 rm -rf /usr/lib/modules
 
 # Install Kernel
-# TODO: Figure out why akmods cache is pulling in akmods/kernel-devel
 dnf5 -y install \
     /tmp/kernel-rpms/kernel-[0-9]*.rpm \
     /tmp/kernel-rpms/kernel-core-*.rpm \
-    /tmp/kernel-rpms/kernel-modules-*.rpm \
-    /tmp/kernel-rpms/kernel-devel-*.rpm
+    /tmp/kernel-rpms/kernel-modules-*.rpm
+
+if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+  dnf -y install /tmp/kernel-rpms/kernel-devel-*.rpm
+fi
 
 dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-dnf copr enable -y ublue-os/akmods
-
 dnf -y install /tmp/rpms/{common,kmods}/*xone*.rpm /tmp/rpms/{common,kmods}/*openrazer*.rpm || true
 
-# RPMFUSION Dependent AKMODS
-dnf -y install \
-    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm
-
-dnf -y install v4l2loopback /tmp/rpms/kmods/*v4l2loopback*.rpm || true
-dnf -y remove rpmfusion-free-release rpmfusion-nonfree-release
+dnf -y install /tmp/rpms/{kmods,common}/*v4l2loopback*.rpm || true
 
 mkdir -p /etc/pki/akmods/certs
 ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.der" --retry 3 -Lo /etc/pki/akmods/certs/akmods-ublue.der
