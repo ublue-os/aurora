@@ -114,16 +114,27 @@ jobs:
           OCI_DIR: "/tmp/image-oci-dir"
         run: |
           mkdir -p ${OCI_DIR}/rootfs
-          sudo podman container create --replace --name aurora-tmp "localhost/${IMAGE}:${STREAM_NAME}"
-          sudo podman export aurora-tmp | sudo tar -C ${OCI_DIR}/rootfs -xf -
-          sudo podman container rm aurora-tmp
+          sudo podman container create --replace --name "${IMAGE}" "localhost/${IMAGE}:${STREAM_NAME}"
+          sudo podman export "${IMAGE}" | sudo tar -C ${OCI_DIR}/rootfs -xf -
+          sudo podman container rm "${IMAGE}"
 
-          OUTPUT_PATH="$(mktemp -d)/sbom.json"
+          SBOM="$(mktemp -d)/sbom.json"
           export SYFT_PARALLELISM=$(($(nproc)*2))
-          sudo $SYFT_CMD --source-name "${IMAGE}"-"${STREAM_NAME}" ${OCI_DIR} -o syft-json=${OUTPUT_PATH}
-          du -sh ${OUTPUT_PATH}
-          echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
+          sudo $SYFT_CMD --source-name "${IMAGE}"-"${STREAM_NAME}" ${OCI_DIR} -o syft-json=${SBOM}
+          du -sh ${SBOM}
+          echo "SBOM=${SBOM}" >> $GITHUB_OUTPUT
           sudo rm -rf ${OCI_DIR}
+
+      - name: Compress SBOM
+        if: github.event_name != 'pull_request'
+        id: compress-sbom
+        env:
+          SBOM: ${{ steps.generate-sbom.outputs.SBOM}}
+        run: |
+          cd "$(dirname "$SBOM")"
+          zstd -q "${SBOM}"
+
+          echo "SBOM=${SBOM}.zst" >> $GITHUB_OUTPUT
 
       - name: Rechunk Image
         id: rechunk-image
@@ -255,20 +266,27 @@ jobs:
           LOWERCASE: ${{ steps.registry_case.outputs.lowercase }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
 
-      - name: Add SBOM Attestation
+      - name: Install ORAS
+        if: github.event_name != 'pull_request'
+        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1.2.4
+
+      - name: Login to GitHub Container Registry with ORAS
+        if: github.event_name != 'pull_request'
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Upload SBOM
         if: github.event_name != 'pull_request'
         env:
           IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           DIGEST: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
-          SBOM_OUTPUT: ${{ steps.generate-sbom.outputs.OUTPUT_PATH }}
+          SBOM: ${{ steps.compress-sbom.outputs.SBOM }}
         run: |
-          cd "$(dirname "$SBOM_OUTPUT")"
-          cosign attest -y \
-            --predicate ./sbom.json \
-            --type spdxjson \
-            --key env://COSIGN_PRIVATE_KEY \
-            "${IMAGE}@${DIGEST}"
+          cd "$(dirname "${SBOM}")"
+          oras attach \
+          --artifact-type application/spdx+json+zstd \
+          "${IMAGE}@${DIGEST}" \
+          "$(basename ${SBOM})"
 
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
