@@ -125,17 +125,6 @@ jobs:
           echo "SBOM=${SBOM}" >> $GITHUB_OUTPUT
           sudo rm -rf ${OCI_DIR}
 
-      - name: Compress SBOM
-        if: github.event_name != 'pull_request'
-        id: compress-sbom
-        env:
-          SBOM: ${{ steps.generate-sbom.outputs.SBOM}}
-        run: |
-          cd "$(dirname "$SBOM")"
-          zstd -q "${SBOM}"
-
-          echo "SBOM=${SBOM}.zst" >> $GITHUB_OUTPUT
-
       - name: Rechunk Image
         id: rechunk-image
         shell: bash
@@ -280,11 +269,11 @@ jobs:
         env:
           IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           DIGEST: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
-          SBOM: ${{ steps.compress-sbom.outputs.SBOM }}
+          SBOM: ${{ steps.generate-sbom.outputs.SBOM }}
         run: |
           cd "$(dirname "${SBOM}")"
           oras attach \
-          --artifact-type application/spdx+json+zstd \
+          --artifact-type application/spdx+json \
           "${IMAGE}@${DIGEST}" \
           "$(basename ${SBOM})"
 
