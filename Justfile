@@ -225,7 +225,16 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"NiHaiden\", \"email\": \"me@nhaiden.io\"}]")
 
     echo "::endgroup::"
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile)
+
+    case "${akmods_flavor}" in
+    "coreos-stable") BUILD_ARGS+=("--cpp-flag=-DZFS") ;;
+    esac
+
+    if [[ "${image_name}" =~ nvidia ]]; then
+        BUILD_ARGS+=("--cpp-flag=-DNVIDIA")
+    fi
+
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile.in)
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
