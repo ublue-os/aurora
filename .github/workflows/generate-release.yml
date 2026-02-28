@@ -43,7 +43,7 @@ jobs:
           just check
 
       - name: Install ORAS
-        uses: oras-project/setup-oras@1.2.4
+        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1.2.4
 
       - name: Generate Release Text
         id: generate-release-text
