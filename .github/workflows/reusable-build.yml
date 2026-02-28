@@ -274,11 +274,12 @@ jobs:
         run: |
           cd "$(dirname "${SBOM}")"
           oras attach \
-          --artifact-type application/spdx+json \
+          --artifact-type application/vnd.spdx+json \
+          --annotation filename=$(basename "$SBOM") \
           "${IMAGE}@${DIGEST}" \
           "$(basename ${SBOM})"
 
-          sbom_digest=$(oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/spdx+json") | .digest')
+          sbom_digest=$(oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')
 
           echo "sbom_digest=${sbom_digest}" >> $GITHUB_OUTPUT
 
