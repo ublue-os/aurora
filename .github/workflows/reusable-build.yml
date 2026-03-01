@@ -81,6 +81,16 @@ jobs:
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
+      - name: Setup DNF package cache
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        with:
+          path: /var/tmp/buildah-cache-*
+          key: ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
+          restore-keys: |
+            ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
+
       - name: Build Image
         id: build-image
         shell: bash
@@ -293,6 +303,12 @@ jobs:
           SBOM_DIGEST: ${{ steps.upload-sbom.outputs.sbom_digest }}
         run: |
           cosign sign -y --key env://COSIGN_PRIVATE_KEY ${LOWERCASE}/${IMAGE_NAME}@${SBOM_DIGEST}
+
+      # https://github.com/actions/cache/issues/1533
+      - name: Hack around permission issue caching
+        id: cache-perms
+        run: |
+          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
 
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
