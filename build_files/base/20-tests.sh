@@ -50,8 +50,7 @@ desktop-file-validate \
   /usr/share/applications/dev.getaurora.boot-to-windows.desktop \
   /usr/share/applications/dev.getaurora.offline-docs.desktop \
   /usr/share/applications/dev.getaurora.documentation.desktop \
-  /usr/share/applications/dev.getaurora.system-update.desktop \
-  /usr/share/applications/org.gnome.Ptyxis.desktop
+  /usr/share/applications/dev.getaurora.system-update.desktop 
 
 # Check for KDE Plasma version mismatch
 # Fedora Repos have gotten the newer one, trying to upgrade
@@ -86,7 +85,6 @@ IMPORTANT_PACKAGES=(
     pipewire
     plasma-desktop
     podman
-    ptyxis
     sddm
     Sunshine
     systemd
