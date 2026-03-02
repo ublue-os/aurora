@@ -1,8 +1,9 @@
 from itertools import product
 import subprocess
 import json
+import os
+import tempfile
 import time
-import base64
 from typing import Any
 import re
 from collections import defaultdict
@@ -175,26 +176,51 @@ def get_image_digest(image: str, tag: str) -> str:
 
 
 def get_sbom(image: str, digest: str) -> dict:
-    """Fetch and verify SBOM using cosign."""
+    """Fetch SBOM using ORAS."""
+    full_ref = f"{image}@{digest}"
+
+    # Find the SBOM referrer attached to this image
     result = subprocess.run(
-        [
-            "cosign", "verify-attestation",
-            "--type", "spdxjson",
-            "--key", COSIGN_KEY,
-            f"{image}@{digest}"
-        ],
+        ["oras", "discover", "--format", "json", full_ref],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
     )
+    discovered = json.loads(result.stdout)
 
-    # The attestation is JSON with base64-encoded payload
-    attestation = json.loads(result.stdout)
-    payload = base64.b64decode(attestation["payload"]).decode("utf-8")
-    payload_json = json.loads(payload)
+    sbom_digest = None
+    for referrer in discovered.get("referrers", []):
+        if "spdx+json" in referrer.get("artifactType", ""):
+            sbom_digest = referrer["digest"]
+            break
 
-    # The SBOM is in the predicate field for some reason
-    return payload_json["predicate"]
+    if sbom_digest is None:
+        raise RuntimeError(f"No SBOM referrer found for {full_ref}")
+
+    sbom_ref = f"{image}@{sbom_digest}"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        subprocess.run(
+            ["oras", "pull", sbom_ref],
+            capture_output=True,
+            check=True,
+            cwd=tmpdir,
+        )
+
+        for fname in os.listdir(tmpdir):
+            fpath = os.path.join(tmpdir, fname)
+            if fname.endswith(".zst"):
+                result = subprocess.run(
+                    ["zstd", "-d", fpath, "--stdout"],
+                    capture_output=True,
+                    check=True,
+                )
+                return json.loads(result.stdout)
+            elif fname.endswith(".json"):
+                with open(fpath) as f:
+                    return json.load(f)
+
+    raise RuntimeError(f"No SBOM file found after pulling {sbom_ref}")
 
 
 def parse_sbom_packages(sbom: dict) -> dict[str, str]:
