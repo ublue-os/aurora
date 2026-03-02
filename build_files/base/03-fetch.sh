@@ -10,6 +10,7 @@ flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/fla
 # Offline Aurora documentation
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
+setfattr -n user.component -v "aurora-offline-docs" /usr/share/doc/aurora/aurora.pdf
 cp /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
 
 # Weekly user count for fastfetch
@@ -29,12 +30,14 @@ mv /tmp/SymbolsNerdFont*.ttf /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 
 # Bash Prexec v0.6.0
 ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-prexec
+setfattr -n user.component -v "bash-prexec" /usr/share/bash-prexec
 
 # use CoreOS' generator for emergency/rescue boot
 # see detail: https://github.com/ublue-os/main/issues/653
 mkdir -p /usr/lib/systemd/system-generators
 ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" --retry 3 -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+setfattr -n user.component -v "coreos-sulogin-force-generator" /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 echo "::endgroup::"
 
