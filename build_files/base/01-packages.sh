@@ -228,6 +228,8 @@ EXCLUDED_PACKAGES=(
     krfb-libs
     plasma-discover-kns
     plasma-discover-rpm-ostree
+    plasma-discover
+    plasma-discover-libs
     plasma-welcome-fedora
     podman-docker
 )
