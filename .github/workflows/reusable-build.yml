@@ -145,11 +145,12 @@ jobs:
         id: rechunker
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
         run: |
           sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
-                            "${DEFAULT_TAG}" \
+                            "${MATRIX_STREAM_NAME}" \
                             "${MATRIX_IMAGE_FLAVOR}" \
                             "1"
 

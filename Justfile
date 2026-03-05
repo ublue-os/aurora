@@ -286,6 +286,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
     fedora_version=$(jq -r '.Labels["org.opencontainers.image.version"]' < /tmp/manifest.json | grep -oP '^[0-9]+')
+    DEFAULT_TAG=$({{ just }} generate-default-tag {{ tag }} {{ ghcr }})
 
     # Base image override if needed
     if [[ "${tag}" =~ beta ]]; then
@@ -298,13 +299,14 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
 
     # In CI this will replace the unrechunked image
     if [[ "{{ ghcr }}" == "1" ]]; then
-      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}""
+      CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}""
     else
-      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}"-chunked"
+      CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}"-chunked"
     fi
 
     # 96 layers, conservative default, same what ci-test is using
     # 499 is podman run limit
+    # in CI this renames stable to stable-daily
     ${SUDOIF} ${PODMAN} run --rm \
         --pull=${PULL_POLICY} \
         --privileged \
