@@ -21,22 +21,7 @@ rm -rf /usr/share/doc/HTML
 # BASE IMAGE CHANGES
 # ######
 
-# Hide Discover entries by renaming them (allows for easy re-enabling)
-discover_apps=(
-  "org.kde.discover.desktop"
-  "org.kde.discover.flatpak.desktop"
-  "org.kde.discover.notifier.desktop"
-  "org.kde.discover.urlhandler.desktop"
-)
-
-for app in "${discover_apps[@]}"; do
-  if [ -f "/usr/share/applications/${app}" ]; then
-    mv "/usr/share/applications/${app}" "/usr/share/applications/${app}.disabled"
-  fi
-done
-
-# These notifications are useless and confusing
-rm /etc/xdg/autostart/org.kde.discover.notifier.desktop
+rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so
 
 # Use Bazaar for Flatpak refs
 # Force Ptyxis version opened via dbus (e.g., keyboard shortcut) to use the proper shim

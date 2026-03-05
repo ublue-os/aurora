@@ -128,8 +128,7 @@ UNWANTED_PACKAGES=(
     fedora-logos
     fedora-third-party
     firefox
-    plasma-discover-kns
-    plasma-discover-rpm-ostree
+    plasma-discover
     plasma-lookandfeel-fedora
     podman-docker
 )

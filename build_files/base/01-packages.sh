@@ -230,8 +230,8 @@ EXCLUDED_PACKAGES=(
     mariadb
     mariadb-common
     mariadb-errmsg
-    plasma-discover-kns
-    plasma-discover-rpm-ostree
+    plasma-discover
+    plasma-discover-libs
     plasma-welcome-fedora
     podman-docker
 )
