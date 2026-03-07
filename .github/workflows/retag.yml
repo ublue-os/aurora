@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       old_tag:
-        description: "Old tag from which images will be retagged to latest"
+        description: "Tag to retag to stable/stable-daily (e.g. 43.20260202)"
         required: true
         type: string
 
