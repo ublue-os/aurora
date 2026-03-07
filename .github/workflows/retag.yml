@@ -39,14 +39,12 @@ jobs:
       packages: write
     steps:
       - uses: Zeglius/ghcr-oci-retagger@1e08f1dac27d25efe1377d9a35f133731bf3d986
-        env:
-          ver: "43"
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX: ghcr.io/${{ github.repository_owner }}/
           TAG_MAPPINGS: |-
-            aurora:${{ inputs.old_tag }} => aurora:latest,stable,${{ env.ver }}
-            aurora-nvidia-open:${{ inputs.old_tag }} => aurora-nvidia-open:latest,stable,${{ env.ver }}
+            aurora:${{ inputs.old_tag }} => aurora:stable,stable-daily
+            aurora-nvidia-open:${{ inputs.old_tag }} => aurora-nvidia-open:stable,stable-daily
 
-            aurora-dx:${{ inputs.old_tag }} => aurora-dx:latest,stable,${{ env.ver }}
-            aurora-dx-nvidia-open:${{ inputs.old_tag }} => aurora-dx-nvidia-open:latest,stable,${{ env.ver }}
+            aurora-dx:${{ inputs.old_tag }} => aurora-dx:stable,stable-daily
+            aurora-dx-nvidia-open:${{ inputs.old_tag }} => aurora-dx-nvidia-open:stable,stable-daily
