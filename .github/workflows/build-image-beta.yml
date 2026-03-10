@@ -12,6 +12,11 @@ on:
    workflow_call:
    workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 jobs:
   build-image-beta:
     name: Build Beta Images
