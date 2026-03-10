@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         env:
-          RENOVATE_VERSION: latest
+          RENOVATE_VERSION: "43.61.0"
         run: npm install -g renovate@${RENOVATE_VERSION}
 
       - name: Validate Renovate config
