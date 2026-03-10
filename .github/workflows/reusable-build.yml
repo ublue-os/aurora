@@ -26,10 +26,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   build_container:
     name: image
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     continue-on-error: false
     strategy:
       fail-fast: false

@@ -12,6 +12,8 @@ on:
       - ".github/renovate.json5"
       - ".github/workflows/renovate.yml"
 
+permissions: {}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
