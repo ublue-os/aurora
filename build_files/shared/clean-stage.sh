@@ -17,6 +17,10 @@ mv '/usr/share/doc/just/README.中文.md' '/usr/share/doc/just/README.zh-cn.md'
 
 rm -rf /.gitkeep
 
+find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \;
+rm -rf /tmp/*
+mkdir -p /var/tmp
+
 # Needs to be here to make the main image build strict (no /opt there)
 # This is for downstream images/stuff like k0s
 rm -rf /opt && ln -s /var/opt /opt
