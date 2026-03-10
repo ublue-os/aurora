@@ -19,6 +19,8 @@ on:
         description: "The full kernel version to pin"
         type: string
 
+permissions: {}
+
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
@@ -31,6 +33,9 @@ jobs:
     name: image
     runs-on: ubuntu-24.04
     continue-on-error: false
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -331,6 +336,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     needs: [build_container]
+    permissions: {}
     steps:
       - name: Check Jobs
         env:

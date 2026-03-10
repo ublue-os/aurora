@@ -16,13 +16,14 @@ on:
         options:
           - '["stable"]'
 
-permissions:
-  contents: write
+permissions: {}
 
 name: Generate Release
 jobs:
   generate-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:

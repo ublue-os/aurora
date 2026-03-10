@@ -12,6 +12,9 @@ on:
       - ".github/renovate.json5"
       - ".github/workflows/renovate.yml"
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest

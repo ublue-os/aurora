@@ -2,18 +2,21 @@ name: Build All Images
 on:
     workflow_dispatch:
 
-permissions:
-    contents: read
-    packages: write
-    id-token: write
+permissions: {}
 
 jobs:
     build-image-stable:
         uses: ./.github/workflows/build-image-stable.yml
         secrets: inherit
+        permissions:
+            contents: write
+            packages: write
     build-image-latest-main:
         uses: ./.github/workflows/build-image-latest-main.yml
         secrets: inherit
+        permissions:
+            contents: write
+            packages: write
 #    build-image-beta:
 #        uses: ./.github/workflows/build-image-beta.yml
 #        secrets: inherit

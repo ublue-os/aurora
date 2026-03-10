@@ -11,6 +11,10 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build-image-latest:
     name: Build Latest Images
