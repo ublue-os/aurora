@@ -13,11 +13,16 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   build-image-stable:
     name: Build Stable Images
     uses: ./.github/workflows/reusable-build.yml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +36,8 @@ jobs:
     name: Generate Release
     needs: [build-image-stable]
     secrets: inherit
+    permissions:
+      contents: write
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["stable", "stable-daily"]'

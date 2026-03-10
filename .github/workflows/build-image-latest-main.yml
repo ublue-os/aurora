@@ -11,11 +11,16 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   build-image-latest:
     name: Build Latest Images
     uses: ./.github/workflows/reusable-build.yml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +35,8 @@ jobs:
     name: Generate Release
     needs: [build-image-latest]
     secrets: inherit
+    permissions:
+      contents: write
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["latest"]'
