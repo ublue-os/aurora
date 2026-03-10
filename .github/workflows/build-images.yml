@@ -3,9 +3,9 @@ on:
     workflow_dispatch:
 
 permissions:
-    contents: read
-    packages: write
-    id-token: write
+  contents: write
+  packages: write
+  id-token: write
 
 jobs:
     build-image-stable:

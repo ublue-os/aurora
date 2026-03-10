@@ -12,6 +12,8 @@ on:
       - "Justfile"
       - "just/*"
 
+permissions: {}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
