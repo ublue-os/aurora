@@ -145,5 +145,4 @@ CMD ["/sbin/init"]
 
 RUN --network=none \
     --mount=type=tmpfs,dst=/run \
-    --mount=type=tmpfs,dst=/tmp \
     bootc container lint
