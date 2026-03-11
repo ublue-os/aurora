@@ -15,6 +15,9 @@ BACKUP_KEY=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[1]' /etc/c
 KEY1_SHA256="af78ecfda6eb21c35195af3739341715e9cfc3f2f5911dd9c10b0670547bf6e8"
 BACKUP_KEY_SHA256="b723467015ba562d40b4645c98c51c65d8254bb59444f6e9962debcfe2315da0"
 
+RPM_OSTREED_CONF_SHA256="f48bb2359e9c31ed464127048138993e2e058bb648e5fd9ba7b7386a2b5eb174"
+echo "${RPM_OSTREED_CONF_SHA256}  /etc/rpm-ostreed.conf" | sha256sum -c -
+
 echo "${KEY1_SHA256}  ${KEY1}" | sha256sum -c -
 echo "${BACKUP_KEY_SHA256}  ${BACKUP_KEY}" | sha256sum -c -
 
