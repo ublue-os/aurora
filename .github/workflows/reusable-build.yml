@@ -263,7 +263,7 @@ jobs:
           name: ${{ env.IMAGE_NAME }}.oci
           path: ${{ env.IMAGE_NAME }}_build
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
 
       - name: PR Testing Instructions
         if: github.event_name == 'pull_request'
