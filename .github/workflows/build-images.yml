@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   packages: write
   id-token: write
 
@@ -11,9 +11,17 @@ jobs:
     build-image-stable:
         uses: ./.github/workflows/build-image-stable.yml
         secrets: inherit
+        permissions:
+          contents: write
+          packages: write
+          id-token: write
     build-image-latest-main:
         uses: ./.github/workflows/build-image-latest-main.yml
         secrets: inherit
+        permissions:
+          contents: write
+          packages: write
+          id-token: write
 #    build-image-beta:
 #        uses: ./.github/workflows/build-image-beta.yml
 #        secrets: inherit
