@@ -6,7 +6,7 @@ export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
 rechunker_image := "ghcr.io/ublue-os/legacy-rechunk:v1.0.1-x86_64@sha256:2627cbf92ca60ab7372070dcf93b40f457926f301509ffba47a04d6a9e1ddaf7"
 stable_version := "43"
 latest_version := "43"
-beta_version := "43"
+beta_version := "44"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -112,11 +112,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     common_image_sha=$(yq -r '.images[] | select(.name == "common") | .digest' image-versions.yml)
     brew_image_sha=$(yq -r '.images[] | select(.name == "brew") | .digest' image-versions.yml)
-
-    # Base image override if needed
-    if [[ "${tag}" =~ beta ]]; then
-        base_image_name="kinoite-beta"
-    fi
 
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
