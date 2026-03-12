@@ -288,11 +288,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fedora_version=$(jq -r '.Labels["org.opencontainers.image.version"]' < /tmp/manifest.json | grep -oP '^[0-9]+')
     DEFAULT_TAG=$({{ just }} generate-default-tag {{ tag }} {{ ghcr }})
 
-    # Base image override if needed
-    if [[ "${tag}" =~ beta ]]; then
-        base_image_name="kinoite-beta"
-    fi
-
     if [[ "{{ ghcr }}" == "0" ]]; then
       {{ just }} load-rootful "${image}" "${tag}" "${flavor}"
     fi
