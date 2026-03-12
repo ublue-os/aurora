@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   packages: write
   id-token: write
 
@@ -35,6 +35,8 @@ jobs:
   generate-release:
     name: Generate Release
     needs: [build-image-stable]
+    permissions:
+      contents: write
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:

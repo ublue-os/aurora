@@ -13,6 +13,8 @@ on:
     - cron: '* * 1/7 * *'
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 # Declare default permissions as read only.
 permissions: read-all
@@ -20,9 +22,9 @@ permissions: read-all
 jobs:
   analysis:
     name: Scorecard analysis
-    runs-on: ubuntu-latest
-    # `publish_results: true` only works when run from the default branch. conditional can be removed if disabled.
-    if: github.event.repository.default_branch == github.ref_name || github.event_name == 'pull_request'
+    runs-on: ubuntu-slim
+    # Only run full analysis on the default branch (push/schedule); PRs use the regression-check job instead.
+    if: github.event_name != 'pull_request'
     permissions:
       # Needed to upload the results to code-scanning dashboard.
       security-events: write
@@ -76,3 +78,22 @@ jobs:
         uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4
         with:
           sarif_file: results.sarif
+
+  regression-check:
+    name: Scorecard regression check
+    runs-on: ubuntu-slim
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: "Check for score regressions"
+        uses: bootc-dev/actions/openssf-scorecard@d9dc9861818beab23816e2a81a04507a91670232
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
