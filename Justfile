@@ -113,11 +113,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     common_image_sha=$(yq -r '.images[] | select(.name == "common") | .digest' image-versions.yml)
     brew_image_sha=$(yq -r '.images[] | select(.name == "brew") | .digest' image-versions.yml)
 
-    # Base image override if needed
-    if [[ "${tag}" =~ beta ]]; then
-        base_image_name="kinoite-beta"
-    fi
-
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
