@@ -1,11 +1,9 @@
 name: Beta Images
 on:
-   #All triggers disabled to stop beta builds
    merge_group:
    pull_request:
      branches:
-       - main
-       - testing
+       - beta
      paths-ignore:
        - "**.md"
        - ".github/workflows/moderator.yml"
