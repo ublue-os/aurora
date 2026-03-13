@@ -93,7 +93,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Check for score regressions"
-        uses: bootc-dev/actions/openssf-scorecard@b4d2d768b16c787d8d8faeb9c4956cd373919be4
+        uses: bootc-dev/actions/openssf-scorecard@ea295123d670bbd0b3f0a30219936162fef7fe06
         with:
           base-sha: ${{ github.event.pull_request.base.sha }}
           head-sha: ${{ github.event.pull_request.head.sha }}
