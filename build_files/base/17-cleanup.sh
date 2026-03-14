@@ -13,7 +13,6 @@ systemctl enable tailscaled.service
 systemctl enable dconf-update.service
 systemctl enable brew-setup.service
 systemctl enable aurora-groups.service
-systemctl enable usr-share-sddm-themes.mount
 systemctl enable ublue-system-setup.service
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
