@@ -227,9 +227,6 @@ EXCLUDED_PACKAGES=(
     khelpcenter
     krfb
     krfb-libs
-    mariadb
-    mariadb-common
-    mariadb-errmsg
     plasma-discover-kns
     plasma-discover-rpm-ostree
     plasma-welcome-fedora
