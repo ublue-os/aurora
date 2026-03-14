@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+# WARNING: This workflow is meant for emergency use only.
+# Under NO CIRCUMSTANCES should this workflow be automatically triggered.
+name: Retag image
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+    inputs:
+      old_tag:
+        description: "Tag to retag to stable/stable-daily (e.g. 43.20260202)"
+        required: true
+        type: string
+
+jobs:
+  safeguard-timer:
+    runs-on: ubuntu-latest
+    if: inputs.old_tag != ''
+    steps:
+      - name: Safeguard wait
+        env:
+          SLEEP_TIME: "30"
+        run: |
+          echo "Triggered safeguard."
+          echo "You have $SLEEP_TIME seconds to cancel the workflow if you want to cancel retagging."
+          sleep $SLEEP_TIME
+
+  retag-images:
+    runs-on: ubuntu-latest
+    if: inputs.old_tag != ''
+    needs: [safeguard-timer]
+    permissions:
+      packages: write
+    steps:
+      - uses: Zeglius/ghcr-oci-retagger@1e08f1dac27d25efe1377d9a35f133731bf3d986
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREFIX: ghcr.io/${{ github.repository_owner }}/
+          TAG_MAPPINGS: |-
+            aurora:${{ inputs.old_tag }} => aurora:stable,stable-daily
+            aurora-nvidia-open:${{ inputs.old_tag }} => aurora-nvidia-open:stable,stable-daily
+
+            aurora-dx:${{ inputs.old_tag }} => aurora-dx:stable,stable-daily
+            aurora-dx-nvidia-open:${{ inputs.old_tag }} => aurora-dx-nvidia-open:stable,stable-daily
