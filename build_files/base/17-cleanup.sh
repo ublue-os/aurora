@@ -44,8 +44,6 @@ for file in htop nvtop; do
     fi
 done
 
-systemctl disable flatpak-add-fedora-repos.service
-
 # NOTE: With isolated COPR installation, most repos are never enabled globally.
 # We only need to clean up repos that were enabled during the build process.
 

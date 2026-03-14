@@ -268,6 +268,10 @@ dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
 
+
+# needs to be removed before we swap the version
+systemctl disable flatpak-add-fedora-repos.service
+
 # TODO: remove me on next flatpak release when preinstall landed in Fedora
 dnf5 -y copr enable ublue-os/flatpak-test
 dnf5 -y copr disable ublue-os/flatpak-test
