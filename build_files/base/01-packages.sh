@@ -60,6 +60,7 @@ FEDORA_PACKAGES=(
     alsa-firmware
     apr
     apr-util
+    autofs
     borgbackup
     davfs2
     distrobox
