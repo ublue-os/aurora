@@ -90,7 +90,7 @@ IMPORTANT_PACKAGES=(
     plasma-desktop
     podman
     ptyxis
-    sddm
+    plasma-login-manager
     Sunshine
     systemd
     tailscale
