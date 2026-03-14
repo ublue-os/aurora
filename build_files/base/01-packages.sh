@@ -94,7 +94,6 @@ FEDORA_PACKAGES=(
     htop
     icoutils
     ifuse
-    igt-gpu-tools
     input-remapper
     iwd
     just
@@ -269,6 +268,10 @@ dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   fwupd fwupd
 
+
+# needs to be removed before we swap the version
+systemctl disable flatpak-add-fedora-repos.service
+
 # TODO: remove me on next flatpak release when preinstall landed in Fedora
 dnf5 -y copr enable ublue-os/flatpak-test
 dnf5 -y copr disable ublue-os/flatpak-test
@@ -287,15 +290,7 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-# Explicitly install KDE Plasma related packages with the same version as in base image
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
-  dnf -y copr enable @kdesig/kde-beta
-  dnf -y copr disable @kdesig/kde-beta
-  dnf -y --repo=copr:copr.fedorainfracloud.org:group_kdesig:kde-beta install plasma-firewall
-else
-  dnf -y install \
-    plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
-fi
+dnf -y install plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
