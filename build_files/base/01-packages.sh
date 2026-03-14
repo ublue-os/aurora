@@ -287,14 +287,6 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-# This can all be removed when
-# https://bodhi.fedoraproject.org/updates/FEDORA-2026-b0568b39a2
-# made it into our base image
-# https://github.com/coreos/rpm-ostree/issues/5567
-dnf -y install rpm-ostree-2025.12-1.fc"$(rpm -E %fedora)"
-# workaround for https://github.com/coreos/rpm-ostree/issues/5573
-cp /ctx/system_files/shared/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf
-
 # Explicitly install KDE Plasma related packages with the same version as in base image
 if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
   dnf -y copr enable @kdesig/kde-beta
