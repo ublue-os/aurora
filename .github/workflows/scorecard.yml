@@ -21,8 +21,6 @@ jobs:
   analysis:
     name: Scorecard analysis
     runs-on: ubuntu-latest
-    # Only run full analysis on the default branch (push/schedule); PRs use the regression-check job instead.
-    if: github.event_name != 'pull_request'
     permissions:
       # Needed to upload the results to code-scanning dashboard.
       security-events: write
