@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
+      - ".github/workflows/scorecard.yml"
   schedule:
     - cron: "0 1 * * TUE" # Every Tuesday at 1:15 AM
   workflow_call:
