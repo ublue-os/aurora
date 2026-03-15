@@ -7,6 +7,12 @@ on:
      paths-ignore:
        - "**.md"
        - ".github/workflows/moderator.yml"
+   push:
+      branches:
+        - beta
+      paths-ignore:
+        - "**.md"
+        - ".github/workflows/moderator.yml"
    workflow_call:
    workflow_dispatch:
 
