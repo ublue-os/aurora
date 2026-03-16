@@ -250,12 +250,6 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
-# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
-rpm --erase --nodeps plasma-lookandfeel-fedora
-# rpm erase doesn't remove actual files
-rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
-
-
 # https://github.com/ublue-os/bazzite/issues/1400
 # TODO: test if we still need this when upgrading firmware with fwupd
 dnf -y copr enable ublue-os/staging
@@ -276,6 +270,8 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flatpak-debuginfo flatpak-libs-debuginfo flatpak-session-helper-debuginfo
 
+dnf -y install plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
 # Remember to leave a note with rationale/link to issue for each pin!
@@ -286,7 +282,13 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flat
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-dnf -y install plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+# https://invent.kde.org/plasma/plasma-setup/-/issues/72
+dnf swap -y plasma-setup https://0x0.st/PL7F.rpm
+
+# we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
+rpm --erase --nodeps plasma-lookandfeel-fedora
+# rpm erase doesn't remove actual files
+rm -rf /usr/share/plasma/look-and-feel/org.fedoraproject.fedora.desktop/
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
