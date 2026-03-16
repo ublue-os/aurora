@@ -14,6 +14,7 @@
 # This got created on Tue, 16 Dec 2025 00:44:58 -0300
 [Unit]
 Description=Fix groups for Legacy rechunker
+ConditionPathExists=/run/ostree-booted
 Wants=local-fs.target
 After=local-fs.target
 Before=systemd-user-sessions.service
