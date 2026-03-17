@@ -24,7 +24,7 @@ fi
 
 dnf5 versionlock add kernel kernel-devel kernel-devel-matched kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-dnf -y install /tmp/rpms/{common,kmods}/*xone*.rpm /tmp/rpms/{common,kmods}/*openrazer*.rpm || true
+dnf -y install /tmp/rpms/{common,kmods}/*xone*.rpm|| true
 
 dnf -y install /tmp/rpms/{kmods,common}/*v4l2loopback*.rpm || true
 
