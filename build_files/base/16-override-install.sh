@@ -38,4 +38,11 @@ setsebool -P samba_export_all_ro=1
 setsebool -P samba_export_all_rw=1
 sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
 
+# so we can share the plasma-setup package with bazzite
+# symlinking ours to be named like bazzite's default convergence wallpaper
+# https://invent.kde.org/plasma/plasma-setup/-/issues/72
+# https://github.com/ublue-os/packages/pull/1191
+mkdir -p /usr/share/wallpapers/.ublue-plasma-setup/contents/images
+ln -s /usr/share/backgrounds/default.jxl /usr/share/wallpapers/.ublue-plasma-setup/contents/images/3940x2160.jxl
+
 echo "::endgroup::"
