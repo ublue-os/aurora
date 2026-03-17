@@ -24,6 +24,10 @@ systemctl enable flatpak-nuke-fedora.service
 # TODO: Reinvestigate when bazaar gains dbus activation
 # systemctl --global enable bazaar.service
 
+# see /usr/bin/rechunker-group-fix
+# DO NOT REMOVE THIS
+systemctl enable rechunker-group-fix.service
+
 # run flatpak preinstall once at startup
 systemctl enable flatpak-preinstall.service
 

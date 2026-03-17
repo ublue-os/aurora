@@ -3,8 +3,7 @@
 flatpaks_with_deps
 flatpak.*
 
-*_build
-*_build.*
+aurora*.oci
 previous.manifest.json
 changelog.md
 output.env
