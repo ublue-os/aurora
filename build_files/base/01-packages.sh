@@ -270,7 +270,9 @@ dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test swap flatpak-session-helper flatpak-session-helper
 dnf5 -y --repo=copr:copr.fedorainfracloud.org:ublue-os:flatpak-test install flatpak-debuginfo flatpak-libs-debuginfo flatpak-session-helper-debuginfo
 
-dnf -y install plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
+
+PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
+dnf -y install plasma-firewall-"${PLASMA_VERS}"
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
@@ -287,7 +289,7 @@ dnf -y copr enable ublue-os/staging
 dnf -y copr disable ublue-os/staging
 dnf5 -y swap \
   --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-plasma-setup plasma-setup
+plasma-setup plasma-setup-"${PLASMA_VERS}"
 
 # we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
 rpm --erase --nodeps plasma-lookandfeel-fedora
