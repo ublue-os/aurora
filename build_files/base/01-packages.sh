@@ -283,7 +283,11 @@ dnf -y install plasma-firewall-$(rpm -q --qf "%{VERSION}" plasma-desktop)
 #fi
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
-dnf swap -y plasma-setup https://0x0.st/PL7F.rpm
+dnf -y copr enable ublue-os/staging
+dnf -y copr disable ublue-os/staging
+dnf5 -y swap \
+  --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+plasma-setup plasma-setup
 
 # we can't remove plasma-lookandfeel-fedora package because it is a dependency of plasma-desktop
 rpm --erase --nodeps plasma-lookandfeel-fedora
