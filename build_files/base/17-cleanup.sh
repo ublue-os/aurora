@@ -29,7 +29,7 @@ systemctl enable flatpak-nuke-fedora.service
 systemctl enable flatpak-preinstall.service
 
 # disable sunshine service
-systemctl --global disable sunshine.service
+systemctl --global disable app-dev.lizardbyte.app.Sunshine
 
 # Updater
 systemctl enable uupd.timer
