@@ -32,7 +32,7 @@ systemctl enable rechunker-group-fix.service
 systemctl enable flatpak-preinstall.service
 
 # disable sunshine service
-systemctl --global disable sunshine.service
+systemctl --global disable app-dev.lizardbyte.app.Sunshine.service
 
 # Updater
 systemctl enable uupd.timer
