@@ -57,11 +57,6 @@ for repo in fedora-multimedia tailscale fedora-cisco-openh264; do
     fi
 done
 
-# Disable hardware:razer repo if it exists
-if [[ -f "/etc/yum.repos.d/hardware:razer.repo" ]]; then
-    sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
-fi
-
 # Disable Terra repos (installed on F42 and earlier)
 for i in /etc/yum.repos.d/terra*.repo; do
     if [[ -f "$i" ]]; then
