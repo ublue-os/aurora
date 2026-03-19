@@ -24,11 +24,15 @@ systemctl enable flatpak-nuke-fedora.service
 # TODO: Reinvestigate when bazaar gains dbus activation
 # systemctl --global enable bazaar.service
 
+# see /usr/bin/rechunker-group-fix
+# DO NOT REMOVE THIS
+systemctl enable rechunker-group-fix.service
+
 # run flatpak preinstall once at startup
 systemctl enable flatpak-preinstall.service
 
 # disable sunshine service
-systemctl --global disable sunshine.service
+systemctl --global disable app-dev.lizardbyte.app.Sunshine.service
 
 # Updater
 systemctl enable uupd.timer
@@ -52,11 +56,6 @@ for repo in fedora-multimedia tailscale fedora-cisco-openh264; do
         sed -i 's@enabled=1@enabled=0@g' "/etc/yum.repos.d/${repo}.repo"
     fi
 done
-
-# Disable hardware:razer repo if it exists
-if [[ -f "/etc/yum.repos.d/hardware:razer.repo" ]]; then
-    sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/hardware:razer.repo
-fi
 
 # Disable Terra repos (installed on F42 and earlier)
 for i in /etc/yum.repos.d/terra*.repo; do

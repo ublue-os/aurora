@@ -17,6 +17,13 @@ rpm --erase --nodeps --nodb generic-logos
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
+setfattr -n user.component -v "aurora-wallpapers" /usr/share/backgrounds/aurora
+setfattr -n user.component -v "aurora-assets" /usr/share/plasma/avatars/{echo,lumina,scope,tina,vincent}.png
+setfattr -n user.component -v "aurora-assets" /etc/bazaar
+setfattr -n user.component -v "aurora-plasma-theme" /usr/share/plasma/look-and-feel/dev.getaurora.aurora{,light}.desktop
+setfattr -n user.component -v "aurora-config" /usr/share/ublue-os
+setfattr -n user.component -v "homebrew" /usr/share/homebrew.tar.zst
+
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
   /ctx/build_files/shared/build-dx.sh
 fi
