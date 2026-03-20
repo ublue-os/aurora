@@ -43,7 +43,10 @@ test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 
 # Basic smoke test to check if the flatpak version is from our copr
-flatpak preinstall --help
+flatpak preinstall --help > /dev/null 2>&1
+
+# Make sure to not pull in the bazzite one
+rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
 
 test -f /usr/share/doc/aurora/aurora.pdf
 test -f /usr/share/homebrew.tar.zst
