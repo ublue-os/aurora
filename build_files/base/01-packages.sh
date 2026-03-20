@@ -108,7 +108,6 @@ FEDORA_PACKAGES=(
     libfdk-aac
     libimobiledevice-utils
     libratbag-ratbagd
-    libsss_autofs
     libxcrypt-compat
     lm_sensors
     lshw
@@ -129,9 +128,6 @@ FEDORA_PACKAGES=(
     setools-console
     solaar-udev
     squashfs-tools
-    sssd-ad
-    sssd-ipa
-    sssd-krb5
     symlinks
     tcpdump
     tesseract-devel
