@@ -300,7 +300,9 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     fi
 
     # 96 layers, conservative default, same what ci-test is using
+    # one layer is secretly being added for the ostree export
     # 499 is podman run limit
+    # 128 is docker pull limit
     # in CI this renames stable to stable-daily
     ${SUDOIF} ${PODMAN} run --rm \
         --pull=${PULL_POLICY} \
@@ -309,7 +311,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --entrypoint /usr/bin/rpm-ostree \
         "${base_image_org}/${base_image_name}:${fedora_version}" \
         compose build-chunked-oci \
-        --max-layers 128 \
+        --max-layers 127 \
         --format-version=2 \
         --bootc \
         --from "localhost/"${image_name}":"${tag}"" \
