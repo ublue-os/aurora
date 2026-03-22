@@ -37,6 +37,8 @@ jobs:
       packages: write
       id-token: write
       attestations: write
+      artifact-metadata: write
+
     continue-on-error: false
     strategy:
       fail-fast: false
