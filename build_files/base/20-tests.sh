@@ -143,7 +143,7 @@ done
 if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
   NV_PACKAGES=(
       kmod-nvidia
-      libnvidia-container-tools
+      nvidia-container-toolkit
       nvidia-driver-cuda
 )
   for package in "${NV_PACKAGES[@]}"; do
