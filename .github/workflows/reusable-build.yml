@@ -90,15 +90,30 @@ jobs:
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
-      - name: Setup DNF package cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - name: DNF Package Cache Setup
+        shell: bash
+        id: setup-cache
         env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          CACHE="$(just setup-cache "${MATRIX_BASE_NAME}" \
+                            "1" \
+                            "${GITHUB_EVENT_NAME}")"
+
+          CACHE_NAME="$(echo "${CACHE}" | cut -d' ' -f 1)"
+          ALLOW_CACHE_WRITE="$(echo "${CACHE}" | cut -d' ' -f 2)"
+
+          echo "cache_name=${CACHE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "allow_cache_write=${ALLOW_CACHE_WRITE}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore DNF package cache
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        env:
+          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
-          restore-keys: |
-            ${{ runner.os }}-buildah-${{ env.IMAGE_NAME }}
+          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
 
       - name: Build Image
         id: build-image
@@ -115,6 +130,22 @@ jobs:
                                "${MATRIX_STREAM_NAME}" \
                                "${MATRIX_IMAGE_FLAVOR}" \
                                "${INPUTS_KERNEL_PIN}"
+
+      # https://github.com/actions/cache/issues/1533
+      - name: Hack around permission issue caching
+        shell: bash
+        id: cache-perms
+        run: |
+          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
+
+      - name: Write new DNF package cache
+        if: steps.setup-cache.outputs.allow_cache_write == 'true'
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        env:
+          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
+        with:
+          path: /var/tmp/buildah-cache-*
+          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
 
       - name: Setup Syft
         id: setup-syft
@@ -337,12 +368,6 @@ jobs:
           subject-name: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.outputs && fromJSON(steps.push.outputs.outputs).digest }}
           push-to-registry: true
-
-      # https://github.com/actions/cache/issues/1533
-      - name: Hack around permission issue caching
-        id: cache-perms
-        run: |
-          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
 
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
