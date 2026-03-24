@@ -717,13 +717,15 @@ setup-cache $image="aurora" $ghcr="0" $github_event="0":
 
     ALLOW_CACHE_WRITE="false"
 
-    if [[ "${image_name}" == "aurora-dx" ]] && \
+    BLESSED_IMAGE=aurora-dx
+
+    if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
        [[ "{{ ghcr }}" == "1" ]] && \
        [[ "${github_event}" == "workflow_dispatch" || "${github_event}" == "schedule" ]]; then
         ALLOW_CACHE_WRITE="true"
     fi
 
-    CACHE_NAME="${image_name}"-"${fedora_version}"
+    CACHE_NAME="${BLESSED_IMAGE}-${fedora_version}"
 
     echo "${CACHE_NAME}" "${ALLOW_CACHE_WRITE}"
 
