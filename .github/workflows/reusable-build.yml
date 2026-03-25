@@ -95,9 +95,11 @@ jobs:
         id: setup-cache
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
           CACHE="$(just setup-cache "${MATRIX_BASE_NAME}" \
+                            "${MATRIX_STREAM_NAME}" \
                             "1" \
                             "${GITHUB_EVENT_NAME}")"
 
