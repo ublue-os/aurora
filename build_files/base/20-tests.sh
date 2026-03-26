@@ -110,7 +110,7 @@ NEGATIVO=(
     libheif
     libva
     mesa-filesystem
-    mesa-va-drivers
+    mesa-dri-drivers
     pipewire-libs-extra
     x264-libs
     x265-libs
