@@ -273,7 +273,7 @@ build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
 # Rechunk Image
 [group('Image')]
 [private]
-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
+rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
     #!/usr/bin/bash
 
     set -eoux pipefail
@@ -290,13 +290,20 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
       {{ just }} load-rootful "${image}" "${tag}" "${flavor}"
     fi
 
+      # TODO: Redo everything here with --previous-build in rpm-ostree 2026.1+
+      # so we don't have to pull an old image + rename it
+    if [[ "{{ previous_build }}" == "1" ]]; then
+      PREVIOUS_IMAGE=ghcr.io/{{ repo_organization }}/"${image_name}":"${DEFAULT_TAG}" 
+      ${SUDOIF} ${PODMAN} pull ${PREVIOUS_IMAGE}
+    fi
+
     if [[ "{{ ghcr }}" == "1" ]]; then
-      # TODO: Replace this with --previous-build in rpm-ostree 2026.1+
-      # so we don't have to pull an old image anymore
-      PREVIOUS_BUILD=ghcr.io/{{ repo_organization }}/"${image_name}":"${DEFAULT_TAG}"
-      ${SUDOIF} ${PODMAN} pull ${PREVIOUS_BUILD}
-      CHUNKED_IMAGE="${PREVIOUS_BUILD}"
+      CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}""
+        if [[ "{{ previous_build }}" == "1" ]]; then
+          CHUNKED_IMAGE="${PREVIOUS_IMAGE}"
+        fi
     else
+      # keep the original unrechunked image for local builds
       CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}"-chunked"
     fi
 
@@ -318,8 +325,8 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --from "localhost/"${image_name}":"${tag}"" \
         --output containers-storage:${CHUNKED_IMAGE}
 
-    # Rename image from ghcr... to localhost... and discard PREVIOUS_BUILD
-    if [[ "{{ ghcr }}" == "1" ]]; then
+    # rename the image to localhost
+    if [[ "{{ ghcr }}" == "1" && "{{ previous_build }}" == "1" ]]; then
       ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "localhost/"${image_name}":"${tag}""
       ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
     fi
