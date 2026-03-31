@@ -290,9 +290,12 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
       {{ just }} load-rootful "${image}" "${tag}" "${flavor}"
     fi
 
-    # In CI this will replace the unrechunked image
     if [[ "{{ ghcr }}" == "1" ]]; then
-      CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}""
+      # TODO: Replace this with --previous-build in rpm-ostree 2026.1+
+      # so we don't have to pull an old image anymore
+      PREVIOUS_BUILD=ghcr.io/{{ repo_organization }}/"${image_name}":"${DEFAULT_TAG}"
+      ${SUDOIF} ${PODMAN} pull ${PREVIOUS_BUILD}
+      CHUNKED_IMAGE="${PREVIOUS_BUILD}"
     else
       CHUNKED_IMAGE="localhost/"${image_name}":"${DEFAULT_TAG}"-chunked"
     fi
@@ -314,6 +317,12 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --bootc \
         --from "localhost/"${image_name}":"${tag}"" \
         --output containers-storage:${CHUNKED_IMAGE}
+
+    # Rename image from ghcr... to localhost... and discard PREVIOUS_BUILD
+    if [[ "{{ ghcr }}" == "1" ]]; then
+      ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "localhost/"${image_name}":"${tag}""
+      ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
+    fi
 
     # Pipeline Checks
     if [[ {{ pipeline }} == "1" && -n "${SUDO_USER:-}" ]]; then
