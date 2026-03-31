@@ -18,6 +18,12 @@ on:
       kernel_pin:
         description: "The full kernel version to pin"
         type: string
+  workflow_dispatch:
+    inputs:
+      previous_build:
+        description: 'Set to 0 to manually Clear Rechunking Plan'
+        type: string
+        default: '1'
 
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
@@ -184,11 +190,14 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          PREVIOUS_BUILD: ${{ inputs.previous_build || '1' }}
         run: |
           sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
                             "${MATRIX_STREAM_NAME}" \
                             "${MATRIX_IMAGE_FLAVOR}" \
-                            "1"
+                            "1" \
+                            "1" \
+                            "${PREVIOUS_BUILD}"
 
       - name: Secureboot Check
         id: secureboot
