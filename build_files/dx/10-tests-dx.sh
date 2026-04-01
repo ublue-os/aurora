@@ -17,7 +17,7 @@ for package in "${IMPORTANT_PACKAGES_DX[@]}"; do
 done
 
 IMPORTANT_UNITS=(
-    #docker.socket
+    docker.socket
     podman.socket
 )
 

@@ -76,13 +76,21 @@ fi
 # Docker packages from their repo
 dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
 sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
-dnf -y install --enablerepo=docker-ce-stable \
-    containerd.io \
-    docker-buildx-plugin \
-    docker-ce \
-    docker-ce-cli \
-    docker-compose-plugin \
+DOCKER_PACKAGES=(
+    containerd.io
+    docker-ce
+    docker-ce-cli
+    docker-compose-plugin
     docker-model-plugin
+)
+# docker-buildx-plugin is not yet available for Fedora 44+
+# TODO: re-add once https://download.docker.com/linux/fedora/docker-ce.repo carries it for F44
+if [[ "$FEDORA_MAJOR_VERSION" -le 43 ]]; then
+    DOCKER_PACKAGES+=(docker-buildx-plugin)
+else
+    echo "WARNING: docker-buildx-plugin skipped — not yet available for Fedora ${FEDORA_MAJOR_VERSION}"
+fi
+dnf -y install --enablerepo=docker-ce-stable "${DOCKER_PACKAGES[@]}"
 
 # VSCode package from Microsoft repo
 echo "Installing VSCode from official repo..."
