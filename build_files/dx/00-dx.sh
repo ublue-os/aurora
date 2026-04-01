@@ -74,16 +74,15 @@ if [[ ! "${IMAGE_NAME}" =~ nvidia ]]; then
 fi
 
 # Docker packages from their repo
-# TODO: enable ones these are available for Fedora 44
-#dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-#sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
-#dnf -y install --enablerepo=docker-ce-stable \
-#    containerd.io \
-#    docker-buildx-plugin \
-#    docker-ce \
-#    docker-ce-cli \
-#    docker-compose-plugin \
-#    docker-model-plugin
+dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
+dnf -y install --enablerepo=docker-ce-stable \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-ce \
+    docker-ce-cli \
+    docker-compose-plugin \
+    docker-model-plugin
 
 # VSCode package from Microsoft repo
 echo "Installing VSCode from official repo..."
@@ -127,9 +126,9 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
 fi
 
 # Enable DX services
-#if rpm -q docker-ce >/dev/null; then
-#    systemctl enable docker.socket
-#fi
+if rpm -q docker-ce >/dev/null; then
+    systemctl enable docker.socket
+fi
 systemctl enable podman.socket
 systemctl enable swtpm-workaround.service
 systemctl enable ublue-os-libvirt-workarounds.service
