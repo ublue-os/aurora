@@ -41,6 +41,10 @@ jobs:
       stream_name: latest
       #kernel_pin: 6.12.15-200.fc41.x86_64
       previous_build: ${{ inputs.previous_build }}
+      # FIXME: MAIN has no arm builds in ublue-os/akmods yet
+      # https://github.com/ublue-os/akmods/pull/440
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
 
   generate-release:
     name: Generate Release
