@@ -8,13 +8,6 @@ on:
        - "**.md"
        - ".github/workflows/moderator.yml"
        - ".github/workflows/scorecard.yml"
-   push:
-      branches:
-        - beta
-      paths-ignore:
-       - "**.md"
-       - ".github/workflows/moderator.yml"
-       - ".github/workflows/scorecard.yml"
    workflow_call:
    workflow_dispatch:
 
