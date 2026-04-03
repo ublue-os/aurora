@@ -14,4 +14,7 @@ tee /usr/lib/bootc/kargs.d/00-nvidia.toml <<EOF
 kargs = ["rd.driver.blacklist=nouveau", "modprobe.blacklist=nouveau", "nvidia-drm.modeset=1", "initcall_blacklist=simpledrm_platform_driver_init"]
 EOF
 
+rsync -rvKl /ctx/system_files/nvidia/ /
+systemctl enable ublue-nvidia-flatpak-runtime-sync.service
+
 echo "::endgroup::"
