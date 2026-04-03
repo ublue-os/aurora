@@ -293,8 +293,14 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previ
       # TODO: Redo everything here with --previous-build in rpm-ostree 2026.1+
       # so we don't have to pull an old image + rename it
     if [[ "{{ previous_build }}" == "1" ]]; then
-      PREVIOUS_IMAGE=ghcr.io/{{ repo_organization }}/"${image_name}":"${DEFAULT_TAG}" 
-      ${SUDOIF} ${PODMAN} pull ${PREVIOUS_IMAGE}
+      PREVIOUS_IMAGE=ghcr.io/{{ repo_organization }}/"${image_name}":"${DEFAULT_TAG}"
+
+      # https://github.com/coreos/rpm-ostree/blob/7e2f2065a4aa4d5965b4537bb7d74e0b2898650e/rust/src/compose.rs#L522-L529
+      if skopeo inspect docker://"${PREVIOUS_IMAGE}" | jq -e '.LayersData[1:] | all(.Annotations?["ostree.components"]?)'; then
+        ${SUDOIF} ${PODMAN} pull ${PREVIOUS_IMAGE}
+      else
+        echo "${PREVIOUS_IMAGE} doesn't exist. Making a fresh layer Plan instead."
+      fi
     fi
 
     if [[ "{{ ghcr }}" == "1" ]]; then
