@@ -310,6 +310,7 @@ jobs:
         with:
           max_attempts: 3
           retry_wait_seconds: 15
+          timeout_minutes: 10
           command: |
             set -euox pipefail
             # HACK: push a second time so layer annotations are pushed
