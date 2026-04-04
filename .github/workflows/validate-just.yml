@@ -21,8 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - name: Setup Just
-        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b # v3
+      - name: Install Just
+        run: |
+          /home/linuxbrew/.linuxbrew/bin/brew install just
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
       - name: Check Just Syntax
         shell: bash
