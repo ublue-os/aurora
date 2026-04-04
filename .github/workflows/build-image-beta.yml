@@ -17,6 +17,14 @@ on:
        - ".github/workflows/scorecard.yml"
    workflow_call:
    workflow_dispatch:
+    inputs:
+      previous_build:
+        description: 'Set to 0 to manually clear rechunking plan'
+        type: choice
+        default: '1'
+        options:
+          - '0'
+          - '1'
 
 permissions:
   contents: read
@@ -38,3 +46,5 @@ jobs:
       image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
+      previous_build: ${{ inputs.previous_build }}
+

@@ -11,6 +11,14 @@ on:
       - ".github/workflows/scorecard.yml"
   workflow_call:
   workflow_dispatch:
+    inputs:
+      previous_build:
+        description: 'Set to 0 to manually clear rechunking plan'
+        type: choice
+        default: '1'
+        options:
+          - '0'
+          - '1'
 
 permissions:
   contents: read
@@ -33,6 +41,7 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: latest
       #kernel_pin: 6.12.15-200.fc41.x86_64
+      previous_build: ${{ inputs.previous_build }}
 
   generate-release:
     name: Generate Release
