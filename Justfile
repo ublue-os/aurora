@@ -230,6 +230,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         BUILD_ARGS+=("--cpp-flag=-DNVIDIA")
     fi
 
+    # Avoid intermediate image disk writes in CI
+    if [[ {{ ghcr }} == "1" ]]; then
+      BUILD_ARGS+=("--layers=false")
+    fi
+
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile.in)
 
     # Add GitHub token secret if available (for CI/CD)
