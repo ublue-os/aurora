@@ -54,6 +54,15 @@ cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
+# Wire Aurora tuned profiles into power-profiles-daemon
+sed -i 's/power-saver=powersave$/power-saver=powersave-aurora/' /etc/tuned/ppd.conf
+sed -i 's/balanced=balanced$/balanced=balanced-aurora/' /etc/tuned/ppd.conf
+sed -i 's/performance=throughput-performance$/performance=throughput-performance-aurora/' /etc/tuned/ppd.conf
+sed -i 's/balanced=balanced-battery$/balanced=balanced-battery-aurora\npower-saver=powersave-battery-aurora/' /etc/tuned/ppd.conf
+
+# SCX scheduler: keep disabled by default, users can opt in via systemctl enable scx_loader.service
+systemctl disable scx_loader.service
+
 # Test aurora gschema override for errors. If there are no errors, proceed with compiling aurora gschema, which includes setting overrides.
 mkdir -p /tmp/aurora-schema-test
 find /usr/share/glib-2.0/schemas/ -type f ! -name "*.gschema.override" -exec cp {} /tmp/aurora-schema-test/ \;

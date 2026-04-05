@@ -135,6 +135,7 @@ FEDORA_PACKAGES=(
     tesseract-devel
     tmux
     traceroute
+    tuned
     vim
     yubikey-manager
     zsh
@@ -185,6 +186,11 @@ copr_install_isolated "ublue-os/packages" \
     "krunner-bazaar" \
     "oversteer-udev" \
     "uupd"
+
+# SCX schedulers for improved desktop responsiveness and battery life
+copr_install_isolated "bieszczaders/kernel-cachyos-addons" \
+    "scx-scheds" \
+    "scx-tools"
 
 # Version-specific COPR packages
 # Example:

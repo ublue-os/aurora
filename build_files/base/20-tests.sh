@@ -91,6 +91,8 @@ IMPORTANT_PACKAGES=(
     podman
     ptyxis
     sddm
+    scx-scheds
+    scx-tools
     Sunshine
     systemd
     tailscale
