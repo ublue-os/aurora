@@ -98,10 +98,12 @@ jobs:
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
           CACHE="$(just setup-cache "${MATRIX_BASE_NAME}" \
                             "${MATRIX_STREAM_NAME}" \
+                            "${MATRIX_IMAGE_FLAVOR}" \
                             "1" \
                             "${GITHUB_EVENT_NAME}")"
 
@@ -117,7 +119,10 @@ jobs:
           CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
+          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-
+            ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
 
       - name: Build Image
         id: build-image
@@ -149,7 +154,7 @@ jobs:
           CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
+          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
 
       - name: Setup Syft
         id: setup-syft
