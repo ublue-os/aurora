@@ -325,11 +325,11 @@ jobs:
             # TODO: remove me when https://github.com/containers/podman/issues/27796 fixed
 
             for tag in ${ALIAS_TAGS}; do
-              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push --compression-format=zstd:chunked --compression-level=3 ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push --compression-format=zstd --compression-level=3 ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
             done
 
             for tag in ${ALIAS_TAGS}; do
-              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push --compression-format=zstd:chunked --compression-level=3 ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
+              sudo -E /home/linuxbrew/.linuxbrew/bin/podman push --compression-format=zstd --compression-level=3 ${IMAGE_NAME}:${tag} ${LOWERCASE}/${IMAGE_NAME}:${tag}
             done
 
             digest=$(skopeo inspect docker://${LOWERCASE}/${IMAGE_NAME}:${DEFAULT_TAG} --format '{{.Digest}}')
