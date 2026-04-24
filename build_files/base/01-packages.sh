@@ -134,7 +134,7 @@ FEDORA_PACKAGES=(
     tcpdump
     tesseract-devel
     tmux
-    tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,hin}
+    tesseract-langpack-{eng,deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     traceroute
     vim
     yubikey-manager
