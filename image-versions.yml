@@ -10,4 +10,4 @@ images:
   - name: brew
     image: ghcr.io/ublue-os/brew
     tag: latest
-    digest: sha256:01cb365907452c283cdeec96f0aaf2a26331ef3e1a3bf8acf8f994d239cf9cf3
+    digest: sha256:ab758cf15c0ae7a09fc2fc10e6a3e91e76bb0c569bde7628ee51126dc214df56
