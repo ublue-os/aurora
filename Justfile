@@ -147,7 +147,10 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
     fi
 
-    {{ just }} verify-container ghcr.io-get-aurora-dev.pub "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
+    cosign verify \
+      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+      --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
+      "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
 
     {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
 
