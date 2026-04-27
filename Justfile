@@ -567,6 +567,8 @@ generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr
         BUILD_TAGS+=("stable" "stable-${version}" "stable-${version:3}")
     elif [[ ! "{{ tag }}" =~ stable|beta ]]; then
         BUILD_TAGS+=("${FEDORA_VERSION}" "${FEDORA_VERSION}-${version}" "${FEDORA_VERSION}-${version:3}")
+        # compatiblity for f44, TODO: remove me when we merge beta branch into main
+        BUILD_TAGS+=("beta" "beta-${version}" "beta-${version:3}")
     fi
 
     if [[ "${github_event}" == "pull_request" ]]; then
