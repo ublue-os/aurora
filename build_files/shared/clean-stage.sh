@@ -12,9 +12,6 @@ dnf versionlock clear
 systemctl mask flatpak-add-fedora-repos.service
 rm -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service
 
-# reinvestigate when https://github.com/ostreedev/ostree/pull/3559 reached fedora
-mv '/usr/share/doc/just/README.中文.md' '/usr/share/doc/just/README.zh-cn.md'
-
 rm -rf /.gitkeep
 
 find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \;
