@@ -1,10 +1,9 @@
 name: Latest Images
 on:
-  merge_group:
+  #merge_group:
   pull_request:
     branches:
-      - main
-      - testing
+      - beta
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
