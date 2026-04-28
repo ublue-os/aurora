@@ -4,6 +4,8 @@
     "config:best-practices"
   ],
 
+  "baseBranchPatterns": ["main", "beta"],
+
   // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
     customManagers: [
