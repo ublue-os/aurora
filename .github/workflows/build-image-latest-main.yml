@@ -1,6 +1,6 @@
 name: Latest Images
 on:
-  #merge_group:
+  merge_group:
   pull_request:
     branches:
       - beta
