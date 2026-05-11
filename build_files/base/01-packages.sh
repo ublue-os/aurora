@@ -137,6 +137,41 @@ FEDORA_PACKAGES=(
     vim
     yubikey-manager
     zsh
+    alacritty 
+    brave-origin-nightly 
+    distrobox 
+    dmenu 
+    dms 
+    dms-greeter 
+    dunst 
+    fastfetch 
+    flameshot
+    fzf 
+    gh 
+    git 
+    grim 
+    grimshot 
+    hyprland 
+    hyprland-guiutils 
+    hyprland-protocols-devel 
+    hyprpaper
+    hyprshot 
+    jetbrains-mono-fonts-all 
+    libdisplay-info-devel 
+    lm_sensors 
+    lsd 
+    mako 
+    neovim
+    NetworkManager-tui 
+    picom 
+    quickshell 
+    rofi 
+    swww 
+    vim 
+    waypaper 
+    xkill 
+    zsh
+
 )
 
 # Version-specific Fedora package additions
