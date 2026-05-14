@@ -1,9 +1,9 @@
-name: Beta Images
+name: Testing Images
 on:
-   #merge_group:
+   merge_group:
    pull_request:
      branches:
-       - beta
+       - testing
      paths-ignore:
        - "**.md"
        - ".github/workflows/moderator.yml"
@@ -27,8 +27,8 @@ permissions:
   artifact-metadata: write
 
 jobs:
-  build-image-beta:
-    name: Build Beta Images
+  build-image-testing:
+    name: Build Testing Images
     uses: ./.github/workflows/reusable-build.yml
     secrets: inherit
     strategy:
@@ -38,6 +38,6 @@ jobs:
     with:
       image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
-      stream_name: beta
+      stream_name: testing
       previous_build: ${{ inputs.previous_build }}
 

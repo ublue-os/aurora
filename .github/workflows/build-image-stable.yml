@@ -1,10 +1,12 @@
 name: Stable Images
 on:
-  merge_group: # Make Stable-Daily run on merge groups
+  # We do not want this to run after PR merges
+  # we are only publishing weekly :stable images
+
+  # We still want to know if things are broken
   pull_request:
     branches:
       - main
-      - testing
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
@@ -52,4 +54,4 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
-      stream_name: '["stable", "stable-daily"]'
+      stream_name: '["stable"]'
