@@ -62,16 +62,13 @@ FEDORA_PACKAGES=(
     ydotool
 )
 
-echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
-dnf5 -y install "${FEDORA_PACKAGES[@]}"
-
 # rocm doesn't work well on nvidia
 if [[ ! "${IMAGE_NAME}" =~ nvidia ]]; then
-  dnf install -y \
-    rocm-hip \
-    rocm-opencl \
-    rocm-smi
+  FEDORA_PACKAGES+=("rocm-hip" "rocm-opencl" "rocm-smi")
 fi
+
+echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
+dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
 # Docker packages from their repo
 dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
