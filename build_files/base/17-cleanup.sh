@@ -31,6 +31,12 @@ systemctl enable flatpak-preinstall.service
 # disable sunshine service
 systemctl --global disable app-dev.lizardbyte.app.Sunshine.service
 
+# Make speech dispatcher work by default
+# TODO: Revisit with F45
+# https://src.fedoraproject.org/rpms/redhat-systemd-presets/pull-request/4
+# https://bugzilla.redhat.com/show_bug.cgi?id=2284507
+systemctl --global enable speech-dispatcher.socket
+
 # Updater
 systemctl enable uupd.timer
 
