@@ -60,7 +60,7 @@ FEDORA_PACKAGES=(
     fish
     flatpak-spawn
     foo2zjs
-    gcc
+    gcc{,-c++}
     git-credential-libsecret
     glow
     google-noto-sans-balinese-fonts
