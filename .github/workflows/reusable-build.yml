@@ -337,7 +337,7 @@ jobs:
           MATRIX_BASE_NAME: "${{ matrix.base_name }}"
           MATRIX_IMAGE_FLAVOR: "${{ matrix.image_flavor }}"
           MATRIX_STREAM_NAME: "${{ matrix.stream_name }}"
-          TEMP_PUSH_TAG: "${{ github.run_id }}"
+          TEMP_PUSH_TAG: "staging"
         run: |
             set -euox pipefail
 
