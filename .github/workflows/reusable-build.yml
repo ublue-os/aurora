@@ -428,7 +428,8 @@ jobs:
         with:
           subject-name: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.pre-push.outputs.digest }}
-          push-to-registry: true
+          # Keep this disabled, this confuses cosign verify
+          push-to-registry: false
 
       - name: Disk usage summary
         if: always()
