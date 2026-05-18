@@ -148,7 +148,7 @@ copr_install_isolated "ledif/kairpods" \
     "kairpods"
 
 # Sunshine from lizardbyte/beta COPR
-copr_install_isolated "lizardbyte/beta" \
+copr_install_isolated "lizardbyte/stable" \
     "sunshine"
 
 # Packages to exclude - common to all versions
