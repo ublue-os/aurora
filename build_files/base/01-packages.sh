@@ -147,7 +147,7 @@ copr_install_isolated "ublue-os/packages" \
 copr_install_isolated "ledif/kairpods" \
     "kairpods"
 
-# Sunshine from lizardbyte/beta COPR
+# Sunshine from lizardbyte/stable COPR
 copr_install_isolated "lizardbyte/stable" \
     "sunshine"
 
