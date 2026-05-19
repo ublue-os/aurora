@@ -420,7 +420,7 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           SBOM_DIGEST: ${{ steps.upload-sbom.outputs.sbom_digest }}
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
+          cosign sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
 
       - name: Attestation
         if: github.event_name != 'pull_request'
