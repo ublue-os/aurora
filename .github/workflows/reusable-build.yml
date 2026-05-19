@@ -92,6 +92,10 @@ jobs:
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         if: github.event_name != 'pull_request'
 
+      - name: Install ORAS
+        if: github.event_name != 'pull_request'
+        uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
+
       - name: Check Just Syntax
         shell: bash
         run: |
@@ -391,10 +395,6 @@ jobs:
                      "${MATRIX_IMAGE_FLAVOR}" \
                      "1" \
                      "${IMAGE_REGISTRY}"
-
-      - name: Install ORAS
-        if: github.event_name != 'pull_request'
-        uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
 
       - name: Login to GitHub Container Registry with ORAS
         if: github.event_name != 'pull_request'
