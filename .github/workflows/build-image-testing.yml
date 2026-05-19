@@ -1,6 +1,8 @@
 name: Testing Images
 on:
    merge_group:
+     branches:
+       - testing
    pull_request:
      branches:
        - testing
