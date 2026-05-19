@@ -4,7 +4,7 @@
     "config:best-practices"
   ],
 
-  "baseBranchPatterns": ["main"],
+  "baseBranchPatterns": ["main", "testing"],
 
   // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
@@ -32,22 +32,34 @@
       "matchUpdateTypes": ["digest"]
     },
     {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/jasonn3/build-container-installer"],
-      "automerge": false
-    },
-    {
+      // We always want to trigger a fresh build when we have a new base image on every branch
+      // so we get package and security updates
+      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
       "automerge": true,
-      "matchUpdateTypes": ["digest"],
-      "matchDepNames": [
-        "quay.io/fedora-ostree-desktops/kinoite",
-        "ghcr.io/ublue-os/brew",
-        "ghcr.io/get-aurora-dev/common"
-      ]
+      "matchUpdateTypes": ["digest"]
     },
     {
       "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
       "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchDepNames": [
+        "ghcr.io/ublue-os/brew",
+        "ghcr.io/get-aurora-dev/common"
+      ],
+      "matchBaseBranches": ["testing"],
+      "automerge": true,
+      "matchUpdateTypes": ["digest"]
+    },
+    {
+      "matchDepNames": [
+        "ghcr.io/ublue-os/brew",
+        "ghcr.io/get-aurora-dev/common"
+      ],
+      // Brew and common are not "security updates", they have to go through testing first
+      // to reach a stable release
+      "matchBaseBranches": ["main"],
       "enabled": false
     }
   ]
