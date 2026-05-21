@@ -1,0 +1,27 @@
+# We have this because we can't schedule builds on non-default branches
+name: Trigger Stable Image Build
+on:
+  schedule:
+    - cron: "0 1 * * TUE" # Every Tuesday at 1:15 AM
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  trigger-stable-build:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Trigger Stable Image Build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: stable-f44
+        run: |
+          gh workflow run \
+            build-image-stable.yml \
+            --ref "${BRANCH}"
