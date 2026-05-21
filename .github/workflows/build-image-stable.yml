@@ -1,15 +1,16 @@
 name: Stable Images
 on:
+  # We do not want this to run after PR merges
+  # we are only publishing weekly :stable images
+
+  # We still want to know if things are broken
   pull_request:
     branches:
-      - main
-      - testing
+      - stable-f44
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
       - ".github/workflows/scorecard.yml"
-  schedule:
-    - cron: "0 1 * * TUE" # Every Tuesday at 1:15 AM
   workflow_call:
   workflow_dispatch:
     inputs:
