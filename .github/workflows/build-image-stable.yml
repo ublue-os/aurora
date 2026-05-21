@@ -6,7 +6,7 @@ on:
   # We still want to know if things are broken
   pull_request:
     branches:
-      - main
+      - stable-f44
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"

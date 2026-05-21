@@ -2,10 +2,10 @@ name: Testing Images
 on:
    merge_group:
      branches:
-       - testing
+       - main
    pull_request:
      branches:
-       - testing
+       - main
      paths-ignore:
        - "**.md"
        - ".github/workflows/moderator.yml"

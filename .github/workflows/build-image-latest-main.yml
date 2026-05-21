@@ -2,10 +2,10 @@ name: Latest Images
 on:
   merge_group:
     branches:
-      - main
+      - stable-f44
   pull_request:
     branches:
-      - main
+      - stable-f44
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
