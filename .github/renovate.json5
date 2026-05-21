@@ -4,7 +4,7 @@
     "config:best-practices"
   ],
 
-  "baseBranchPatterns": ["main", "testing"],
+  "baseBranchPatterns": ["main", "stable-f44"],
 
   // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
@@ -48,7 +48,7 @@
         "ghcr.io/ublue-os/brew",
         "ghcr.io/get-aurora-dev/common"
       ],
-      "matchBaseBranches": ["testing"],
+      "matchBaseBranches": ["main"],
       "automerge": true,
       "matchUpdateTypes": ["digest"]
     },
@@ -57,9 +57,9 @@
         "ghcr.io/ublue-os/brew",
         "ghcr.io/get-aurora-dev/common"
       ],
-      // Brew and common are not "security updates", they have to go through testing first
+      // Brew and common are not "security updates", they have to go through :testing/main first
       // to reach a stable release
-      "matchBaseBranches": ["main"],
+      "matchBaseBranches": ["stable-f44"],
       "enabled": false
     }
   ]
