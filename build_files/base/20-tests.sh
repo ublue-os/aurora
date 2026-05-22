@@ -4,6 +4,8 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+echo "THIS IS A TEST"
+
 # We need to have the ublue-os signing keys on the image!
 # Published images without these keys won't be able to pull ghcr.io/ublue-os/*
 # and can therefore not update!
@@ -56,7 +58,7 @@ desktop-file-validate \
   /usr/share/applications/dev.getaurora.boot-to-windows.desktop \
   /usr/share/applications/dev.getaurora.offline-docs.desktop \
   /usr/share/applications/dev.getaurora.documentation.desktop \
-  /usr/share/applications/dev.getaurora.system-update.desktop 
+  /usr/share/applications/dev.getaurora.system-update.desktop
 
 # Check for KDE Plasma version mismatch
 # Fedora Repos have gotten the newer one, trying to upgrade
