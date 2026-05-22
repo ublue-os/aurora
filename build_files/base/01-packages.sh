@@ -199,6 +199,7 @@ dnf -y swap \
 #fi
 
 echo "I'm super important and I want this in stable"
+echo "This is another very very important thing"
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
