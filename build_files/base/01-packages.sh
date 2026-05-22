@@ -200,7 +200,7 @@ dnf -y swap \
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-echo "Important thing!!!"
+echo "This is more important. Does this trigger a re-run of the open pull bot PR CI?"
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
