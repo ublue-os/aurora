@@ -1,4 +1,5 @@
 name: Backport Merged Pull Requests
+
 on:
   pull_request_target:
     types: [closed]
@@ -7,28 +8,36 @@ permissions: {}
 
 jobs:
   cherry-pick:
-    name: Backport Merged Pull Requests
+    # Ensures the PR was actually merged AND has the correct backport label
+    if: |
+      github.event.pull_request.merged == true && 
+      contains(github.event.pull_request.labels.*.name, 'backport-to-stable')
+    
     runs-on: ubuntu-slim
-    permissions:
-      contents: write # so it can comment
-      pull-requests: write # so it can create pull requests
-
-    # Only run on merged PRs with a backport label (default `label_pattern`)
-    if: >
-      github.event.pull_request.merged &&
-      contains(toJSON(github.event.pull_request.labels.*.name), 'cherry-pick')
+    
     steps:
+      - name: Generate a GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.AURORABOT_APP_ID }}
+          private_key: ${{ secrets.AURORABOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          # Use the dynamically generated GitHub App token
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+          
+      - name: Configure Git Author
+        run: |
+          git config --global user.name "aurora-backport-bot[bot]"
+          git config --global user.email "aurora-backport-bot[bot]@users.noreply.github.com"
 
-      # https://github.com/korthout/backport-action
       - name: Create Backport Pull Requests
         uses: korthout/backport-action@66065406958f46e82238fd59546f5a99e69e22aa # v4.5.2
         with:
-          # We need a fine-grained PAT for this to work. We have created a "CI_TRIGGER_TOKEN" that has
-          # the following permissions:
-          # - Pull requests: Read and write
-          # - Contents: Read and Write
-          # - Actions: Read and write
-          github_token: ${{ secrets.CI_TRIGGER_TOKEN }}
+          # Use the dynamically generated GitHub App token here too
+          github_token: ${{ steps.generate-token.outputs.token }}
           target_branches: "stable-f44"
