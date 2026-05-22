@@ -5,7 +5,7 @@ export common_image := env("COMMON_IMAGE", "ghcr.io/get-aurora-dev/common:latest
 export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
 stable_version := "44"
 latest_version := "44"
-beta_version := "44"
+testing_version := "44"
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
@@ -17,7 +17,7 @@ flavors := '(
 tags := '(
     [stable]=stable
     [latest]=latest
-    [beta]=beta
+    [testing]=testing
 )'
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
@@ -522,8 +522,8 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     # Determine Version
     if [[ "{{ tag }}" =~ stable ]]; then
         VERSION="{{ stable_version }}"
-    elif [[ "{{ tag }}" =~ beta ]]; then
-        VERSION="{{ beta_version }}"
+    elif [[ "{{ tag }}" =~ testing ]]; then
+        VERSION="{{ testing_version }}"
     else
         VERSION="{{ latest_version }}"
     fi
