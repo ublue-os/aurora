@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Generate a GitHub App Token
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
         with:
           app-id: ${{ secrets.AURORABOT_APP_ID }}
           private_key: ${{ secrets.AURORABOT_PRIVATE_KEY }}
