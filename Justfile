@@ -353,7 +353,7 @@ chunkah $image="aurora" $tag="latest" $flavor="main" ghcr="0":
     -e CHUNKAH_CONFIG_STR quay.io/coreos/chunkah:dev \
     build \
     --compressed \
-    --max-layers 128 \
+    --max-layers 448 \
     --prune /sysroot/ \
     --label ostree.commit- --label ostree.final-diffid- \
     --tag "${image_name}:${tag}" | ${PODMAN} load
