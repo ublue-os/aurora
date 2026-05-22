@@ -4,6 +4,8 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
+echo "Install really important packages here"
+
 # may break when partially upgraded
 dnf versionlock add "qt6-*" "plasma-desktop"
 
