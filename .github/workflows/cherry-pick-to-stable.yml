@@ -44,9 +44,6 @@ jobs:
           pull_description: |
             This is an automated backport of PR #${pull_number} to `${target_branch}`.
 
-            **Original PR:** #${pull_number}
-            **Target Branch:** ${target_branch}
-
             ## Original PR Description:
             ${pull_description}
 
