@@ -11,7 +11,7 @@ jobs:
     # Ensures the PR was actually merged AND has the correct backport label
     if: |
       github.event.pull_request.merged == true && 
-      contains(github.event.pull_request.labels.*.name, 'backport-to-stable')
+      contains(github.event.pull_request.labels.*.name, 'cherry-pick')
     
     runs-on: ubuntu-slim
     
