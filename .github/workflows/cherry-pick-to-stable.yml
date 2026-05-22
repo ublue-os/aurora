@@ -25,5 +25,10 @@ jobs:
       - name: Create Backport Pull Requests
         uses: korthout/backport-action@66065406958f46e82238fd59546f5a99e69e22aa # v4.5.2
         with:
+          # We need a fine-grained PAT for this to work. We have created a "CI_TRIGGER_TOKEN" that has
+          # the following permissions:
+          # - Pull requests: Read and write
+          # - Contents: Read and Write
+          # - Actions: Read and write
           github_token: ${{ secrets.CI_TRIGGER_TOKEN }}
           target_branches: "stable-f44"
