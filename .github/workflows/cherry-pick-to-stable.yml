@@ -12,9 +12,9 @@ jobs:
     if: |
       github.event.pull_request.merged == true && 
       contains(github.event.pull_request.labels.*.name, 'cherry-pick')
-    
+
     runs-on: ubuntu-slim
-    
+
     steps:
       - name: Generate a GitHub App Token
         id: generate-token
@@ -29,7 +29,7 @@ jobs:
           # Use the dynamically generated GitHub App token
           token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
-          
+
       - name: Configure Git Author
         run: |
           git config --global user.name "aurora-backport-bot[bot]"
@@ -41,3 +41,13 @@ jobs:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}
           target_branches: "stable-f44"
+          pull_description: |
+            This is an automated backport of PR #${pull_number} to `${target_branch}`.
+
+            **Original PR:** #${pull_number}
+            **Target Branch:** ${target_branch}
+
+            ## Original PR Description:
+            ${pull_description}
+
+            **_Please review the changes._**
