@@ -705,6 +705,50 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
 
     {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk --generic-image --bootloader grub --via-loopback /data/bootable.img --filesystem "${bootc_fs}" --wipe
 
+# FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
+# See: https://github.com/ublue-os/aurora/pull/2199
+# Once https://github.com/containers/podman/issues/27796 is resolved
+
+# Push Image to Registry
+[group('Utility')]
+push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registry="" $temp_push="0" $temp_push_tag="":
+    #!/usr/bin/bash
+    set -eoux pipefail
+
+    PUSH_CMD_ARGS=()
+    PUSH_CMD_ARGS+=("--digestfile=/tmp/digestfile")
+    PUSH_CMD_ARGS+=("--compression-format=zstd")
+    PUSH_CMD_ARGS+=("--compression-level=3")
+    PUSH_CMD_ARGS+=("--retry-delay=30s")
+    PUSH_CMD_ARGS+=("--retry=5")
+
+    PUSH_CMD=""${PODMAN}" push "${PUSH_CMD_ARGS[@]}""
+
+    image_name=$({{ just }} image_name '{{ image }}' '{{ tag }}' '{{ flavor }}')
+
+    alias_tags=$({{ just }} generate-build-tags '{{ image }}' '{{ tag }}' '{{ flavor }}')
+
+    if [[ "{{ ghcr }}" == "1" && -n "${image_registry}" ]]; then
+
+      if [[ "${temp_push}" == "0" ]]; then
+        for tag in ${alias_tags}; do
+          ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
+          # We need to push twice to workaround https://github.com/containers/podman/issues/27796
+          ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
+        done
+
+      elif [[ "${temp_push}" == "1" ]]; then
+        ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${temp_push_tag}-${tag}
+        # We need to push twice to workaround https://github.com/containers/podman/issues/27796
+        # If we don't do this then the digest changes and we are only signing this specific tag
+        ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${temp_push_tag}-${tag}
+      fi
+
+    else
+      echo "This is intended to be run in ghcr only."
+      exit 1
+    fi
+
 # # Examples:
 #   > just retag-nvidia-on-ghcr stable stable-41.20250126.3 0
 #   > just retag-nvidia-on-ghcr latest latest-41.20250228.1 0
