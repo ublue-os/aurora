@@ -28,6 +28,7 @@ unzip /tmp/nerdfontsymbols.zip -d /tmp
 mkdir -p /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 mv /tmp/SymbolsNerdFont*.ttf /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
 setfattr -n user.component -v "nerdfonts" /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly
+setfattr -n user.update-interval -v "yearly" /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly
 
 # Bash Preexec v0.6.0
 ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-preexec

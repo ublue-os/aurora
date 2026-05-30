@@ -147,8 +147,8 @@ copr_install_isolated "ublue-os/packages" \
 copr_install_isolated "ledif/kairpods" \
     "kairpods"
 
-# Sunshine from lizardbyte/beta COPR
-copr_install_isolated "lizardbyte/beta" \
+# Sunshine from lizardbyte/stable COPR
+copr_install_isolated "lizardbyte/stable" \
     "sunshine"
 
 # Packages to exclude - common to all versions
@@ -180,14 +180,6 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     fi
 fi
 
-# https://github.com/ublue-os/bazzite/issues/1400
-# TODO: test if we still need this when upgrading firmware with fwupd
-dnf -y copr enable ublue-os/staging
-dnf -y copr disable ublue-os/staging
-dnf -y swap \
-  --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  fwupd fwupd
-
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
 # Remember to leave a note with rationale/link to issue for each pin!
@@ -199,6 +191,8 @@ dnf -y swap \
 #fi
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
+dnf -y copr enable ublue-os/staging
+dnf -y copr disable ublue-os/staging
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
 
