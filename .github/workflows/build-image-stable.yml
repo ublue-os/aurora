@@ -1,6 +1,5 @@
 name: Stable Images
 on:
-  merge_group: # Make Stable-Daily run on merge groups
   pull_request:
     branches:
       - main
@@ -52,4 +51,4 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
-      stream_name: '["stable", "stable-daily"]'
+      stream_name: '["stable"]'

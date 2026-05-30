@@ -102,17 +102,6 @@ jobs:
           IMAGE_NAME="$(just image_name ${MATRIX_BASE_NAME} ${MATRIX_STREAM_NAME} ${MATRIX_IMAGE_FLAVOR})"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
-      - name: Default Tag
-        shell: bash
-        env:
-          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
-        run: |
-          DEFAULT_TAG="$(just generate-default-tag \
-                       "${MATRIX_STREAM_NAME}" \
-                       "1")"
-          echo "Default Tag: ${DEFAULT_TAG}"
-          echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
-
       - name: DNF Package Cache Setup
         shell: bash
         id: setup-cache
@@ -205,7 +194,6 @@ jobs:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
           SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
         run: |
           sudo -E $(command -v just) gen-sbom "${MATRIX_BASE_NAME}" \
@@ -218,11 +206,11 @@ jobs:
         shell: bash
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
           sudo -E $(command -v just) secureboot "${MATRIX_BASE_NAME}" \
-                            "${DEFAULT_TAG}" \
+                            "${MATRIX_STREAM_NAME}" \
                             "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Export to OCI Archive
@@ -230,11 +218,11 @@ jobs:
         id: oci-archive
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
           sudo -E $(command -v just) export-oci "${MATRIX_BASE_NAME}" \
-                            "${DEFAULT_TAG}" \
+                            "${MATRIX_STREAM_NAME}" \
                             "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Upload OCI Archive as Artifact
@@ -283,7 +271,6 @@ jobs:
           MATRIX_IMAGE_FLAVOR: "${{ matrix.image_flavor }}"
           INPUTS_KERNEL_PIN: "${{ inputs.kernel_pin }}"
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_NUMBER: ${{ github.event.number }}
         run: |
@@ -293,7 +280,7 @@ jobs:
                      "${MATRIX_IMAGE_FLAVOR}" \
                      "${INPUTS_KERNEL_PIN}" \
                      "1" \
-                     "$(podman inspect ${IMAGE_NAME}:${DEFAULT_TAG} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
+                     "$(podman inspect ${IMAGE_NAME}:${MATRIX_STREAM_NAME} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
                      "${GITHUB_EVENT_NAME}" \
                      "${GITHUB_EVENT_NUMBER}")"
 
@@ -306,12 +293,12 @@ jobs:
         shell: bash
         env:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
           sudo -E $(command -v just) tag-images "${IMAGE_NAME}" \
-                          "${DEFAULT_TAG}" \
+                          "${MATRIX_STREAM_NAME}" \
                           "${ALIAS_TAGS}"
 
       - name: Login to GitHub Container Registry
@@ -339,7 +326,7 @@ jobs:
         env:
           ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
         with:
           max_attempts: 3
           retry_wait_seconds: 15
@@ -357,7 +344,7 @@ jobs:
               sudo -E podman push --compression-format=zstd --compression-level=3 ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${IMAGE_NAME}:${tag}
             done
 
-            digest=$(skopeo inspect docker://${IMAGE_REGISTRY}/${IMAGE_NAME}:${DEFAULT_TAG} --format '{{.Digest}}')
+            digest=$(skopeo inspect docker://${IMAGE_REGISTRY}/${IMAGE_NAME}:${MATRIX_STREAM_NAME} --format '{{.Digest}}')
 
             echo "digest=${digest}" >> $GITHUB_OUTPUT
 
