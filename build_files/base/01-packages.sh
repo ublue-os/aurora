@@ -99,7 +99,6 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
-    powerstat
     powertop
     rclone
     restic
@@ -118,18 +117,29 @@ FEDORA_PACKAGES=(
     zsh
 )
 
+FEDORA_PACKAGES_AMD64=(
+    powerstat
+  )
+
 NEGATIVO_PACKAGES=(
     ffmpeg{,-libs}
-    intel-vaapi-driver
     libfdk-aac
     libva-utils
     pipewire-libs-extra
     uld
   )
 
-# Install all Fedora packages (bulk - safe from COPR injection)
-echo "Installing ${#FEDORA_PACKAGES[@]} packages from Fedora repos and ${#NEGATIVO_PACKAGES[@]} from Negativo..."
-dnf5 -y install "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}"
+NEGATIVO_PACKAGES_AMD64=(
+    intel-vaapi-driver
+  )
+
+PACKAGES=( "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}" )
+
+if [[ $(arch) == x86_64 ]]; then
+  PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
+fi
+
+dnf -y install "${PACKAGES[@]}"
 
 # Fedora Tailscale is usually behind
 dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo

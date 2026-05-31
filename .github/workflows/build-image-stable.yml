@@ -42,6 +42,9 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
       previous_build: ${{ inputs.previous_build }}
+      # Enable ARM when it makes sense
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
 
   generate-release:
     name: Generate Release

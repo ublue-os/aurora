@@ -21,6 +21,11 @@ on:
       previous_build:
         description: 'Set a reference to a previous build to make updates smaller'
         type: string
+      architecture:
+        description: "JSON string of architectures to build, '[aarch64, x86_64]'"
+        default: "['x86_64']"
+        required: false
+        type: string
 
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
@@ -34,7 +39,7 @@ permissions: {}
 jobs:
   build_container:
     name: image
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     permissions:
       contents: read
       packages: write
@@ -49,6 +54,11 @@ jobs:
         image_flavor: ${{ fromJson(inputs.image_flavors) }}
         base_name: ["${{ inputs.brand_name }}", "${{ inputs.brand_name }}-dx"]
         stream_name: ["${{ inputs.stream_name }}"]
+        architecture: ${{ fromJson(inputs.architecture) }}
+        exclude:
+          # DX is "legacy", don't build them for arm
+          - architecture: aarch64
+            base_name: "${{ inputs.brand_name }}-dx"
 
     steps:
       - name: Checkout
@@ -138,10 +148,10 @@ jobs:
           CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
+          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-
-            ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}
+            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-
+            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}
 
       - name: Build Image
         id: build-image
@@ -173,7 +183,7 @@ jobs:
           CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
         with:
           path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ runner.arch }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
+          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
 
       - name: Rechunk Image with rpm-ostree
         id: rechunker
@@ -238,8 +248,8 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ${{ env.IMAGE_NAME }}.oci
-          path: ${{ env.IMAGE_NAME }}.oci
+          name: ${{ env.IMAGE_NAME }}-${{ matrix.architecture }}.oci
+          path: ${{ env.IMAGE_NAME }}-${{ matrix.architecture }}.oci
           archive: false
           if-no-files-found: error
           retention-days: 1

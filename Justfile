@@ -390,7 +390,9 @@ export-oci $image="aurora" $tag="latest" $flavor="main":
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
 
-    ${PODMAN} push --compression-format=zstd --compression-level=3 localhost/"${image_name}":"${tag}" oci-archive:"${image_name}".oci
+    ARCHIVE_NAME="${image_name}"-"$(arch)".oci
+
+    ${PODMAN} push --compression-format=zstd --compression-level=3 localhost/"${image_name}":"${tag}" oci-archive:"${ARCHIVE_NAME}"
 
 # Run Container
 [group('Image')]
