@@ -1,24 +1,30 @@
 export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
 export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
 export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
+
 export common_image := env("COMMON_IMAGE", "ghcr.io/get-aurora-dev/common:latest")
 export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
+
 stable_version := "44"
 latest_version := "44"
 testing_version := "44"
+
 images := '(
     [aurora]=aurora
     [aurora-dx]=aurora-dx
 )'
+
 flavors := '(
     [main]=main
     [nvidia-open]=nvidia-open
 )'
+
 tags := '(
     [stable]=stable
     [latest]=latest
     [testing]=testing
 )'
+
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
 export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/usr/bin/podman") } else if path_exists("/usr/bin/docker") == "true" { env("PODMAN", "docker") } else { env("PODMAN", "exit 1 ; ") }
@@ -34,22 +40,22 @@ default:
 check:
     #!/usr/bin/bash
     find . -type f -name "*.just" | while read -r file; do
-    	echo "Checking syntax: $file"
-    	{{ just }} --unstable --fmt --check -f $file
+      echo "Checking syntax: $file"
+      {{ just }} --fmt --check -f $file
     done
     echo "Checking syntax: Justfile"
-    {{ just }} --unstable --fmt --check -f Justfile
+    {{ just }} --fmt --check -f Justfile
 
 # Fix Just Syntax
 [group('Just')]
 fix:
     #!/usr/bin/bash
     find . -type f -name "*.just" | while read -r file; do
-    	echo "Checking syntax: $file"
-    	{{ just }} --unstable --fmt -f $file
+      echo "Checking syntax: $file"
+      {{ just }} --fmt -f $file
     done
     echo "Checking syntax: Justfile"
-    {{ just }} --unstable --fmt -f Justfile || { exit 1; }
+    {{ just }} --fmt -f Justfile || { exit 1; }
 
 # Clean Repo
 [group('Utility')]

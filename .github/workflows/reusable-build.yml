@@ -77,7 +77,7 @@ jobs:
       # TODO: remove me when we have a new podman in 26.04 runners
       # needed because old podman doesn't push layer annotations for
       # the rpm-ostree rechunker at all
-      - name: Update podman and install just
+      - name: Update podman
         shell: bash
         run: |
           set -eux
@@ -94,8 +94,13 @@ jobs:
           echo "deb ${mirror} resolute universe main" | sudo tee /etc/apt/sources.list.d/resolute.list
           /bin/time -f '%E %C' sudo apt update
           # skopeo is currently older in resolute for some reason hence --allow-downgrades
-          /bin/time -f '%E %C' sudo apt install -y --allow-downgrades crun/resolute buildah/resolute podman/resolute skopeo/resolute just/resolute
+          /bin/time -f '%E %C' sudo apt install -y --allow-downgrades crun/resolute buildah/resolute podman/resolute skopeo/resolute
           podman --version
+
+      - name: Install Just
+        run: |
+          /home/linuxbrew/.linuxbrew/bin/brew install just
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
       # FIXME: Implement retries for stuff like this
       - name: Install Cosign
@@ -109,6 +114,7 @@ jobs:
       - name: Check Just Syntax
         shell: bash
         run: |
+          just --version
           just check
 
       - name: Image Name
