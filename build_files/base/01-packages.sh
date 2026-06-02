@@ -171,7 +171,6 @@ EXCLUDED_PACKAGES=(
     ffmpegthumbnailer
     firefox
     firewall-config
-    google-noto-sans-cjk-vf-fonts
     kcharselect
     khelpcenter
     krfb{,-libs}
