@@ -40,4 +40,4 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
       previous_build: ${{ inputs.previous_build }}
-
+      publish: ${{ github.event_name != 'pull_request' }}

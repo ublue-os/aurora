@@ -45,6 +45,7 @@ jobs:
       # Enable ARM when it makes sense
       # architecture: '["aarch64","x86_64"]'
       architecture: '["x86_64"]'
+      publish: ${{ github.event_name != 'pull_request' }}
 
   generate-release:
     name: Generate Release
