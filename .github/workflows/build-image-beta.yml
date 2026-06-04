@@ -40,4 +40,8 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: beta
       previous_build: ${{ inputs.previous_build }}
+      # FIXME: MAIN has no arm builds in ublue-os/akmods yet
+      # https://github.com/ublue-os/akmods/pull/440
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
 
