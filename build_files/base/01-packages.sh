@@ -150,6 +150,7 @@ dnf -y install --enablerepo='tailscale-stable' tailscale
 copr_install_isolated "ublue-os/packages" \
     "kcm_ublue" \
     "krunner-bazaar" \
+    "ublue-os-selinux-workarounds" \
     "oversteer-udev" \
     "uupd"
 
