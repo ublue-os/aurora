@@ -18,6 +18,7 @@ source /ctx/build_files/shared/copr-helpers.sh
 FEDORA_PACKAGES=(
     android-tools
     bcc
+    bcvk
     bpftop
     bpftrace
     cockpit-bridge
@@ -99,7 +100,6 @@ dnf -y install --enablerepo=code \
 echo "Installing DX COPR packages with isolated repo enablement..."
 
 copr_install_isolated "karmab/kcli" "kcli"
-copr_install_isolated "gmaglione/podman-bootc" "podman-bootc"
 copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
 
 # DX packages to exclude - common to all versions
