@@ -146,10 +146,13 @@ dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fed
 dnf config-manager setopt tailscale-stable.enabled=0
 dnf -y install --enablerepo='tailscale-stable' tailscale
 
+# NOTE: Remove ublue-os-selinux-workarounds package when upstream issue is fixed
+# https://github.com/ublue-os/akmods/issues/537
 # From ublue-os/packages
 copr_install_isolated "ublue-os/packages" \
     "kcm_ublue" \
     "krunner-bazaar" \
+    "ublue-os-selinux-workarounds" \
     "oversteer-udev" \
     "uupd"
 
