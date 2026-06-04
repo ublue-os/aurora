@@ -26,6 +26,11 @@ on:
         default: "['x86_64']"
         required: false
         type: string
+      publish:
+        description: "Publish this image"
+        required: false
+        type: boolean
+        default: true
 
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
@@ -99,10 +104,10 @@ jobs:
       # FIXME: Implement retries for stuff like this
       - name: Install Cosign
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
 
       - name: Install ORAS
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
 
       - name: Check Just Syntax
@@ -203,11 +208,11 @@ jobs:
 
       - name: Setup Syft
         id: setup-syft
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         uses: anchore/sbom-action/download-syft@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
 
       - name: Generate SBOM
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         id: generate-sbom
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
@@ -321,7 +326,7 @@ jobs:
                           "${ALIAS_TAGS}"
 
       - name: Login to GitHub Container Registry
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
@@ -332,7 +337,7 @@ jobs:
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
       - name: Lowercase Registry
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           IMAGE_REGISTRY: ${{ env.IMAGE_REGISTRY }}
         run: |
@@ -341,7 +346,7 @@ jobs:
       # Workaround bugs caused by pushing images but not signing them because of CI flakes
       # FIXME: once https://github.com/containers/podman/issues/27796 resolved
       - name: Push Ephemeral Tag
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         id: pre-push
         env:
           MATRIX_BASE_NAME: "${{ matrix.base_name }}"
@@ -364,7 +369,7 @@ jobs:
             echo "digest=${digest}" >> $GITHUB_OUTPUT
 
       - name: Sign container image
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           DIGEST: ${{ steps.pre-push.outputs.digest }}
           COSIGN_EXPERIMENTAL: false
@@ -378,7 +383,7 @@ jobs:
 
       - name: Push to GHCR
         id: push
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           MATRIX_BASE_NAME: "${{ matrix.base_name }}"
           MATRIX_STREAM_NAME: "${{ matrix.stream_name }}"
@@ -394,7 +399,7 @@ jobs:
                      "${IMAGE_REGISTRY}"
 
       - name: Login to GitHub Container Registry with ORAS
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
@@ -402,7 +407,7 @@ jobs:
           echo "${GITHUB_TOKEN}" | oras login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
 
       - name: Upload SBOM
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         id: upload-sbom
         env:
           IMAGE: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -423,7 +428,7 @@ jobs:
           echo "sbom_digest=${sbom_digest}" >> $GITHUB_OUTPUT
 
       - name: Sign SBOM OCI Artifact
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         env:
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
@@ -433,7 +438,7 @@ jobs:
           cosign sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
 
       - name: Attestation
-        if: github.event_name != 'pull_request'
+        if: inputs.publish
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 #v4.1.0
         with:
           subject-name: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
