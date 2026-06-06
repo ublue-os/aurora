@@ -32,8 +32,8 @@ jobs:
 
       - name: Configure Git Author
         run: |
-          git config --global user.name "aurora-backport-bot[bot]"
-          git config --global user.email "aurora-backport-bot[bot]@users.noreply.github.com"
+          git config --global user.name "Aurora-Backport[bot]"
+          git config --global user.email "aurora-backport[bot]@users.noreply.github.com"
 
       - name: Create Backport Pull Requests
         uses: korthout/backport-action@66065406958f46e82238fd59546f5a99e69e22aa # v4.5.2
