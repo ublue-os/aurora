@@ -1,6 +1,8 @@
 name: Latest Images
 on:
   merge_group:
+    branches:
+      - stable-f44
   pull_request:
     branches:
       - stable-f44
