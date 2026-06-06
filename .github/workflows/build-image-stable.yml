@@ -1,6 +1,5 @@
 name: Stable Images
 on:
-  merge_group: # Make Stable-Daily run on merge groups
   pull_request:
     branches:
       - main
@@ -43,6 +42,10 @@ jobs:
       brand_name: ${{ matrix.brand_name }}
       stream_name: stable
       previous_build: ${{ inputs.previous_build }}
+      # Enable ARM when it makes sense
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
+      publish: ${{ github.event_name != 'pull_request' }}
 
   generate-release:
     name: Generate Release
@@ -52,4 +55,4 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
-      stream_name: '["stable", "stable-daily"]'
+      stream_name: '["stable"]'
