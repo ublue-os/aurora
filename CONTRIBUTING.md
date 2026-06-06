@@ -4,7 +4,7 @@
 
 PR against main branch, do not PR anything against the stable branch. If it's an important improvement and has to be shipped immediately then apply the "cherry-pick" label to your PR. State why your change is important and needs to be cherry-picked.
 
-The tbd-botnamehere will open a PR for the stable-f$FEDORA_VERSION branch after the PR has been successfully merged into main.
+The Aurora-Backport bot will open a PR for the stable-f$FEDORA_VERSION branch after the PR has been successfully merged into main.
 
 ### Manual Cherry-pick
 
