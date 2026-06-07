@@ -181,6 +181,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     BUILD_ARGS+=("--build-arg" "VERSION=${ver}")
     if [[ -z "$(git status -s)" ]]; then
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
+    else
+        BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=deadbeef")
     fi
     BUILD_ARGS+=("--build-arg" "UBLUE_IMAGE_TAG=${tag}")
     if [[ "${PODMAN}" =~ docker && "${TERM}" == "dumb" ]]; then
@@ -209,6 +211,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     LABELS+=("--label" "org.opencontainers.image.url=https://getaurora.dev")
     LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
     LABELS+=("--label" "org.opencontainers.image.version=${ver}")
+    if [[ -z "$(git status -s)" ]]; then
+        LABELS+=("--label" "org.opencontainers.image.revision=$(git rev-parse HEAD)")
+    else
+        LABELS+=("--label" "org.opencontainers.image.revision=deadbeef")
+    fi
     LABELS+=("--label" "ostree.linux=${kernel_release}")
 
     echo "::endgroup::"
