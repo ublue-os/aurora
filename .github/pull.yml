@@ -1,6 +1,18 @@
 version: "1"
 rules:
-  - base: main
-    upstream: ublue-os:main
-    mergeMethod: merge
+  - base: stable-f44
+    upstream: main
+    mergeMethod: hardreset
     mergeUnstable: false
+    reviewers:
+      - NiHaiden
+      - inffy
+      - ledif
+      - renner0e
+    conflictReviewers:
+      - NiHaiden
+      - inffy
+      - ledif
+      - renner0e
+label: "stable-promotion"
+conflictLabel: "promotion-conflict"
