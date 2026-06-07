@@ -1,5 +1,8 @@
 name: Latest Images
 on:
+  push:
+    branches:
+      - stable-f44
   merge_group:
     branches:
       - stable-f44
