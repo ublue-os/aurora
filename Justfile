@@ -385,9 +385,6 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
 
     if [[ ! "$(id -u)" == 0 && ! ${PODMAN} =~ docker ]]; then
       ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
-      if [[ -z "$ID" ]]; then
-          {{ just }} build "$image" "$tag" "$flavor"
-      fi
       ${PODMAN} image scp localhost/"${image_name}":"${tag}" root@localhost::
     fi
 
