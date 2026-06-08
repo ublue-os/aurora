@@ -8,6 +8,8 @@ on:
       - ".github/workflows/moderator.yml"
       - ".github/workflows/scorecard.yml"
   merge_group:
+    branches:
+      - stable-f44
   pull_request:
     branches:
       - stable-f44
