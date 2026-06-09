@@ -25,6 +25,8 @@ tags := '(
 # Build Containers
 common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
@@ -159,7 +161,15 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
 
+
     {{ just }} verify-container cosign.pub "{{ brew }}"
+
+    cosign verify \
+      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+      --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
+      "{{ chunkah }}"
+
+    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
@@ -280,9 +290,31 @@ build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
 
 # Rechunk Image
 [group('Image')]
-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
+rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/bash
 
+    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
+
+    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+
+    export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
+
+    set -eoux pipefail
+
+    ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
+    -e CHUNKAH_CONFIG_STR "{{ chunkah }}" \
+    build \
+    --verbose \
+    --compressed \
+    --max-layers 128 \
+    --prune /sysroot/ \
+    --label ostree.commit- --label ostree.final-diffid- \
+    --tag "${image_name}:${tag}" | ${PODMAN} load
+
+# build-chunked-oci
+[group('Image')]
+ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
+    #!/usr/bin/bash
     set -eoux pipefail
 
     # Validate
@@ -346,27 +378,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previ
         sudo -u "${SUDO_USER}" {{ just }} secureboot "${image}" "${tag}" "${flavor}"
     fi
 
-# Rechunk Image but cooler
-[group('Image')]
-chunkah $image="aurora" $tag="latest" $flavor="main" ghcr="0":
-    #!/usr/bin/bash
-    set -oeux pipefail
-
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
-    export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
-    ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
-    -e CHUNKAH_CONFIG_STR quay.io/coreos/chunkah:dev \
-    build \
-    --compressed \
-    --max-layers 128 \
-    --prune /sysroot/ \
-    --label ostree.commit- --label ostree.final-diffid- \
-    --tag "${image_name}:${tag}" | ${PODMAN} load
-
-# For Rechunk
+# For Privileged operations
 [group('Image')]
 load-rootful $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
@@ -756,10 +768,11 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
 
     # this is enough for base aurora to make it more likely to run in CI
     if [[ "{{ ghcr }}" == "1" ]]; then
-      IMG_SIZE=11G
+      # absurd size so it will always be enough for the image
+      IMG_SIZE=35G
     else
-      # Do a little more locally so you can rebase
-      IMG_SIZE=30G
+      # Should at least be enough to rebase and install couple applications
+      IMG_SIZE=40G
     fi
 
     BYTES_IMAGE_SIZE=$(numfmt --from=iec ${IMG_SIZE})

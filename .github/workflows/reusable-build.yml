@@ -18,9 +18,6 @@ on:
       kernel_pin:
         description: "The full kernel version to pin"
         type: string
-      previous_build:
-        description: 'Set a reference to a previous build to make updates smaller'
-        type: string
       architecture:
         description: "JSON string of architectures to build, '[aarch64, x86_64]'"
         default: "['x86_64']"
@@ -190,20 +187,16 @@ jobs:
           path: /var/tmp/buildah-cache-*
           key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
 
-      - name: Rechunk Image with rpm-ostree
+      - name: Rechunk Image with Chunkah
         id: rechunker
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-          PREVIOUS_BUILD: ${{ github.event_name == 'pull_request' && '0' || (github.event.inputs.previous_build || '1') }}
         run: |
           sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
                             "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "1" \
-                            "0" \
-                            "${PREVIOUS_BUILD}"
+                            "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Setup Syft
         id: setup-syft
