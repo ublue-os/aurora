@@ -463,7 +463,7 @@ jobs:
   check:
     name: Check all ${{ matrix.stream_name }} builds successful
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [build_container]
     steps:
       - name: Check Jobs
