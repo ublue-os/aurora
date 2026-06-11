@@ -744,7 +744,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 
 # Create bootable image
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrfs":
+disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrfs" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -769,7 +769,17 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
       fi
     fi
 
-    {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk --generic-image --bootloader grub --via-loopback /data/bootable.img --filesystem "${bootc_fs}" --wipe
+    BOOTC_INSTALL_ARGS=()
+    BOOTC_INSTALL_ARGS+=("--generic-image"  "--via-loopback" "/data/bootable.img" "--wipe")
+    BOOTC_INSTALL_ARGS+=("--filesystem ${bootc_fs}")
+
+    if [[ "${backend}" == "ostree" ]]; then
+      BOOTC_INSTALL_ARGS+=("--bootloader grub")
+    else
+      BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
+    fi
+
+    {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk "${BOOTC_INSTALL_ARGS[@]}"
 
 # FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
 # See: https://github.com/ublue-os/aurora/pull/2199
