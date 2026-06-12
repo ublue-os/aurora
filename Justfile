@@ -31,6 +31,28 @@ export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/u
 export PULL_POLICY := if PODMAN =~ "docker" { "missing" } else { "newer" }
 just := just_executable()
 
+# Define a retry function for use in recipes
+retry_function := '
+retry() {
+    if [[ "${#}" -lt 3 ]]; then
+        echo "retry usage: <number of tries> <time between retries> <command> ..."
+        return 1
+    fi
+    tries="${1}"
+    sleep="${2}"
+    shift 2
+    for i in $(seq 1 ${tries}); do
+        if [[ ${i} -gt 1 ]]; then
+            # echo "[+] Command failed. Waiting for ${sleep} seconds"
+            sleep ${sleep}
+        fi
+        # echo "[+] Running (try: ${i}): ${@}"
+        "${@}" && r=0 && break || r=$?
+    done
+    return $r
+}
+'
+
 [private]
 default:
     @{{ just }} --list
@@ -803,6 +825,15 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
       echo "This is intended to be run in ghcr only."
       exit 1
     fi
+
+# Login to Container Registry
+login-registry bin="" registry="":
+    #!/bin/bash
+    set -euxo pipefail
+
+    {{ retry_function }}
+
+    echo "${GITHUB_TOKEN}" | retry 5 60 "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
 
 # # Examples:
 #   > just retag-nvidia-on-ghcr stable stable-41.20250126.3 0
