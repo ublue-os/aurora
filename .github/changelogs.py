@@ -142,23 +142,52 @@ def get_manifests(target: str):
 
 
 def get_tags(target: str, manifests: dict[str, Any]):
-    tags = set()
+    """
+    >>> imgs = lambda tags: {"aurora": {"RepoTags": tags}}
 
+    When bare and indexed on the same day, indexed wins:
+    >>> get_tags("stable", imgs(["stable-20260602.1", "stable-20260609", "stable-20260609.1"]))
+    ('stable-20260602.1', 'stable-20260609.1')
+
+    When multiple builds on the same day, highest index wins:
+    >>> get_tags("stable", imgs(["stable-20260602.1", "stable-20260609.1", "stable-20260609.2"]))
+    ('stable-20260602.1', 'stable-20260609.2')
+
+    Most recent tags as of today:
+    >>> get_tags("stable", imgs(["stable-20260526", "stable-20260602", "stable-20260602.1", "stable-20260609", "stable-20260609.1"]))
+    ('stable-20260602.1', 'stable-20260609.1')
+    """
+    # Matches bare date tags (stable-20260609) and indexed tags (stable-20260609.1)
+    tag_pattern = re.compile(rf"^{target}-(\d{{8}})(?:\.(\d+))?$")
+
+    def parse_tag(tag):
+        m = tag_pattern.match(tag)
+        return (m.group(1), int(m.group(2) or 0)) if m else None
+
+    all_tags = set()
     first = next(iter(manifests.values()))
     for tag in first["RepoTags"]:
         # Tags ending with .0 should not exist
         if tag.endswith(".0"):
             continue
-        if re.match(START_PATTERN(target), tag):
-            tags.add(tag)
+        if parse_tag(tag):
+            all_tags.add(tag)
 
     for manifest in manifests.values():
-        for tag in list(tags):
+        for tag in list(all_tags):
             if tag not in manifest["RepoTags"]:
-                tags.remove(tag)
+                all_tags.remove(tag)
 
-    tags = list(sorted(tags))
-    if not len(tags) >= 2:
+    # Group by date, keep the highest-indexed tag per date
+    by_date = defaultdict(list)
+    for tag in all_tags:
+        date, idx = parse_tag(tag)
+        by_date[date].append((idx, tag))
+
+    flattened = [max(entries)[1] for entries in by_date.values()]
+    tags = sorted(flattened, key=parse_tag)
+
+    if len(tags) < 2:
         print("No current and previous tags found")
         exit(1)
     return tags[-2], tags[-1]
