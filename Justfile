@@ -825,6 +825,7 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
           ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
           # We need to push twice to workaround https://github.com/containers/podman/issues/27796
           ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
+          cat /tmp/digestfile
         done
 
       elif [[ "${temp_push}" == "1" ]]; then
