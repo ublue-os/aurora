@@ -508,7 +508,7 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
             --volume /tmp/kernel-sign.crt:/tmp/kernel-sign.crt:z \
             --volume /tmp/akmods.crt:/tmp/akmods.crt:z \
             --name ${temp_name} \
-            alpine:edge
+            docker.io/library/alpine:edge
         ${PODMAN} exec ${temp_name} apk add sbsigntool
         CMD="${PODMAN} exec ${temp_name} /usr/bin/sbverify"
     fi
