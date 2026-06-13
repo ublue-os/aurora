@@ -413,6 +413,7 @@ ostree-rechunk $image=default_image $tag=default_tag $flavor=default_flavor $ghc
         --output containers-storage:${CHUNKED_IMAGE}
 
         # rename the image to localhost
+
         if [[ "${ghcr}" == "true" && "${previous_build}" == "true" ]]; then
           ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "${image_name}:${tag}"
           ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
