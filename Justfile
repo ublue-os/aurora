@@ -32,6 +32,8 @@ chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\
 common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
@@ -235,7 +237,7 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
-    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
+    {{ just }} verify-container cosign.pub "{{ brew }}"
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
