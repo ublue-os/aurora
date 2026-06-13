@@ -2,9 +2,6 @@ export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
 export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
 export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
 
-export common_image := env("COMMON_IMAGE", "ghcr.io/get-aurora-dev/common:latest")
-export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
-
 stable_version := "44"
 latest_version := "44"
 testing_version := "44"
@@ -27,6 +24,8 @@ tags := '(
 
 # Build Containers
 chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
@@ -134,9 +133,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
 
-    common_image_sha=$(yq -r '.images[] | select(.name == "common") | .digest' image-versions.yml)
-    brew_image_sha=$(yq -r '.images[] | select(.name == "brew") | .digest' image-versions.yml)
-
     # AKMODS Flavor and Kernel Version
     if [[ "${tag}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
@@ -170,14 +166,14 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
-      "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
+      "{{ common }}"
 
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
-    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
+    {{ just }} verify-container cosign.pub "{{ brew }}"
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
@@ -201,10 +197,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_ORG=${base_image_org}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
     BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
-    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE={{ common_image }}")
-    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE_SHA=${common_image_sha}")
-    BUILD_ARGS+=("--build-arg" "BREW_IMAGE={{ brew_image }}")
-    BUILD_ARGS+=("--build-arg" "BREW_IMAGE_SHA=${brew_image_sha}")
+    BUILD_ARGS+=("--build-arg" "COMMON={{ common }}")
+    BUILD_ARGS+=("--build-arg" "BREW={{ brew }}")
     BUILD_ARGS+=("--build-arg" "IMAGE_NAME=${image_name}")
     BUILD_ARGS+=("--build-arg" "IMAGE_VENDOR={{ repo_organization }}")
     BUILD_ARGS+=("--build-arg" "KERNEL=${kernel_release}")
