@@ -2,9 +2,6 @@ export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
 export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
 export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
 
-export common_image := env("COMMON_IMAGE", "ghcr.io/get-aurora-dev/common:latest")
-export brew_image := env("BREW_IMAGE", "ghcr.io/ublue-os/brew:latest")
-
 stable_version := "44"
 latest_version := "44"
 testing_version := "44"
@@ -27,6 +24,8 @@ tags := '(
 
 # Build Containers
 chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
@@ -133,18 +132,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
-    common_image_sha=$(yq -r '.images[] | select(.name == "common") | .digest' image-versions.yml)
-    brew_image_sha=$(yq -r '.images[] | select(.name == "brew") | .digest' image-versions.yml)
-
-    # AKMODS Flavor and Kernel Version
-    if [[ "${tag}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
-    elif [[ "${tag}" =~ testing ]]; then
-        akmods_flavor="main"
-    else
-        akmods_flavor="main"
-    fi
+    akmods_flavor=$({{ just }} akmods_flavor {{ tag }})
 
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
@@ -170,14 +158,14 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
-      "ghcr.io/get-aurora-dev/common:latest@${common_image_sha}"
+      "{{ common }}"
 
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
-    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/brew:latest@${brew_image_sha}"
+    {{ just }} verify-container cosign.pub "{{ brew }}"
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
@@ -201,10 +189,8 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_ORG=${base_image_org}")
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE_NAME=${base_image_name}")
     BUILD_ARGS+=("--build-arg" "FEDORA_MAJOR_VERSION=${fedora_version}")
-    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE={{ common_image }}")
-    BUILD_ARGS+=("--build-arg" "COMMON_IMAGE_SHA=${common_image_sha}")
-    BUILD_ARGS+=("--build-arg" "BREW_IMAGE={{ brew_image }}")
-    BUILD_ARGS+=("--build-arg" "BREW_IMAGE_SHA=${brew_image_sha}")
+    BUILD_ARGS+=("--build-arg" "COMMON={{ common }}")
+    BUILD_ARGS+=("--build-arg" "BREW={{ brew }}")
     BUILD_ARGS+=("--build-arg" "IMAGE_NAME=${image_name}")
     BUILD_ARGS+=("--build-arg" "IMAGE_VENDOR={{ repo_organization }}")
     BUILD_ARGS+=("--build-arg" "KERNEL=${kernel_release}")
@@ -418,7 +404,7 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
     fi
 
 # Generate OCI Archive for PR Testing
-[group('Image')]
+[group('Utility')]
 export-oci $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
     set -oux pipefail
@@ -522,7 +508,7 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
             --volume /tmp/kernel-sign.crt:/tmp/kernel-sign.crt:z \
             --volume /tmp/akmods.crt:/tmp/akmods.crt:z \
             --name ${temp_name} \
-            alpine:edge
+            docker.io/library/alpine:edge
         ${PODMAN} exec ${temp_name} apk add sbsigntool
         CMD="${PODMAN} exec ${temp_name} /usr/bin/sbverify"
     fi
@@ -540,7 +526,6 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
     exit "$returncode"
 
 # Get Fedora Version of an image
-[group('Utility')]
 [private]
 fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     #!/usr/bin/bash
@@ -558,8 +543,23 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
 
     echo "${VERSION}"
 
+[private]
+akmods_flavor $tag="latest":
+    #!/usr/bin/bash
+
+    set -eou pipefail
+
+    if [[ "${tag}" =~ stable ]]; then
+        akmods_flavor="coreos-stable"
+    elif [[ "${tag}" =~ testing ]]; then
+        akmods_flavor="main"
+    else
+        akmods_flavor="main"
+    fi
+
+    echo "${akmods_flavor}"
+
 # Image Name
-[group('Utility')]
 [private]
 image_name image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
@@ -719,6 +719,7 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
 
 # DNF CI package cache
 [group('Utility')]
+[private]
 setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $github_event="0":
     #!/usr/bin/bash
     set -eou pipefail
@@ -848,6 +849,7 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
     fi
 
 # Login to Container Registry
+[group('Utility')]
 login-registry bin="" registry="":
     #!/bin/bash
     set -euxo pipefail
