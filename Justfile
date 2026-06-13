@@ -28,8 +28,8 @@ brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.ima
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
-export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/usr/bin/podman") } else if path_exists("/usr/bin/docker") == "true" { env("PODMAN", "docker") } else { env("PODMAN", "exit 1 ; ") }
-export PULL_POLICY := if PODMAN =~ "docker" { "missing" } else { "newer" }
+export PODMAN := "podman"
+export BUILDAH := "buildah"
 just := just_executable()
 
 # Define a retry function for use in recipes
@@ -195,9 +195,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=deadbeef")
     fi
     BUILD_ARGS+=("--build-arg" "UBLUE_IMAGE_TAG=${tag}")
-    if [[ "${PODMAN}" =~ docker && "${TERM}" == "dumb" ]]; then
-        BUILD_ARGS+=("--progress" "plain")
-    fi
 
     # Pull in most recent upstream base image
     # if building locally/not ghcr pull the new image
@@ -238,12 +235,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         BUILD_ARGS+=("--cpp-flag=-DNVIDIA")
     fi
 
-    # Avoid intermediate image disk writes in CI
-    if [[ {{ ghcr }} == "1" ]]; then
-      BUILD_ARGS+=("--layers=false")
-    fi
-
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag localhost/"${image_name}:${tag}" --file Containerfile.in)
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --file Containerfile.in)
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
@@ -253,7 +245,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         echo "No GitHub token found - build may hit rate limit"
     fi
 
-    ${PODMAN} build "${PODMAN_BUILD_ARGS[@]}" .
+    ${BUILDAH} build "${PODMAN_BUILD_ARGS[@]}" .
     echo "::endgroup::"
 
     # Rechunk the image if we are running inside ghcr or set the variable locally
@@ -318,13 +310,13 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previ
     fi
 
     if [[ "{{ ghcr }}" == "1" ]]; then
-      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}""
+      CHUNKED_IMAGE="${image_name}:${tag}"
         if [[ "{{ previous_build }}" == "1" ]]; then
           CHUNKED_IMAGE="${PREVIOUS_IMAGE}"
         fi
     else
       # keep the original unrechunked image for local builds
-      CHUNKED_IMAGE="localhost/"${image_name}":"${tag}"-chunked"
+      CHUNKED_IMAGE="${image_name}:${tag}-chunked"
     fi
 
     # 96 layers, conservative default, same what ci-test is using
@@ -332,7 +324,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previ
     # 499 is podman run limit
     # 128 is docker pull limit
     ${SUDOIF} ${PODMAN} run --rm \
-        --pull=${PULL_POLICY} \
         --privileged \
         -v "/var/lib/containers:/var/lib/containers" \
         --entrypoint /usr/bin/rpm-ostree \
@@ -341,12 +332,12 @@ rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previ
         --max-layers 127 \
         --format-version=2 \
         --bootc \
-        --from "localhost/"${image_name}":"${tag}"" \
+        --from "${image_name}:${tag}" \
         --output containers-storage:${CHUNKED_IMAGE}
 
         # rename the image to localhost
         if [[ "{{ ghcr }}" == "1" && "{{ previous_build }}" == "1" ]]; then
-          ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "localhost/"${image_name}":"${tag}""
+          ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "${image_name}:${tag}"
           ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
         fi
 
@@ -387,12 +378,12 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
 
-    if [[ ! "$(id -u)" == 0 && ! ${PODMAN} =~ docker ]]; then
-      ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
+    if [[ ! "$(id -u)" == 0 ]]; then
+      ID=$(${PODMAN} images --filter reference="${image_name}:${tag}" --format "'{{ '{{.ID}}' }}'")
       if [[ -z "$ID" ]]; then
           {{ just }} build "$image" "$tag" "$flavor"
       fi
-      ${PODMAN} image scp localhost/"${image_name}":"${tag}" root@localhost::
+      ${PODMAN} image scp "${image_name}:${tag}" root@localhost::
     fi
 
 # Generate OCI Archive for PR Testing
@@ -409,7 +400,7 @@ export-oci $image="aurora" $tag="latest" $flavor="main":
 
     ARCHIVE_NAME="${image_name}"-"$(arch)".oci
 
-    ${PODMAN} push --compression-format=zstd --compression-level=3 localhost/"${image_name}":"${tag}" oci-archive:"${ARCHIVE_NAME}"
+    ${PODMAN} push --compression-format=zstd --compression-level=3 "${image_name}:${tag}" oci-archive:"${ARCHIVE_NAME}"
 
 # Run Container
 [group('Image')]
@@ -424,13 +415,13 @@ run $image="aurora" $tag="latest" $flavor="main":
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
 
     # Check if image exists
-    ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
+    ID=$(${PODMAN} images --filter reference="${image_name}:${tag}" --format "'{{ '{{.ID}}' }}'")
     if [[ -z "$ID" ]]; then
         {{ just }} build "$image" "$tag" "$flavor"
     fi
 
     # Run Container
-    ${PODMAN} run -it --rm localhost/"${image_name}":"${tag}" bash
+    ${PODMAN} run -it --rm "${image_name}:${tag}" bash
 
 # Test Changelogs
 [group('Changelogs')]
@@ -670,7 +661,7 @@ tag-images image_name="" default_tag="" tags="":
     set -eou pipefail
 
     # Get Image, and untag
-    IMAGE=$(${PODMAN} inspect localhost/{{ image_name }}:{{ default_tag }} | jq -r .[].Id)
+    IMAGE=$(${PODMAN} inspect {{ image_name }}:{{ default_tag }} | jq -r .[].Id)
     ${PODMAN} untag localhost/{{ image_name }}:{{ default_tag }}
 
     # Tag Image
@@ -755,7 +746,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
         "${BOOTC_INSTALL_OPTIONS[@]}" \
         -v /dev:/dev \
         -v "${BUILD_BASE_DIR:-.}:/data" \
-        localhost/"${image_name}":"${tag}" bootc {{ ARGS }}
+        "${image_name}:${tag}" bootc {{ ARGS }}
 
 # Create bootable image
 [group('Utility')]
