@@ -404,7 +404,7 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
     fi
 
 # Generate OCI Archive for PR Testing
-[group('Image')]
+[group('Utility')]
 export-oci $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
     set -oux pipefail
@@ -526,7 +526,6 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
     exit "$returncode"
 
 # Get Fedora Version of an image
-[group('Utility')]
 [private]
 fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     #!/usr/bin/bash
@@ -561,7 +560,6 @@ akmods_flavor $tag="latest":
     echo "${akmods_flavor}"
 
 # Image Name
-[group('Utility')]
 [private]
 image_name image="aurora" tag="latest" flavor="main":
     #!/usr/bin/bash
@@ -721,6 +719,7 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
 
 # DNF CI package cache
 [group('Utility')]
+[private]
 setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $github_event="0":
     #!/usr/bin/bash
     set -eou pipefail
@@ -850,6 +849,7 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
     fi
 
 # Login to Container Registry
+[group('Utility')]
 login-registry bin="" registry="":
     #!/bin/bash
     set -euxo pipefail
