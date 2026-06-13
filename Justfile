@@ -132,15 +132,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Image Name
     image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
-    # AKMODS Flavor and Kernel Version
-    if [[ "${tag}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
-    elif [[ "${tag}" =~ testing ]]; then
-        akmods_flavor="main"
-    else
-        akmods_flavor="main"
-    fi
+    akmods_flavor=$({{ just }} akmods_flavor {{ tag }})
 
     fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
@@ -551,6 +543,22 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
     fi
 
     echo "${VERSION}"
+
+[private]
+akmods_flavor $tag="latest":
+    #!/usr/bin/bash
+
+    set -eou pipefail
+
+    if [[ "${tag}" =~ stable ]]; then
+        akmods_flavor="coreos-stable"
+    elif [[ "${tag}" =~ testing ]]; then
+        akmods_flavor="main"
+    else
+        akmods_flavor="main"
+    fi
+
+    echo "${akmods_flavor}"
 
 # Image Name
 [group('Utility')]
