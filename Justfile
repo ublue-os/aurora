@@ -360,7 +360,7 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0
         --max-layers 127 \
         --format-version=2 \
         --bootc \
-        --from "${image_name}:${tag}" \
+        --from "localhost/${image_name}:${tag}" \
         --output containers-storage:${CHUNKED_IMAGE}
 
         # rename the image to localhost
