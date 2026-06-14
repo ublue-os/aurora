@@ -247,6 +247,9 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --file Containerfile.in)
 
+    # Bump retries to minimize network flakes
+    PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
+
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
         echo "Adding GitHub token as build secret"
