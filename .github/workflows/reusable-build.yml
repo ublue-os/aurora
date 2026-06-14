@@ -361,6 +361,11 @@ jobs:
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
 
+            echo '## Temporary digest'>> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "${digest}" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Sign container image
         if: inputs.publish
         env:
@@ -390,6 +395,14 @@ jobs:
                      "${MATRIX_IMAGE_FLAVOR}" \
                      "1" \
                      "${IMAGE_REGISTRY}"
+
+            digest=$(< /tmp/digestfile)
+            echo "digest=${digest}" >> $GITHUB_OUTPUT
+
+            echo '## Production digest'>> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "${digest}" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Login to GitHub Container Registry with ORAS
         if: inputs.publish
