@@ -15,7 +15,7 @@ images:
   - name: brew
     image: ghcr.io/ublue-os/brew
     tag: latest
-    digest: sha256:fc3d3c27060e4bbbcb2e21a17a50c083b2588d404097ac86c97b1b2a75576db1
+    digest: sha256:0b100324e28048639f40607c19d7a063f9930b8c396a6d66f7dcfe1617240f65
 
   # https://github.com/coreos/chunkah
   - name: chunkah
