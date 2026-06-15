@@ -36,12 +36,14 @@ jobs:
           git config --global user.email "aurora-backport[bot]@users.noreply.github.com"
 
       - name: Create Backport Pull Requests
+        id: backport
         uses: korthout/backport-action@66065406958f46e82238fd59546f5a99e69e22aa # v4.5.2
         with:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}
           target_branches: "stable-f44"
           add_labels: "backported-to-stable"
+          pull_title: '${pull_title} [Backport ${target_branch}]'
           pull_description: |
             This is an automated backport of PR #${pull_number} to `${target_branch}`.
 
@@ -49,3 +51,9 @@ jobs:
 
             ### Original PR Description:
             ${pull_description}
+
+      - name: Fail if backport was unsuccessful
+        if: steps.backport.outputs.was_successful == 'false'
+        run: |
+          echo "::error::Backport PR creation failed (e.g. cherry-pick conflicts). Check the step above for details."
+          exit 1
