@@ -181,12 +181,13 @@ jobs:
             --github-event "${GITHUB_EVENT_NAME}" \
             --push
 
-      - name: Rechunk Image with Chunkah
+      - name: Rechunk Image with rpm-ostree
         id: rechunker
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          PREVIOUS_BUILD: ${{ github.event_name == 'pull_request' && '0' || (github.event.inputs.previous_build || '1') }}
         run: |
          $(command -v just) rechunk \
             --image "${MATRIX_BASE_NAME}" \

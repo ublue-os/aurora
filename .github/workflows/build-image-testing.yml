@@ -10,6 +10,14 @@ on:
        - ".github/workflows/scorecard.yml"
    workflow_call:
    workflow_dispatch:
+    inputs:
+      previous_build:
+        description: 'Set to 0 to manually clear rechunking plan'
+        type: choice
+        default: '1'
+        options:
+          - '0'
+          - '1'
 
 permissions: {}
 

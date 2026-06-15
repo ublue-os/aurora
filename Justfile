@@ -865,8 +865,8 @@ disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
       # absurd size so it will always be enough for the image
       IMG_SIZE=35G
     else
-      # Should at least be enough to rebase and install couple applications
-      IMG_SIZE=40G
+      # Do a little more locally so you can rebase
+      IMG_SIZE=30G
     fi
 
     BYTES_IMAGE_SIZE=$(numfmt --from=iec ${IMG_SIZE})
