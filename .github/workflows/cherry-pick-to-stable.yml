@@ -43,6 +43,7 @@ jobs:
           github_token: ${{ steps.generate-token.outputs.token }}
           target_branches: "stable-f44"
           add_labels: "backported-to-stable"
+          pull_title: '${pull_title} [Backport ${target_branch}]'
           pull_description: |
             This is an automated backport of PR #${pull_number} to `${target_branch}`.
 
