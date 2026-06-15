@@ -5,7 +5,7 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 # Revert back to upstream defaults
-dnf config-manager setopt keepcache=0
+mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf
 dnf versionlock clear
 
 # This comes last because we can't *ever* afford to ship fedora flatpaks on the image
