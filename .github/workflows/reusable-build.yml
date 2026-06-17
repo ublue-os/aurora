@@ -66,6 +66,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
+      # FIXME: We need both actions as we run out of space on /var/tmp, however this
+      # will still fail sometimes as even the smallest 72G runners have a
+      # chance of not having /mnt and only 20GB free. Please investigate this
+      # in the future
+
+      - name: Mount BTRFS for podman storage
+        id: container-storage-action
+        uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
+        continue-on-error: true
+        with:
+          target-dir: /var/lib/containers
+          mount-opts: compress-force=zstd:2
+          loopback-free: '1'
+
       - name: Free Up Space
         id: remove-unwanted-software
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
