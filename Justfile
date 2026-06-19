@@ -202,12 +202,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
     BUILD_ARGS+=("--build-arg" "UBLUE_IMAGE_TAG=${tag}")
 
-    # Pull in most recent upstream base image
-    # if building locally/not ghcr pull the new image
-    if [[ {{ ghcr }} == "0" ]]; then
-        ${PODMAN} pull "${base_image_org}/${base_image_name}:${fedora_version}"
-    fi
-
     # Labels
     LABELS=()
     LABELS+=("--label" "containers.bootc=1")
@@ -245,6 +239,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Bump retries to minimize network flakes
     PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
+
+    # So we always have the newest images when building locally
+    if [[ {{ ghcr }} == "0" ]]; then
+      PODMAN_BUILD_ARGS+=("--pull=newer")
+    fi
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
