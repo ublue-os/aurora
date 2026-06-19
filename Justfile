@@ -843,7 +843,7 @@ login-registry bin="" registry="":
 
     {{ retry_function }}
 
-    echo "${GITHUB_TOKEN}" | retry 5 60 "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
+    retry 5 60 echo "${GITHUB_TOKEN}" | "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
 
 # # Examples:
 #   > just retag-nvidia-on-ghcr stable stable-41.20250126.3 0
