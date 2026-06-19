@@ -761,7 +761,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 
 # Create bootable image
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrfs" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -788,7 +788,6 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
 
     BOOTC_INSTALL_ARGS=()
     BOOTC_INSTALL_ARGS+=("--generic-image"  "--via-loopback" "/data/bootable.img" "--wipe")
-    BOOTC_INSTALL_ARGS+=("--filesystem ${bootc_fs}")
 
     if [[ "${backend}" == "ostree" ]]; then
       BOOTC_INSTALL_ARGS+=("--bootloader grub")
