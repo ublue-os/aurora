@@ -159,12 +159,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
-    {{ just }} verify-container cosign.pub "{{ brew }}"
-
-    cosign verify \
-      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-      --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
-      "{{ chunkah }}"
 
     {{ just }} verify-container cosign.pub "{{ brew }}"
 
@@ -290,31 +284,9 @@ build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
 
 # Rechunk Image
 [group('Image')]
-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
+rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
     #!/usr/bin/bash
 
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
-    export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
-
-    set -eoux pipefail
-
-    ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
-    -e CHUNKAH_CONFIG_STR "{{ chunkah }}" \
-    build \
-    --verbose \
-    --compressed \
-    --max-layers 128 \
-    --prune /sysroot/ \
-    --label ostree.commit- --label ostree.final-diffid- \
-    --tag "${image_name}:${tag}" | ${PODMAN} load
-
-# build-chunked-oci
-[group('Image')]
-ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
-    #!/usr/bin/bash
     set -eoux pipefail
 
     # Validate
@@ -378,7 +350,27 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0
         sudo -u "${SUDO_USER}" {{ just }} secureboot "${image}" "${tag}" "${flavor}"
     fi
 
-# For Privileged operations
+# Rechunk Image but cooler
+[group('Image')]
+chunkah $image="aurora" $tag="latest" $flavor="main" ghcr="0":
+    #!/usr/bin/bash
+    set -oeux pipefail
+
+    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
+
+    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+
+    export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
+    ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
+    -e CHUNKAH_CONFIG_STR quay.io/coreos/chunkah:dev \
+    build \
+    --compressed \
+    --max-layers 128 \
+    --prune /sysroot/ \
+    --label ostree.commit- --label ostree.final-diffid- \
+    --tag "${image_name}:${tag}" | ${PODMAN} load
+
+# For Rechunk
 [group('Image')]
 load-rootful $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/bash
@@ -768,11 +760,10 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
 
     # this is enough for base aurora to make it more likely to run in CI
     if [[ "{{ ghcr }}" == "1" ]]; then
-      # absurd size so it will always be enough for the image
-      IMG_SIZE=35G
+      IMG_SIZE=11G
     else
-      # Should at least be enough to rebase and install couple applications
-      IMG_SIZE=40G
+      # Do a little more locally so you can rebase
+      IMG_SIZE=30G
     fi
 
     BYTES_IMAGE_SIZE=$(numfmt --from=iec ${IMG_SIZE})
@@ -852,7 +843,7 @@ login-registry bin="" registry="":
 
     {{ retry_function }}
 
-    echo "${GITHUB_TOKEN}" | retry 5 60 "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
+    retry 5 60 echo "${GITHUB_TOKEN}" | "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
 
 # # Examples:
 #   > just retag-nvidia-on-ghcr stable stable-41.20250126.3 0

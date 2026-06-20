@@ -18,6 +18,9 @@ on:
       kernel_pin:
         description: "The full kernel version to pin"
         type: string
+      previous_build:
+        description: 'Set a reference to a previous build to make updates smaller'
+        type: string
       architecture:
         description: "JSON string of architectures to build, '[aarch64, x86_64]'"
         default: "['x86_64']"
@@ -64,7 +67,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      # FIXME: We need both actions as we run out of space on /var/tmp, however this
+      # will still fail sometimes as even the smallest 72G runners have a
+      # chance of not having /mnt and only 20GB free. Please investigate this
+      # in the future
+
+      - name: Mount BTRFS for podman storage
+        id: container-storage-action
+        uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
+        continue-on-error: true
+        with:
+          target-dir: /var/lib/containers
+          mount-opts: compress-force=zstd:2
+          loopback-free: '1'
 
       - name: Free Up Space
         id: remove-unwanted-software
@@ -187,16 +204,20 @@ jobs:
           path: /var/tmp/buildah-cache-*
           key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
 
-      - name: Rechunk Image with Chunkah
+      - name: Rechunk Image with rpm-ostree
         id: rechunker
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          PREVIOUS_BUILD: ${{ github.event_name == 'pull_request' && '0' || (github.event.inputs.previous_build || '1') }}
         run: |
           sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
                             "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+                            "${MATRIX_IMAGE_FLAVOR}" \
+                            "1" \
+                            "0" \
+                            "${PREVIOUS_BUILD}"
 
       - name: Setup Syft
         id: setup-syft
