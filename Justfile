@@ -202,12 +202,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
     fi
     BUILD_ARGS+=("--build-arg" "UBLUE_IMAGE_TAG=${tag}")
 
-    # Pull in most recent upstream base image
-    # if building locally/not ghcr pull the new image
-    if [[ {{ ghcr }} == "0" ]]; then
-        ${PODMAN} pull "${base_image_org}/${base_image_name}:${fedora_version}"
-    fi
-
     # Labels
     LABELS=()
     LABELS+=("--label" "containers.bootc=1")
@@ -245,6 +239,11 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
 
     # Bump retries to minimize network flakes
     PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
+
+    # So we always have the newest images when building locally
+    if [[ {{ ghcr }} == "0" ]]; then
+      PODMAN_BUILD_ARGS+=("--pull=newer")
+    fi
 
     # Add GitHub token secret if available (for CI/CD)
     if [[ -n "${GITHUB_TOKEN:-}" ]]; then
@@ -761,7 +760,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 
 # Create bootable image
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrfs" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -788,7 +787,6 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $bootc_fs="btrf
 
     BOOTC_INSTALL_ARGS=()
     BOOTC_INSTALL_ARGS+=("--generic-image"  "--via-loopback" "/data/bootable.img" "--wipe")
-    BOOTC_INSTALL_ARGS+=("--filesystem ${bootc_fs}")
 
     if [[ "${backend}" == "ostree" ]]; then
       BOOTC_INSTALL_ARGS+=("--bootloader grub")
@@ -851,7 +849,7 @@ login-registry bin="" registry="":
 
     {{ retry_function }}
 
-    echo "${GITHUB_TOKEN}" | retry 5 60 "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
+    retry 5 60 echo "${GITHUB_TOKEN}" | "{{ bin }}" login "{{ registry }}" -u "${GITHUB_ACTOR}" --password-stdin
 
 # # Examples:
 #   > just retag-nvidia-on-ghcr stable stable-41.20250126.3 0
