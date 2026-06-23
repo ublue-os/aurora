@@ -124,21 +124,22 @@ validate $image $tag $flavor:
     fi
 
 # Build Image
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("image", long="image", short="i")]
+[arg("kernel_pin", long="kernel-pin")]
+[arg("rechunk", long="rechunk", value="true")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
-build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline="0" $kernel_pin="":
-    #!/usr/bin/bash
-
-    echo "::group:: Build Prep"
+build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="":
+    #!/usr/bin/env bash
     set -eoux pipefail
 
-    # Validate
-    {{ just }} validate "${image}" "${tag}" "${flavor}"
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
 
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-    akmods_flavor=$({{ just }} akmods_flavor {{ tag }})
-
-    fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
+    akmods_flavor=$({{ just }} akmods_flavor --tag "${tag}")
+    fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     # Verify Base Image with cosign
     {{ just }} verify-container quay.io-fedora-ostree-desktops.pub ${base_image_org}/${base_image_name}:${fedora_version}
@@ -179,7 +180,7 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         ver="${tag}-${fedora_version}.${TIMESTAMP}"
     fi
 
-    POINT=$({{ just }} generate-point {{ image }} {{ tag }} {{ flavor }})
+    POINT=$({{ just }} generate-point --image "${image}" --tag "${tag}" --flavor "${flavor}")
     ver="${ver}.$POINT"
 
     # Build Arguments
@@ -228,8 +229,6 @@ build $image="aurora" $tag="latest" $flavor="main" rechunk="0" ghcr="0" pipeline
         LABELS+=("--label" "org.opencontainers.image.revision=deadbeef")
     fi
     LABELS+=("--label" "ostree.linux=${kernel_release}")
-
-    echo "::endgroup::"
 
     case "${akmods_flavor}" in
     "coreos-stable") BUILD_ARGS+=("--cpp-flag=-DZFS") ;;
