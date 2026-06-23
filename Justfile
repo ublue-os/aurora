@@ -384,11 +384,6 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $previ
           ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
         fi
 
-    # Pipeline Checks
-    if [[ {{ pipeline }} == "1" && -n "${SUDO_USER:-}" ]]; then
-        sudo -u "${SUDO_USER}" {{ just }} secureboot "${image}" "${tag}" "${flavor}"
-    fi
-
 # For Privileged operations
 [group('Image')]
 load-rootful $image="aurora" $tag="latest" $flavor="main":
