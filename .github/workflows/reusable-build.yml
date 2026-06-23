@@ -147,11 +147,12 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
-          CACHE="$(just setup-cache "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "1" \
-                            "${GITHUB_EVENT_NAME}")"
+          CACHE="$(just setup-cache \
+                --image "${MATRIX_BASE_NAME}" \
+                --tag "${MATRIX_STREAM_NAME}" \
+                --flavor "${MATRIX_IMAGE_FLAVOR}" \
+                --ghcr \
+                --github-event "${GITHUB_EVENT_NAME}")"
 
           CACHE_NAME="$(echo "${CACHE}" | cut -d' ' -f 1)"
           ALLOW_CACHE_WRITE="$(echo "${CACHE}" | cut -d' ' -f 2)"

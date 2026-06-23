@@ -735,15 +735,20 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
     rm -rf "${ROOTFS}"
 
 # DNF CI package cache
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("github_event", long="github-event")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Utility')]
 [private]
-setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $github_event="0":
-    #!/usr/bin/bash
+setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_event="":
+    #!/usr/bin/env bash
     set -eou pipefail
 
-    image_name=$({{ just }} image_name '{{ image }}' '{{ tag }}' '{{ flavor }}')
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}')
+    fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     ALLOW_CACHE_WRITE="false"
 
