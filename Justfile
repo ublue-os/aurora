@@ -838,9 +838,16 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
 # Once https://github.com/containers/podman/issues/27796 is resolved
 
 # Push Image to Registry
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("image", long="image", short="i")]
+[arg("registry", long="registry")]
+[arg("tag", long="tag", short="t")]
+[arg("temp_push", long="temp-push", value="true")]
+[arg("temp_push_tag", long="temp-push-tag")]
 [group('Utility')]
-push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registry="" $temp_push="0" $temp_push_tag="":
-    #!/usr/bin/bash
+push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $registry="" $temp_push="false" $temp_push_tag="":
+    #!/usr/bin/env bash
     set -eoux pipefail
 
     PUSH_CMD_ARGS=()
@@ -852,25 +859,25 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
 
     PUSH_CMD=""${PODMAN}" push "${PUSH_CMD_ARGS[@]}""
 
-    image_name=$({{ just }} image_name '{{ image }}' '{{ tag }}' '{{ flavor }}')
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    alias_tags=$({{ just }} generate-build-tags '{{ image }}' '{{ tag }}' '{{ flavor }}')
+    alias_tags=$({{ just }} generate-build-tags --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    if [[ "{{ ghcr }}" == "1" && -n "${image_registry}" ]]; then
+    if [[ "${ghcr}" == "true" && -n "${registry}" ]]; then
 
-      if [[ "${temp_push}" == "0" ]]; then
+      if [[ "${temp_push}" == "false" ]]; then
         for tag in ${alias_tags}; do
-          ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
+          ${PUSH_CMD} ${image_name}:${tag} ${registry}/${image_name}:${tag}
           # We need to push twice to workaround https://github.com/containers/podman/issues/27796
-          ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${tag}
+          ${PUSH_CMD} ${image_name}:${tag} ${registry}/${image_name}:${tag}
           cat /tmp/digestfile
         done
 
-      elif [[ "${temp_push}" == "1" ]]; then
-        ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${temp_push_tag}-${tag}
+      elif [[ "${temp_push}" == "true" ]]; then
+        ${PUSH_CMD} ${image_name}:${tag} ${registry}/${image_name}:${temp_push_tag}-${tag}
         # We need to push twice to workaround https://github.com/containers/podman/issues/27796
         # If we don't do this then the digest changes and we are only signing this specific tag
-        ${PUSH_CMD} ${image_name}:${tag} ${image_registry}/${image_name}:${temp_push_tag}-${tag}
+        ${PUSH_CMD} ${image_name}:${tag} ${registry}/${image_name}:${temp_push_tag}-${tag}
       fi
 
     else

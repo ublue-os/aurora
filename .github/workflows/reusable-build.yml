@@ -372,13 +372,13 @@ jobs:
             set -euox pipefail
 
             sudo -E $(command -v just) push-image \
-                     "${MATRIX_BASE_NAME}" \
-                     "${MATRIX_STREAM_NAME}" \
-                     "${MATRIX_IMAGE_FLAVOR}" \
-                     "1" \
-                     "${IMAGE_REGISTRY}" \
-                     "1" \
-                     "${TEMP_PUSH_TAG}"
+              --image "${MATRIX_BASE_NAME}" \
+              --tag "${MATRIX_STREAM_NAME}" \
+              --flavor "${MATRIX_IMAGE_FLAVOR}" \
+              --ghcr \
+              --registry "${IMAGE_REGISTRY}" \
+              --temp-push \
+              --temp-push-tag "${TEMP_PUSH_TAG}"
 
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
@@ -412,11 +412,11 @@ jobs:
             set -euox pipefail
 
             sudo -E $(command -v just) push-image \
-                     "${MATRIX_BASE_NAME}" \
-                     "${MATRIX_STREAM_NAME}" \
-                     "${MATRIX_IMAGE_FLAVOR}" \
-                     "1" \
-                     "${IMAGE_REGISTRY}"
+              --image "${MATRIX_BASE_NAME}" \
+              --tag "${MATRIX_STREAM_NAME}" \
+              --flavor "${MATRIX_IMAGE_FLAVOR}" \
+              --ghcr \
+              --registry "${IMAGE_REGISTRY}"
 
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
