@@ -291,9 +291,10 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 # Build Image and Rechunk
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
+[arg("kernel_pin", long="kernel-pin")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build-rechunk $image="aurora" $tag="latest" $flavor="main" kernel_pin="": (build image tag flavor) (rechunk image tag flavor)
+build-rechunk $image="aurora" $tag="latest" $flavor="main" kernel_pin="": (build image tag flavor kernel_pin) (rechunk image tag flavor)
 
 # Rechunk Image
 [arg("flavor", long="flavor", short="f")]
