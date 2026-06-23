@@ -134,7 +134,11 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          IMAGE_NAME="$(just image_name ${MATRIX_BASE_NAME} ${MATRIX_STREAM_NAME} ${MATRIX_IMAGE_FLAVOR})"
+          IMAGE_NAME="$(just image_name \
+                      --image ${MATRIX_BASE_NAME} \
+                      --tag ${MATRIX_STREAM_NAME} \
+                      --flavor ${MATRIX_IMAGE_FLAVOR})"
+
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: DNF Package Cache Setup

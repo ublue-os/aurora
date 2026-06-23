@@ -92,11 +92,14 @@ clean:
     rm -f /tmp/aurora*-tags.json
 
 # Check if valid combo
-[group('Utility')]
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [private]
 validate $image $tag $flavor:
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eou pipefail
+
     declare -A images={{ images }}
     declare -A tags={{ tags }}
     declare -A flavors={{ flavors }}
@@ -413,17 +416,16 @@ export-oci $image="aurora" $tag="latest" $flavor="main":
     ${PODMAN} push --compression-format=zstd --compression-level=3 "${image_name}:${tag}" oci-archive:"${ARCHIVE_NAME}"
 
 # Run Container
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
 run $image="aurora" $tag="latest" $flavor="main":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eoux pipefail
 
-    # Validate
-    {{ just }} validate "${image}" "${tag}" "${flavor}"
-
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
     # Check if image exists
     ID=$(${PODMAN} images --filter reference="${image_name}:${tag}" --format "'{{ '{{.ID}}' }}'")
     if [[ -z "$ID" ]]; then
@@ -519,11 +521,15 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
     exit "$returncode"
 
 # Get Fedora Version of an image
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [private]
-fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
-    #!/usr/bin/bash
+fedora_version image="aurora" tag="latest" flavor="main":
+    #!/usr/bin/env bash
     set -eou pipefail
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
+
+    {{ just }} validate --image {{ image }} --tag {{ tag }} --flavor {{ flavor }}
 
     # Determine Version
     if [[ "{{ tag }}" =~ stable ]]; then
@@ -536,15 +542,15 @@ fedora_version image="aurora" tag="latest" flavor="main" $kernel_pin="":
 
     echo "${VERSION}"
 
+[arg("tag", long="tag", short="t")]
 [private]
-akmods_flavor $tag="latest":
-    #!/usr/bin/bash
-
+akmods_flavor tag="latest":
+    #!/usr/bin/env bash
     set -eou pipefail
 
-    if [[ "${tag}" =~ stable ]]; then
+    if [[ "{{ tag }}" =~ stable ]]; then
         akmods_flavor="coreos-stable"
-    elif [[ "${tag}" =~ testing ]]; then
+    elif [[ "{{ tag }}" =~ testing ]]; then
         akmods_flavor="main"
     else
         akmods_flavor="main"
@@ -553,16 +559,21 @@ akmods_flavor $tag="latest":
     echo "${akmods_flavor}"
 
 # Image Name
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [private]
 image_name image="aurora" tag="latest" flavor="main":
-    #!/usr/bin/bash
-    set -eou pipefail
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    {{ just }} validate --image {{ image }} --tag {{ tag }} --flavor {{ flavor }}
     if [[ "{{ flavor }}" =~ main ]]; then
         image_name={{ image }}
     else
         image_name="{{ image }}-{{ flavor }}"
     fi
+
     echo "${image_name}"
 
 # Generate Tags
