@@ -405,16 +405,16 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
     fi
 
 # Generate OCI Archive for PR Testing
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Utility')]
 export-oci $image="aurora" $tag="latest" $flavor="main":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -oux pipefail
 
-    # Validate
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     ARCHIVE_NAME="${image_name}"-"$(arch)".oci
 
