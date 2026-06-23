@@ -582,40 +582,44 @@ image_name image="aurora" tag="latest" flavor="main":
     echo "${image_name}"
 
 # Generate Tags
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("github_event", long="github-event")]
+[arg("github_number", long="github-number")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
+[arg("version", long="version")]
 [group('Utility')]
-generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr="0" $version="" github_event="" github_number="":
-    #!/usr/bin/bash
-    set -eou pipefail
+generate-build-tags $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $version="" $github_event="" $github_number="":
+    #!/usr/bin/env bash
+    set -eoux pipefail
 
-    FEDORA_VERSION="$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')"
-    IMAGE_NAME=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    FEDORA_VERSION=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
+    IMAGE_NAME=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     TIMESTAMP="$(date +%Y%m%d)"
-    if [[ -z "${version:-}" ]]; then
-        version="{{ tag }}-${FEDORA_VERSION}.${TIMESTAMP}"
-    fi
-    version=${version#{{ tag }}-}
+    version="${FEDORA_VERSION}.${TIMESTAMP}"
 
     BUILD_TAGS=()
     COMMIT_TAGS=()
 
     # Commit Tags
-    github_number="{{ github_number }}"
+    github_number="${github_number}"
     SHA_SHORT="$(git rev-parse --short HEAD)"
-    if [[ "{{ ghcr }}" == "1" ]]; then
-        COMMIT_TAGS+=(pr-${github_number:-}-{{ tag }}-${version})
-        COMMIT_TAGS+=(${SHA_SHORT}-{{ tag }}-${version})
+    if [[ "${ghcr}" == "true" ]]; then
+        COMMIT_TAGS+=(pr-${github_number:-}-${tag}-${version})
+        COMMIT_TAGS+=(${SHA_SHORT}-${tag}-${version})
     fi
 
-    POINT=$({{ just }} generate-point {{ image }} {{ tag }} {{ flavor }})
+    POINT=$({{ just }} generate-point --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     # These are always used regardless of the stream
     COMMON_TAGS=()
-    COMMON_TAGS+=("{{ tag }}")
-    COMMON_TAGS+=("{{ tag }}-${version}")
-    COMMON_TAGS+=("{{ tag }}-${version:3}")
-    COMMON_TAGS+=("{{ tag }}-${version}.${POINT}")
-    COMMON_TAGS+=("{{ tag }}-${version:3}.${POINT}")
+    COMMON_TAGS+=("${tag}")
+    COMMON_TAGS+=("${tag}-${version}")
+    COMMON_TAGS+=("${tag}-${version:3}")
+    COMMON_TAGS+=("${tag}-${version}.${POINT}")
+    COMMON_TAGS+=("${tag}-${version:3}.${POINT}")
 
     BUILD_TAGS=("${COMMON_TAGS[@]}" "${BUILD_TAGS[@]}")
 
@@ -638,7 +642,7 @@ generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr
       BUILD_TAGS+=("${FEDORA_VERSION}-${version:3}.${POINT}")
     fi
 
-    github_event="{{ github_event }}"
+    github_event="${github_event}"
 
     if [[ "${github_event}" == "pull_request" ]]; then
         alias_tags=("${COMMIT_TAGS[@]}")
@@ -685,18 +689,22 @@ generate-point $image="aurora" $tag="latest" $flavor="main":
     echo "${POINT}"
 
 # Tag Images
+[arg("default_tag", long="default-tag")]
+[arg("image", long="image", short="i")]
+[arg("tags", long="tags")]
 [group('Utility')]
-tag-images image_name="" default_tag="" tags="":
-    #!/usr/bin/bash
-    set -eou pipefail
+tag-images $image="" $default_tag="" $tags="":
+    #!/usr/bin/env bash
+    set -eoux pipefail
 
     # Get Image, and untag
-    IMAGE=$(${PODMAN} inspect {{ image_name }}:{{ default_tag }} | jq -r .[].Id)
-    ${PODMAN} untag localhost/{{ image_name }}:{{ default_tag }}
+    IMAGE=$(${PODMAN} inspect "${image}:${default_tag}" | jq -r .[].Id)
+    ${PODMAN} untag localhost/"${image}:${default_tag}"
 
     # Tag Image
-    for tag in {{ tags }}; do
-        ${PODMAN} tag $IMAGE {{ image_name }}:${tag}
+    # Do not quote this, we want word splitting here
+    for tag in ${tags}; do
+        ${PODMAN} tag $IMAGE ${image}:${tag}
     done
 
     # Show Images
@@ -755,7 +763,7 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_e
     BLESSED_IMAGE=aurora-dx
 
     if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
-       [[ "{{ ghcr }}" == "1" ]] && \
+       [[ "${ghcr}" == "true" ]] && \
        [[ "${github_event}" == "workflow_dispatch" || "${github_event}" == "schedule" ]]; then
         ALLOW_CACHE_WRITE="true"
     fi
