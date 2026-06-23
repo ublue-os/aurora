@@ -283,10 +283,11 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) disk-image "${MATRIX_BASE_NAME}" \
-                             "${MATRIX_STREAM_NAME}" \
-                             "${MATRIX_IMAGE_FLAVOR}" \
-                             1
+          sudo -E $(command -v just) disk-image \
+          --image"${MATRIX_BASE_NAME}" \
+          --tag "${MATRIX_STREAM_NAME}" \
+          --flavor "${MATRIX_IMAGE_FLAVOR}" \
+          --ghcr
 
       - name: PR Testing Instructions
         if: github.event_name == 'pull_request'

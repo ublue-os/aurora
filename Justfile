@@ -764,13 +764,16 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_e
 
     echo "${CACHE_NAME}" "${ALLOW_CACHE_WRITE}"
 
-[group('Utility')]
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [private]
 bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
     #!/usr/bin/env bash
     set -eoux pipefail
 
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     BOOTC_INSTALL_OPTIONS=()
     BOOTC_INSTALL_OPTIONS+=("-v" "/var/lib/containers:/var/lib/containers" "-v" "/etc/containers:/etc/containers")
@@ -788,13 +791,18 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
         "${image_name}:${tag}" bootc {{ ARGS }}
 
 # Create bootable image
+[arg("backend", long="backend")]
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="0" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
     # this is enough for base aurora to make it more likely to run in CI
-    if [[ "{{ ghcr }}" == "1" ]]; then
+    if [[ "${ghcr}" == "true" ]]; then
       # absurd size so it will always be enough for the image
       IMG_SIZE=35G
     else
