@@ -1,3 +1,4 @@
+# Min just version 1.46.0 https://github.com/casey/just/issues/2290
 export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
 export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
 export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
