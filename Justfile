@@ -649,12 +649,16 @@ generate-build-tags image="aurora" tag="latest" flavor="main" kernel_pin="" ghcr
     echo "${alias_tags[*]}"
 
 # Get Index Point for multiple daily images
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [private]
-generate-point image="aurora" tag="latest" flavor="main":
-    #!/usr/bin/bash
+generate-point $image="aurora" $tag="latest" $flavor="main":
+    #!/usr/bin/env bash
     set -eoux pipefail
 
-    IMAGE_NAME=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    IMAGE_NAME=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
     TIMESTAMP="$(date +%Y%m%d)"
 
     tags="/tmp/${IMAGE_NAME}-tags.json"
@@ -663,10 +667,10 @@ generate-point image="aurora" tag="latest" flavor="main":
       skopeo list-tags docker://ghcr.io/{{ repo_organization }}/${IMAGE_NAME} > "${tags}"
     fi
 
-    if [[ $(jq --arg tag "{{ tag }}" --arg timestamp "${TIMESTAMP}" 'any(.Tags[]; contains($tag + "-" + $timestamp))' < "${tags}") == "true" ]]; then
+    if [[ $(jq --arg tag "${tag}" --arg timestamp "${TIMESTAMP}" 'any(.Tags[]; contains($tag + "-" + $timestamp))' < "${tags}") == "true" ]]; then
 
       # our image already exists, so find the highest POINT
-      POINT=$(jq -r --arg tag "{{ tag }}" --arg timestamp "${TIMESTAMP}" \
+      POINT=$(jq -r --arg tag "${tag}" --arg timestamp "${TIMESTAMP}" \
         '($tag + "-" + $timestamp) as $base | [ .Tags[] | select(startswith($base + ".")) ] | sort_by(split(".")[-1]
         | tonumber)
         |.[-1] | if . == null then "1" else split(".")[-1] end' < "${tags}")
