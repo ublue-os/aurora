@@ -475,16 +475,16 @@ verify-container key="" container="":
     fi
 
 # Secureboot Check
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Utility')]
 secureboot $image="aurora" $tag="latest" $flavor="main":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eou pipefail
 
-    # Validate
-    {{ just }} validate "${image}" "${tag}" "${flavor}"
-
-    # Image Name
-    image_name=$({{ just }} image_name ${image} ${tag} ${flavor})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     # Get the vmlinuz to check
     kernel_release=$(${PODMAN} inspect "${image_name}":"${tag}" | jq -r '.[].Config.Labels["ostree.linux"]')
