@@ -229,10 +229,11 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
         run: |
-          sudo -E $(command -v just) gen-sbom "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "${SYFT_CMD}"
+          sudo -E $(command -v just) gen-sbom \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            "${SYFT_CMD}"
 
       - name: Secureboot Check
         id: secureboot

@@ -703,12 +703,16 @@ tag-images image_name="" default_tag="" tags="":
     ${PODMAN} images
 
 # Extract Container and generate SBOM
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Utility')]
 gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eoux pipefail
 
-    image_name=$({{ just }} image_name '{{ image }}' '{{ tag }}' '{{ flavor }}')
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     OUT_DIR="sbom_out/${image_name}"
     mkdir -p "${OUT_DIR}"
