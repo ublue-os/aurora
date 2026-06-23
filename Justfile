@@ -144,7 +144,36 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     # Verify Base Image with cosign
     {{ just }} verify-container quay.io-fedora-ostree-desktops.pub ${base_image_org}/${base_image_name}:${fedora_version}
 
-    # Kernel Release/Pin
+    # Here we pin our kernels to workaround regressions!
+    # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
+
+    ARCH=$(arch)
+
+    case "${tag}" in
+            stable)
+                if [[ "${ARCH}" == "x86_64" ]]; then
+                    # <Here is a link why we have it pinned>
+                    kernel_pin=""
+                elif [[ "${ARCH}" == "aarch64" ]]; then
+                    kernel_pin=""
+                fi
+                ;;
+            latest)
+                if [[ "${ARCH}" == "x86_64" ]]; then
+                    kernel_pin=""
+                elif [[ "${ARCH}" == "aarch64" ]]; then
+                    kernel_pin=""
+                fi
+                ;;
+            testing)
+                if [[ "${ARCH}" == "x86_64" ]]; then
+                    kernel_pin=""
+                elif [[ "${ARCH}" == "aarch64" ]]; then
+                    kernel_pin=""
+                fi
+                ;;
+    esac
+
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
     else

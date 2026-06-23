@@ -15,9 +15,6 @@ on:
         description: "The Fedora Version: stable, or latest"
         required: true
         type: string
-      kernel_pin:
-        description: "The full kernel version to pin"
-        type: string
       architecture:
         description: "JSON string of architectures to build, '[aarch64, x86_64]'"
         default: "['x86_64']"
