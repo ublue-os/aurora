@@ -63,7 +63,7 @@ default:
 # Check Just Syntax
 [group('Just')]
 check:
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     find . -type f -name "*.just" | while read -r file; do
       echo "Checking syntax: $file"
       {{ just }} --fmt --check -f $file
@@ -74,7 +74,7 @@ check:
 # Fix Just Syntax
 [group('Just')]
 fix:
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     find . -type f -name "*.just" | while read -r file; do
       echo "Checking syntax: $file"
       {{ just }} --fmt -f $file
@@ -85,7 +85,7 @@ fix:
 # Clean Repo
 [group('Utility')]
 clean:
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eoux pipefail
     rm -f changelog.md
     rm -f output.env
@@ -443,14 +443,14 @@ run $image="aurora" $tag="latest" $flavor="main":
 # Test Changelogs
 [group('Changelogs')]
 changelogs branch="stable" handwritten="":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eou pipefail
     python3 ./.github/changelogs.py "{{ branch }}" ./output.env ./changelog.md --workdir . --handwritten "{{ handwritten }}"
 
 # Verify Container with Cosign
 [group('Utility')]
 verify-container key="" container="":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -eou pipefail
 
     # Get Cosign if Needed
@@ -881,7 +881,7 @@ push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $image_registr
 # Login to Container Registry
 [group('Utility')]
 login-registry bin="" registry="":
-    #!/bin/bash
+    #!/usr/bin/env bash
     set -euxo pipefail
 
     {{ retry_function }}
@@ -902,7 +902,7 @@ login-registry bin="" registry="":
 # Retag images on GHCR
 [group('Admin')]
 retag-nvidia-on-ghcr working_tag="" stream="" dry_run="1":
-    #!/bin/bash
+    #!/usr/bin/env bash
     set -euxo pipefail
     skopeo="echo === skopeo"
     if [[ "{{ dry_run }}" -ne 1 ]]; then
