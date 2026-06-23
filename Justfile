@@ -321,25 +321,27 @@ rechunk $image="aurora" $tag="latest" $flavor="main":
     --tag "${image_name}:${tag}" | ${PODMAN} load
 
 # build-chunked-oci
+[arg("flavor", long="flavor", short="f")]
+[arg("ghcr", long="ghcr", value="true")]
+[arg("image", long="image", short="i")]
+[arg("previous_build", long="previous-build", value="true")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
-ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0" previous_build="0":
-    #!/usr/bin/bash
+ostree-rechunk $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $previous_build="false":
+    #!/usr/bin/env bash
     set -eoux pipefail
 
-    # Validate
-    {{ just }} validate "${image}" "${tag}" "${flavor}"
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
+    fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
-    fedora_version=$({{ just }} fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}')
-
-    if [[ "{{ ghcr }}" == "0" ]]; then
-      {{ just }} load-rootful "${image}" "${tag}" "${flavor}"
+    if [[ "{{ ghcr }}" == "false" ]]; then
+      {{ just }} load-rootful --image "${image}" --tag "${tag}" --flavor "${flavor}"
     fi
 
-      # TODO: Redo everything here with --previous-build in rpm-ostree 2026.1+
-      # so we don't have to pull an old image + rename it
-    if [[ "{{ previous_build }}" == "1" ]]; then
+    # TODO: Redo everything here with --previous-build in rpm-ostree 2026.1+
+    # so we don't have to pull an old image + rename it
+    if [[ "${previous_build}" == "true" ]]; then
       PREVIOUS_IMAGE=ghcr.io/{{ repo_organization }}/"${image_name}":"${tag}"
 
       # https://github.com/coreos/rpm-ostree/blob/7e2f2065a4aa4d5965b4537bb7d74e0b2898650e/rust/src/compose.rs#L522-L529
@@ -350,9 +352,9 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0
       fi
     fi
 
-    if [[ "{{ ghcr }}" == "1" ]]; then
+    if [[ "${ghcr}" == "true" ]]; then
       CHUNKED_IMAGE="${image_name}:${tag}"
-        if [[ "{{ previous_build }}" == "1" ]]; then
+        if [[ "${previous_build}" == "true" ]]; then
           CHUNKED_IMAGE="${PREVIOUS_IMAGE}"
         fi
     else
@@ -377,7 +379,7 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0
         --output containers-storage:${CHUNKED_IMAGE}
 
         # rename the image to localhost
-        if [[ "{{ ghcr }}" == "1" && "{{ previous_build }}" == "1" ]]; then
+        if [[ "${ghcr}" == "true" && "${previous_build}" == "true" ]]; then
           ${SUDOIF} ${PODMAN} tag ${CHUNKED_IMAGE} "${image_name}:${tag}"
           ${SUDOIF} ${PODMAN} image rm -f ${CHUNKED_IMAGE}
         fi
