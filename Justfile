@@ -288,44 +288,23 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     ${BUILDAH} build "${PODMAN_BUILD_ARGS[@]}" .
     echo "::endgroup::"
 
-    # Rechunk the image if we are running inside ghcr or set the variable locally
-    if [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" && "{{ pipeline }}" == "1" ]]; then
-        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1 1
-    elif [[ "{{ rechunk }}" == "1" && "{{ ghcr }}" == "1" ]]; then
-        ${SUDOIF} {{ just }} rechunk "${image}" "${tag}" "${flavor}" 1
-    elif [[ "{{ rechunk }}" == "1" ]]; then
-        {{ just }} rechunk "${image}" "${tag}" "${flavor}"
-    fi
-
 # Build Image and Rechunk
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
-build-rechunk image="aurora" tag="latest" flavor="main" kernel_pin="":
-    @{{ just }} build {{ image }} {{ tag }} {{ flavor }} 1 0 0 {{ kernel_pin }}
-
-# Build Image with GHCR Flag
-[group('Image')]
-build-ghcr image="aurora" tag="latest" flavor="main" kernel_pin="":
-    #!/usr/bin/bash
-    if [[ "${UID}" -gt "0" ]]; then
-        echo "Must Run with sudo or as root..."
-        exit 1
-    fi
-    {{ just }} build {{ image }} {{ tag }} {{ flavor }} 0 1 0 {{ kernel_pin }}
-
-# Build Image for Pipeline:
-[group('Image')]
-build-pipeline image="aurora" tag="latest" flavor="main" kernel_pin="":
-    #!/usr/bin/bash
-    ${SUDOIF} {{ just }} build {{ image }} {{ tag }} {{ flavor }} 1 1 1 {{ kernel_pin }}
+build-rechunk $image="aurora" $tag="latest" $flavor="main" kernel_pin="": (build image tag flavor) (rechunk image tag flavor)
 
 # Rechunk Image
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
-rechunk $image="aurora" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
-    #!/usr/bin/bash
+rechunk $image="aurora" $tag="latest" $flavor="main":
+    #!/usr/bin/env bash
 
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
 

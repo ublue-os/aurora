@@ -174,17 +174,18 @@ jobs:
         id: build-image
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ghcurl
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-          INPUTS_KERNEL_PIN: ${{ inputs.kernel_pin }}
         run: |
-          sudo -E $(command -v just) repo_organization="${{ github.repository_owner }}" \
-                    build-ghcr "${MATRIX_BASE_NAME}" \
-                               "${MATRIX_STREAM_NAME}" \
-                               "${MATRIX_IMAGE_FLAVOR}" \
-                               "${INPUTS_KERNEL_PIN}"
+          sudo -E $(command -v just) \
+            repo_organization="${{ github.repository_owner }}" \
+            build \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr
 
       # https://github.com/actions/cache/issues/1533
       - name: Hack around permission issue caching
@@ -209,9 +210,10 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+          sudo -E $(command -v just) rechunk \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Setup Syft
         id: setup-syft
