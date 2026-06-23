@@ -385,16 +385,16 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $previ
         fi
 
 # For Privileged operations
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("tag", long="tag", short="t")]
 [group('Image')]
 load-rootful $image="aurora" $tag="latest" $flavor="main":
-    #!/usr/bin/bash
+    #!/usr/bin/env bash
     set -oux pipefail
 
-    # Validate
-    {{ just }} validate {{ image }} {{ tag }} {{ flavor }}
-
-    # Image Name
-    image_name=$({{ just }} image_name {{ image }} {{ tag }} {{ flavor }})
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     if [[ ! "$(id -u)" == 0 ]]; then
       ID=$(${PODMAN} images --filter reference="${image_name}:${tag}" --format "'{{ '{{.ID}}' }}'")
