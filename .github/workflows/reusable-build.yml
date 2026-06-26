@@ -66,15 +66,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
-      # FIX: Test if this fixes the network issues
-      # https://github.com/actions/runner-images/issues/14230#issuecomment-4767218322
-      - name: Fix firewall issues with 26.04 runners
-        shell: bash
-        run: |
-          sudo mkdir -p /etc/containers/containers.conf.d
-          printf '[network]\nfirewall_driver = "iptables"\n' | sudo tee /etc/containers/containers.conf.d/99-fix-firewall.conf
-          sudo podman network reload --all 2>/dev/null
-
       # FIXME: We need both actions as we run out of space on /var/tmp, however this
       # will still fail sometimes as even the smallest 72G runners have a
       # chance of not having /mnt and only 20GB free. Please investigate this
