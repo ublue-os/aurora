@@ -24,3 +24,11 @@ jobs:
           delete-orphaned-images: true
           keep-n-tagged: 7
           keep-n-untagged: 7
+
+      - name: Delete All OCI Artifact Cache
+        uses: dataaxiom/ghcr-cleanup-action@d52806a0dc70b430571a37da1fde39733ffd640f # v1.2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packages: aurora/cache/dnf
+          keep-n-tagged: 1
+          older-than: 90 days
