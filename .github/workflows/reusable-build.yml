@@ -15,9 +15,6 @@ on:
         description: "The Fedora Version: stable, or latest"
         required: true
         type: string
-      kernel_pin:
-        description: "The full kernel version to pin"
-        type: string
       architecture:
         description: "JSON string of architectures to build, '[aarch64, x86_64]'"
         default: "['x86_64']"
@@ -134,7 +131,11 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          IMAGE_NAME="$(just image_name ${MATRIX_BASE_NAME} ${MATRIX_STREAM_NAME} ${MATRIX_IMAGE_FLAVOR})"
+          IMAGE_NAME="$(just image_name \
+                      --image ${MATRIX_BASE_NAME} \
+                      --tag ${MATRIX_STREAM_NAME} \
+                      --flavor ${MATRIX_IMAGE_FLAVOR})"
+
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: DNF Package Cache Setup
@@ -146,11 +147,12 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
-          CACHE="$(just setup-cache "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "1" \
-                            "${GITHUB_EVENT_NAME}")"
+          CACHE="$(just setup-cache \
+                --image "${MATRIX_BASE_NAME}" \
+                --tag "${MATRIX_STREAM_NAME}" \
+                --flavor "${MATRIX_IMAGE_FLAVOR}" \
+                --ghcr \
+                --github-event "${GITHUB_EVENT_NAME}")"
 
           CACHE_NAME="$(echo "${CACHE}" | cut -d' ' -f 1)"
           ALLOW_CACHE_WRITE="$(echo "${CACHE}" | cut -d' ' -f 2)"
@@ -173,17 +175,18 @@ jobs:
         id: build-image
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ghcurl
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-          INPUTS_KERNEL_PIN: ${{ inputs.kernel_pin }}
         run: |
-          sudo -E $(command -v just) repo_organization="${{ github.repository_owner }}" \
-                    build-ghcr "${MATRIX_BASE_NAME}" \
-                               "${MATRIX_STREAM_NAME}" \
-                               "${MATRIX_IMAGE_FLAVOR}" \
-                               "${INPUTS_KERNEL_PIN}"
+          sudo -E $(command -v just) \
+            repo_organization="${{ github.repository_owner }}" \
+            build \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr
 
       # https://github.com/actions/cache/issues/1533
       - name: Hack around permission issue caching
@@ -208,9 +211,10 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) rechunk "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+          sudo -E $(command -v just) rechunk \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Setup Syft
         id: setup-syft
@@ -226,10 +230,11 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
         run: |
-          sudo -E $(command -v just) gen-sbom "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}" \
-                            "${SYFT_CMD}"
+          sudo -E $(command -v just) gen-sbom \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            "${SYFT_CMD}"
 
       - name: Secureboot Check
         id: secureboot
@@ -239,9 +244,10 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) secureboot "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+          sudo -E $(command -v just) secureboot \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Export to OCI Archive
         if: github.event_name == 'pull_request'
@@ -251,9 +257,10 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) export-oci "${MATRIX_BASE_NAME}" \
-                            "${MATRIX_STREAM_NAME}" \
-                            "${MATRIX_IMAGE_FLAVOR}"
+          sudo -E $(command -v just) export-oci \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}"
 
       - name: Upload OCI Archive as Artifact
         if: github.event_name == 'pull_request'
@@ -276,10 +283,11 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) disk-image "${MATRIX_BASE_NAME}" \
-                             "${MATRIX_STREAM_NAME}" \
-                             "${MATRIX_IMAGE_FLAVOR}" \
-                             1
+          sudo -E $(command -v just) disk-image \
+          --image"${MATRIX_BASE_NAME}" \
+          --tag "${MATRIX_STREAM_NAME}" \
+          --flavor "${MATRIX_IMAGE_FLAVOR}" \
+          --ghcr
 
       - name: PR Testing Instructions
         if: github.event_name == 'pull_request'
@@ -299,20 +307,17 @@ jobs:
           MATRIX_BASE_NAME: "${{ matrix.base_name }}"
           MATRIX_STREAM_NAME: "${{ matrix.stream_name }}"
           MATRIX_IMAGE_FLAVOR: "${{ matrix.image_flavor }}"
-          INPUTS_KERNEL_PIN: "${{ inputs.kernel_pin }}"
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_NUMBER: ${{ github.event.number }}
         run: |
           alias_tags="$(just generate-build-tags \
-                     "${MATRIX_BASE_NAME}" \
-                     "${MATRIX_STREAM_NAME}" \
-                     "${MATRIX_IMAGE_FLAVOR}" \
-                     "${INPUTS_KERNEL_PIN}" \
-                     "1" \
-                     "$(podman inspect ${IMAGE_NAME}:${MATRIX_STREAM_NAME} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
-                     "${GITHUB_EVENT_NAME}" \
-                     "${GITHUB_EVENT_NUMBER}")"
+                      --image "${MATRIX_BASE_NAME}" \
+                      --tag "${MATRIX_STREAM_NAME}" \
+                      --flavor "${MATRIX_IMAGE_FLAVOR}" \
+                      --ghcr \
+                      --github-event "${GITHUB_EVENT_NAME}" \
+                      --github-number "${GITHUB_EVENT_NUMBER}")"
 
           echo "Tags for this Action..."
           echo "$alias_tags"
@@ -327,9 +332,10 @@ jobs:
           ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
-          sudo -E $(command -v just) tag-images "${IMAGE_NAME}" \
-                          "${MATRIX_STREAM_NAME}" \
-                          "${ALIAS_TAGS}"
+          sudo -E $(command -v just) tag-images \
+            --image "${IMAGE_NAME}" \
+            --default-tag "${MATRIX_STREAM_NAME}" \
+            --tags "${ALIAS_TAGS}"
 
       - name: Login to GitHub Container Registry
         if: inputs.publish
@@ -364,13 +370,13 @@ jobs:
             set -euox pipefail
 
             sudo -E $(command -v just) push-image \
-                     "${MATRIX_BASE_NAME}" \
-                     "${MATRIX_STREAM_NAME}" \
-                     "${MATRIX_IMAGE_FLAVOR}" \
-                     "1" \
-                     "${IMAGE_REGISTRY}" \
-                     "1" \
-                     "${TEMP_PUSH_TAG}"
+              --image "${MATRIX_BASE_NAME}" \
+              --tag "${MATRIX_STREAM_NAME}" \
+              --flavor "${MATRIX_IMAGE_FLAVOR}" \
+              --ghcr \
+              --registry "${IMAGE_REGISTRY}" \
+              --temp-push \
+              --temp-push-tag "${TEMP_PUSH_TAG}"
 
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
@@ -404,11 +410,11 @@ jobs:
             set -euox pipefail
 
             sudo -E $(command -v just) push-image \
-                     "${MATRIX_BASE_NAME}" \
-                     "${MATRIX_STREAM_NAME}" \
-                     "${MATRIX_IMAGE_FLAVOR}" \
-                     "1" \
-                     "${IMAGE_REGISTRY}"
+              --image "${MATRIX_BASE_NAME}" \
+              --tag "${MATRIX_STREAM_NAME}" \
+              --flavor "${MATRIX_IMAGE_FLAVOR}" \
+              --ghcr \
+              --registry "${IMAGE_REGISTRY}"
 
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
