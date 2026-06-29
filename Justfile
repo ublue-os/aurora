@@ -778,8 +778,9 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="fa
 
     POINT=$({{ just }} generate-point --image "${image}" --tag "${tag}" --flavor "${flavor}")
     CURRENT_DAY="$(LC_TIME=C date +%A)"
+    BLESSED_DAY="Sunday"
 
-    if [[ "${CURRENT_DAY}" == "Sunday" && "$POINT" == "1" && "${ghcr}" == "true" ]]; then
+    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" ]]; then
       echo "Not pulling build cache. Uploading fresh cache later."
     elif [[ "${pull}" == "true" ]]; then
       # We want to avoid using --allow-path-traversal
@@ -792,7 +793,7 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="fa
        [[ "${pull:-false}" == "false" ]] && \
        [[ "${push}" == "true" ]] && \
        [[ "${ghcr}" == "true" ]] && \
-       [[ "${github_event}" == "workflow_dispatch" || "${CURRENT_DAY}" == "Sunday" && "${POINT}" == "1" ]]; then
+       [[ "${github_event}" == "workflow_dispatch" || "${CURRENT_DAY}" == "${BLESSED_DAY}" && "${POINT}" == "1" ]]; then
 
       {{ just }} login-registry oras ghcr.io
       pushd "${BUILDAH_CACHE_DIR}"
