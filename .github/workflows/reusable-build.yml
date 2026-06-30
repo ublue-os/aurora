@@ -261,7 +261,7 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
           sudo -E $(command -v just) disk-image \
-          --image"${MATRIX_BASE_NAME}" \
+          --image "${MATRIX_BASE_NAME}" \
           --tag "${MATRIX_STREAM_NAME}" \
           --flavor "${MATRIX_IMAGE_FLAVOR}" \
           --ghcr
