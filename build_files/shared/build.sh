@@ -8,6 +8,8 @@ echo "::group:: Copy Files"
 cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bak
 dnf config-manager setopt keepcache=1 timeout=60
 
+dnf upgrade -y
+
 # We need to remove this package here because lots of files we add from `{projectbluefin,get-aurora-dev}/common` override the rpm files
 # they go away when you do dnf remove
 # Keep *-logos in RPM DB for downstream package installations
