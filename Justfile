@@ -743,15 +743,22 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
 
     rm -rf "${ROOTFS}"
 
+# We are not using https://github.com/actions/cache because of:
+# https://github.com/ublue-os/aurora/issues/2351
+# https://github.com/actions/cache/issues/1537
+
 # DNF CI package cache
 [arg("flavor", long="flavor", short="f")]
 [arg("ghcr", long="ghcr", value="true")]
 [arg("github_event", long="github-event")]
 [arg("image", long="image", short="i")]
+[arg("pull", long="pull", value="true")]
+[arg("push", long="push", value="true")]
+[arg("registry", long="registry")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
 [private]
-setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_event="":
+setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -759,19 +766,40 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_e
 
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    ALLOW_CACHE_WRITE="false"
-
+    # compromise between most shared packages
     BLESSED_IMAGE=aurora-dx
 
-    if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
-       [[ "${ghcr}" == "true" ]] && \
-       [[ "${github_event}" == "workflow_dispatch" || "${github_event}" == "schedule" ]]; then
-        ALLOW_CACHE_WRITE="true"
+    CACHE_NAME="aurora/cache/dnf"
+    CACHE_IMAGE="${registry}/${CACHE_NAME}:${fedora_version}-$(arch)"
+
+    # directory where buildah-cache-UID is
+    BUILDAH_CACHE_DIR="/var/tmp"
+    BUILDAH_CACHE="buildah-cache-${UID}"
+
+    POINT=$({{ just }} generate-point --image "${image}" --tag "${tag}" --flavor "${flavor}")
+    CURRENT_DAY="$(LC_TIME=C date +%A)"
+    BLESSED_DAY="Sunday"
+
+    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" ]]; then
+      echo "Not pulling build cache. Uploading fresh cache later."
+    elif [[ "${pull}" == "true" ]]; then
+      # We want to avoid using --allow-path-traversal
+      pushd "${BUILDAH_CACHE_DIR}"
+      oras pull "${CACHE_IMAGE}" || exit 0
+      popd
     fi
 
-    CACHE_NAME="${BLESSED_IMAGE}-${fedora_version}"
+    if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
+       [[ "${pull:-false}" == "false" ]] && \
+       [[ "${push}" == "true" ]] && \
+       [[ "${ghcr}" == "true" ]] && \
+       [[ "${github_event}" == "workflow_dispatch" || "${CURRENT_DAY}" == "${BLESSED_DAY}" && "${POINT}" == "1" ]]; then
 
-    echo "${CACHE_NAME}" "${ALLOW_CACHE_WRITE}"
+      {{ just }} login-registry oras ghcr.io
+      pushd "${BUILDAH_CACHE_DIR}"
+      oras push "${CACHE_IMAGE}" "${BUILDAH_CACHE}"
+      popd
+    fi
 
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]

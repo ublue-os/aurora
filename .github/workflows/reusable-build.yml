@@ -115,8 +115,12 @@ jobs:
         if: inputs.publish
 
       - name: Install ORAS
-        if: inputs.publish
         uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
+
+      # actions put things in a weird unpredictable path
+      - name: Make ORAS accessible for root/sudo
+        run: |
+          sudo mv $(which oras) /usr/local/bin
 
       - name: Check Just Syntax
         shell: bash
@@ -138,38 +142,23 @@ jobs:
 
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
-      - name: DNF Package Cache Setup
+      - name: DNF Package Cache Pull
         shell: bash
-        id: setup-cache
+        id: pull-cache
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
-          CACHE="$(just setup-cache \
-                --image "${MATRIX_BASE_NAME}" \
-                --tag "${MATRIX_STREAM_NAME}" \
-                --flavor "${MATRIX_IMAGE_FLAVOR}" \
-                --ghcr \
-                --github-event "${GITHUB_EVENT_NAME}")"
-
-          CACHE_NAME="$(echo "${CACHE}" | cut -d' ' -f 1)"
-          ALLOW_CACHE_WRITE="$(echo "${CACHE}" | cut -d' ' -f 2)"
-
-          echo "cache_name=${CACHE_NAME}" >> "$GITHUB_OUTPUT"
-          echo "allow_cache_write=${ALLOW_CACHE_WRITE}" >> "$GITHUB_OUTPUT"
-
-      - name: Restore DNF package cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        env:
-          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
-        with:
-          path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-
-            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}
+          sudo -E $(command -v just) \
+            setup-cache \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr \
+            --registry "${IMAGE_REGISTRY}" \
+            --pull
 
       - name: Build Image
         id: build-image
@@ -188,21 +177,26 @@ jobs:
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
             --ghcr
 
-      # https://github.com/actions/cache/issues/1533
-      - name: Hack around permission issue caching
-        shell: bash
-        id: cache-perms
-        run: |
-          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
-
       - name: Write new DNF package cache
-        if: steps.setup-cache.outputs.allow_cache_write == 'true'
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: push-cache
+        shell: bash
+        if: inputs.publish
         env:
-          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
-        with:
-          path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sudo -E $(command -v just) \
+            setup-cache \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr \
+            --registry "${IMAGE_REGISTRY}" \
+            --github-event "${GITHUB_EVENT_NAME}" \
+            --push
 
       - name: Rechunk Image with Chunkah
         id: rechunker
@@ -343,9 +337,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          just login-registry podman ghcr.io
+          sudo -E $(command -v just) login-registry podman ghcr.io
           # cosign gets credentials from docker
-          just login-registry docker ghcr.io
+          sudo -E $(command -v just) login-registry docker ghcr.io
 
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
@@ -397,7 +391,7 @@ jobs:
           # use old bundle format, so we can use newer cosign 3.X.X instead of 2.X.X
           # https://github.com/containers/container-libs/issues/388
           # https://github.com/coreos/rpm-ostree/issues/5509
-          cosign sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
+          sudo -E $(which cosign) sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
 
       - name: Push to GHCR
         id: push
@@ -430,7 +424,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          just login-registry oras ghcr.io
+          sudo -E $(command -v just) login-registry oras ghcr.io
 
       - name: Upload SBOM
         if: inputs.publish
@@ -443,13 +437,13 @@ jobs:
           SBOM="sbom_out/${IMAGE_NAME}/sbom.json"
 
           cd "$(dirname "${SBOM}")"
-          oras attach \
+          sudo -E oras attach \
           --artifact-type application/vnd.spdx+json \
           --annotation filename=$(basename "$SBOM") \
           "${IMAGE}@${DIGEST}" \
           "$(basename ${SBOM})"
 
-          sbom_digest=$(oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')
+          sbom_digest=$(sudo -E oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')
 
           echo "sbom_digest=${sbom_digest}" >> $GITHUB_OUTPUT
 
@@ -461,7 +455,7 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           SBOM_DIGEST: ${{ steps.upload-sbom.outputs.sbom_digest }}
         run: |
-          cosign sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
+          sudo -E $(command -v cosign) sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
 
       - name: Attestation
         if: inputs.publish
