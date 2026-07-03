@@ -129,9 +129,10 @@ validate $image $tag $flavor:
 [arg("image", long="image", short="i")]
 [arg("kernel_pin", long="kernel-pin")]
 [arg("rechunk", long="rechunk", value="true")]
+[arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="":
+build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="" $retry_pull="false":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -141,8 +142,10 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     akmods_flavor=$({{ just }} akmods_flavor --tag "${tag}")
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    # Verify Base Image with cosign
-    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub ${base_image_org}/${base_image_name}:${fedora_version}
+    BASE_IMAGE_REF="${base_image_org}/${base_image_name}:${fedora_version}"
+    ALL_IMAGES=()
+    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub "${BASE_IMAGE_REF}"
+    ALL_IMAGES+=("${BASE_IMAGE_REF}")
 
     # Here we pin our kernels to workaround regressions!
     # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
@@ -181,13 +184,22 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
         kernel_release="${kernel_pin}"
     fi
 
-    # Verify Containers with Cosign
-    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    BASENAME_AKMODS="ghcr.io/ublue-os/akmods"
+
+    AKMODS="${BASENAME_AKMODS}:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    {{ just }} verify-container cosign.pub "${AKMODS}"
+    ALL_IMAGES+=("${AKMODS}")
+
     if [[ "${akmods_flavor}" =~ coreos ]]; then
-        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        AKMODS_ZFS="${BASENAME_AKMODS}-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "${AKMODS_ZFS}"
+        ALL_IMAGES+=("${AKMODS_ZFS}")
     fi
+
     if [[ "${flavor}" =~ nvidia-open ]]; then
-        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        AKMODS_NVIDIA_OPEN="${BASENAME_AKMODS}-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "${AKMODS_NVIDIA_OPEN}"
+        ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
     fi
 
     cosign verify \
@@ -195,12 +207,27 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
 
+    ALL_IMAGES+=("{{ common }}")
+
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
+    ALL_IMAGES+=("{{ chunkah }}")
+
     {{ just }} verify-container cosign.pub "{{ brew }}"
+    ALL_IMAGES+=("{{ brew }}")
+
+    {{ retry_function }}
+
+    # I hate this immensely, podman build/pull with --retry does not work for
+    # transient network issues
+    if [[ "${retry_pull}" == "true" ]]; then
+      for fetch_image in "${ALL_IMAGES[@]}"; do
+        retry 5 60 ${PODMAN} pull ${fetch_image}
+      done
+    fi
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
@@ -270,9 +297,6 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --file Containerfile.in)
 
-    # Bump retries to minimize network flakes
-    PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
-
     # So we always have the newest images when building locally
     if [[ "${ghcr}" == "false" ]]; then
       PODMAN_BUILD_ARGS+=("--pull=newer")
@@ -293,9 +317,10 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
 [arg("kernel_pin", long="kernel-pin")]
+[arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build-rechunk $image="aurora" $tag="latest" $flavor="main" kernel_pin="": (build image tag flavor kernel_pin) (rechunk image tag flavor)
+build-rechunk $image="aurora" $tag="latest" $flavor="main" $kernel_pin="" $retry_pull="false": (build image tag flavor kernel_pin retry_pull) (rechunk image tag flavor)
 
 # Rechunk Image
 [arg("flavor", long="flavor", short="f")]
