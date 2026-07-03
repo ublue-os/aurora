@@ -806,7 +806,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
