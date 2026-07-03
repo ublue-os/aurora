@@ -273,7 +273,7 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
 
     # So we always have the newest images when building locally
-    if [[ {{ ghcr }} == "0" ]]; then
+    if [[ "${ghcr}" == "false" ]]; then
       PODMAN_BUILD_ARGS+=("--pull=newer")
     fi
 
@@ -855,7 +855,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
 [arg("temp_push", long="temp-push", value="true")]
 [arg("temp_push_tag", long="temp-push-tag")]
 [group('Utility')]
-push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $registry="" $temp_push="false" $temp_push_tag="":
+push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
 
