@@ -843,8 +843,6 @@ disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="
       BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
     fi
 
-    {{ just }} load-rootful --image "${image}" --tag "${tag}" --flavor "${flavor}"
-
     {{ just }} bootc --image "${image}" --tag "${tag}" --flavor "${flavor}" install to-disk -- "${BOOTC_INSTALL_ARGS[@]}"
 
 # FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
