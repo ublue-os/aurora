@@ -148,31 +148,32 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
 
     ARCH=$(arch)
-
-    case "${tag}" in
-            stable)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    # <Here is a link why we have it pinned>
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            latest)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            testing)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-    esac
+    if [[ -z "${kernel_pin:-}" ]]; then
+      case "${tag}" in
+              stable)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      # <Here is a link why we have it pinned>
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              latest)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              testing)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+      esac
+    fi
 
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
