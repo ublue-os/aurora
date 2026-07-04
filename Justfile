@@ -148,31 +148,32 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
 
     ARCH=$(arch)
-
-    case "${tag}" in
-            stable)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    # <Here is a link why we have it pinned>
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            latest)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            testing)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-    esac
+    if [[ -z "${kernel_pin:-}" ]]; then
+      case "${tag}" in
+              stable)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      # <Here is a link why we have it pinned>
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              latest)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              testing)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+      esac
+    fi
 
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -273,7 +274,7 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
 
     # So we always have the newest images when building locally
-    if [[ {{ ghcr }} == "0" ]]; then
+    if [[ "${ghcr}" == "false" ]]; then
       PODMAN_BUILD_ARGS+=("--pull=newer")
     fi
 
@@ -834,7 +835,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -868,6 +869,8 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
       BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
     fi
 
+    {{ just }} load-rootful --image "${image}" --tag "${tag}" --flavor "${flavor}"
+
     {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk "${BOOTC_INSTALL_ARGS[@]}"
 
 # FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
@@ -883,7 +886,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
 [arg("temp_push", long="temp-push", value="true")]
 [arg("temp_push_tag", long="temp-push-tag")]
 [group('Utility')]
-push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $registry="" $temp_push="false" $temp_push_tag="":
+push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
 

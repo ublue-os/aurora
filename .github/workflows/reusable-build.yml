@@ -38,7 +38,7 @@ permissions: {}
 jobs:
   build_container:
     name: image
-    runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
+    runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-26.04' || 'ubuntu-26.04-arm' }}
     permissions:
       contents: read
       packages: write
@@ -73,36 +73,12 @@ jobs:
         uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
         continue-on-error: true
         with:
-          target-dir: /var/lib/containers
           mount-opts: compress-force=zstd:2
           loopback-free: '1'
 
       - name: Free Up Space
         id: remove-unwanted-software
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
-
-      # TODO: remove me when we have a new podman in 26.04 runners
-      # needed because old podman doesn't push layer annotations for
-      # the rpm-ostree rechunker at all
-      - name: Update podman
-        shell: bash
-        run: |
-          set -eux
-          # Require the runner is ubuntu-24.04
-          IDV=$(. /usr/lib/os-release && echo ${ID}-${VERSION_ID})
-          test "${IDV}" = "ubuntu-24.04"
-          # resolute is the next release. The azure.archive.ubuntu.com mirror only carries amd64.
-          # Other architectures like arm64 use ports.ubuntu.com/ubuntu-ports.
-          if [ "$(dpkg --print-architecture)" = "amd64" ]; then
-            mirror="http://azure.archive.ubuntu.com/ubuntu"
-          else
-            mirror="http://ports.ubuntu.com/ubuntu-ports"
-          fi
-          echo "deb ${mirror} resolute universe main" | sudo tee /etc/apt/sources.list.d/resolute.list
-          /bin/time -f '%E %C' sudo apt update
-          # skopeo is currently older in resolute for some reason hence --allow-downgrades
-          /bin/time -f '%E %C' sudo apt install -y --allow-downgrades crun/resolute buildah/resolute podman/resolute skopeo/resolute
-          podman --version
 
       - name: Install Just
         run: |
@@ -116,11 +92,6 @@ jobs:
 
       - name: Install ORAS
         uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
-
-      # actions put things in a weird unpredictable path
-      - name: Make ORAS accessible for root/sudo
-        run: |
-          sudo mv $(which oras) /usr/local/bin
 
       - name: Check Just Syntax
         shell: bash
@@ -151,7 +122,7 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
-          sudo -E $(command -v just) \
+          $(command -v just) \
             setup-cache \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
@@ -169,7 +140,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) \
+          $(command -v just) \
             repo_organization="${{ github.repository_owner }}" \
             build \
             --image "${MATRIX_BASE_NAME}" \
@@ -188,7 +159,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sudo -E $(command -v just) \
+          $(command -v just) \
             setup-cache \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
@@ -205,7 +176,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) rechunk \
+         $(command -v just) rechunk \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -224,7 +195,7 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
         run: |
-          sudo -E $(command -v just) gen-sbom \
+          $(command -v just) gen-sbom \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -238,7 +209,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) secureboot \
+         $(command -v just) secureboot \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -251,7 +222,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) export-oci \
+          $(command -v just) export-oci \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -277,8 +248,8 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) disk-image \
-          --image"${MATRIX_BASE_NAME}" \
+          $(command -v just) disk-image \
+          --image "${MATRIX_BASE_NAME}" \
           --tag "${MATRIX_STREAM_NAME}" \
           --flavor "${MATRIX_IMAGE_FLAVOR}" \
           --ghcr
@@ -326,7 +297,7 @@ jobs:
           ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
-          sudo -E $(command -v just) tag-images \
+          $(command -v just) tag-images \
             --image "${IMAGE_NAME}" \
             --default-tag "${MATRIX_STREAM_NAME}" \
             --tags "${ALIAS_TAGS}"
@@ -337,9 +308,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          sudo -E $(command -v just) login-registry podman ghcr.io
+          $(command -v just) login-registry podman ghcr.io
           # cosign gets credentials from docker
-          sudo -E $(command -v just) login-registry docker ghcr.io
+          $(command -v just) login-registry docker ghcr.io
 
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
@@ -363,7 +334,7 @@ jobs:
         run: |
             set -euox pipefail
 
-            sudo -E $(command -v just) push-image \
+            $(command -v just) push-image \
               --image "${MATRIX_BASE_NAME}" \
               --tag "${MATRIX_STREAM_NAME}" \
               --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -391,7 +362,7 @@ jobs:
           # use old bundle format, so we can use newer cosign 3.X.X instead of 2.X.X
           # https://github.com/containers/container-libs/issues/388
           # https://github.com/coreos/rpm-ostree/issues/5509
-          sudo -E $(which cosign) sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
+          $(which cosign) sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
 
       - name: Push to GHCR
         id: push
@@ -403,7 +374,7 @@ jobs:
         run: |
             set -euox pipefail
 
-            sudo -E $(command -v just) push-image \
+            $(command -v just) push-image \
               --image "${MATRIX_BASE_NAME}" \
               --tag "${MATRIX_STREAM_NAME}" \
               --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -424,7 +395,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          sudo -E $(command -v just) login-registry oras ghcr.io
+          $(command -v just) login-registry oras ghcr.io
 
       - name: Upload SBOM
         if: inputs.publish
@@ -437,13 +408,13 @@ jobs:
           SBOM="sbom_out/${IMAGE_NAME}/sbom.json"
 
           cd "$(dirname "${SBOM}")"
-          sudo -E oras attach \
+          oras attach \
           --artifact-type application/vnd.spdx+json \
           --annotation filename=$(basename "$SBOM") \
           "${IMAGE}@${DIGEST}" \
           "$(basename ${SBOM})"
 
-          sbom_digest=$(sudo -E oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')
+          sbom_digest=$(oras discover --format json "${IMAGE}@${DIGEST}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')
 
           echo "sbom_digest=${sbom_digest}" >> $GITHUB_OUTPUT
 
@@ -455,7 +426,7 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           SBOM_DIGEST: ${{ steps.upload-sbom.outputs.sbom_digest }}
         run: |
-          sudo -E $(command -v cosign) sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
+          $(command -v cosign) sign -y --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${SBOM_DIGEST}
 
       - name: Attestation
         if: inputs.publish

@@ -28,6 +28,10 @@ jobs:
         with:
           # Use the dynamically generated GitHub App token
           token: ${{ steps.generate-token.outputs.token }}
+          # Explicitly check out the base branch (the PR is already merged into it).
+          # Avoids the default `refs/pull/<PR>/merge` ref, which actions/checkout
+          # refuses to check out for fork PRs on pull_request_target events.
+          ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 0
 
       - name: Configure Git Author
@@ -37,7 +41,7 @@ jobs:
 
       - name: Create Backport Pull Requests
         id: backport
-        uses: korthout/backport-action@66065406958f46e82238fd59546f5a99e69e22aa # v4.5.2
+        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
         with:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}
