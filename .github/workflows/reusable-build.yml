@@ -73,7 +73,6 @@ jobs:
         uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
         continue-on-error: true
         with:
-          target-dir: /var/lib/containers
           mount-opts: compress-force=zstd:2
           loopback-free: '1'
 
@@ -157,7 +156,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) \
+          $(command -v just) \
             repo_organization="${{ github.repository_owner }}" \
             build \
             --image "${MATRIX_BASE_NAME}" \
@@ -171,7 +170,7 @@ jobs:
         shell: bash
         id: cache-perms
         run: |
-          sudo chmod 777 --recursive /var/tmp/buildah-cache-0
+          chmod 777 --recursive /var/tmp/buildah-cache-${UID}
 
       - name: Write new DNF package cache
         if: steps.setup-cache.outputs.allow_cache_write == 'true'
@@ -189,7 +188,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) rechunk \
+         $(command -v just) rechunk \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -208,7 +207,7 @@ jobs:
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
         run: |
-          sudo -E $(command -v just) gen-sbom \
+          $(command -v just) gen-sbom \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -222,7 +221,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) secureboot \
+         $(command -v just) secureboot \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -235,7 +234,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) export-oci \
+          $(command -v just) export-oci \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}"
@@ -261,7 +260,7 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          sudo -E $(command -v just) disk-image \
+          $(command -v just) disk-image \
           --image "${MATRIX_BASE_NAME}" \
           --tag "${MATRIX_STREAM_NAME}" \
           --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -310,7 +309,7 @@ jobs:
           ALIAS_TAGS: ${{ steps.generate-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
-          sudo -E $(command -v just) tag-images \
+          $(command -v just) tag-images \
             --image "${IMAGE_NAME}" \
             --default-tag "${MATRIX_STREAM_NAME}" \
             --tags "${ALIAS_TAGS}"
@@ -347,7 +346,7 @@ jobs:
         run: |
             set -euox pipefail
 
-            sudo -E $(command -v just) push-image \
+            $(command -v just) push-image \
               --image "${MATRIX_BASE_NAME}" \
               --tag "${MATRIX_STREAM_NAME}" \
               --flavor "${MATRIX_IMAGE_FLAVOR}" \
@@ -387,7 +386,7 @@ jobs:
         run: |
             set -euox pipefail
 
-            sudo -E $(command -v just) push-image \
+            $(command -v just) push-image \
               --image "${MATRIX_BASE_NAME}" \
               --tag "${MATRIX_STREAM_NAME}" \
               --flavor "${MATRIX_IMAGE_FLAVOR}" \
