@@ -73,7 +73,6 @@ jobs:
         uses: ublue-os/container-storage-action@25e05be4948f77746938687877829d15c5038036
         continue-on-error: true
         with:
-          target-dir: /var/lib/containers
           mount-opts: compress-force=zstd:2
           loopback-free: '1'
 
