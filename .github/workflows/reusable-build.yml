@@ -162,7 +162,8 @@ jobs:
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
-            --ghcr
+            --ghcr \
+            --retry-pull
 
       # https://github.com/actions/cache/issues/1533
       - name: Hack around permission issue caching
