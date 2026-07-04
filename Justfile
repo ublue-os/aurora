@@ -774,6 +774,7 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_e
 
     echo "${CACHE_NAME}" "${ALLOW_CACHE_WRITE}"
 
+# Example: just bootc -t testing -- --help
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
@@ -800,6 +801,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
         -v "${BUILD_BASE_DIR:-.}:/data" \
         "${image_name}:${tag}" bootc {{ ARGS }}
 
+# Example: sudo just disk-image -t testing --backend composefs
 # Create bootable image
 [arg("backend", long="backend")]
 [arg("flavor", long="flavor", short="f")]
@@ -841,9 +843,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="
       BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
     fi
 
-    {{ just }} load-rootful --image "${image}" --tag "${tag}" --flavor "${flavor}"
-
-    {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk "${BOOTC_INSTALL_ARGS[@]}"
+    {{ just }} bootc --image "${image}" --tag "${tag}" --flavor "${flavor}" install to-disk -- "${BOOTC_INSTALL_ARGS[@]}"
 
 # FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
 # See: https://github.com/ublue-os/aurora/pull/2199
