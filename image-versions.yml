@@ -5,12 +5,12 @@ images:
     tag: 44
     digest: sha256:59c7dc8dc4d1f9a86e61c3a70e4010598d8d452c533ce380ef5257e60ae05cca
 
-  # https://github.com/get-aurora-dev/common   
+  # https://github.com/get-aurora-dev/common
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:390a9dcd8c1c3a646f884b7571abb1da9b24ce99d014bf3fdbee6eae6ebac799
-    
+    digest: sha256:c00fc6bbc6c44d4438f3f93648b8f641e16add723c4b094b854e6460536050b8
+
   # https://github.com/ublue-os/brew
   - name: brew
     image: ghcr.io/ublue-os/brew
