@@ -420,14 +420,6 @@ jobs:
             echo "${digest}" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-            digest=$(< /tmp/digestfile)
-            echo "digest=${digest}" >> $GITHUB_OUTPUT
-
-            echo '## Production digest'>> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo "${digest}" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-
       - name: Login to GitHub Container Registry with ORAS
         if: inputs.publish
         env:

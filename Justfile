@@ -193,6 +193,7 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     BASENAME_AKMODS="ghcr.io/ublue-os/akmods"
 
     AKMODS="${BASENAME_AKMODS}:${akmods_flavor}-${fedora_version}-${kernel_release}"
+
     ALL_IMAGES+=("${AKMODS}")
 
     if [[ "${akmods_flavor}" =~ coreos ]]; then
@@ -236,7 +237,20 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
+    ALL_IMAGES+=("{{ chunkah }}")
+
     {{ just }} verify-container cosign.pub "{{ brew }}"
+    ALL_IMAGES+=("{{ brew }}")
+
+    {{ retry_function }}
+
+    # I hate this immensely, podman build/pull with --retry does not work for
+    # transient network issues
+    if [[ "${retry_pull}" == "true" ]]; then
+      for fetch_image in "${ALL_IMAGES[@]}"; do
+        retry 5 60 ${PODMAN} pull ${fetch_image}
+      done
+    fi
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
