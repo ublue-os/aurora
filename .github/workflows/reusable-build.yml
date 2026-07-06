@@ -38,7 +38,7 @@ permissions: {}
 jobs:
   build_container:
     name: image
-    runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
+    runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-26.04' || 'ubuntu-26.04-arm' }}
     permissions:
       contents: read
       packages: write
@@ -80,29 +80,6 @@ jobs:
         id: remove-unwanted-software
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
 
-      # TODO: remove me when we have a new podman in 26.04 runners
-      # needed because old podman doesn't push layer annotations for
-      # the rpm-ostree rechunker at all
-      - name: Update podman
-        shell: bash
-        run: |
-          set -eux
-          # Require the runner is ubuntu-24.04
-          IDV=$(. /usr/lib/os-release && echo ${ID}-${VERSION_ID})
-          test "${IDV}" = "ubuntu-24.04"
-          # resolute is the next release. The azure.archive.ubuntu.com mirror only carries amd64.
-          # Other architectures like arm64 use ports.ubuntu.com/ubuntu-ports.
-          if [ "$(dpkg --print-architecture)" = "amd64" ]; then
-            mirror="http://azure.archive.ubuntu.com/ubuntu"
-          else
-            mirror="http://ports.ubuntu.com/ubuntu-ports"
-          fi
-          echo "deb ${mirror} resolute universe main" | sudo tee /etc/apt/sources.list.d/resolute.list
-          /bin/time -f '%E %C' sudo apt update
-          # skopeo is currently older in resolute for some reason hence --allow-downgrades
-          /bin/time -f '%E %C' sudo apt install -y --allow-downgrades crun/resolute buildah/resolute podman/resolute skopeo/resolute
-          podman --version
-
       - name: Install Just
         run: |
           /home/linuxbrew/.linuxbrew/bin/brew install just
@@ -114,7 +91,6 @@ jobs:
         if: inputs.publish
 
       - name: Install ORAS
-        if: inputs.publish
         uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2.0.0
 
       - name: Check Just Syntax
@@ -137,38 +113,23 @@ jobs:
 
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
-      - name: DNF Package Cache Setup
+      - name: DNF Package Cache Pull
         shell: bash
-        id: setup-cache
+        id: pull-cache
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: |
-          CACHE="$(just setup-cache \
-                --image "${MATRIX_BASE_NAME}" \
-                --tag "${MATRIX_STREAM_NAME}" \
-                --flavor "${MATRIX_IMAGE_FLAVOR}" \
-                --ghcr \
-                --github-event "${GITHUB_EVENT_NAME}")"
-
-          CACHE_NAME="$(echo "${CACHE}" | cut -d' ' -f 1)"
-          ALLOW_CACHE_WRITE="$(echo "${CACHE}" | cut -d' ' -f 2)"
-
-          echo "cache_name=${CACHE_NAME}" >> "$GITHUB_OUTPUT"
-          echo "allow_cache_write=${ALLOW_CACHE_WRITE}" >> "$GITHUB_OUTPUT"
-
-      - name: Restore DNF package cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        env:
-          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
-        with:
-          path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-
-            ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}
+          $(command -v just) \
+            setup-cache \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr \
+            --registry "${IMAGE_REGISTRY}" \
+            --pull
 
       - name: Build Image
         id: build-image
@@ -185,23 +146,29 @@ jobs:
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
-            --ghcr
-
-      # https://github.com/actions/cache/issues/1533
-      - name: Hack around permission issue caching
-        shell: bash
-        id: cache-perms
-        run: |
-          chmod 777 --recursive /var/tmp/buildah-cache-${UID}
+            --ghcr \
+            --retry-pull
 
       - name: Write new DNF package cache
-        if: steps.setup-cache.outputs.allow_cache_write == 'true'
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: push-cache
+        shell: bash
+        if: inputs.publish
         env:
-          CACHE_NAME: ${{ steps.setup-cache.outputs.cache_name }}
-        with:
-          path: /var/tmp/buildah-cache-*
-          key: ${{ runner.os }}-${{ matrix.architecture }}-buildah-${{ env.CACHE_NAME }}-${{ github.run_id }}
+          MATRIX_BASE_NAME: ${{ matrix.base_name }}
+          MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
+          MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $(command -v just) \
+            setup-cache \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr \
+            --registry "${IMAGE_REGISTRY}" \
+            --github-event "${GITHUB_EVENT_NAME}" \
+            --push
 
       - name: Rechunk Image with Chunkah
         id: rechunker
@@ -282,11 +249,16 @@ jobs:
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
         run: |
-          $(command -v just) disk-image \
-          --image "${MATRIX_BASE_NAME}" \
-          --tag "${MATRIX_STREAM_NAME}" \
-          --flavor "${MATRIX_IMAGE_FLAVOR}" \
-          --ghcr
+          $(command -v just) load-rootful \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+
+          sudo $(command -v just) disk-image \
+            --image "${MATRIX_BASE_NAME}" \
+            --tag "${MATRIX_STREAM_NAME}" \
+            --flavor "${MATRIX_IMAGE_FLAVOR}" \
+            --ghcr
 
       - name: PR Testing Instructions
         if: github.event_name == 'pull_request'
@@ -414,14 +386,6 @@ jobs:
               --flavor "${MATRIX_IMAGE_FLAVOR}" \
               --ghcr \
               --registry "${IMAGE_REGISTRY}"
-
-            digest=$(< /tmp/digestfile)
-            echo "digest=${digest}" >> $GITHUB_OUTPUT
-
-            echo '## Production digest'>> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo "${digest}" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
 
             digest=$(< /tmp/digestfile)
             echo "digest=${digest}" >> $GITHUB_OUTPUT
