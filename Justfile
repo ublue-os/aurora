@@ -129,9 +129,10 @@ validate $image $tag $flavor:
 [arg("image", long="image", short="i")]
 [arg("kernel_pin", long="kernel-pin")]
 [arg("rechunk", long="rechunk", value="true")]
+[arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="":
+build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="" $retry_pull="false":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -141,38 +142,41 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     akmods_flavor=$({{ just }} akmods_flavor --tag "${tag}")
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    # Verify Base Image with cosign
-    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub ${base_image_org}/${base_image_name}:${fedora_version}
+    BASE_IMAGE_REF="${base_image_org}/${base_image_name}:${fedora_version}"
+    ALL_IMAGES=()
+    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub "${BASE_IMAGE_REF}"
+    ALL_IMAGES+=("${BASE_IMAGE_REF}")
 
     # Here we pin our kernels to workaround regressions!
     # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
 
     ARCH=$(arch)
-
-    case "${tag}" in
-            stable)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    # <Here is a link why we have it pinned>
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            latest)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-            testing)
-                if [[ "${ARCH}" == "x86_64" ]]; then
-                    kernel_pin=""
-                elif [[ "${ARCH}" == "aarch64" ]]; then
-                    kernel_pin=""
-                fi
-                ;;
-    esac
+    if [[ -z "${kernel_pin:-}" ]]; then
+      case "${tag}" in
+              stable)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      # <Here is a link why we have it pinned>
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              latest)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+              testing)
+                  if [[ "${ARCH}" == "x86_64" ]]; then
+                      kernel_pin=""
+                  elif [[ "${ARCH}" == "aarch64" ]]; then
+                      kernel_pin=""
+                  fi
+                  ;;
+      esac
+    fi
 
     if [[ -z "${kernel_pin:-}" ]]; then
         kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
@@ -180,13 +184,22 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
         kernel_release="${kernel_pin}"
     fi
 
-    # Verify Containers with Cosign
-    {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    BASENAME_AKMODS="ghcr.io/ublue-os/akmods"
+
+    AKMODS="${BASENAME_AKMODS}:${akmods_flavor}-${fedora_version}-${kernel_release}"
+    {{ just }} verify-container cosign.pub "${AKMODS}"
+    ALL_IMAGES+=("${AKMODS}")
+
     if [[ "${akmods_flavor}" =~ coreos ]]; then
-        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        AKMODS_ZFS="${BASENAME_AKMODS}-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "${AKMODS_ZFS}"
+        ALL_IMAGES+=("${AKMODS_ZFS}")
     fi
+
     if [[ "${flavor}" =~ nvidia-open ]]; then
-        {{ just }} verify-container cosign.pub "ghcr.io/ublue-os/akmods-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        AKMODS_NVIDIA_OPEN="${BASENAME_AKMODS}-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
+        {{ just }} verify-container cosign.pub "${AKMODS_NVIDIA_OPEN}"
+        ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
     fi
 
     cosign verify \
@@ -194,12 +207,27 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
 
+    ALL_IMAGES+=("{{ common }}")
+
     cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
 
+    ALL_IMAGES+=("{{ chunkah }}")
+
     {{ just }} verify-container cosign.pub "{{ brew }}"
+    ALL_IMAGES+=("{{ brew }}")
+
+    {{ retry_function }}
+
+    # I hate this immensely, podman build/pull with --retry does not work for
+    # transient network issues
+    if [[ "${retry_pull}" == "true" ]]; then
+      for fetch_image in "${ALL_IMAGES[@]}"; do
+        retry 5 60 ${PODMAN} pull ${fetch_image}
+      done
+    fi
 
     # Get Version
     TIMESTAMP="$(date +%Y%m%d)"
@@ -269,11 +297,8 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --file Containerfile.in)
 
-    # Bump retries to minimize network flakes
-    PODMAN_BUILD_ARGS+=("--retry=5" "--retry-delay=60s")
-
     # So we always have the newest images when building locally
-    if [[ {{ ghcr }} == "0" ]]; then
+    if [[ "${ghcr}" == "false" ]]; then
       PODMAN_BUILD_ARGS+=("--pull=newer")
     fi
 
@@ -292,9 +317,10 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
 [arg("kernel_pin", long="kernel-pin")]
+[arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build-rechunk $image="aurora" $tag="latest" $flavor="main" kernel_pin="": (build image tag flavor kernel_pin) (rechunk image tag flavor)
+build-rechunk $image="aurora" $tag="latest" $flavor="main" $kernel_pin="" $retry_pull="false": (build image tag flavor kernel_pin retry_pull) (rechunk image tag flavor)
 
 # Rechunk Image
 [arg("flavor", long="flavor", short="f")]
@@ -743,15 +769,22 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
 
     rm -rf "${ROOTFS}"
 
+# We are not using https://github.com/actions/cache because of:
+# https://github.com/ublue-os/aurora/issues/2351
+# https://github.com/actions/cache/issues/1537
+
 # DNF CI package cache
 [arg("flavor", long="flavor", short="f")]
 [arg("ghcr", long="ghcr", value="true")]
 [arg("github_event", long="github-event")]
 [arg("image", long="image", short="i")]
+[arg("pull", long="pull", value="true")]
+[arg("push", long="push", value="true")]
+[arg("registry", long="registry")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
 [private]
-setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_event="":
+setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -759,20 +792,42 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $github_e
 
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
-    ALLOW_CACHE_WRITE="false"
-
+    # compromise between most shared packages
     BLESSED_IMAGE=aurora-dx
 
-    if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
-       [[ "${ghcr}" == "true" ]] && \
-       [[ "${github_event}" == "workflow_dispatch" || "${github_event}" == "schedule" ]]; then
-        ALLOW_CACHE_WRITE="true"
+    CACHE_NAME="aurora/cache/dnf"
+    CACHE_IMAGE="${registry}/${CACHE_NAME}:${fedora_version}-$(arch)"
+
+    # directory where buildah-cache-UID is
+    BUILDAH_CACHE_DIR="/var/tmp"
+    BUILDAH_CACHE="buildah-cache-${UID}"
+
+    POINT=$({{ just }} generate-point --image "${image}" --tag "${tag}" --flavor "${flavor}")
+    CURRENT_DAY="$(LC_TIME=C date +%A)"
+    BLESSED_DAY="Sunday"
+
+    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" ]]; then
+      echo "Not pulling build cache. Uploading fresh cache later."
+    elif [[ "${pull}" == "true" ]]; then
+      # We want to avoid using --allow-path-traversal
+      pushd "${BUILDAH_CACHE_DIR}"
+      oras pull "${CACHE_IMAGE}" || exit 0
+      popd
     fi
 
-    CACHE_NAME="${BLESSED_IMAGE}-${fedora_version}"
+    if [[ "${image_name}" == "${BLESSED_IMAGE}" ]] && \
+       [[ "${pull:-false}" == "false" ]] && \
+       [[ "${push}" == "true" ]] && \
+       [[ "${ghcr}" == "true" ]] && \
+       [[ "${github_event}" == "workflow_dispatch" || "${CURRENT_DAY}" == "${BLESSED_DAY}" && "${POINT}" == "1" ]]; then
 
-    echo "${CACHE_NAME}" "${ALLOW_CACHE_WRITE}"
+      {{ just }} login-registry oras ghcr.io
+      pushd "${BUILDAH_CACHE_DIR}"
+      oras push "${CACHE_IMAGE}" "${BUILDAH_CACHE}"
+      popd
+    fi
 
+# Example: just bootc -t testing -- --help
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
@@ -799,6 +854,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
         -v "${BUILD_BASE_DIR:-.}:/data" \
         "${image_name}:${tag}" bootc {{ ARGS }}
 
+# Example: sudo just disk-image -t testing --backend composefs
 # Create bootable image
 [arg("backend", long="backend")]
 [arg("flavor", long="flavor", short="f")]
@@ -806,7 +862,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="ostree":
+disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -840,9 +896,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
       BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
     fi
 
-    {{ just }} load-rootful --image "${image}" --tag "${tag}" --flavor "${flavor}"
-
-    {{ just }} bootc "${image}" "${tag}" "${flavor}" install to-disk "${BOOTC_INSTALL_ARGS[@]}"
+    {{ just }} bootc --image "${image}" --tag "${tag}" --flavor "${flavor}" install to-disk -- "${BOOTC_INSTALL_ARGS[@]}"
 
 # FIXME: Please consider using podman push in the future for signing as well instead of temporary tag + cosign
 # See: https://github.com/ublue-os/aurora/pull/2199
@@ -857,7 +911,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" ghcr="false" $backend="o
 [arg("temp_push", long="temp-push", value="true")]
 [arg("temp_push_tag", long="temp-push-tag")]
 [group('Utility')]
-push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="0" $registry="" $temp_push="false" $temp_push_tag="":
+push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
 
