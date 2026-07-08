@@ -26,6 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
+          persist-credentials: false
           # Use the dynamically generated GitHub App token
           token: ${{ steps.generate-token.outputs.token }}
           # Explicitly check out the base branch (the PR is already merged into it).
