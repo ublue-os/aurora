@@ -14,17 +14,18 @@ on:
   workflow_call:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-  attestations: write
-  artifact-metadata: write
+permissions: {}
 
 jobs:
   build-image-stable:
     name: Build Stable Images
     uses: ./.github/workflows/reusable-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     secrets: inherit
     strategy:
       fail-fast: false
