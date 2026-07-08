@@ -51,9 +51,12 @@ jobs:
 
       - name: Generate Release Text
         id: generate-release-text
+        env:
+          MATRIX_VERSION: "${{ matrix.version }}"
+          HANDWRITTEN: "${{ inputs.handwritten }}"
         shell: bash
         run: |
-          just changelogs "${{ matrix.version }}" "${{ inputs.handwritten }}"
+          just changelogs "${MATRIX_VERSION}" "${HANDWRITTEN}"
           source ./output.env
           echo "title=${TITLE}" >> $GITHUB_OUTPUT
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
