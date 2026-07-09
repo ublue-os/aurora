@@ -45,7 +45,6 @@ jobs:
     needs: [build-image-stable]
     permissions:
       contents: write
-    secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["stable"]'
