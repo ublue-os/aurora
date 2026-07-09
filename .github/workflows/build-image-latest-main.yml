@@ -32,7 +32,8 @@ jobs:
       id-token: write
       attestations: write
       artifact-metadata: write
-    secrets: inherit
+    secrets:
+      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +53,6 @@ jobs:
     needs: [build-image-latest]
     permissions:
       contents: write
-    secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["latest"]'
