@@ -329,23 +329,29 @@ build-rechunk $image="aurora" $tag="latest" $flavor="main" $kernel_pin="" $retry
 [group('Image')]
 rechunk $image="aurora" $tag="latest" $flavor="main":
     #!/usr/bin/env bash
+    set -eoux pipefail
 
     {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
-
-    export CHUNKAH_CONFIG_STR=$(${PODMAN} inspect "${image_name}:${tag}")
-
-    set -eoux pipefail
+    CHUNKAH_OUTPUT_DIR="$(mktemp -d)"
+    CHUNKAH_CONFIG_FILE="$(mktemp)"
+    ${PODMAN} inspect "${image_name}:${tag}" > "${CHUNKAH_CONFIG_FILE}"
 
     ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
-    -e CHUNKAH_CONFIG_STR "{{ chunkah }}" \
+    -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
+    -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
+    "{{ chunkah }}" \
     build \
     --verbose \
     --compressed \
     --max-layers 128 \
     --prune /sysroot/ \
     --label ostree.commit- --label ostree.final-diffid- \
-    --tag "${image_name}:${tag}" | ${PODMAN} load
+    --config /chunkah-config.json \
+    --output oci:/run/out/chunked
+
+    CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
+    podman tag "${CHUNKED_IMAGE}" "${image_name}:${tag}"
 
 # build-chunked-oci
 [arg("flavor", long="flavor", short="f")]
