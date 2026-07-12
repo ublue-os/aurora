@@ -144,7 +144,6 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 
     BASE_IMAGE_REF="${base_image_org}/${base_image_name}:${fedora_version}"
     ALL_IMAGES=()
-    {{ just }} verify-container quay.io-fedora-ostree-desktops.pub "${BASE_IMAGE_REF}"
     ALL_IMAGES+=("${BASE_IMAGE_REF}")
 
     # Here we pin our kernels to workaround regressions!
@@ -187,18 +186,15 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
     BASENAME_AKMODS="ghcr.io/ublue-os/akmods"
 
     AKMODS="${BASENAME_AKMODS}:${akmods_flavor}-${fedora_version}-${kernel_release}"
-    {{ just }} verify-container cosign.pub "${AKMODS}"
     ALL_IMAGES+=("${AKMODS}")
 
     if [[ "${akmods_flavor}" =~ coreos ]]; then
         AKMODS_ZFS="${BASENAME_AKMODS}-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
-        {{ just }} verify-container cosign.pub "${AKMODS_ZFS}"
         ALL_IMAGES+=("${AKMODS_ZFS}")
     fi
 
     if [[ "${flavor}" =~ nvidia-open ]]; then
         AKMODS_NVIDIA_OPEN="${BASENAME_AKMODS}-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
-        {{ just }} verify-container cosign.pub "${AKMODS_NVIDIA_OPEN}"
         ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
     fi
 
@@ -216,7 +212,6 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 
     ALL_IMAGES+=("{{ chunkah }}")
 
-    {{ just }} verify-container cosign.pub "{{ brew }}"
     ALL_IMAGES+=("{{ brew }}")
 
     {{ retry_function }}
@@ -481,33 +476,6 @@ changelogs branch="stable" handwritten="":
     #!/usr/bin/env bash
     set -eou pipefail
     python3 ./.github/changelogs.py "{{ branch }}" ./output.env ./changelog.md --workdir . --handwritten "{{ handwritten }}"
-
-# Verify Container with Cosign
-[group('Utility')]
-verify-container key="" container="":
-    #!/usr/bin/env bash
-    set -eou pipefail
-
-    # Get Cosign if Needed
-    if [[ ! $(command -v cosign) ]]; then
-        COSIGN_CONTAINER_ID=$(${SUDOIF} ${PODMAN} create cgr.dev/chainguard/cosign:latest bash)
-        ${SUDOIF} ${PODMAN} cp "${COSIGN_CONTAINER_ID}":/usr/bin/cosign /usr/local/bin/cosign
-        ${SUDOIF} ${PODMAN} rm -f "${COSIGN_CONTAINER_ID}"
-    fi
-
-    # Verify Cosign Image Signatures if needed
-    if [[ -n "${COSIGN_CONTAINER_ID:-}" ]]; then
-        if ! cosign verify --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main cgr.dev/chainguard/cosign >/dev/null; then
-            echo "NOTICE: Failed to verify cosign image signatures."
-            exit 1
-        fi
-    fi
-
-    # Verify Container using cosign public key
-    if ! cosign verify --key "{{ key }}" "{{ container }}" >/dev/null; then
-        echo "NOTICE: Verification failed. Please ensure your public key is correct."
-        exit 1
-    fi
 
 # Secureboot Check
 [arg("flavor", long="flavor", short="f")]
