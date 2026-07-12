@@ -335,6 +335,8 @@ rechunk $image="aurora" $tag="latest" $flavor="main":
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
     CHUNKAH_OUTPUT_DIR="$(mktemp -d)"
     CHUNKAH_CONFIG_FILE="$(mktemp)"
+
+    trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
     ${PODMAN} inspect "${image_name}:${tag}" > "${CHUNKAH_CONFIG_FILE}"
 
     ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
