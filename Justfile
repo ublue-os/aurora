@@ -328,7 +328,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main":
 
     {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
-    CHUNKAH_OUTPUT_DIR="$(mktemp -d)"
+    CHUNKAH_OUTPUT_DIR="$(mktemp -d --tmpdir="${PWD}")"
     CHUNKAH_CONFIG_FILE="$(mktemp)"
 
     trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
@@ -340,7 +340,6 @@ rechunk $image="aurora" $tag="latest" $flavor="main":
     "{{ chunkah }}" \
     build \
     --verbose \
-    --compressed \
     --max-layers 128 \
     --prune /sysroot/ \
     --label ostree.commit- --label ostree.final-diffid- \
