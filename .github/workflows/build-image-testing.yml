@@ -11,18 +11,20 @@ on:
    workflow_call:
    workflow_dispatch:
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-  attestations: write
-  artifact-metadata: write
+permissions: {}
 
 jobs:
   build-image-testing:
     name: Build Testing Images
     uses: ./.github/workflows/reusable-build.yml
-    secrets: inherit
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets:
+      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
     strategy:
       fail-fast: false
       matrix:
