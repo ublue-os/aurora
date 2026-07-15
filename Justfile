@@ -239,7 +239,6 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
 
     ALL_IMAGES+=("{{ chunkah }}")
 
-    {{ just }} verify-container cosign.pub "{{ brew }}"
     ALL_IMAGES+=("{{ brew }}")
 
     {{ retry_function }}
