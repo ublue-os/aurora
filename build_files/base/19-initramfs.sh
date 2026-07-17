@@ -19,7 +19,8 @@ DRACUT_NO_XATTR=1 /usr/bin/dracut \
   --force \
   "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
 
-mv "${TMP_OS_RELEASE}" /usr/lib/os-release
+cp "${TMP_OS_RELEASE}" /usr/lib/os-release
+rm "${TMP_OS_RELEASE}"
 
 chmod 0600 "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
 
