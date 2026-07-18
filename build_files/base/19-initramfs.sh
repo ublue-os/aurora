@@ -12,7 +12,6 @@ sed -Ei -e '/^((OSTREE_)?(IMAGE_)?VERSION|PRETTY_NAME|BUILD_ID)=/d' /usr/lib/os-
 KERNEL_VERSION=$(rpm -q --queryformat="%{evr}.%{arch}" kernel-core)
 
 DRACUT_NO_XATTR=1 /usr/bin/dracut \
-  --no-hostonly \
   --kver "${KERNEL_VERSION}" \
   --reproducible \
   --verbose \
