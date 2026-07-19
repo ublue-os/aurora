@@ -8,6 +8,9 @@ set -eoux pipefail
 mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf
 dnf versionlock clear
 
+# this invalidates libdnf5 package (chunkah)
+rm -rf /usr/lib/sysimage/libdnf5/*
+
 # This comes last because we can't *ever* afford to ship fedora flatpaks on the image
 systemctl disable flatpak-add-fedora-repos.service
 systemctl mask flatpak-add-fedora-repos.service
