@@ -128,7 +128,6 @@ if rpm -q docker-ce >/dev/null; then
 fi
 systemctl enable podman.socket
 systemctl enable ublue-os-libvirt-workarounds.service
-systemctl enable aurora-dx-groups.service
 systemctl enable --global aurora-dx-user-vscode.service
 
 # Disable RPM Fusion repos
