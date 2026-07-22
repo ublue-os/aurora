@@ -2,17 +2,17 @@ name: Latest Images
 on:
   push:
     branches:
-      - stable-f44
+      - 'stable-f[0-9][0-9]'
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
       - ".github/workflows/scorecard.yml"
   merge_group:
     branches:
-      - stable-f44
+      - 'stable-f[0-9][0-9]'
   pull_request:
     branches:
-      - stable-f44
+      - 'stable-f[0-9][0-9]'
     paths-ignore:
       - "**.md"
       - ".github/workflows/moderator.yml"
