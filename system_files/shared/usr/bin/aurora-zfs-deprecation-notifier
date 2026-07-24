@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+NOTIFICATION="/usr/bin/notify-send --app-name=Aurora --icon distributor-logo --urgency critical 'ZFS is getting removed in Fall 2026' 'You are using ZFS so please take a look at https://github.com/ublue-os/aurora/issues/1765 for more infos'"
+
+USERS="$(loginctl list-users --no-legend | awk '$1 != 0 {print $2}')"
+
+for username in ${USERS}; do
+  machinectl shell "${username}@.host" /usr/bin/bash -c "${NOTIFICATION}"
+done
+
+touch /etc/.aurora-zfs-deprecation-notifer.stamp
+
