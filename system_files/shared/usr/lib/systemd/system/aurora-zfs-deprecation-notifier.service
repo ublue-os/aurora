@@ -1,0 +1,16 @@
+[Unit]
+Description=Aurora ZFS Deprecation Notifier
+Documentation=https://github.com/ublue-os/aurora/issues/1765
+After=local-fs.target
+Wants=local-fs.target
+ConditionPathIsReadWrite=/etc
+ConditionPathExists=!/etc/.aurora-zfs-deprecation-notifer.stamp
+ConditionPathExists=/usr/bin/zfs
+
+[Service]
+Type=oneshot
+ExecCondition=/usr/bin/bash -c "/usr/bin/lsblk -o FSTYPE | /usr/bin/grep -q ^zfs"
+ExecStart=/usr/bin/aurora-zfs-deprecation-notifier
+
+[Install]
+WantedBy=graphical.target
