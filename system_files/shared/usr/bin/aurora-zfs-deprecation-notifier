@@ -10,5 +10,5 @@ for username in ${USERS}; do
   machinectl shell "${username}@.host" /usr/bin/bash -c "${NOTIFICATION}"
 done
 
-touch /etc/.aurora-zfs-deprecation-notifer.stamp
+touch /etc/.aurora-zfs-deprecation-notifier.stamp
 
