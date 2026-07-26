@@ -29,9 +29,18 @@ for file in rpmdb.sqlite rpmdb.sqlite-shm rpmdb.sqlite-wal; do
     fi
 done
 
-rm -rf /.gitkeep
-
+# Things we can't delete here are mounts from podman
 find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \;
+
+find /run -mindepth 1 \
+  ! -path '/run/systemd' \
+  ! -path '/run/systemd/resolve' \
+  ! -path '/run/systemd/resolve/stub-resolv.conf' \
+  ! -path '/run/secrets' \
+  ! -path '/run/secrets/*' \
+  ! -path '/run/.containerenv' \
+  -delete
+
 rm -rf /tmp/*
 mkdir -p /var/tmp
 
