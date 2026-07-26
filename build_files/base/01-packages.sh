@@ -64,6 +64,7 @@ FEDORA_PACKAGES=(
     git-credential-libsecret
     glow
     google-noto-sans-balinese-fonts
+    google-noto-sans-cham-fonts
     google-noto-sans-cjk-fonts
     google-noto-sans-javanese-fonts
     google-noto-sans-sundanese-fonts

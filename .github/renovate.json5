@@ -61,6 +61,12 @@
       // to reach a stable release
       "matchBaseBranches": ["stable-f44"],
       "enabled": false
+    },
+    {
+      "matchDepNames": [
+        "github/codeql-action/upload-sarif"
+      ],
+      "extends": ["schedule:weekly"]
     }
   ]
 }

@@ -129,7 +129,6 @@ RUN --mount=type=tmpfs,dst=/boot \
 # /* Everything that can be done offline after things are in place should be done here */
 RUN --network=none \
     --mount=type=tmpfs,dst=/boot \
-    --mount=type=tmpfs,dst=/run \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build_files/base/16-override-install.sh && \
     /ctx/build_files/base/17-cleanup.sh && \
@@ -142,5 +141,4 @@ RUN --network=none \
 CMD ["/sbin/init"]
 
 RUN --network=none \
-    --mount=type=tmpfs,dst=/run \
-    bootc container lint
+    bootc container lint --fatal-warnings --no-truncate

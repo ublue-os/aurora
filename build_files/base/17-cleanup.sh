@@ -43,6 +43,11 @@ systemctl enable uupd.timer
 # Disable the old update timer
 systemctl disable rpm-ostreed-automatic.timer
 
+# TODO: Remove with F45 release
+if [[ "${AKMODS_FLAVOR}" =~ coreos ]]; then
+  systemctl enable aurora-zfs-deprecation-notifier.timer
+fi
+
 # Hide Desktop Files. Hidden removes mime associations
 for file in htop nvtop; do
     if [[ -f "/usr/share/applications/${file}.desktop" ]]; then

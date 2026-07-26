@@ -23,6 +23,10 @@ tags := '(
     [testing]=testing
 )'
 
+default_image := "aurora"
+default_tag := "latest"
+default_flavor := "main"
+
 # Build Containers
 chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
 common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
@@ -132,7 +136,7 @@ validate $image $tag $flavor:
 [arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false" $kernel_pin="" $retry_pull="false":
+build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="false" $ghcr="false" $kernel_pin="" $retry_pull="false":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -154,8 +158,8 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
       case "${tag}" in
               stable)
                   if [[ "${ARCH}" == "x86_64" ]]; then
-                      # <Here is a link why we have it pinned>
-                      kernel_pin=""
+                      # https://github.com/openzfs/zfs/issues/18760
+                      kernel_pin="7.0.12-201.fc44.x86_64"
                   elif [[ "${ARCH}" == "aarch64" ]]; then
                       kernel_pin=""
                   fi
@@ -315,14 +319,14 @@ build $image="aurora" $tag="latest" $flavor="main" $rechunk="false" $ghcr="false
 [arg("retry_pull", long="retry-pull", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-build-rechunk $image="aurora" $tag="latest" $flavor="main" $kernel_pin="" $retry_pull="false": (build image tag flavor kernel_pin retry_pull) (rechunk image tag flavor)
+build-rechunk $image=default_image $tag=default_tag $flavor=default_flavor $kernel_pin="" $retry_pull="false": (build image tag flavor kernel_pin retry_pull) (rechunk image tag flavor)
 
 # Rechunk Image
 [arg("flavor", long="flavor", short="f")]
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-rechunk $image="aurora" $tag="latest" $flavor="main":
+rechunk $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -357,7 +361,7 @@ rechunk $image="aurora" $tag="latest" $flavor="main":
 [arg("previous_build", long="previous-build", value="true")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-ostree-rechunk $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $previous_build="false":
+ostree-rechunk $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $previous_build="false":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -419,7 +423,7 @@ ostree-rechunk $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $previ
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-load-rootful $image="aurora" $tag="latest" $flavor="main":
+load-rootful $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -oux pipefail
 
@@ -439,7 +443,7 @@ load-rootful $image="aurora" $tag="latest" $flavor="main":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-export-oci $image="aurora" $tag="latest" $flavor="main":
+export-oci $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -oux pipefail
 
@@ -455,7 +459,7 @@ export-oci $image="aurora" $tag="latest" $flavor="main":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Image')]
-run $image="aurora" $tag="latest" $flavor="main":
+run $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -482,7 +486,7 @@ changelogs branch="stable" handwritten="":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-secureboot $image="aurora" $tag="latest" $flavor="main":
+secureboot $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -533,7 +537,7 @@ secureboot $image="aurora" $tag="latest" $flavor="main":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [private]
-fedora_version image="aurora" tag="latest" flavor="main":
+fedora_version image=default_image tag=default_tag flavor=default_flavor:
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -552,7 +556,7 @@ fedora_version image="aurora" tag="latest" flavor="main":
 
 [arg("tag", long="tag", short="t")]
 [private]
-akmods_flavor tag="latest":
+akmods_flavor tag=default_tag:
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -571,7 +575,7 @@ akmods_flavor tag="latest":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [private]
-image_name image="aurora" tag="latest" flavor="main":
+image_name image=default_image tag=default_tag flavor=default_flavor:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -593,7 +597,7 @@ image_name image="aurora" tag="latest" flavor="main":
 [arg("tag", long="tag", short="t")]
 [arg("version", long="version")]
 [group('Utility')]
-generate-build-tags $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $version="" $github_event="" $github_number="":
+generate-build-tags $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $version="" $github_event="" $github_number="":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -660,7 +664,7 @@ generate-build-tags $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [private]
-generate-point $image="aurora" $tag="latest" $flavor="main":
+generate-point $image=default_image $tag=default_tag $flavor=default_flavor:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -718,7 +722,7 @@ tag-images $image="" $default_tag="" $tags="":
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
+gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd="syft":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -760,7 +764,7 @@ gen-sbom $image="aurora" $tag="latest" $flavor="main" $syft_cmd="syft":
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
 [private]
-setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
+setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
     #!/usr/bin/env bash
     set -eou pipefail
 
@@ -782,7 +786,8 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="fa
     CURRENT_DAY="$(LC_TIME=C date +%A)"
     BLESSED_DAY="Sunday"
 
-    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" ]]; then
+    # Always attempt to pull cache, but don't on the first run that will publish the build on Sundays
+    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" && ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_queue" ) ]]; then
       echo "Not pulling build cache. Uploading fresh cache later."
     elif [[ "${pull}" == "true" ]]; then
       # We want to avoid using --allow-path-traversal
@@ -795,7 +800,9 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="fa
        [[ "${pull:-false}" == "false" ]] && \
        [[ "${push}" == "true" ]] && \
        [[ "${ghcr}" == "true" ]] && \
-       [[ "${github_event}" == "workflow_dispatch" || "${CURRENT_DAY}" == "${BLESSED_DAY}" && "${POINT}" == "1" ]]; then
+       [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" ]] && \
+       [[ "${POINT}" == "1" ]] && \
+       [[ ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_queue" ) ]]; then
 
       {{ just }} login-registry oras ghcr.io
       pushd "${BUILDAH_CACHE_DIR}"
@@ -808,7 +815,7 @@ setup-cache $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $pull="fa
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [private]
-bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
+bootc $image=default_image $tag=default_tag $flavor=default_flavor *ARGS:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -838,7 +845,7 @@ bootc $image="aurora" $tag="latest" $flavor="main" *ARGS:
 [arg("image", long="image", short="i")]
 [arg("tag", long="tag", short="t")]
 [group('Utility')]
-disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="ostree":
+disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $backend="ostree":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -887,7 +894,7 @@ disk-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $backend="
 [arg("temp_push", long="temp-push", value="true")]
 [arg("temp_push_tag", long="temp-push-tag")]
 [group('Utility')]
-push-image $image="aurora" $tag="latest" $flavor="main" $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
+push-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
 
