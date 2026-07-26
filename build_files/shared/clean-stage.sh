@@ -8,6 +8,9 @@ set -eoux pipefail
 mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf
 dnf versionlock clear
 
+# this invalidates libdnf5 package (chunkah)
+rm -rf /usr/lib/sysimage/libdnf5/*
+
 # This comes last because we can't *ever* afford to ship fedora flatpaks on the image
 systemctl disable flatpak-add-fedora-repos.service
 systemctl mask flatpak-add-fedora-repos.service
@@ -26,9 +29,18 @@ for file in rpmdb.sqlite rpmdb.sqlite-shm rpmdb.sqlite-wal; do
     fi
 done
 
-rm -rf /.gitkeep
-
+# Things we can't delete here are mounts from podman
 find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \;
+
+find /run -mindepth 1 \
+  ! -path '/run/systemd' \
+  ! -path '/run/systemd/resolve' \
+  ! -path '/run/systemd/resolve/stub-resolv.conf' \
+  ! -path '/run/secrets' \
+  ! -path '/run/secrets/*' \
+  ! -path '/run/.containerenv' \
+  -delete
+
 rm -rf /tmp/*
 mkdir -p /var/tmp
 

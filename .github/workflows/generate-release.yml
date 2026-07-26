@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout last 500 commits (for <commits> to work)
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 500
@@ -65,6 +65,7 @@ jobs:
       - name: Create Release
         if: contains(fromJson('["stable"]'), matrix.version) && (github.event.schedule == '0 1 * * TUE' || contains(fromJson('["workflow_dispatch", "workflow_call"]'), github.event_name))
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TITLE: ${{ steps.generate-release-text.outputs.title }}
           TAG: ${{ steps.generate-release-text.outputs.tag }}
           BODY_PATH: ./changelog.md
