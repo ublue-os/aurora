@@ -66,7 +66,8 @@
       "matchManagers": ["github-actions"],
       "matchDepNames": [
         "!oras-project/setup-oras",
-        "!sigstore/cosign-installer"
+        "!sigstore/cosign-installer",
+        "!anchore/sbom-action"
       ],
       "schedule": ["on sunday"]
     }
