@@ -202,14 +202,16 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
         ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
     fi
 
-    cosign verify \
+    {{ retry_function }}
+
+    retry 5 60 cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
 
     ALL_IMAGES+=("{{ common }}")
 
-    cosign verify \
+    retry 5 60 cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
@@ -217,8 +219,6 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     ALL_IMAGES+=("{{ chunkah }}")
 
     ALL_IMAGES+=("{{ brew }}")
-
-    {{ retry_function }}
 
     # I hate this immensely, podman build/pull with --retry does not work for
     # transient network issues
