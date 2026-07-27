@@ -63,10 +63,12 @@
       "enabled": false
     },
     {
+      "matchManagers": ["github-actions"],
       "matchDepNames": [
-        "github/codeql-action/upload-sarif"
+        "!oras-project/setup-oras",
+        "!sigstore/cosign-installer"
       ],
-      "extends": ["schedule:weekly"]
+      "schedule": ["on sunday"]
     }
   ]
 }
