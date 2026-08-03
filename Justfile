@@ -341,7 +341,6 @@ rechunk $image=default_image $tag=default_tag $flavor=default_flavor:
     ${PODMAN} run --rm --mount=type=image,src="${image_name}:${tag}",target=/chunkah \
     -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
     -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
-    -e SOURCE_DATE_EPOCH=0 \
     "{{ chunkah }}" \
     build \
     --verbose \
