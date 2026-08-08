@@ -32,8 +32,8 @@ dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@
 dnf5 versionlock add "${OVERRIDES[@]}"
 
 # All DNF-related operations should be done here whenever possible
-#shellcheck source=build_files/shared/copr-helpers.sh
-source /ctx/build_files/shared/copr-helpers.sh
+#shellcheck source=build_scripts/shared/copr-helpers.sh
+source /ctx/build_scripts/shared/copr-helpers.sh
 
 # NOTE:
 # Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
@@ -215,7 +215,7 @@ dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_files/dx/00-dx.sh
+  /ctx/build_scripts/dx/00-dx.sh
 fi
 
 echo "::endgroup::"
