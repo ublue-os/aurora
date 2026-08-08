@@ -67,6 +67,8 @@ FEDORA_PACKAGES=(
     google-noto-sans-cham-fonts
     google-noto-sans-cjk-fonts
     google-noto-sans-javanese-fonts
+    google-noto-sans-linear-a-fonts
+    google-noto-sans-linear-b-fonts
     google-noto-sans-sundanese-fonts
     grub2-tools-extra
     gum
