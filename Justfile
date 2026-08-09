@@ -902,8 +902,9 @@ push-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
     PUSH_CMD_ARGS+=("--digestfile=/tmp/digestfile")
     PUSH_CMD_ARGS+=("--compression-format=zstd")
     PUSH_CMD_ARGS+=("--compression-level=3")
-    PUSH_CMD_ARGS+=("--retry-delay=30s")
-    PUSH_CMD_ARGS+=("--retry=5")
+    # TODO; This has failed already once, investigate if this actually does something and we need to use the retry function
+    PUSH_CMD_ARGS+=("--retry-delay=60s")
+    PUSH_CMD_ARGS+=("--retry=10")
 
     PUSH_CMD=""${PODMAN}" push "${PUSH_CMD_ARGS[@]}""
 
