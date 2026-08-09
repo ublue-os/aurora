@@ -105,13 +105,6 @@ copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
 # DX packages to exclude - common to all versions
 EXCLUDED_PACKAGES=()
 
-# Version-specific package exclusions for DX
-case "$FEDORA_MAJOR_VERSION" in
-    43)
-        EXCLUDED_PACKAGES+=()
-        ;;
-esac
-
 # Remove excluded packages if they are installed
 if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
     readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
