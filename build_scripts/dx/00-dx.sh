@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
+# Apply IP Forwarding before installing Docker to prevent messing with LXC networking
+sysctl -p
+
 # Load secure COPR helpers
 # shellcheck source=build_scripts/shared/copr-helpers.sh
 source /ctx/build_scripts/shared/copr-helpers.sh
@@ -116,9 +119,6 @@ if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
 fi
 
 rsync -rvK /ctx/system_files/dx/ /
-
-# Apply IP Forwarding before installing Docker to prevent messing with LXC networking
-sysctl -p
 
 # Load iptable_nat module for docker-in-docker.
 # See:
