@@ -22,9 +22,10 @@ rm -rf /usr/share/doc/HTML
 
 rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so
 
-# Use Bazaar for Flatpak refs
-# https://github.com/ublue-os/bazzite/pull/3620
-echo "application/vnd.flatpak.ref=io.github.kolunmi.Bazaar.desktop" >> /usr/share/applications/mimeapps.list
+# xdg-mime doesn't natively support using /usr/share/applications/mimeapps.list and would instead change /root/.config/mimeapps.list, so we do a little
+# trickery to change default applications
+XDG_CONFIG_HOME=/usr/share/applications xdg-mime default org.mozilla.thunderbird.desktop x-scheme-handler/mailto
+XDG_CONFIG_HOME=/usr/share/applications xdg-mime default io.github.kolunmi.Bazaar.desktop application/vnd.flatpak.ref
 
 rm -f /etc/profile.d/gnome-ssh-askpass.{csh,sh} # This shouldn't be pulled in
 
