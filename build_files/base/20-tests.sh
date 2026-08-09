@@ -48,6 +48,10 @@ test -f /etc/flatpak/remotes.d/flathub.flatpakrepo
 # Make sure to not pull in the bazzite one
 rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
 
+# The common overlay restores this customization after plasma-welcome-fedora is removed.
+test -f /usr/share/plasma/plasma-welcome/intro-customization.desktop
+! rpm -q plasma-welcome-fedora
+
 test -f /usr/share/doc/aurora/aurora.pdf
 test -f /usr/share/homebrew.tar.zst
 

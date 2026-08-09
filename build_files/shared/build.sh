@@ -15,21 +15,11 @@ dnf config-manager setopt keepcache=1 timeout=60
 dnf -y swap fedora-logos generic-logos
 rpm --erase --nodeps --nodb generic-logos
 
-# Copy Files to Container
-rsync -rvKl /ctx/system_files/shared/ /
-
-setfattr -n user.component -v "aurora-wallpapers" /usr/share/backgrounds/aurora
-setfattr -n user.update-interval -v "monthly" /usr/share/backgrounds/aurora
-
-setfattr -n user.component -v "aurora-assets" /usr/share/plasma/avatars/{echo,lumina,scope,tina,vincent}.png
-setfattr -n user.component -v "aurora-assets" /etc/bazaar/*.jxl
-setfattr -n user.update-interval -v "quarterly" /etc/bazaar/*.jxl
-
-setfattr -n user.component -v "aurora-plasma-theme" /usr/share/plasma/look-and-feel/dev.getaurora.aurora{,light}.desktop
-setfattr -n user.update-interval -v "quarterly" /usr/share/plasma/look-and-feel/dev.getaurora.aurora{,light}.desktop
-
-setfattr -n user.component -v "aurora-config" /usr/share/ublue-os
-setfattr -n user.component -v "homebrew" /usr/share/homebrew.tar.zst
+# Copy only files needed by package and fetch stages. The full overlay is applied
+# after package removals so replaced RPM-owned files are retained.
+install -Dm0644 /ctx/system_files/shared/etc/dnf/plugins/copr.vendor.conf /etc/dnf/plugins/copr.vendor.conf
+install -Dm0644 /ctx/system_files/shared/usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/applications/dev.getaurora.offline-docs.desktop
+rsync -rvKl /ctx/system_files/shared/usr/share/ublue-os/ /usr/share/ublue-os/
 
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
   /ctx/build_files/shared/build-dx.sh

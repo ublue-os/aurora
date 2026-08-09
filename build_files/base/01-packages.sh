@@ -4,6 +4,8 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
+test -f /etc/dnf/plugins/copr.vendor.conf
+
 # may break when partially upgraded
 dnf versionlock add "qt6-*" "plasma-desktop"
 

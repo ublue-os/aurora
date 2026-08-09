@@ -8,6 +8,8 @@ set -eoux pipefail
 curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Offline Aurora documentation
+test -f /usr/share/applications/dev.getaurora.offline-docs.desktop
+test -d /usr/share/ublue-os
 ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 setfattr -n user.component -v "aurora-offline-docs" /usr/share/doc/aurora/aurora.pdf
@@ -42,4 +44,3 @@ chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 setfattr -n user.component -v "aurora-config" /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 echo "::endgroup::"
-
