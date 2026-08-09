@@ -31,7 +31,6 @@ COPY --from=common /wallpapers /system_files/shared
 # /* https://github.com/ublue-os/brew */
 COPY --from=brew /system_files /system_files/shared
 
-# /* Overwrite files from common if necessary */
 COPY /system_files /system_files
 
 # /* aurora image section */
@@ -51,7 +50,6 @@ ARG IMAGE_FLAVOR=""
 # /* so ghcurl wrapper is available to all later RUNs */
 ENV PATH="/tmp/scripts/helpers:${PATH}"
 
-# /* Copy files from common/from system_files */
 # /* Install Packages, miscellaneous things that need a network */
 
 # /* aurora:latest no zfs or nvidia */
@@ -64,7 +62,7 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=akmods,src=/rpms/common,dst=/tmp/rpms/common \
     --mount=type=bind,from=akmods,src=/rpms/kmods,dst=/tmp/rpms/kmods \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_scripts/shared/build.sh && \
+    /ctx/build_scripts/shared/build-prep.sh && \
     /ctx/build_scripts/base/01-packages.sh && \
     /ctx/build_scripts/base/02-install-common-kernel-akmods.sh && \
     /ctx/build_scripts/base/03-fetch.sh
@@ -81,7 +79,7 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=akmods,src=/rpms/kmods,dst=/tmp/rpms/kmods \
     --mount=type=bind,from=akmods-zfs,src=/rpms/kmods/zfs,dst=/tmp/rpms/kmods/zfs \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_scripts/shared/build.sh && \
+    /ctx/build_scripts/shared/build-prep.sh && \
     /ctx/build_scripts/base/01-packages.sh && \
     /ctx/build_scripts/base/02-install-common-kernel-akmods.sh && \
     /ctx/build_scripts/base/zfs.sh && \
@@ -99,7 +97,7 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=akmods,src=/rpms/kmods,dst=/tmp/rpms/kmods \
     --mount=type=bind,from=akmods-nvidia-open,src=/rpms,dst=/tmp/rpms/nvidia \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_scripts/shared/build.sh && \
+    /ctx/build_scripts/shared/build-prep.sh && \
     /ctx/build_scripts/base/01-packages.sh && \
     /ctx/build_scripts/base/02-install-common-kernel-akmods.sh && \
     /ctx/build_scripts/base/03-fetch.sh && \
@@ -118,7 +116,7 @@ RUN --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=akmods-nvidia-open,src=/rpms,dst=/tmp/rpms/nvidia \
     --mount=type=bind,from=akmods-zfs,src=/rpms/kmods/zfs,dst=/tmp/rpms/kmods/zfs \
     --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_scripts/shared/build.sh && \
+    /ctx/build_scripts/shared/build-prep.sh && \
     /ctx/build_scripts/base/01-packages.sh && \
     /ctx/build_scripts/base/02-install-common-kernel-akmods.sh && \
     /ctx/build_scripts/base/03-fetch.sh && \
@@ -136,6 +134,7 @@ RUN --network=none \
     /ctx/build_scripts/base/19-initramfs.sh && \
     /ctx/build_scripts/shared/validate-repos.sh && \
     /ctx/build_scripts/shared/clean-stage.sh && \
+    /ctx/build_scripts/shared/chunkah-xattr.sh && \
     /ctx/build_scripts/base/20-tests.sh
 
 CMD ["/sbin/init"]
