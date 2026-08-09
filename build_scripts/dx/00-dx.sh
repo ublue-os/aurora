@@ -5,8 +5,8 @@ echo "::group:: ===$(basename "$0")==="
 set -ouex pipefail
 
 # Load secure COPR helpers
-# shellcheck source=build_files/shared/copr-helpers.sh
-source /ctx/build_files/shared/copr-helpers.sh
+# shellcheck source=build_scripts/shared/copr-helpers.sh
+source /ctx/build_scripts/shared/copr-helpers.sh
 
 # NOTE:
 # Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
