@@ -8,10 +8,6 @@ set -eoux pipefail
 cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bak
 dnf config-manager setopt keepcache=1 timeout=60
 
-if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_scripts/shared/build-dx.sh
-fi
-
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_scripts/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl
 
