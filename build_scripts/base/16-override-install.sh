@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# Copy Files to Container
+rsync -rvKl /ctx/system_files/shared/ /
+
 # Footgun, See: https://github.com/ublue-os/main/issues/598
 rm -f /usr/bin/chsh /usr/bin/lchsh
 
@@ -16,10 +19,6 @@ ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
 
 # KDE Documentation is available online
 rm -rf /usr/share/doc/HTML
-
-# ######
-# BASE IMAGE CHANGES
-# ######
 
 rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so
 
@@ -37,5 +36,8 @@ setsebool -P samba_enable_home_dirs=1
 setsebool -P samba_export_all_ro=1
 setsebool -P samba_export_all_rw=1
 sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
+
+# So we can bind offline docs to a shortcut
+cp /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
 
 echo "::endgroup::"
