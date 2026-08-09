@@ -20,10 +20,6 @@ ln -s "/usr/share/fonts/google-noto-sans-cjk-fonts" "/usr/share/fonts/noto-cjk"
 # KDE Documentation is available online
 rm -rf /usr/share/doc/HTML
 
-# ######
-# BASE IMAGE CHANGES
-# ######
-
 rm -f /usr/lib64/qt6/plugins/kf6/krunner/krunner_appstream.so
 
 # Use Bazaar for Flatpak refs
