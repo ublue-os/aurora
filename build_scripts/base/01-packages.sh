@@ -32,8 +32,8 @@ dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@
 dnf5 versionlock add "${OVERRIDES[@]}"
 
 # All DNF-related operations should be done here whenever possible
-#shellcheck source=build_files/shared/copr-helpers.sh
-source /ctx/build_files/shared/copr-helpers.sh
+#shellcheck source=build_scripts/shared/copr-helpers.sh
+source /ctx/build_scripts/shared/copr-helpers.sh
 
 # NOTE:
 # Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
@@ -67,6 +67,8 @@ FEDORA_PACKAGES=(
     google-noto-sans-cham-fonts
     google-noto-sans-cjk-fonts
     google-noto-sans-javanese-fonts
+    google-noto-sans-linear-a-fonts
+    google-noto-sans-linear-b-fonts
     google-noto-sans-sundanese-fonts
     grub2-tools-extra
     gum
@@ -213,7 +215,12 @@ dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_files/dx/00-dx.sh
+  /ctx/build_scripts/dx/00-dx.sh
 fi
+
+# Keep *-logos in RPM DB for downstream package installations
+# We are not allowed to ship an empty fedora-logos package
+dnf -y swap fedora-logos generic-logos
+rpm --erase --nodeps --nodb generic-logos
 
 echo "::endgroup::"

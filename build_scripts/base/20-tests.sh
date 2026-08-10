@@ -175,7 +175,7 @@ for unit in "${IMPORTANT_UNITS[@]}"; do
 done
 
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_files/dx/10-tests-dx.sh;
+  /ctx/build_scripts/dx/10-tests-dx.sh;
 fi
 
 echo "::endgroup::"
