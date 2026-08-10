@@ -158,8 +158,8 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
       case "${tag}" in
               stable)
                   if [[ "${ARCH}" == "x86_64" ]]; then
-                      # https://github.com/openzfs/zfs/issues/18760
-                      kernel_pin="7.0.12-201.fc44.x86_64"
+                      # <Here is a link why we have it pinned>
+                      kernel_pin=""
                   elif [[ "${ARCH}" == "aarch64" ]]; then
                       kernel_pin=""
                   fi
