@@ -85,10 +85,8 @@ FEDORA_PACKAGES=(
     krb5-workstation
     ksshaskpass
     ksystemlog
-    libavcodec
     libcamera-gstreamer
     libcamera-tools
-    libfdk-aac
     libimobiledevice-utils
     libratbag-ratbagd
     libxcrypt-compat
@@ -126,6 +124,7 @@ FEDORA_PACKAGES_AMD64=(
 
 NEGATIVO_PACKAGES=(
     ffmpeg{,-libs}
+    libavcodec
     libfdk-aac
     libva-utils
     pipewire-libs-extra
