@@ -33,3 +33,12 @@ jobs:
       # architecture: '["aarch64","x86_64"]'
       architecture: '["x86_64"]'
       publish: ${{ github.event_name != 'pull_request' }}
+
+  generate-release:
+    name: Generate Release
+    needs: [build-image-testing]
+    permissions:
+      contents: write
+    uses: ./.github/workflows/generate-release.yml
+    with:
+      stream_name: '["testing"]'
