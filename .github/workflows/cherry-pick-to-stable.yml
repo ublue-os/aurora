@@ -46,7 +46,7 @@ jobs:
         with:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}
-          target_branches: "stable-f44"
+          target_branches: ${{ vars.STABLE_BRANCH }}
           add_labels: "backported-to-stable"
           pull_title: '${pull_title} [Backport ${target_branch}]'
           pull_description: |
