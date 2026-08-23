@@ -184,15 +184,7 @@ EXCLUDED_PACKAGES=(
     podman-docker
 )
 
-# Remove excluded packages if they are installed
-if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
-    if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-        dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
-    else
-        echo "No excluded packages found to remove."
-    fi
-fi
+dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
