@@ -105,19 +105,6 @@ echo "Installing DX COPR packages with isolated repo enablement..."
 copr_install_isolated "karmab/kcli" "kcli"
 copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
 
-# DX packages to exclude - common to all versions
-EXCLUDED_PACKAGES=()
-
-# Remove excluded packages if they are installed
-if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
-    if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-        dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
-    else
-        echo "No excluded packages found to remove."
-    fi
-fi
-
 rsync -rvK /ctx/system_files/dx/ /
 
 # Load iptable_nat module for docker-in-docker.
