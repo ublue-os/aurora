@@ -100,6 +100,7 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
+    plasma-union-"${PLASMA_VERS}"
     powertop
     rclone
     restic
