@@ -83,7 +83,6 @@ FEDORA_PACKAGES=(
     kate
     kcm-fcitx5
     krb5-workstation
-    ksshaskpass
     ksystemlog
     libcamera-gstreamer
     libcamera-tools
@@ -111,8 +110,8 @@ FEDORA_PACKAGES=(
     symlinks
     tcpdump
     tesseract-devel
+    tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     tmux
-    tesseract-langpack-{eng,deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     traceroute
     vim
     yubikey-manager
