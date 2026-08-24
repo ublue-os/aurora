@@ -25,6 +25,10 @@ systemctl enable flatpak-nuke-fedora.service
 # DO NOT REMOVE THIS
 systemctl enable rechunker-group-fix.service
 
+# Remove stale mariadb SELinux module from the local policy store
+# https://github.com/ublue-os/aurora/issues/2767
+systemctl enable aurora-selinux-cleanup.service
+
 # run flatpak preinstall once at startup
 systemctl enable flatpak-preinstall.service
 

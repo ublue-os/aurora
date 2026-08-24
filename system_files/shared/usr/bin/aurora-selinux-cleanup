@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Remove the mariadb-plugin-cracklib-password-check module from the local SELinux
+# policy store. The module gets installed into /etc/selinux by the
+# mariadb-cracklib-password-check package, and since /etc persists between
+# updates its remnants break `ostree-finalize-staged` (`semodule --refresh`)
+# when switching to images without the package:
+# https://github.com/ublue-os/aurora/issues/2767
+
+MODULE="mariadb-plugin-cracklib-password-check"
+STORE="/etc/selinux/targeted"
+
+# Nothing to do without a policy store
+if [[ ! -d "${STORE}" ]]; then
+  exit 0
+fi
+
+# Collect any leftover module files, both installed modules and stale
+# policy store transactions
+shopt -s nullglob
+leftovers=(
+  "${STORE}"/active/modules/*/"${MODULE}"
+  "${STORE}"/tmp/modules/*/"${MODULE}"
+)
+shopt -u nullglob
+
+# Nothing to do without any trace of the module
+if [[ ${#leftovers[@]} -eq 0 ]] &&
+  ! semodule -l 2>/dev/null | grep -qw "${MODULE}"; then
+  exit 0
+fi
+
+echo "Removing stale '${MODULE}' SELinux module"
+if ! semodule -X 200 -r "${MODULE}"; then
+  # The policy store may be inconsistent, removing the files directly
+  # lets the next policy rebuild succeed.
+  echo "'semodule' failed, removing leftover module files directly" >&2
+fi
+
+if [[ ${#leftovers[@]} -gt 0 ]]; then
+  rm -rf "${leftovers[@]}"
+fi
