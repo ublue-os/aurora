@@ -345,7 +345,7 @@ rechunk $image=default_image $tag=default_tag $flavor=default_flavor:
     build \
     --verbose \
     --compressed \
-    --max-layers 128 \
+    --max-layers 256 \
     --prune /sysroot/ \
     --label ostree.commit- --label ostree.final-diffid- \
     --config /chunkah-config.json \

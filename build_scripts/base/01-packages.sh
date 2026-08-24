@@ -83,12 +83,9 @@ FEDORA_PACKAGES=(
     kate
     kcm-fcitx5
     krb5-workstation
-    ksshaskpass
     ksystemlog
-    libavcodec
     libcamera-gstreamer
     libcamera-tools
-    libfdk-aac
     libimobiledevice-utils
     libratbag-ratbagd
     libxcrypt-compat
@@ -102,6 +99,7 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
+    plasma-union-"${PLASMA_VERS}"
     powertop
     rclone
     restic
@@ -112,8 +110,8 @@ FEDORA_PACKAGES=(
     symlinks
     tcpdump
     tesseract-devel
+    tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     tmux
-    tesseract-langpack-{eng,deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     traceroute
     vim
     yubikey-manager
@@ -126,6 +124,7 @@ FEDORA_PACKAGES_AMD64=(
 
 NEGATIVO_PACKAGES=(
     ffmpeg{,-libs}
+    libavcodec
     libfdk-aac
     libva-utils
     pipewire-libs-extra
@@ -185,15 +184,7 @@ EXCLUDED_PACKAGES=(
     podman-docker
 )
 
-# Remove excluded packages if they are installed
-if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
-    if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-        dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
-    else
-        echo "No excluded packages found to remove."
-    fi
-fi
+dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions

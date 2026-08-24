@@ -8,7 +8,7 @@ on:
         type: string
       brand_name:
         description: "The Brand Name: aurora"
-        required: true
+        required: false
         default: aurora
         type: string
       stream_name:
