@@ -41,4 +41,7 @@ sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
 # So we can bind offline docs to a shortcut
 ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
 
+# Meta+Enter rules
+desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
+
 echo "::endgroup::"
