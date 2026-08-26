@@ -39,6 +39,6 @@ setsebool -P samba_export_all_rw=1
 sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
 
 # So we can bind offline docs to a shortcut
-cp /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
+ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
 
 echo "::endgroup::"
