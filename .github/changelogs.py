@@ -81,6 +81,9 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{ta
 
 # For this Specific Image:
 sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{curr}
+
+# For other operations like changing streams/picking a specific date:
+ujust rebase-helper
 ```
 
 ### Documentation
