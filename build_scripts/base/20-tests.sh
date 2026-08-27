@@ -129,7 +129,6 @@ UNWANTED_PACKAGES=(
     fedora-third-party
     firefox
     plasma-discover
-    podman-docker
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
