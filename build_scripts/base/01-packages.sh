@@ -13,6 +13,12 @@ PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 dnf config-manager addrepo --from-repofile="https://negativo17.org/repos/fedora-multimedia.repo"
 dnf config-manager setopt fedora-multimedia.priority=90
 
+# shellcheck disable=SC2016
+dnf -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+
+# Disable Terra Mirrors because they are very flakey
+sed -i -e "s/^#baseurl/baseurl/" -e "s/^metalink/#metalink/" /etc/yum.repos.d/terra.repo
+
 OVERRIDES=(
     "intel-gmmlib"
     "intel-mediasdk"
@@ -142,6 +148,16 @@ if [[ $(arch) == x86_64 ]]; then
 fi
 
 dnf -y install "${PACKAGES[@]}"
+
+TERRA_PACKAGES=(
+    cardwire-gui
+  )
+
+# shellcheck disable=SC1010
+dnf do -y \
+  --action install "${TERRA_PACKAGES[@]}" \
+  --action remove switcheroo-control \
+  --action install cardwire
 
 # Fedora Tailscale is usually behind
 dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
