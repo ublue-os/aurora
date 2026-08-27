@@ -142,18 +142,24 @@ COPR_UBLUE_OS_PACKAGES=(
     # https://github.com/ublue-os/akmods/issues/537
     ublue-os-selinux-workarounds
 )
+
 TERRA_PACKAGES=(
   # our auto-updater
   uupd
   # used in motd, in general useful to have
   nerdfontssymbolsonly-nerd-fonts
   game-devices-udev
+  cardwire-gui
 )
 
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
 
-dnf-retry -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
+# shellcheck disable=SC1010
+dnf-retry -y do \
+  --from-repo="terra" \
+  --action install "${TERRA_PACKAGES[@]}" \
+  --action remove switcheroo-control
 
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 

@@ -82,6 +82,7 @@ if [[ "$QT_VER" != "$QTFS_VER" ]]; then
 fi
 
 IMPORTANT_PACKAGES=(
+    cardwire
     distrobox
     fish
     flatpak
