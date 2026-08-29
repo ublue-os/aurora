@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# HACK for https://github.com/ublue-os/aurora/issues/2624 https://bugs.kde.org/show_bug.cgi?id=523540
+mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
+
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
@@ -44,8 +47,5 @@ ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglo
 # Meta+Enter rules
 desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
 ln -sf /usr/share/applications/org.kde.konsole.desktop /usr/share/kglobalaccel/org.kde.konsole.desktop
-
-# HACK for https://github.com/ublue-os/aurora/issues/2624 https://bugs.kde.org/show_bug.cgi?id=523540
-desktop-file-edit --set-key=Exec --set-value=plasma-welcome-hack /usr/share/applications/org.kde.plasma-welcome.desktop
 
 echo "::endgroup::"
