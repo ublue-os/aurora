@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# https://github.com/ublue-os/aurora/issues/2624
+# https://bugs.kde.org/show_bug.cgi?id=523540
+# real nasty, this is the same ordering as without --pages
+exec /usr/bin/plasma-welcome-original --pages Welcome,SimpleByDefault,PowerfulWhenNeeded,Feedback,Enjoy "$@"
