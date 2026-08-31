@@ -1,0 +1,12 @@
+[Unit]
+Description=Periodically check for staged Aurora deployments
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+AccuracySec=5min
+Persistent=false
+Unit=aurora-deployment-check.service
+
+[Install]
+WantedBy=timers.target

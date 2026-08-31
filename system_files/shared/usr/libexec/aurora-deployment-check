@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+STATUS_DIR="${AURORA_DEPLOYMENT_STATUS_DIR:-/run/aurora}"
+FLAG_FILE="${STATUS_DIR}/staged-ready"
+STATUS_FILE="${STATUS_DIR}/deployment-status.json"
+
+SOURCE=""
+STAGED_ID=""
+BOOTED_ID=""
+
+write_status() {
+  local tmpfile
+  tmpfile="$(mktemp "${STATUS_DIR}/deployment-status.XXXXXX")"
+
+  jq -n \
+    --arg source "${SOURCE}" \
+    --arg staged_id "${STAGED_ID}" \
+    --arg booted_id "${BOOTED_ID}" \
+    --arg created_at "$(date --iso-8601=seconds)" \
+    '{
+      ready: true,
+      source: $source,
+      staged_id: $staged_id,
+      booted_id: $booted_id,
+      created_at: $created_at
+    }' > "${tmpfile}"
+
+  chmod 0644 "${tmpfile}"
+  mv -f "${tmpfile}" "${STATUS_FILE}"
+  printf 'ready\n' > "${FLAG_FILE}"
+  chmod 0644 "${FLAG_FILE}"
+}
+
+clear_status() {
+  rm -f "${FLAG_FILE}" "${STATUS_FILE}"
+}
+
+check_bootc() {
+  local bootc_json
+  local staged_id
+  local booted_id
+
+  command -v bootc >/dev/null 2>&1 || return 1
+  bootc_json="$(bootc status --json 2>/dev/null)" || return 1
+
+  staged_id="$(jq -er '
+    .status as $status
+    | select($status.staged != null and $status.staged != {})
+    | (
+        $status.staged.image.imageDigest
+        // $status.staged.image.digest
+        // $status.staged.ostree.checksum
+        // $status.staged.checksum
+        // ($status.staged | tostring)
+      )
+  ' <<< "${bootc_json}" 2>/dev/null)" || return 1
+
+  booted_id="$(jq -r '
+    .status.booted.image.imageDigest
+    // .status.booted.image.digest
+    // .status.booted.ostree.checksum
+    // .status.booted.checksum
+    // empty
+  ' <<< "${bootc_json}" 2>/dev/null)"
+
+  if [[ -n "${staged_id}" && "${staged_id}" != "${booted_id}" ]]; then
+    SOURCE="bootc"
+    STAGED_ID="${staged_id}"
+    BOOTED_ID="${booted_id}"
+    return 0
+  fi
+
+  return 1
+}
+
+check_rpm_ostree() {
+  local ostree_json
+  local staged_json
+  local staged_id
+  local booted_id
+
+  command -v rpm-ostree >/dev/null 2>&1 || return 1
+  ostree_json="$(rpm-ostree status --json 2>/dev/null)" || return 1
+
+  staged_json="$(jq -ec '[.deployments[]? | select(.staged == true)] | first // empty' <<< "${ostree_json}" 2>/dev/null)" || return 1
+  [[ -n "${staged_json}" ]] || return 1
+
+  staged_id="$(jq -r '.checksum // .version // .origin // tostring' <<< "${staged_json}" 2>/dev/null)"
+  booted_id="$(jq -r '[.deployments[]? | select(.booted == true)] | first | .checksum // .version // .origin // empty' <<< "${ostree_json}" 2>/dev/null)"
+
+  if [[ -n "${staged_id}" && "${staged_id}" != "${booted_id}" ]]; then
+    SOURCE="rpm-ostree"
+    STAGED_ID="${staged_id}"
+    BOOTED_ID="${booted_id}"
+    return 0
+  fi
+
+  return 1
+}
+
+main() {
+  install -d -m 0755 -o root -g root "${STATUS_DIR}"
+
+  if check_bootc || check_rpm_ostree; then
+    write_status
+  else
+    clear_status
+  fi
+}
+
+main "$@"
