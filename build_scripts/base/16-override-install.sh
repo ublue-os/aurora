@@ -4,6 +4,9 @@ echo "::group:: ===$(basename "$0")==="
 
 set -eoux pipefail
 
+# HACK for https://github.com/ublue-os/aurora/issues/2624 https://bugs.kde.org/show_bug.cgi?id=523540
+mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
+
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
@@ -39,6 +42,10 @@ setsebool -P samba_export_all_rw=1
 sed -i '/^\[homes\]/,/^\[/{/^\[homes\]/d;/^\[/!d}' /etc/samba/smb.conf
 
 # So we can bind offline docs to a shortcut
-cp /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
+ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglobalaccel/
+
+# Meta+Enter rules
+desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
+ln -sf /usr/share/applications/org.kde.konsole.desktop /usr/share/kglobalaccel/org.kde.konsole.desktop
 
 echo "::endgroup::"

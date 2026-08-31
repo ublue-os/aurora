@@ -173,7 +173,6 @@ EXCLUDED_PACKAGES=(
     fedora-bookmarks
     fedora-chromium-config{,-kde}
     fedora-third-party
-    ffmpegthumbnailer
     firefox
     firewall-config
     kcharselect
@@ -181,7 +180,6 @@ EXCLUDED_PACKAGES=(
     krfb{,-libs}
     plasma-discover{,-libs}
     plasma-welcome-fedora
-    podman-docker
 )
 
 dnf -y remove "${EXCLUDED_PACKAGES[@]}"
