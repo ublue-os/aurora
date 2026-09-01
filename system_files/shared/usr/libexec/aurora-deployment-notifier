@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+STATUS_DIR="${AURORA_DEPLOYMENT_STATUS_DIR:-/run/aurora}"
+FLAG_FILE="${STATUS_DIR}/staged-ready"
+STATUS_FILE="${STATUS_DIR}/deployment-status.json"
+STATE_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}/aurora/deployment-notifier"
+LAST_NOTIFIED_FILE="${STATE_DIR}/last-notified"
+
+[[ -f "${FLAG_FILE}" ]] || exit 0
+command -v notify-send >/dev/null 2>&1 || exit 0
+
+staged_id=""
+if [[ -f "${STATUS_FILE}" ]] && command -v jq >/dev/null 2>&1; then
+  staged_id="$(jq -r '.staged_id // empty' "${STATUS_FILE}" 2>/dev/null || true)"
+fi
+
+if [[ -z "${staged_id}" ]]; then
+  staged_id="$(sha256sum "${FLAG_FILE}" | cut -d ' ' -f 1)"
+fi
+
+mkdir -p "${STATE_DIR}"
+
+if [[ -f "${LAST_NOTIFIED_FILE}" ]] && [[ "$(<"${LAST_NOTIFIED_FILE}")" == "${staged_id}" ]]; then
+  exit 0
+fi
+
+notify-send \
+  --app-name="Aurora" \
+  --icon="system-software-update" \
+  --urgency=normal \
+  "System update ready" \
+  "Restart your device to finish applying the staged Aurora update."
+
+printf '%s\n' "${staged_id}" > "${LAST_NOTIFIED_FILE}"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch for staged Aurora deployment status
+Documentation=https://docs.getaurora.dev/
+
+[Path]
+PathExists=/run/aurora/staged-ready
+Unit=aurora-deployment-notifier.service
+
+[Install]
+WantedBy=default.target
