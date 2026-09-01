@@ -200,10 +200,6 @@ dnf -y copr disable ublue-os/staging
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
 
-# https://github.com/ostreedev/ostree/issues/3635
-dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  ostree ostree
-
 dnf versionlock add plasma-setup
 
 # Install DX specific packages
