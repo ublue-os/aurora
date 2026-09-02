@@ -92,15 +92,20 @@ Be sure to read the [documentation](https://docs.getaurora.dev/) for more inform
 HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
 
+# this should be synced with the major packages above
 BLACKLIST_VERSIONS = [
     "kernel-core",
     "plasma-desktop",
     "mesa-filesystem",
+    "nvidia-driver",
     "podman",
-    "docker-ce",
+    "bootc",
+    "flatpak",
+    "ostree",
+    "rpm-ostree",
     "incus",
-    "devpod",
-    "nvidia-driver"
+    "docker-ce",
+    "rocm-runtime",
 ]
 
 
