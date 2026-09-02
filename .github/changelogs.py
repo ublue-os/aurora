@@ -52,7 +52,7 @@ From previous `{target}` version `{prev}` there have been the following changes.
 ### Major packages
 | Name | Version |
 | --- | --- |
-| **Kernel** | {pkgrel:kernel} |
+| **Kernel** | {pkgrel:kernel-core} |
 | **KDE** | {pkgrel:plasma-desktop} |
 | **Mesa** | {pkgrel:mesa-filesystem} |
 | **Nvidia** | {pkgrel:nvidia-driver} |
@@ -93,7 +93,7 @@ HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
 
 BLACKLIST_VERSIONS = [
-    "kernel",
+    "kernel-core",
     "plasma-desktop",
     "mesa-filesystem",
     "podman",
