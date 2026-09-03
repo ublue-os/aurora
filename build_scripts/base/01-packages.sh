@@ -173,7 +173,6 @@ EXCLUDED_PACKAGES=(
     fedora-bookmarks
     fedora-chromium-config{,-kde}
     fedora-third-party
-    ffmpegthumbnailer
     firefox
     firewall-config
     kcharselect
@@ -181,7 +180,6 @@ EXCLUDED_PACKAGES=(
     krfb{,-libs}
     plasma-discover{,-libs}
     plasma-welcome-fedora
-    podman-docker
 )
 
 dnf -y remove "${EXCLUDED_PACKAGES[@]}"
@@ -201,10 +199,6 @@ dnf -y copr enable ublue-os/staging
 dnf -y copr disable ublue-os/staging
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
-
-# https://github.com/ostreedev/ostree/issues/3635
-dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  ostree ostree
 
 dnf versionlock add plasma-setup
 
