@@ -40,6 +40,14 @@ systemctl --global enable speech-dispatcher.socket
 # Updater
 systemctl enable uupd.timer
 
+# Add Aurora-specific ujust recipes. The deployment notifier remains disabled
+# until a user opts in with `ujust aurora-update-notifier enable`.
+if [[ -f /usr/share/ublue-os/justfile ]]; then
+    if ! grep -qx 'import "/usr/share/ublue-os/just/60-aurora-deployment-notifier.just"' /usr/share/ublue-os/justfile; then
+        echo 'import "/usr/share/ublue-os/just/60-aurora-deployment-notifier.just"' >> /usr/share/ublue-os/justfile
+    fi
+fi
+
 # Disable the old update timer
 systemctl disable rpm-ostreed-automatic.timer
 
