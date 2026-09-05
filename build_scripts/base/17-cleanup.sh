@@ -14,6 +14,7 @@ systemctl enable ublue-system-setup.service
 systemctl --global enable ublue-user-setup.service
 systemctl --global enable podman-auto-update.timer
 systemctl enable input-remapper.service
+systemctl enable cardwired.service
 
 # Nuke possible Fedora flatpak repos
 systemctl enable flatpak-nuke-fedora.service
@@ -65,7 +66,7 @@ for repo in fedora-multimedia tailscale fedora-cisco-openh264; do
     fi
 done
 
-# Disable Terra repos (installed on F42 and earlier)
+# Disable Terra repos
 for i in /etc/yum.repos.d/terra*.repo; do
     if [[ -f "$i" ]]; then
         sed -i 's@enabled=1@enabled=0@g' "$i"
