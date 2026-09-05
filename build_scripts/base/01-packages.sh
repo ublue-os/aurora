@@ -105,6 +105,7 @@ FEDORA_PACKAGES=(
     restic
     samba-winbind{,-clients,-modules}
     setools-console
+    systemd-boot-unsigned
     solaar-udev
     squashfs-tools
     symlinks
