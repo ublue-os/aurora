@@ -1,0 +1,20 @@
+# The mariadb-cracklib-password-check package ships a SELinux policy module that
+# is installed into the persistent /etc/selinux policy store. Remnants of it
+# break `ostree-finalize-staged` when upgrading to or rebasing onto images that
+# do not ship the package, leaving systems unable to complete updates.
+# This unit removes the module from the local policy store before that can
+# happen. Nothing in the image loads this MariaDB plugin.
+# https://github.com/ublue-os/aurora/issues/2767
+[Unit]
+Description=Remove stale mariadb SELinux policy module
+Documentation=https://github.com/ublue-os/aurora/issues/2767
+Wants=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/aurora-selinux-cleanup
+
+[Install]
+WantedBy=multi-user.target
