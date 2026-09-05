@@ -265,6 +265,8 @@ jobs:
             --tag "${MATRIX_STREAM_NAME}" \
             --flavor "${MATRIX_IMAGE_FLAVOR}" \
 
+          podman system reset
+
           sudo $(command -v just) disk-image \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
