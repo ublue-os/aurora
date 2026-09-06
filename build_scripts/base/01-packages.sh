@@ -97,9 +97,10 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
+    plasma-oxygen
     plasma-union-"${PLASMA_VERS}"
+    plasma-wallpapers-dynamic
     powertop
     rclone
     restic
