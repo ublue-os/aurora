@@ -97,9 +97,10 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
+    plasma-oxygen
     plasma-union-"${PLASMA_VERS}"
+    plasma-wallpapers-dynamic
     powertop
     rclone
     restic
@@ -199,10 +200,6 @@ dnf -y copr enable ublue-os/staging
 dnf -y copr disable ublue-os/staging
 dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
-
-# https://github.com/ostreedev/ostree/issues/3635
-dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  ostree ostree
 
 dnf versionlock add plasma-setup
 

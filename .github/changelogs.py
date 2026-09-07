@@ -52,7 +52,7 @@ From previous `{target}` version `{prev}` there have been the following changes.
 ### Major packages
 | Name | Version |
 | --- | --- |
-| **Kernel** | {pkgrel:kernel} |
+| **Kernel** | {pkgrel:kernel-core} |
 | **KDE** | {pkgrel:plasma-desktop} |
 | **Mesa** | {pkgrel:mesa-filesystem} |
 | **Nvidia** | {pkgrel:nvidia-driver} |
@@ -92,15 +92,20 @@ Be sure to read the [documentation](https://docs.getaurora.dev/) for more inform
 HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
 
+# this should be synced with the major packages above
 BLACKLIST_VERSIONS = [
-    "kernel",
+    "kernel-core",
     "plasma-desktop",
     "mesa-filesystem",
+    "nvidia-driver",
     "podman",
-    "docker-ce",
+    "bootc",
+    "flatpak",
+    "ostree",
+    "rpm-ostree",
     "incus",
-    "devpod",
-    "nvidia-driver"
+    "docker-ce",
+    "rocm-runtime",
 ]
 
 
