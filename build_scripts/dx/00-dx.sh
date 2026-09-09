@@ -82,8 +82,7 @@ dnf -y install --enablerepo=docker-ce-stable \
     docker-buildx-plugin \
     docker-ce \
     docker-ce-cli \
-    docker-compose-plugin \
-    docker-model-plugin
+    docker-compose-plugin
 
 # VSCode package from Microsoft repo
 echo "Installing VSCode from official repo..."
