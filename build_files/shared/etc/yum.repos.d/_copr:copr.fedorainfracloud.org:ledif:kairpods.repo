@@ -1,0 +1,10 @@
+[copr:copr.fedorainfracloud.org:ledif:kairpods]
+name=Copr repo for kairpods owned by ledif
+baseurl=https://download.copr.fedorainfracloud.org/results/ledif/kairpods/fedora-$releasever-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/ledif/kairpods/pubkey.gpg
+repo_gpgcheck=0
+enabled=0
+enabled_metadata=1

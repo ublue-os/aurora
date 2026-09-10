@@ -4,14 +4,11 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
-# may break when partially upgraded
+# Prevent partial upgrading, major kde version updates black screened
+# https://github.com/ublue-os/aurora/issues/1227
 dnf versionlock add "qt6-*" "plasma-desktop"
 
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
-
-# use override to replace mesa and others with less crippled versions
-dnf config-manager addrepo --from-repofile="https://negativo17.org/repos/fedora-multimedia.repo"
-dnf config-manager setopt fedora-multimedia.priority=90
 
 OVERRIDES=(
     "intel-gmmlib"
@@ -30,21 +27,6 @@ OVERRIDES=(
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
 dnf5 versionlock add "${OVERRIDES[@]}"
-
-# All DNF-related operations should be done here whenever possible
-#shellcheck source=build_scripts/shared/copr-helpers.sh
-source /ctx/build_scripts/shared/copr-helpers.sh
-
-# NOTE:
-# Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
-# malicious COPRs from injecting fake versions of Fedora packages.
-# Fedora packages are installed first in bulk (safe).
-# COPR packages are installed individually with isolated enablement.
-
-# Base packages from Fedora repos - common to all versions
-
-# Prevent partial upgrading, major kde version updates black screened
-# https://github.com/ublue-os/aurora/issues/1227
 
 FEDORA_PACKAGES=(
     adcli
@@ -143,30 +125,25 @@ if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
 fi
 
-dnf -y install "${PACKAGES[@]}"
+dnf -y install --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
 
 # Fedora Tailscale is usually behind
-dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
-dnf config-manager setopt tailscale-stable.enabled=0
-dnf -y install --enablerepo='tailscale-stable' tailscale
+dnf -y install --from-repo='tailscale-stable' tailscale
 
-# NOTE: Remove ublue-os-selinux-workarounds package when upstream issue is fixed
-# https://github.com/ublue-os/akmods/issues/537
-# From ublue-os/packages
-copr_install_isolated "ublue-os/packages" \
-    "kcm_ublue" \
-    "krunner-bazaar" \
-    "ublue-os-selinux-workarounds" \
-    "oversteer-udev" \
-    "uupd"
+COPR_UBLUE_OS_PACKAGES=(
+    kcm_ublue
+    krunner-bazaar
+    oversteer-udev
+    # https://github.com/ublue-os/akmods/issues/537
+    ublue-os-selinux-workarounds
+    uupd
+  )
 
-# kAirpods from ledif/kairpods COPR
-copr_install_isolated "ledif/kairpods" \
-    "kairpods"
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ublue-os:packages' "${COPR_UBLUE_OS_PACKAGES[@]}"
 
-# Sunshine from lizardbyte/stable COPR
-copr_install_isolated "lizardbyte/stable" \
-    "sunshine"
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ledif:kairpods' kairpods
+
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:lizardbyte:stable' sunshine
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
@@ -197,9 +174,7 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #fi
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
-dnf -y copr enable ublue-os/staging
-dnf -y copr disable ublue-os/staging
-dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
 
 dnf versionlock add plasma-setup
