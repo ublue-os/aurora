@@ -1,0 +1,10 @@
+[copr:copr.fedorainfracloud.org:karmab:kcli]
+name=Copr repo for kcli owned by karmab
+baseurl=https://download.copr.fedorainfracloud.org/results/karmab/kcli/fedora-$releasever-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/karmab/kcli/pubkey.gpg
+repo_gpgcheck=0
+enabled=0
+enabled_metadata=1
