@@ -733,21 +733,21 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
     mkdir -p "${OUT_DIR}"
 
     # We have to do it this stupid way because we are OOMing on github runners
+    # via the normal "syft image_name"-flow
     # https://github.com/anchore/syft/issues/3800
-    ${PODMAN} container create --replace --name ${image_name} "${image_name}:${tag}"
+    MOUNT_PATH_CMD=("${PODMAN}" "image" "mount" "${image_name}:${tag}")
 
-    ROOTFS="${OUT_DIR}/rootfs"
-    mkdir -p "${ROOTFS}"
+    if [[ ! "$(id -u)" == 0 ]]; then
+      UNSHARE_CMD="${PODMAN} unshare"
+      MOUNT_PATH_CMD=("${UNSHARE_CMD}" "${MOUNT_PATH_CMD[@]}")
+    fi
 
-    ${PODMAN} export ${image_name} | tar -C "${ROOTFS}" -xf -
-    ${PODMAN} container rm ${image_name}
+    ROOTFS_PATH="$(${MOUNT_PATH_CMD[@]})"
 
     SBOM="${OUT_DIR}/sbom.json"
 
-    ${syft_cmd} --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
+    ${UNSHARE_CMD:-} ${syft_cmd} --source-name "${image_name}:${tag}" "${ROOTFS_PATH}" -o syft-json=${SBOM}
     du -sh "${SBOM}"
-
-    rm -rf "${ROOTFS}"
 
 # We are not using https://github.com/actions/cache because of:
 # https://github.com/ublue-os/aurora/issues/2351
