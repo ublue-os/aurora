@@ -195,11 +195,9 @@ jobs:
 
       - name: Setup Syft
         id: setup-syft
-        if: inputs.publish
         uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
 
       - name: Generate SBOM
-        if: inputs.publish
         id: generate-sbom
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
