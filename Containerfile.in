@@ -22,6 +22,7 @@ FROM ghcr.io/ublue-os/akmods-zfs:${AKMODS_FLAVOR}-${FEDORA_MAJOR_VERSION}-${KERN
 
 FROM scratch AS ctx
 COPY /build_scripts /build_scripts
+COPY /build_files /build_files
 
 # /* https://github.com/get-aurora-dev/common */
 COPY --from=common /logos /system_files/shared
