@@ -1,4 +1,7 @@
+# just disk-image/bootc install to-disk
 *.img
+# sysexts
+*.raw
 
 aurora*.oci
 sbom_out

@@ -744,7 +744,7 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
 
     SBOM="${OUT_DIR}/sbom.json"
 
-    ${syft_cmd} --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
+    ${syft_cmd} --verbose --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
     du -sh "${SBOM}"
 
     rm -rf "${ROOTFS}"
@@ -876,7 +876,7 @@ disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
     if [[ "${backend}" == "ostree" ]]; then
       BOOTC_INSTALL_ARGS+=("--bootloader grub")
     else
-      BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
+      BOOTC_INSTALL_ARGS+=("--bootloader grub" "--composefs-backend")
     fi
 
     {{ just }} bootc --image "${image}" --tag "${tag}" --flavor "${flavor}" install to-disk -- "${BOOTC_INSTALL_ARGS[@]}"

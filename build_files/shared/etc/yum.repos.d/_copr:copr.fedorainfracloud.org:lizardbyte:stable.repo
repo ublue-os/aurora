@@ -1,0 +1,11 @@
+[copr:copr.fedorainfracloud.org:lizardbyte:stable]
+name=Copr repo for stable owned by lizardbyte
+baseurl=https://download.copr.fedorainfracloud.org/results/lizardbyte/stable/fedora-$releasever-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/lizardbyte/stable/pubkey.gpg
+repo_gpgcheck=0
+enabled=0
+enabled_metadata=1
+priority=1

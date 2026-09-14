@@ -95,6 +95,7 @@ This is an automatically generated changelog for release `{curr}`."""
 # this should be synced with the major packages above
 BLACKLIST_VERSIONS = [
     "kernel-core",
+    "kernel",
     "plasma-desktop",
     "mesa-filesystem",
     "nvidia-driver",

@@ -7,16 +7,6 @@ set -ouex pipefail
 # Apply IP Forwarding before installing Docker to prevent messing with LXC networking
 sysctl -p
 
-# Load secure COPR helpers
-# shellcheck source=build_scripts/shared/copr-helpers.sh
-source /ctx/build_scripts/shared/copr-helpers.sh
-
-# NOTE:
-# Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
-# malicious COPRs from injecting fake versions of Fedora packages.
-# Fedora packages are installed first in bulk (safe).
-# COPR packages are installed individually with isolated enablement.
-
 # DX packages from Fedora repos - common to all versions
 FEDORA_PACKAGES=(
     android-tools
@@ -75,35 +65,20 @@ echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
 # Docker packages from their repo
-dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/docker-ce.repo
-dnf -y install --enablerepo=docker-ce-stable \
+dnf -y install --from-repo=docker-ce-stable \
     containerd.io \
     docker-buildx-plugin \
     docker-ce \
     docker-ce-cli \
-    docker-compose-plugin \
-    docker-model-plugin
+    docker-compose-plugin
 
 # VSCode package from Microsoft repo
-echo "Installing VSCode from official repo..."
-tee /etc/yum.repos.d/vscode.repo <<'EOF'
-[code]
-name=Visual Studio Code
-baseurl=https://packages.microsoft.com/yumrepos/vscode
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-EOF
-sed -i "s/enabled=.*/enabled=0/g" /etc/yum.repos.d/vscode.repo
-dnf -y install --enablerepo=code \
+dnf -y install --from-repo=code \
     code
 
-# DX Copr packages using isolated enablement (secure)
-echo "Installing DX COPR packages with isolated repo enablement..."
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:karmab:kcli' kcli
 
-copr_install_isolated "karmab/kcli" "kcli"
-copr_install_isolated "ublue-os/packages" "ublue-os-libvirt-workarounds"
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ublue-os:packages' ublue-os-libvirt-workarounds
 
 rsync -rvK /ctx/system_files/dx/ /
 
