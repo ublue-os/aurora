@@ -48,6 +48,8 @@ if [[ "${AKMODS_FLAVOR}" =~ coreos ]]; then
   systemctl enable aurora-zfs-deprecation-notifier.timer
 fi
 
+systemctl enable aurora-iwd-deprecation-notifier.timer
+
 # Hide Desktop Files. Hidden removes mime associations
 for file in htop nvtop; do
     if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
