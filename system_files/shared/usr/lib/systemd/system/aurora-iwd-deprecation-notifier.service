@@ -1,0 +1,12 @@
+[Unit]
+Description=Aurora IWD Deprecation Notifier
+Documentation=https://docs.getaurora.dev/blog/deprecating-iwd
+After=network.target
+
+[Service]
+Type=oneshot
+ExecCondition=/usr/bin/bash -c "/usr/bin/NetworkManager --print-config | /usr/bin/grep -q '^wifi.backend=iwd'"
+ExecStart=/usr/bin/aurora-iwd-deprecation-notifier
+
+[Install]
+WantedBy=graphical.target
