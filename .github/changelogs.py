@@ -164,7 +164,7 @@ def get_tags(target: str, manifests: dict[str, Any]):
 
     When multiple builds on the same day, highest index wins:
     >>> get_tags("stable", imgs(["stable-20260602.1", "stable-20260609.1", "stable-20260609.2"]))
-    ('stable-20260602.1', 'stable-20260609.2')
+    ('stable-20260609.1', 'stable-20260609.2')
 
     Most recent tags as of today:
     >>> get_tags("stable", imgs(["stable-20260526", "stable-20260602", "stable-20260602.1", "stable-20260609", "stable-20260609.1"]))
@@ -191,13 +191,12 @@ def get_tags(target: str, manifests: dict[str, Any]):
             if tag not in manifest["RepoTags"]:
                 all_tags.remove(tag)
 
-    # Group by date, keep the highest-indexed tag per date
     by_date = defaultdict(list)
     for tag in all_tags:
         date, idx = parse_tag(tag)
         by_date[date].append((idx, tag))
 
-    flattened = [max(entries)[1] for entries in by_date.values()]
+    flattened = [tag for entries in by_date.values() for idx, tag in entries if idx > 0]
     tags = sorted(flattened, key=parse_tag)
 
     if len(tags) < 2:
