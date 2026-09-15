@@ -4,7 +4,7 @@
     "config:best-practices"
   ],
 
-  "baseBranchPatterns": ["main", "stable-f44"],
+  "baseBranchPatterns": ["main", "/^stable-f[0-9][0-9]$/"],
 
   // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
@@ -59,7 +59,7 @@
       ],
       // Brew and common are not "security updates", they have to go through :testing/main first
       // to reach a stable release
-      "matchBaseBranches": ["stable-f44"],
+      "matchBaseBranches": ["/^stable-f[0-9][0-9]$/"],
       "enabled": false
     },
     {
