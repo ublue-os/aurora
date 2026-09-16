@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+NOTIFICATION="/usr/bin/notify-send --app-name=Aurora --icon distributor-logo --urgency critical 'ZFS support is ending in October 2026' 'An attached drive contains a ZFS pool. Please see https://github.com/ublue-os/aurora/issues/1765 for more info.'"
+
+USERS="$(loginctl list-users --no-legend | awk '$1 != 0 {print $2}')"
+
+for username in ${USERS}; do
+  machinectl shell "${username}@.host" /usr/bin/bash -c "${NOTIFICATION}"
+done

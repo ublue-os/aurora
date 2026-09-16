@@ -1,0 +1,11 @@
+[Unit]
+Description=Run aurora-zfs-deprecation-notifier 20 mins after boot
+
+[Timer]
+OnBootSec=20min
+Unit=aurora-zfs-deprecation-notifier.service
+OnUnitActiveSec=1w
+Persistent=true
+
+[Install]
+WantedBy=timers.target

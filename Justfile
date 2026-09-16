@@ -28,9 +28,9 @@ default_tag := "latest"
 default_flavor := "main"
 
 # Build Containers
-chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
-common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
-brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image)@\\\\(.digest)\\\"\" image-versions.yml")
+chunkah := shell("yq -r \".images[] | select(.name == \\\"chunkah\\\") | \\\"\\\\(.image):\\(.tag)@\\\\(.digest)\\\"\" image-versions.yml")
+common := shell("yq -r \".images[] | select(.name == \\\"common\\\") | \\\"\\\\(.image):\\(.tag)@\\\\(.digest)\\\"\" image-versions.yml")
+brew := shell("yq -r \".images[] | select(.name == \\\"brew\\\") | \\\"\\\\(.image):\\(.tag)@\\\\(.digest)\\\"\" image-versions.yml")
 
 export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then echo true; fi` == "true" { "true" } else { "false" }
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
@@ -202,14 +202,16 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
         ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
     fi
 
-    cosign verify \
+    {{ retry_function }}
+
+    retry 5 60 cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/get-aurora-dev/common/.github/workflows/*" \
       "{{ common }}"
 
     ALL_IMAGES+=("{{ common }}")
 
-    cosign verify \
+    retry 5 60 cosign verify \
       --certificate-oidc-issuer https://token.actions.githubusercontent.com \
       --certificate-identity-regexp="github.com/coreos/chunkah/.github/workflows/*" \
       "{{ chunkah }}"
@@ -217,8 +219,6 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     ALL_IMAGES+=("{{ chunkah }}")
 
     ALL_IMAGES+=("{{ brew }}")
-
-    {{ retry_function }}
 
     # I hate this immensely, podman build/pull with --retry does not work for
     # transient network issues
@@ -345,7 +345,7 @@ rechunk $image=default_image $tag=default_tag $flavor=default_flavor:
     build \
     --verbose \
     --compressed \
-    --max-layers 128 \
+    --max-layers 256 \
     --prune /sysroot/ \
     --label ostree.commit- --label ostree.final-diffid- \
     --config /chunkah-config.json \
@@ -744,7 +744,7 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
 
     SBOM="${OUT_DIR}/sbom.json"
 
-    ${syft_cmd} --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
+    ${syft_cmd} --verbose --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
     du -sh "${SBOM}"
 
     rm -rf "${ROOTFS}"
@@ -876,7 +876,7 @@ disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
     if [[ "${backend}" == "ostree" ]]; then
       BOOTC_INSTALL_ARGS+=("--bootloader grub")
     else
-      BOOTC_INSTALL_ARGS+=("--bootloader systemd" "--composefs-backend")
+      BOOTC_INSTALL_ARGS+=("--bootloader grub" "--composefs-backend")
     fi
 
     {{ just }} bootc --image "${image}" --tag "${tag}" --flavor "${flavor}" install to-disk -- "${BOOTC_INSTALL_ARGS[@]}"
@@ -902,8 +902,9 @@ push-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
     PUSH_CMD_ARGS+=("--digestfile=/tmp/digestfile")
     PUSH_CMD_ARGS+=("--compression-format=zstd")
     PUSH_CMD_ARGS+=("--compression-level=3")
-    PUSH_CMD_ARGS+=("--retry-delay=30s")
-    PUSH_CMD_ARGS+=("--retry=5")
+    # TODO; This has failed already once, investigate if this actually does something and we need to use the retry function
+    PUSH_CMD_ARGS+=("--retry-delay=60s")
+    PUSH_CMD_ARGS+=("--retry=10")
 
     PUSH_CMD=""${PODMAN}" push "${PUSH_CMD_ARGS[@]}""
 

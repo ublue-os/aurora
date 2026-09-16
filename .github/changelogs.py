@@ -52,11 +52,15 @@ From previous `{target}` version `{prev}` there have been the following changes.
 ### Major packages
 | Name | Version |
 | --- | --- |
-| **Kernel** | {pkgrel:kernel} |
+| **Kernel** | {pkgrel:kernel-core} |
 | **KDE** | {pkgrel:plasma-desktop} |
 | **Mesa** | {pkgrel:mesa-filesystem} |
-| **Podman** | {pkgrel:podman} |
 | **Nvidia** | {pkgrel:nvidia-driver} |
+| **Podman** | {pkgrel:podman} |
+| **Bootc** | {pkgrel:bootc} |
+| **Flatpak** | {pkgrel:flatpak} |
+| **OSTree** | {pkgrel:ostree} |
+| **RPM-OSTree** | {pkgrel:rpm-ostree} |
 
 ### Major DX packages
 | Name | Version |
@@ -77,6 +81,9 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{ta
 
 # For this Specific Image:
 sudo bootc switch --enforce-container-sigpolicy ghcr.io/ublue-os/$IMAGE_NAME:{curr}
+
+# For other operations like changing streams/picking a specific date:
+ujust rebase-helper
 ```
 
 ### Documentation
@@ -85,15 +92,21 @@ Be sure to read the [documentation](https://docs.getaurora.dev/) for more inform
 HANDWRITTEN_PLACEHOLDER = """\
 This is an automatically generated changelog for release `{curr}`."""
 
+# this should be synced with the major packages above
 BLACKLIST_VERSIONS = [
+    "kernel-core",
     "kernel",
     "plasma-desktop",
     "mesa-filesystem",
+    "nvidia-driver",
     "podman",
-    "docker-ce",
+    "bootc",
+    "flatpak",
+    "ostree",
+    "rpm-ostree",
     "incus",
-    "devpod",
-    "nvidia-driver"
+    "docker-ce",
+    "rocm-runtime",
 ]
 
 
@@ -151,7 +164,7 @@ def get_tags(target: str, manifests: dict[str, Any]):
 
     When multiple builds on the same day, highest index wins:
     >>> get_tags("stable", imgs(["stable-20260602.1", "stable-20260609.1", "stable-20260609.2"]))
-    ('stable-20260602.1', 'stable-20260609.2')
+    ('stable-20260609.1', 'stable-20260609.2')
 
     Most recent tags as of today:
     >>> get_tags("stable", imgs(["stable-20260526", "stable-20260602", "stable-20260602.1", "stable-20260609", "stable-20260609.1"]))
@@ -178,13 +191,12 @@ def get_tags(target: str, manifests: dict[str, Any]):
             if tag not in manifest["RepoTags"]:
                 all_tags.remove(tag)
 
-    # Group by date, keep the highest-indexed tag per date
     by_date = defaultdict(list)
     for tag in all_tags:
         date, idx = parse_tag(tag)
         by_date[date].append((idx, tag))
 
-    flattened = [max(entries)[1] for entries in by_date.values()]
+    flattened = [tag for entries in by_date.values() for idx, tag in entries if idx > 0]
     tags = sorted(flattened, key=parse_tag)
 
     if len(tags) < 2:

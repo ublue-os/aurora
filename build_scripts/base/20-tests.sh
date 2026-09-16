@@ -129,7 +129,6 @@ UNWANTED_PACKAGES=(
     fedora-third-party
     firefox
     plasma-discover
-    podman-docker
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
@@ -175,7 +174,7 @@ for unit in "${IMPORTANT_UNITS[@]}"; do
 done
 
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_files/dx/10-tests-dx.sh;
+  /ctx/build_scripts/dx/10-tests-dx.sh;
 fi
 
 echo "::endgroup::"

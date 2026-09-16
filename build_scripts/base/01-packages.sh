@@ -4,14 +4,11 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
-# may break when partially upgraded
+# Prevent partial upgrading, major kde version updates black screened
+# https://github.com/ublue-os/aurora/issues/1227
 dnf versionlock add "qt6-*" "plasma-desktop"
 
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
-
-# use override to replace mesa and others with less crippled versions
-dnf config-manager addrepo --from-repofile="https://negativo17.org/repos/fedora-multimedia.repo"
-dnf config-manager setopt fedora-multimedia.priority=90
 
 OVERRIDES=(
     "intel-gmmlib"
@@ -30,21 +27,6 @@ OVERRIDES=(
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
 dnf5 versionlock add "${OVERRIDES[@]}"
-
-# All DNF-related operations should be done here whenever possible
-#shellcheck source=build_files/shared/copr-helpers.sh
-source /ctx/build_files/shared/copr-helpers.sh
-
-# NOTE:
-# Packages are split into FEDORA_PACKAGES and COPR_PACKAGES to prevent
-# malicious COPRs from injecting fake versions of Fedora packages.
-# Fedora packages are installed first in bulk (safe).
-# COPR packages are installed individually with isolated enablement.
-
-# Base packages from Fedora repos - common to all versions
-
-# Prevent partial upgrading, major kde version updates black screened
-# https://github.com/ublue-os/aurora/issues/1227
 
 FEDORA_PACKAGES=(
     adcli
@@ -67,6 +49,8 @@ FEDORA_PACKAGES=(
     google-noto-sans-cham-fonts
     google-noto-sans-cjk-fonts
     google-noto-sans-javanese-fonts
+    google-noto-sans-linear-a-fonts
+    google-noto-sans-linear-b-fonts
     google-noto-sans-sundanese-fonts
     grub2-tools-extra
     gum
@@ -81,12 +65,9 @@ FEDORA_PACKAGES=(
     kate
     kcm-fcitx5
     krb5-workstation
-    ksshaskpass
     ksystemlog
-    libavcodec
     libcamera-gstreamer
     libcamera-tools
-    libfdk-aac
     libimobiledevice-utils
     libratbag-ratbagd
     libxcrypt-compat
@@ -98,20 +79,23 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-wallpapers-dynamic
     plasma-firewall-"${PLASMA_VERS}"
+    plasma-oxygen
+    plasma-union-"${PLASMA_VERS}"
+    plasma-wallpapers-dynamic
     powertop
     rclone
     restic
     samba-winbind{,-clients,-modules}
     setools-console
+    setroubleshoot-plugins
     solaar-udev
     squashfs-tools
     symlinks
     tcpdump
     tesseract-devel
+    tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     tmux
-    tesseract-langpack-{eng,deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
     traceroute
     vim
     yubikey-manager
@@ -124,6 +108,7 @@ FEDORA_PACKAGES_AMD64=(
 
 NEGATIVO_PACKAGES=(
     ffmpeg{,-libs}
+    libavcodec
     libfdk-aac
     libva-utils
     pipewire-libs-extra
@@ -140,30 +125,25 @@ if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
 fi
 
-dnf -y install "${PACKAGES[@]}"
+dnf -y install --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
 
 # Fedora Tailscale is usually behind
-dnf config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
-dnf config-manager setopt tailscale-stable.enabled=0
-dnf -y install --enablerepo='tailscale-stable' tailscale
+dnf -y install --from-repo='tailscale-stable' tailscale
 
-# NOTE: Remove ublue-os-selinux-workarounds package when upstream issue is fixed
-# https://github.com/ublue-os/akmods/issues/537
-# From ublue-os/packages
-copr_install_isolated "ublue-os/packages" \
-    "kcm_ublue" \
-    "krunner-bazaar" \
-    "ublue-os-selinux-workarounds" \
-    "oversteer-udev" \
-    "uupd"
+COPR_UBLUE_OS_PACKAGES=(
+    kcm_ublue
+    krunner-bazaar
+    oversteer-udev
+    # https://github.com/ublue-os/akmods/issues/537
+    ublue-os-selinux-workarounds
+    uupd
+  )
 
-# kAirpods from ledif/kairpods COPR
-copr_install_isolated "ledif/kairpods" \
-    "kairpods"
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ublue-os:packages' "${COPR_UBLUE_OS_PACKAGES[@]}"
 
-# Sunshine from lizardbyte/stable COPR
-copr_install_isolated "lizardbyte/stable" \
-    "sunshine"
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ledif:kairpods' kairpods
+
+dnf -y install --from-repo='copr:copr.fedorainfracloud.org:lizardbyte:stable' sunshine
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
@@ -172,7 +152,6 @@ EXCLUDED_PACKAGES=(
     fedora-bookmarks
     fedora-chromium-config{,-kde}
     fedora-third-party
-    ffmpegthumbnailer
     firefox
     firewall-config
     kcharselect
@@ -180,18 +159,9 @@ EXCLUDED_PACKAGES=(
     krfb{,-libs}
     plasma-discover{,-libs}
     plasma-welcome-fedora
-    podman-docker
 )
 
-# Remove excluded packages if they are installed
-if [[ "${#EXCLUDED_PACKAGES[@]}" -gt 0 ]]; then
-    readarray -t INSTALLED_EXCLUDED < <(rpm -qa --queryformat='%{NAME}\n' "${EXCLUDED_PACKAGES[@]}" 2>/dev/null || true)
-    if [[ "${#INSTALLED_EXCLUDED[@]}" -gt 0 ]]; then
-        dnf5 -y remove "${INSTALLED_EXCLUDED[@]}"
-    else
-        echo "No excluded packages found to remove."
-    fi
-fi
+dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 
 ## Pins and Overrides
 ## Use this section to pin packages in order to avoid regressions
@@ -203,17 +173,24 @@ fi
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
+# AMD GPU firmware has regressions for 680M igpus
+# https://gitlab.freedesktop.org/drm/amd/-/work_items/5803
+dnf -y swap amd-gpu-firmware "amd-gpu-firmware-20260810-1.fc$(rpm -E %fedora)"
+
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
-dnf -y copr enable ublue-os/staging
-dnf -y copr disable ublue-os/staging
-dnf -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
 
 dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_files/dx/00-dx.sh
+  /ctx/build_scripts/dx/00-dx.sh
 fi
+
+# Keep *-logos in RPM DB for downstream package installations
+# We are not allowed to ship an empty fedora-logos package
+dnf -y swap fedora-logos generic-logos
+rpm --erase --nodeps --nodb generic-logos
 
 echo "::endgroup::"
