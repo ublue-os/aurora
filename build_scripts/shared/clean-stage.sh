@@ -41,7 +41,7 @@ find /run -mindepth 1 \
   ! -path '/run/.containerenv' \
   -delete
 
-rm -rf /tmp/*
+rm -rf /tmp/* /tmp/.*
 mkdir -p /var/tmp
 
 # Needs to be here to make the main image build strict (no /opt there)
