@@ -51,4 +51,11 @@ ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglo
 desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
 ln -sf /usr/share/applications/org.kde.konsole.desktop /usr/share/kglobalaccel/org.kde.konsole.desktop
 
+# we don't want them to show up graphically
+for file in htop nvtop; do
+    if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
+        desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
+    fi
+done
+
 echo "::endgroup::"
