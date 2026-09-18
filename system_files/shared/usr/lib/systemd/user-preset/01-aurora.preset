@@ -1,5 +1,3 @@
-# sunshine should be opt-in
-disable app-dev.lizardbyte.app.Sunshine.service
 enable podman-auto-update.timer
 
 # see /usr/share/ublue-os/user-setup.hooks.d

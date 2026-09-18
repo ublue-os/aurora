@@ -1,0 +1,2 @@
+# sunshine should be opt-in
+disable app-dev.lizardbyte.app.Sunshine.service
