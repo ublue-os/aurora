@@ -173,10 +173,6 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-# AMD GPU firmware has regressions for 680M igpus
-# https://gitlab.freedesktop.org/drm/amd/-/work_items/5803
-dnf -y swap amd-gpu-firmware "amd-gpu-firmware-20260810-1.fc$(rpm -E %fedora)"
-
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
 dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
