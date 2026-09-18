@@ -64,13 +64,28 @@ fi
 echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
-# Docker packages from their repo
-dnf -y install --from-repo=docker-ce-stable \
-    containerd.io \
-    docker-buildx-plugin \
-    docker-ce \
-    docker-ce-cli \
-    docker-compose-plugin
+# docker is not available for f45 yet
+# https://github.com/docker/docker-ce-packaging/issues/1353
+# TODO: get it from docker again once it's available
+if [[ $(rpm -E %fedora) == "44" ]]; then
+  # Docker packages from their repo
+  dnf -y install --from-repo=docker-ce-stable \
+      containerd.io \
+      docker-buildx-plugin \
+      docker-ce \
+      docker-ce-cli \
+      docker-compose-plugin
+else
+  # we get this from common, the fedora package provides the exact same one
+  rm -f /usr/lib/sysusers.d/docker.conf
+
+  dnf -y install \
+    containerd \
+    docker-buildx \
+    moby-engine \
+    docker-cli \
+    docker-compose
+fi
 
 # VSCode package from Microsoft repo
 dnf -y install --from-repo=code \

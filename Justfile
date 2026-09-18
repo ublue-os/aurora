@@ -5,7 +5,7 @@ export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
 
 stable_version := "44"
 latest_version := "44"
-testing_version := "44"
+testing_version := "45"
 
 images := '(
     [aurora]=aurora
