@@ -10,6 +10,9 @@ mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
+# this removes the enablement for brew-up{d,gr}ade.timer, we use uupd
+rm -f /usr/lib/systemd/system-preset/01-homebrew.preset
+
 # this adds bootc and ostree to the initramfs
 cp /usr/share/doc/bootc/baseimage/dracut/usr/lib/dracut.conf.d/10-bootc-base.conf /usr/lib/dracut/dracut.conf.d/
 
