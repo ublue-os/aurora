@@ -1,0 +1,11 @@
+enable aurora-groups.service
+enable brew-setup.service
+enable dconf-update.service
+enable flatpak-preinstall.service
+enable input-remapper.service
+# DO NOT REMOVE THIS
+# see /usr/bin/rechunker-group-fix
+enable rechunker-group-fix.service
+enable tailscaled.service
+enable ublue-system-setup.service
+enable uupd.timer

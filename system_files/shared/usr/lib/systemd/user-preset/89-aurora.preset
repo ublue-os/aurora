@@ -1,0 +1,10 @@
+enable podman-auto-update.timer
+
+# see /usr/share/ublue-os/user-setup.hooks.d
+enable ublue-user-setup.service
+
+# Make speech dispatcher work by default
+# TODO: Revisit with F46
+# https://src.fedoraproject.org/rpms/redhat-systemd-presets/pull-request/4
+# https://bugzilla.redhat.com/show_bug.cgi?id=2284507
+enable speech-dispatcher.socket

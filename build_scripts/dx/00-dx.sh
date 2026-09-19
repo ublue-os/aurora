@@ -109,14 +109,6 @@ EOF
 # Branding Changes
 echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/default/xdg/kcm-about-distrorc
 
-# Enable DX services
-if rpm -q docker-ce >/dev/null; then
-    systemctl enable docker.socket
-fi
-systemctl enable podman.socket
-systemctl enable ublue-os-libvirt-workarounds.service
-systemctl enable --global aurora-dx-user-vscode.service
-
 # Disable RPM Fusion repos
 for i in /etc/yum.repos.d/rpmfusion-*.repo; do
     if [[ -f "$i" ]]; then

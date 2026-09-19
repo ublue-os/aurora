@@ -10,6 +10,9 @@ mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
+# this removes the enablement for brew-up{d,gr}ade.timer, we use uupd
+rm -f /usr/lib/systemd/system-preset/01-homebrew.preset
+
 # this adds bootc and ostree to the initramfs
 cp /usr/share/doc/bootc/baseimage/dracut/usr/lib/dracut.conf.d/10-bootc-base.conf /usr/lib/dracut/dracut.conf.d/
 
@@ -50,5 +53,12 @@ ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglo
 # Meta+Enter rules
 desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
 ln -sf /usr/share/applications/org.kde.konsole.desktop /usr/share/kglobalaccel/org.kde.konsole.desktop
+
+# we don't want them to show up graphically
+for file in htop nvtop; do
+    if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
+        desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
+    fi
+done
 
 echo "::endgroup::"
