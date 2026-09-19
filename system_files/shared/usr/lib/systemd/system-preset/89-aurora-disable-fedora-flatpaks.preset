@@ -1,0 +1,2 @@
+disable flatpak-add-fedora-repos.service
+enable flatpak-nuke-fedora.service

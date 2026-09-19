@@ -1,7 +1,6 @@
 enable aurora-groups.service
 enable brew-setup.service
 enable dconf-update.service
-enable flatpak-nuke-fedora.service
 enable flatpak-preinstall.service
 enable input-remapper.service
 # DO NOT REMOVE THIS
