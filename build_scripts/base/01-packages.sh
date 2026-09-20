@@ -25,6 +25,10 @@ OVERRIDES=(
     "mesa-vulkan-drivers"
 )
 
+# Remove libheif-ffmpeg from Fedora to avoid conflicts
+# https://packages.fedoraproject.org/pkgs/libheif/libheif/fedora-45.html
+dnf5 remove -y libheif-ffmpeg || true
+
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
 dnf5 versionlock add "${OVERRIDES[@]}"
 
