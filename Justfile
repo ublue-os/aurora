@@ -182,7 +182,7 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     fi
 
     if [[ -z "${kernel_pin:-}" ]]; then
-        kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
+        kernel_release=$(skopeo inspect --no-tags --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
     else
         kernel_release="${kernel_pin}"
     fi
