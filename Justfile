@@ -192,11 +192,6 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     AKMODS="${BASENAME_AKMODS}:${akmods_flavor}-${fedora_version}-${kernel_release}"
     ALL_IMAGES+=("${AKMODS}")
 
-    if [[ "${akmods_flavor}" =~ coreos ]]; then
-        AKMODS_ZFS="${BASENAME_AKMODS}-zfs:${akmods_flavor}-${fedora_version}-${kernel_release}"
-        ALL_IMAGES+=("${AKMODS_ZFS}")
-    fi
-
     if [[ "${flavor}" =~ nvidia-open ]]; then
         AKMODS_NVIDIA_OPEN="${BASENAME_AKMODS}-nvidia-open:${akmods_flavor}-${fedora_version}-${kernel_release}"
         ALL_IMAGES+=("${AKMODS_NVIDIA_OPEN}")
@@ -285,10 +280,6 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
         LABELS+=("--label" "org.opencontainers.image.revision=deadbeef")
     fi
     LABELS+=("--label" "ostree.linux=${kernel_release}")
-
-    case "${akmods_flavor}" in
-    "coreos-stable") BUILD_ARGS+=("--cpp-flag=-DZFS") ;;
-    esac
 
     if [[ "${image_name}" =~ nvidia ]]; then
         BUILD_ARGS+=("--cpp-flag=-DNVIDIA")
@@ -633,7 +624,6 @@ generate-build-tags $image=default_image $tag=default_tag $flavor=default_flavor
     # No special handling here for testing for now
     if [[ "{{ tag }}" == stable ]]; then
       # Legacy Compatibility Tag so stable-daily points to stable, do not remove this
-      # TODO: Move this to :latest after the ZFS removal to get daily updates again
       BUILD_TAGS+=("{{ tag }}-daily")
       BUILD_TAGS+=("${version}")
       BUILD_TAGS+=("{{ tag }}-daily-${version}")
