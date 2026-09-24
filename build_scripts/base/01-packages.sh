@@ -148,7 +148,6 @@ dnf -y install --from-repo='copr:copr.fedorainfracloud.org:lizardbyte:stable' su
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
     akonadi-server{,-mysql}
-    default-fonts-cjk-sans
     fedora-bookmarks
     fedora-chromium-config{,-kde}
     fedora-third-party
