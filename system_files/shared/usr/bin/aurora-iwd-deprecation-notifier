@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+TITLE="IWD Wi-Fi backend is deprecated"
+MESSAGE="Intel has discontinued IWD development. Please move back to wpa_supplicant.
+
+Note: Reverting will require reconnecting to your Wi-Fi networks (saved passwords must be re-entered).
+
+To switch now, run: 'ujust toggle-iwd'
+See https://docs.getaurora.dev/blog/deprecating-iwd for details."
+
+USERS="$(loginctl list-users --no-legend | awk '$1 != 0 {print $2}')"
+
+for username in ${USERS}; do
+  machinectl shell "${username}@.host" /usr/bin/notify-send \
+    --app-name=Aurora \
+    --icon=network-wireless \
+    --urgency=critical \
+    "${TITLE}" \
+    "${MESSAGE}"
+done
