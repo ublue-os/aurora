@@ -13,7 +13,6 @@ PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 OVERRIDES=(
     "intel-gmmlib"
     "intel-mediasdk"
-    "intel-vpl-gpu-rt"
     "libheif"
     "libva"
     "libva-intel-media-driver"
