@@ -5,11 +5,6 @@ echo "::group:: ===$(basename "$0")==="
 set -eoux pipefail
 
 
-# TODO: Remove with F45 release
-if [[ "${AKMODS_FLAVOR}" =~ coreos ]]; then
-  systemctl enable aurora-zfs-deprecation-notifier.timer
-fi
-
 systemctl preset-all
 systemctl --global preset-all
 
