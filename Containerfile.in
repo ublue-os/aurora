@@ -88,10 +88,9 @@ RUN --network=none \
     --mount=type=tmpfs,dst=/boot \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build_scripts/base/16-override-install.sh && \
-    /ctx/build_scripts/base/17-cleanup.sh && \
+    /ctx/build_scripts/base/17-services.sh && \
     /ctx/build_scripts/base/18-image-info.sh && \
     /ctx/build_scripts/base/19-initramfs.sh && \
-    /ctx/build_scripts/shared/validate-repos.sh && \
     /ctx/build_scripts/shared/clean-stage.sh && \
     /ctx/build_scripts/shared/chunkah-xattr.sh && \
     /ctx/build_scripts/base/20-tests.sh
