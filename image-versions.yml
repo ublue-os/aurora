@@ -20,5 +20,5 @@ images:
   # https://github.com/coreos/chunkah
   - name: chunkah
     image: quay.io/coreos/chunkah
-    tag: latest
-    digest: sha256:ff8b8b466a942ec6000445d4001fc661e2fc5a952ad9ee29b4de9ab09d1d1708
+    tag: dev
+    digest: sha256:2fd71607b5446a21cd24dadca1ba55e4d1ed4b26c384d2c5d155ff299f97cc11
