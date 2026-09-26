@@ -4,6 +4,9 @@ on:
   # we are only publishing weekly :stable images
 
   # We still want to know if things are broken
+  merge_group:
+    branches:
+      - stable-f44
   pull_request:
     branches:
       - stable-f44
@@ -33,10 +36,11 @@ jobs:
       # Enable ARM when it makes sense
       # architecture: '["aarch64","x86_64"]'
       architecture: '["x86_64"]'
-      publish: ${{ github.event_name != 'pull_request' }}
+      publish: ${{ github.event_name != 'pull_request' && github.event_name != 'merge_group' }}
 
   generate-release:
     name: Generate Release
+    if: github.event_name != 'pull_request' && github.event_name != 'merge_group'
     needs: [build-image-stable]
     permissions:
       contents: write
