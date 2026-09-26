@@ -40,7 +40,7 @@ jobs:
 
   generate-release:
     name: Generate Release
-    if: github.event_name != 'pull_request' && github.event_name != 'merge_group'
+    if: needs.build-image-stable.outputs.published == 'true'
     needs: [build-image-stable]
     permissions:
       contents: write

@@ -25,6 +25,10 @@ on:
         required: false
         type: boolean
         default: true
+    outputs:
+      published:
+        description: "Whether images were successfully built and published"
+        value: ${{ jobs.check.outputs.published }}
     secrets:
       SIGNING_SECRET:
         required: true
@@ -453,14 +457,18 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
   check:
-    name: Check all ${{ matrix.stream_name }} builds successful
+    name: Check all ${{ inputs.stream_name }} builds successful
     if: always()
     runs-on: ubuntu-slim
     needs: [build_container]
+    outputs:
+      published: ${{ steps.check-jobs.outputs.published }}
     steps:
       - name: Check Jobs
+        id: check-jobs
         env:
           JOBS: ${{ toJson(needs) }}
+          PUBLISH: ${{ inputs.publish }}
         run: |
           echo "Job status:"
           echo $JOBS | jq -r 'to_entries[] | " - \(.key): \(.value.result)"'
@@ -472,3 +480,6 @@ jobs:
               exit 1
             fi
           done
+
+          echo "published=${PUBLISH}" >> "$GITHUB_OUTPUT"
+

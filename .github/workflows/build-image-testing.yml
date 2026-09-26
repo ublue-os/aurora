@@ -1,17 +1,17 @@
 name: Testing Images
 on:
-   merge_group:
-     branches:
+  merge_group:
+    branches:
       - main
-   pull_request:
-     branches:
-       - main
-     paths-ignore:
-       - "**.md"
-       - ".github/workflows/moderator.yml"
-       - ".github/workflows/scorecard.yml"
-   workflow_call:
-   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - ".github/workflows/moderator.yml"
+      - ".github/workflows/scorecard.yml"
+  workflow_call:
+  workflow_dispatch:
 
 permissions: {}
 
