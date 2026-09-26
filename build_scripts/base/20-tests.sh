@@ -166,4 +166,6 @@ if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
   /ctx/build_scripts/dx/10-tests-dx.sh;
 fi
 
+/ctx/build_scripts/shared/validate-repos.sh
+
 echo "::endgroup::"
