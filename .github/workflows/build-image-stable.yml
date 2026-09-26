@@ -1,13 +1,13 @@
 name: Stable Images
 on:
-  # We do not want this to run after PR merges
-  # we are only publishing weekly :stable images
-
-  # We still want to know if things are broken
   merge_group:
     branches:
       - 'stable-f[0-9][0-9]'
   pull_request:
+    # We do not want this to run after PR merges
+    # we are only publishing weekly :stable images
+
+    # We still want to know if things are broken
     branches:
       - 'stable-f[0-9][0-9]'
     paths-ignore:
