@@ -730,7 +730,8 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
 
     systemctl --user start podman.socket
 
-    ${syft_cmd} \
+
+    TMPDIR=$(pwd) ${syft_cmd} \
       --verbose \
       --source-name "${image_name}:${tag}" \
       --select-catalogers rpm \
