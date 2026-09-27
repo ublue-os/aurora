@@ -19,7 +19,12 @@ fi
 
 rsync -rvKl "${BUILD_FILES[@]}" /
 
+# mostly for codecs fedora can't ship
 dnf config-manager setopt fedora-multimedia.priority=90
+
+# https://fedoraproject.org/wiki/OpenH264
+# this would be fine to use as well, negativo just has it, one less repo
+dnf config-manager setopt fedora-cisco-openh264.enabled=0
 
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_scripts/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl

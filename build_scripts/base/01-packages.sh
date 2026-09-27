@@ -13,7 +13,6 @@ PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 OVERRIDES=(
     "intel-gmmlib"
     "intel-mediasdk"
-    "intel-vpl-gpu-rt"
     "libheif"
     "libva"
     "libva-intel-media-driver"
@@ -23,6 +22,7 @@ OVERRIDES=(
     "mesa-libGL"
     "mesa-libgbm"
     "mesa-vulkan-drivers"
+    "openh264"
 )
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
@@ -148,7 +148,6 @@ dnf -y install --from-repo='copr:copr.fedorainfracloud.org:lizardbyte:stable' su
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
     akonadi-server{,-mysql}
-    default-fonts-cjk-sans
     fedora-bookmarks
     fedora-chromium-config{,-kde}
     fedora-third-party

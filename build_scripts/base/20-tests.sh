@@ -148,17 +148,6 @@ if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
   done
 fi
 
-if [[ ${AKMODS_FLAVOR} =~ coreos ]]; then
-  ZFS_PACKAGES=(
-      kmod-zfs
-      zfs
-      python3-pyzfs
-)
-  for package in "${ZFS_PACKAGES[@]}"; do
-      rpm -q "${package}" >/dev/null || { echo "Missing ZFS package: ${package}... Exiting"; exit 1 ; }
-  done
-fi
-
 IMPORTANT_UNITS=(
     rpm-ostree-countme.timer
     tailscaled.service
@@ -176,5 +165,7 @@ done
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
   /ctx/build_scripts/dx/10-tests-dx.sh;
 fi
+
+/ctx/build_scripts/shared/validate-repos.sh
 
 echo "::endgroup::"
