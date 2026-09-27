@@ -109,11 +109,4 @@ EOF
 # Branding Changes
 echo "Variant=Developer Experience" >> /usr/share/kde-settings/kde-profile/default/xdg/kcm-about-distrorc
 
-# Disable RPM Fusion repos
-for i in /etc/yum.repos.d/rpmfusion-*.repo; do
-    if [[ -f "$i" ]]; then
-        sed -i 's@enabled=1@enabled=0@g' "$i"
-    fi
-done
-
 echo "::endgroup::"
