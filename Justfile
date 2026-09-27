@@ -725,22 +725,16 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
     # We have to do it this stupid way because we are OOMing on github runners
     # via the normal "syft image_name"-flow
     # https://github.com/anchore/syft/issues/3800
-    MOUNT_PATH_CMD=("${PODMAN}" "image" "mount" "${image_name}:${tag}")
-
-    if [[ ! "$(id -u)" == 0 ]]; then
-      UNSHARE_CMD="${PODMAN} unshare"
-      MOUNT_PATH_CMD=("${UNSHARE_CMD}" "${MOUNT_PATH_CMD[@]}")
-    fi
-
-    ROOTFS_PATH="$(${MOUNT_PATH_CMD[@]})"
 
     SBOM="${OUT_DIR}/sbom.json"
 
-    ${UNSHARE_CMD:-} ${syft_cmd} \
+    systemctl --user start podman.socket
+
+    ${syft_cmd} \
       --verbose \
       --source-name "${image_name}:${tag}" \
       --select-catalogers rpm \
-      "${ROOTFS_PATH}" \
+      "podman:localhost/${image_name}:${tag}" \
       -o syft-json=${SBOM}
     du -sh "${SBOM}"
 
