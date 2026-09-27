@@ -43,7 +43,7 @@ jobs:
 
       - name: Create Backport Pull Requests
         id: backport
-        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
+        uses: korthout/backport-action@6b65649031ac6d18ffdfd0c0820e9436f3fde22b # v4.6.1
         with:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}
