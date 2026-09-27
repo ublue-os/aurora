@@ -84,14 +84,15 @@ RUN --mount=type=tmpfs,dst=/boot \
 #endif
 
 # /* Everything that can be done offline after things are in place should be done here */
+# /* dracut freaks out if /var is a different filesystem */
 RUN --network=none \
     --mount=type=tmpfs,dst=/boot \
+    --mount=type=tmpfs,dst=/var/log \
     --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build_scripts/base/16-override-install.sh && \
-    /ctx/build_scripts/base/17-cleanup.sh && \
+    /ctx/build_scripts/base/17-services.sh && \
     /ctx/build_scripts/base/18-image-info.sh && \
     /ctx/build_scripts/base/19-initramfs.sh && \
-    /ctx/build_scripts/shared/validate-repos.sh && \
     /ctx/build_scripts/shared/clean-stage.sh && \
     /ctx/build_scripts/shared/chunkah-xattr.sh && \
     /ctx/build_scripts/base/20-tests.sh
