@@ -1,0 +1,12 @@
+[Unit]
+Description=Run aurora-iwd-deprecation-notifier 20 mins after boot
+Documentation=https://docs.getaurora.dev/blog/deprecating-iwd
+
+[Timer]
+OnBootSec=20min
+Unit=aurora-iwd-deprecation-notifier.service
+OnUnitActiveSec=1w
+Persistent=true
+
+[Install]
+WantedBy=timers.target
