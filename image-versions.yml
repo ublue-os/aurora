@@ -21,4 +21,4 @@ images:
   - name: chunkah
     image: quay.io/coreos/chunkah
     tag: latest
-    digest: sha256:ff8b8b466a942ec6000445d4001fc661e2fc5a952ad9ee29b4de9ab09d1d1708
+    digest: sha256:8b56578258d1d10d3e1c7b0f71a4d05317c5fde331c4f483576a1b60e65f0cea
