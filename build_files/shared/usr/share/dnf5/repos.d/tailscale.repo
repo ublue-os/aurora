@@ -6,3 +6,4 @@ type=rpm
 repo_gpgcheck=1
 gpgcheck=1
 gpgkey=https://pkgs.tailscale.com/stable/fedora/repo.gpg
+includepkgs=tailscale

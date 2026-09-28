@@ -61,24 +61,26 @@ if [[ ! "${IMAGE_NAME}" =~ nvidia ]]; then
   FEDORA_PACKAGES+=("rocm-hip" "rocm-opencl" "rocm-smi")
 fi
 
-echo "Installing ${#FEDORA_PACKAGES[@]} DX packages from Fedora repos..."
 dnf5 -y install "${FEDORA_PACKAGES[@]}"
 
-# Docker packages from their repo
-dnf -y install --from-repo=docker-ce-stable \
-    containerd.io \
-    docker-buildx-plugin \
-    docker-ce \
-    docker-ce-cli \
-    docker-compose-plugin
+# We could use Fedora's moby packages, these are "official"
+DOCKER_CE=(
+  containerd.io
+  docker-buildx-plugin
+  docker-ce
+  docker-ce-cli
+  docker-compose-plugin
+)
 
-# VSCode package from Microsoft repo
-dnf -y install --from-repo=code \
-    code
+COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
-dnf -y install --from-repo='copr:copr.fedorainfracloud.org:karmab:kcli' kcli
+# shellcheck disable=SC1010
+dnf do -y \
+  --action install --from-repo=code code \
+  --action install --from-repo=docker-ce-stable "${DOCKER_CE[@]}" \
+  --action install --from-repo="${COPR_PREFIX}:karmab:kcli" kcli
 
-dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ublue-os:packages' ublue-os-libvirt-workarounds
+dnf -y install --from-repo="${COPR_PREFIX}:ublue-os:packages" ublue-os-libvirt-workarounds
 
 rsync -rvK /ctx/system_files/dx/ /
 
