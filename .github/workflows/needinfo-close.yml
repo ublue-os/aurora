@@ -5,8 +5,13 @@ on:
     - cron: '0 0 * * *' # Runs daily at midnight UTC
   workflow_dispatch:     # Allows manual testing via the Actions tab
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
-  Close issues without info:
+  close-issues-without-info:
+    name: Close issues without info
     runs-on: ubuntu-slim
     permissions:
       issues: write
