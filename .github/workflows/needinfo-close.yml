@@ -1,0 +1,29 @@
+name: Close Inactive Tagged Issues
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch:     # Allows manual testing via the Actions tab
+
+jobs:
+  Close issues without info:
+    runs-on: ubuntu-slim
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          # Only process issues that carry this specific label
+          only-issue-labels: 'NEEDSINFO'
+
+          # By treating your tag as the stale marker, it closes after X days of inactivity
+          stale-issue-label: 'NEEDSINFO'
+          days-before-issue-stale: -1 # Prevents adding any other stale label
+          days-before-issue-close: 14  # Closes 14 day after the label was added with no activity
+
+          # Prevents PRs from being processed or closed
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
+          close-issue-message: 'This issue was closed because requested info was not provided.'
+          close-issue-reason: 'not_planned'
