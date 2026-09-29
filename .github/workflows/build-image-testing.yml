@@ -16,7 +16,7 @@ permissions: {}
 jobs:
   build-image-testing:
     name: Build Testing Images
-    uses: ./.github/workflows/reusable-build.yml
+    uses: $/.github/workflows/reusable-build.yml
     permissions:
       contents: read
       packages: write
@@ -39,6 +39,6 @@ jobs:
     needs: [build-image-testing]
     permissions:
       contents: write
-    uses: ./.github/workflows/generate-release.yml
+    uses: $/.github/workflows/generate-release.yml
     with:
       stream_name: '["testing"]'

@@ -19,7 +19,7 @@ permissions: {}
 jobs:
   build-image-stable:
     name: Build Stable Images
-    uses: ./.github/workflows/reusable-build.yml
+    uses: $/.github/workflows/reusable-build.yml
     permissions:
       contents: read
       packages: write
@@ -40,6 +40,6 @@ jobs:
     needs: [build-image-stable]
     permissions:
       contents: write
-    uses: ./.github/workflows/generate-release.yml
+    uses: $/.github/workflows/generate-release.yml
     with:
       stream_name: '["stable"]'
