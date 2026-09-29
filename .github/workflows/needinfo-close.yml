@@ -9,12 +9,14 @@ concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   close-issues-without-info:
     name: Close issues without info
     runs-on: ubuntu-slim
     permissions:
-      issues: write
+      issues: write # posts comments on issues
     steps:
       - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
