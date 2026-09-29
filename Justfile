@@ -739,6 +739,33 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
 
     rm -rf "${ROOTFS}"
 
+# Attach sbom to exisitng image
+[arg("digest", long="digest")]
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("registry", long="registry")]
+[arg("tag", long="tag", short="t")]
+[group('Utility')]
+attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $registry="" $digest="":
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
+
+    OUT_DIR="sbom_out/${image_name}"
+    SBOM="${OUT_DIR}/sbom.json"
+    IMAGE="${registry}/${image_name}:${tag}@${digest}"
+
+    cd "$(dirname "${SBOM}")"
+    oras attach "${SBOM}" \
+      --artifact-type application/vnd.spdx+json \
+      --annotation filename=$(basename "${SBOM}") \
+      "${IMAGE}" \
+      "$(basename ${SBOM})"
+
+    oras discover --format json "${IMAGE}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest' > /tmp/sbom-digestfile
+
 # We are not using https://github.com/actions/cache because of:
 # https://github.com/ublue-os/aurora/issues/2351
 # https://github.com/actions/cache/issues/1537
