@@ -8,18 +8,6 @@
 
   // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
-    customManagers: [
-    {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^Justfile$/',
-      ],
-      matchStrings: [
-        '(?<justName>.+?)\\s:=\\s"(?<packageName>\\S+):(?<currentValue>\\S+)@(?<currentDigest>sha256:[a-f0-9]+?)"',
-      ],
-      datasourceTemplate: 'docker',
-    },
-    ],
 
   "packageRules": [
     {
