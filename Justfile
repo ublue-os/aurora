@@ -761,7 +761,7 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
       --artifact-type application/vnd.spdx+json \
       --annotation filename=$(basename "${SBOM}") \
       "${IMAGE}" \
-      "${SBOM})"
+      "${SBOM}"
 
     oras discover --format json "${IMAGE}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest' > /tmp/sbom-digestfile
 
