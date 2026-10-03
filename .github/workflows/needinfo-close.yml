@@ -15,6 +15,7 @@ jobs:
   close-issues-without-info:
     name: Close issues without info
     runs-on: ubuntu-slim
+    if: github.repository == 'ublue-os/aurora'
     permissions:
       issues: write # posts comments on issues
     steps:

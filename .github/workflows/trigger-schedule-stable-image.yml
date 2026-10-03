@@ -10,6 +10,7 @@ permissions: {}
 jobs:
   trigger-stable-build:
     runs-on: ubuntu-slim
+    if: github.repository == 'ublue-os/aurora'
     permissions:
       contents: read
       actions: write
