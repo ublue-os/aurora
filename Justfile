@@ -754,14 +754,15 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     OUT_DIR="sbom_out/${image_name}"
-    SBOM="${OUT_DIR}/sbom.json"
+    SBOM="sbom.json"
+    FULL_SBOM_PATH="${OUT_DIR}/${SBOM}"
     IMAGE="${registry}/${image_name}:${tag}@${digest}"
 
     oras attach \
       --artifact-type application/vnd.spdx+json \
-      --annotation filename=$(basename "${SBOM}") \
+      --annotation filename="${SBOM}" \
       "${IMAGE}" \
-      "${SBOM}"
+      "${FULL_SBOM_PATH}:${SBOM}"
 
     oras discover --format json "${IMAGE}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest' > /tmp/sbom-digestfile
 
