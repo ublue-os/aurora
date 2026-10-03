@@ -757,7 +757,7 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
     SBOM="${OUT_DIR}/sbom.json"
     IMAGE="${registry}/${image_name}:${tag}@${digest}"
 
-    oras attach "${SBOM}" \
+    oras attach \
       --artifact-type application/vnd.spdx+json \
       --annotation filename=$(basename "${SBOM}") \
       "${IMAGE}" \
