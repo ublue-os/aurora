@@ -739,6 +739,43 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
 
     rm -rf "${ROOTFS}"
 
+# Attach sbom to exisitng image
+[arg("digest", long="digest")]
+[arg("flavor", long="flavor", short="f")]
+[arg("image", long="image", short="i")]
+[arg("registry", long="registry")]
+[arg("tag", long="tag", short="t")]
+[group('Utility')]
+attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $registry="" $digest="":
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
+    image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
+
+    OUT_DIR="sbom_out/${image_name}"
+    SBOM="sbom.json"
+    FULL_SBOM_PATH="${OUT_DIR}/${SBOM}"
+    IMAGE="${registry}/${image_name}:${tag}@${digest}"
+
+    # we need to be in the directory of the sbom json file or else we end up having the directories in the oci artifact
+    pushd "${OUT_DIR}"
+
+    oras attach \
+      --artifact-type application/vnd.spdx+json \
+      --annotation filename="${SBOM}" \
+      "${IMAGE}" \
+      "${SBOM}"
+
+    popd
+
+    SBOM_DIGEST="$(oras discover --format json "${IMAGE}" | jq -r '.referrers[] | select(.artifactType == "application/vnd.spdx+json") | .digest')"
+
+    echo "${SBOM_DIGEST}" > /tmp/sbom-digestfile
+
+    # debugging
+    echo "oras pull ${registry}/${image_name}:${tag}@${SBOM_DIGEST}"
+
 # We are not using https://github.com/actions/cache because of:
 # https://github.com/ublue-os/aurora/issues/2351
 # https://github.com/actions/cache/issues/1537
