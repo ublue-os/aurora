@@ -723,21 +723,21 @@ gen-sbom $image=default_image $tag=default_tag $flavor=default_flavor $syft_cmd=
     mkdir -p "${OUT_DIR}"
 
     # We have to do it this stupid way because we are OOMing on github runners
+    # via the normal "syft image_name"-flow
     # https://github.com/anchore/syft/issues/3800
-    ${PODMAN} container create --replace --name ${image_name} "${image_name}:${tag}"
-
-    ROOTFS="${OUT_DIR}/rootfs"
-    mkdir -p "${ROOTFS}"
-
-    ${PODMAN} export ${image_name} | tar -C "${ROOTFS}" -xf -
-    ${PODMAN} container rm ${image_name}
 
     SBOM="${OUT_DIR}/sbom.json"
 
-    ${syft_cmd} --verbose --source-name "${image_name}:${tag}" "${OUT_DIR}" -o syft-json=${SBOM}
-    du -sh "${SBOM}"
+    systemctl --user start podman.socket
 
-    rm -rf "${ROOTFS}"
+
+    TMPDIR=$(pwd) ${syft_cmd} \
+      --verbose \
+      --source-name "${image_name}:${tag}" \
+      --select-catalogers rpm \
+      "podman:localhost/${image_name}:${tag}" \
+      -o syft-json=${SBOM}
+    du -sh "${SBOM}"
 
 # We are not using https://github.com/actions/cache because of:
 # https://github.com/ublue-os/aurora/issues/2351
