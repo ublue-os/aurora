@@ -98,6 +98,7 @@ FEDORA_PACKAGES=(
     tmux
     traceroute
     vim
+    xdg-native-messaging-proxy
     yubikey-manager
     zsh
 )
