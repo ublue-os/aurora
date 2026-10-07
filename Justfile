@@ -793,7 +793,7 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
 [private]
 setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
     #!/usr/bin/env bash
-    set -eou pipefail
+    set -eoux pipefail
 
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
