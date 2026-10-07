@@ -31,6 +31,7 @@ on:
 
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -140,7 +141,6 @@ jobs:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           $(command -v just) \
             repo_organization="${GITHUB_REPOSITORY_OWNER}" \
