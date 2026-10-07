@@ -140,9 +140,10 @@ jobs:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
           MATRIX_IMAGE_FLAVOR: ${{ matrix.image_flavor }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           $(command -v just) \
-            repo_organization="${{ github.repository_owner }}" \
+            repo_organization="${GITHUB_REPOSITORY_OWNER}" \
             build \
             --image "${MATRIX_BASE_NAME}" \
             --tag "${MATRIX_STREAM_NAME}" \
