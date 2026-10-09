@@ -6,11 +6,10 @@ set -eoux pipefail
 
 IMPORTANT_PACKAGES_DX=(
     code
-    # containerd.io
-    containerd
-    # docker-ce
-    # docker-buildx-plugin
-    # docker-compose-plugin
+    containerd.io
+    docker-ce
+    docker-buildx-plugin
+    docker-compose-plugin
     flatpak-builder
     libvirt
     qemu
