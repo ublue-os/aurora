@@ -46,7 +46,9 @@ test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 test -f /etc/flatpak/remotes.d/flathub.flatpakrepo
 
 # Make sure to not pull in the bazzite one
-rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
+if [[ "${UBLUE_IMAGE_TAG}" != "kde-nightly" ]]; then
+  rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
+fi
 
 test -f /usr/share/doc/aurora/aurora.pdf
 test -f /usr/share/homebrew.tar.zst
@@ -71,9 +73,11 @@ QT_VER="$(rpm -q --qf '%{VERSION}' qt6-qtbase)"
 # Not an important package in itself, just a good indicator
 QTFS_VER="$(rpm -q --qf '%{VERSION}' qt6-filesystem)"
 
-if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
-    echo "KDE Version mismatch"
-    exit 1
+if [[ "${UBLUE_IMAGE_TAG}" != "kde-nightly" ]]; then
+  if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
+      echo "KDE Version mismatch"
+      exit 1
+  fi
 fi
 
 if [[ "$QT_VER" != "$QTFS_VER" ]]; then

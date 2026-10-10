@@ -6,6 +6,7 @@ export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
 stable_version := "44"
 latest_version := "44"
 testing_version := "45"
+kde_nightly_version := "45"
 
 images := '(
     [aurora]=aurora
@@ -21,6 +22,7 @@ tags := '(
     [stable]=stable
     [latest]=latest
     [testing]=testing
+    [kde-nightly]=kde-nightly
 )'
 
 default_image := "aurora"
@@ -145,6 +147,10 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
     akmods_flavor=$({{ just }} akmods_flavor --tag "${tag}")
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
+
+    if [[ "${tag}" == "kde-nightly" ]]; then
+      base_image_name="kinoite-nightly"
+    fi
 
     BASE_IMAGE_REF="${base_image_org}/${base_image_name}:${fedora_version}"
     ALL_IMAGES=()
@@ -539,6 +545,8 @@ fedora_version image=default_image tag=default_tag flavor=default_flavor:
         VERSION="{{ stable_version }}"
     elif [[ "{{ tag }}" =~ testing ]]; then
         VERSION="{{ testing_version }}"
+    elif [[ "{{ tag }}" =~ kde-nightly ]]; then
+        VERSION="{{ kde_nightly_version }}"
     else
         VERSION="{{ latest_version }}"
     fi
