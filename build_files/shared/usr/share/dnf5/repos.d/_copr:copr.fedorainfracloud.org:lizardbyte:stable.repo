@@ -9,3 +9,4 @@ repo_gpgcheck=0
 enabled=0
 enabled_metadata=1
 priority=1
+includepkgs=Sunshine

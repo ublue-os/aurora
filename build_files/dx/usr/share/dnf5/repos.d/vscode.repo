@@ -4,3 +4,4 @@ baseurl=https://packages.microsoft.com/yumrepos/vscode
 enabled=0
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+includepkgs=code

@@ -1,9 +1,15 @@
+# update includepkgs, remove docker-model-plugin
+# podman run --rm -ti quay.io/fedora/fedora:45
+# dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
+# dnf list --available --repo=docker-ce-stable | grep "docker-ce-stable" | grep -vE "(debug|devel|\.src)" | cut -f1 -d\ | sed 's/\.x86_64//' | sed 's/\.noarch//' | paste -sd " " -
+
 [docker-ce-stable]
 name=Docker CE Stable - $basearch
 baseurl=https://download.docker.com/linux/fedora/$releasever/$basearch/stable
 enabled=0
 gpgcheck=1
 gpgkey=https://download.docker.com/linux/fedora/gpg
+includepkgs=containerd.io docker-buildx-plugin docker-ce docker-ce-cli docker-ce-rootless-extras docker-compose-plugin
 
 [docker-ce-stable-source]
 name=Docker CE Stable - Sources

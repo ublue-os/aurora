@@ -128,9 +128,6 @@ fi
 
 dnf -y install --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
 
-# Fedora Tailscale is usually behind
-dnf -y install --from-repo='tailscale-stable' tailscale
-
 COPR_UBLUE_OS_PACKAGES=(
     kcm_ublue
     krunner-bazaar
@@ -138,13 +135,22 @@ COPR_UBLUE_OS_PACKAGES=(
     # https://github.com/ublue-os/akmods/issues/537
     ublue-os-selinux-workarounds
     uupd
-  )
+)
 
-dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ublue-os:packages' "${COPR_UBLUE_OS_PACKAGES[@]}"
+# Fedora Tailscale is usually behind
+TAILSCALE=(tailscale)
 
-dnf -y install --from-repo='copr:copr.fedorainfracloud.org:ledif:kairpods' kairpods
+COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
-dnf -y install --from-repo='copr:copr.fedorainfracloud.org:lizardbyte:stable' sunshine
+dnf -y install --from-repo="${COPR_PREFIX}:ublue-os:packages" "${COPR_UBLUE_OS_PACKAGES[@]}"
+
+# TODO: figure something out that works well across DX, nvidia with the ublue-os coprs
+# so we can have less transactions, while still not being vulnerable to copr injections
+# shellcheck disable=SC1010
+dnf do -y \
+  --action install --from-repo='tailscale-stable' "${TAILSCALE[@]}" \
+  --action install --from-repo="${COPR_PREFIX}:ledif:kairpods" kairpods \
+  --action install --from-repo="${COPR_PREFIX}:lizardbyte:stable" Sunshine
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
