@@ -38,7 +38,6 @@ FEDORA_PACKAGES=(
     distrobox
     evtest
     fastfetch
-    fcitx5-{chewing,chinese-addons,configtool,gtk,hangul,libthai,m17n,mozc,qt,sayura,unikey}
     fish
     flatpak-spawn
     foo2zjs
@@ -63,7 +62,6 @@ FEDORA_PACKAGES=(
     iwd
     just
     kate
-    kcm-fcitx5
     krb5-workstation
     ksystemlog
     libcamera-gstreamer
@@ -79,9 +77,6 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-firewall-"${PLASMA_VERS}"
-    plasma-oxygen
-    plasma-union-"${PLASMA_VERS}"
     plasma-wallpapers-dynamic
     powertop
     rclone
@@ -103,6 +98,19 @@ FEDORA_PACKAGES=(
     zsh
 )
 
+# on kde-nightly our specific version install breaks due to differing commit hashes
+PLASMA_PACKAGES=(
+    plasma-firewall
+    plasma-oxygen
+    plasma-union
+)
+
+# broken dependencies on kde-nightly images
+FCITX=(
+  fcitx5-{chewing,chinese-addons,configtool,gtk,hangul,libthai,m17n,mozc,qt,sayura,unikey}
+  kcm-fcitx5
+)
+
 FEDORA_PACKAGES_AMD64=(
     powerstat
   )
@@ -121,6 +129,12 @@ NEGATIVO_PACKAGES_AMD64=(
   )
 
 PACKAGES=( "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}" )
+
+if [[ "${UBLUE_IMAGE_TAG}" == "kde-nightly" ]]; then
+  dnf -y install --from-repo="copr:copr.fedorainfracloud.org:solopasha:plasma-unstable" "${PLASMA_PACKAGES[@]}"
+else
+  PACKAGES=( "${PACKAGES[@]}" "${PLASMA_PACKAGES[@]}" "${FCITX[@]}")
+fi
 
 if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
@@ -174,10 +188,12 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #fi
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
+if [[ "${UBLUE_IMAGE_TAG}" != "kde-nightly" ]]; then
 dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
+  dnf versionlock add plasma-setup
+fi
 
-dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
