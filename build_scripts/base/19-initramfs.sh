@@ -7,6 +7,14 @@ set -ouex pipefail
 KERNEL_VERSION=$(rpm -q --queryformat="%{evr}.%{arch}" kernel-core)
 INITRAMFS="/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
 
+V4L2_PATH="$(rpm -ql kmod-v4l2loopback)"
+
+DRACUT_REMOVE=(
+  # makes no difference if in initramfs or not
+  # this is a hack FIXME in ublue-os/akmods
+  ${V4L2_PATH} # ko.kz file has build id's changing -> non-reproducible
+)
+
 # https://github.com/ublue-os/aurora/issues/2568
 # these strings change with every build
 TMP_OS_RELEASE=$(mktemp --tmpdir 'os-release-XXXXXXXXXX')
@@ -19,6 +27,7 @@ DRACUT_NO_XATTR=1 /usr/bin/dracut \
   --reproducible \
   --verbose \
   --force \
+  --remove "${DRACUT_REMOVE[@]}" \
   "${INITRAMFS}"
 
 # mv causes permissions to change
