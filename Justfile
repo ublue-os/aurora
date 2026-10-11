@@ -24,7 +24,7 @@ tags := '(
 )'
 
 default_image := "aurora"
-default_tag := "latest"
+default_tag := "testing"
 default_flavor := "main"
 
 # Build Containers
