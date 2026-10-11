@@ -814,7 +814,7 @@ setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="
     BLESSED_DAY="Sunday"
 
     # Always attempt to pull cache, but don't on the first run that will publish the build on Sundays
-    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" && ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_queue" ) ]]; then
+    if [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" && "$POINT" == "1" && "${ghcr}" == "true" && ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_group" ) ]]; then
       echo "Not pulling build cache. Uploading fresh cache later."
     elif [[ "${pull}" == "true" ]]; then
       # We want to avoid using --allow-path-traversal
@@ -829,7 +829,7 @@ setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="
        [[ "${ghcr}" == "true" ]] && \
        [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" ]] && \
        [[ "${POINT}" == "1" ]] && \
-       [[ ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_queue" ) ]]; then
+       [[ ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_group" ) ]]; then
 
       {{ just }} login-registry oras ghcr.io
       pushd "${BUILDAH_CACHE_DIR}"
