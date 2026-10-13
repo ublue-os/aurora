@@ -4,7 +4,7 @@
 
 set -eoux pipefail
 
-# Speeds up local builds and workaround network flakes, mainly for COPR and negativo
+# Speeds up local builds and workaround network flakes, mainly for COPR, negativo and terra
 cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.bak
 dnf config-manager setopt keepcache=1 timeout=60
 

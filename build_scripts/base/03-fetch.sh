@@ -20,13 +20,6 @@ curl -X 'GET' \
 'https://flathub.org/api/v2/stats/io.github.kolunmi.Bazaar?all=false&days=1' \
 -H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
 
-# Nerdfont symbols
-# to fix motd and prompt atleast temporarily
-ghcurl "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.zip" --retry 3 -o /tmp/nerdfontsymbols.zip
-unzip /tmp/nerdfontsymbols.zip -d /tmp
-mkdir -p /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
-mv /tmp/SymbolsNerdFont*.ttf /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly/
-
 # Bash Preexec v0.6.0
 ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-preexec
 

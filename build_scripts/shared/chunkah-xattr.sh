@@ -18,9 +18,6 @@ setfattr -n user.component -v "homebrew" /usr/share/homebrew.tar.zst
 
 setfattr -n user.component -v "aurora-offline-docs" /usr/share/doc/aurora/aurora.pdf
 
-setfattr -n user.component -v "nerdfonts" /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly
-setfattr -n user.update-interval -v "yearly" /usr/share/fonts/nerd-fonts/NerdFontsSymbolsOnly
-
 setfattr -n user.component -v "aurora-config" /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 setfattr -n user.component -v "aurora-config" /usr/share/bash-preexec
