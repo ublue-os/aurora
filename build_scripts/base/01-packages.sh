@@ -134,11 +134,18 @@ COPR_UBLUE_OS_PACKAGES=(
     oversteer-udev
     # https://github.com/ublue-os/akmods/issues/537
     ublue-os-selinux-workarounds
-    uupd
+)
+TERRA_PACKAGES=(
+  # our auto-updater
+  uupd
+  # used in motd, in general useful to have
+  nerdfontssymbolsonly-nerd-fonts
 )
 
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
+
+dnf -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
 
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
@@ -148,9 +155,9 @@ dnf -y install --from-repo="${COPR_PREFIX}:ublue-os:packages" "${COPR_UBLUE_OS_P
 # so we can have less transactions, while still not being vulnerable to copr injections
 # shellcheck disable=SC1010
 dnf do -y \
-  --action install --from-repo='tailscale-stable' "${TAILSCALE[@]}" \
   --action install --from-repo="${COPR_PREFIX}:ledif:kairpods" kairpods \
-  --action install --from-repo="${COPR_PREFIX}:lizardbyte:stable" Sunshine
+  --action install --from-repo="${COPR_PREFIX}:lizardbyte:stable" Sunshine \
+  --action install --from-repo='tailscale-stable' "${TAILSCALE[@]}"
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
