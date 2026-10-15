@@ -11,6 +11,7 @@ dnf versionlock add "qt6-*" "plasma-desktop"
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 OVERRIDES=(
+    "intel-compute-runtime"
     "intel-gmmlib"
     "intel-mediasdk"
     "libheif"
@@ -21,8 +22,10 @@ OVERRIDES=(
     "mesa-libEGL"
     "mesa-libGL"
     "mesa-libgbm"
+    "mesa-libOpenCL"
     "mesa-vulkan-drivers"
     "openh264"
+    "pocl"
 )
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
