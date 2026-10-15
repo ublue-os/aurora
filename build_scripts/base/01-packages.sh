@@ -11,7 +11,6 @@ dnf versionlock add "qt6-*" "plasma-desktop"
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 
 OVERRIDES=(
-    "intel-compute-runtime"
     "intel-gmmlib"
     "intel-mediasdk"
     "libheif"
@@ -25,7 +24,6 @@ OVERRIDES=(
     "mesa-libOpenCL"
     "mesa-vulkan-drivers"
     "openh264"
-    "pocl"
 )
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
@@ -63,6 +61,7 @@ FEDORA_PACKAGES=(
     ifuse
     igt-gpu-tools
     input-remapper
+    intel-compute-runtime
     iwd
     just
     kate
@@ -86,6 +85,7 @@ FEDORA_PACKAGES=(
     plasma-oxygen
     plasma-union-"${PLASMA_VERS}"
     plasma-wallpapers-dynamic
+    pocl
     powertop
     rclone
     restic
