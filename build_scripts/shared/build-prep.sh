@@ -1,6 +1,5 @@
-# This script should generally set up the build so we can move on to start installing packages
-
 #!/usr/bin/bash
+# This script should generally set up the build so we can move on to start installing packages
 
 set -eoux pipefail
 
