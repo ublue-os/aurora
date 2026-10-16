@@ -94,7 +94,7 @@ RUN --network=none \
     /ctx/build_scripts/base/18-image-info.sh && \
     /ctx/build_scripts/base/19-initramfs.sh && \
     /ctx/build_scripts/shared/clean-stage.sh && \
-    /ctx/build_scripts/shared/chunkah-xattr.sh && \
+    /ctx/build_scripts/shared/unpackaged.sh && \
     /ctx/build_scripts/base/20-tests.sh
 
 CMD ["/sbin/init"]
