@@ -399,7 +399,7 @@ run $image=default_image $tag=default_tag $flavor=default_flavor:
     fi
 
     # Run Container
-    ${PODMAN} run -it --rm "${image_name}:${tag}" bash
+    ${PODMAN} run -it --rm "${image_name}:${tag}" bash -l
 
 # Test Changelogs
 [group('Changelogs')]
