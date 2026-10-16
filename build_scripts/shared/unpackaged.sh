@@ -7,7 +7,7 @@ set -eoux pipefail
 HOMEBREW_TARBALL=/usr/share/homebrew.tar.zst
 setfattr -n user.component -v "homebrew" "${HOMEBREW_TARBALL}"
 
-# rpm-ostree creates tpmfiles from packages having owned files in /{var,run}
+# rpm-ostree creates tmpfiles from packages having owned files in /{var,run}
 RPM_OSTREE_TMPFILES=/usr/lib/rpm-ostree/tmpfiles.d
 setfattr -n user.component -v "rpm-ostree-tmpfiles.d" "${RPM_OSTREE_TMPFILES}"
 # vibes, shouldn't change super often
