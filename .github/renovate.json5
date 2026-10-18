@@ -56,6 +56,11 @@
       "enabled": false
     },
     {
+      "description": "Delay GitHub Actions updates by 3 days",
+      "matchManagers": ["github-actions"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
       "matchManagers": ["github-actions"],
       "matchDepNames": [
         "!oras-project/setup-oras",
