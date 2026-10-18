@@ -48,7 +48,7 @@ setfattr -n user.update-interval -v "yearly" "${FRAMEWORK_ICC[@]}"
 # https://github.com/bootc-dev/bootc/issues/2227
 
 # This shouldn't hurt anything, Epoch 0 is what RPMs are using, we don't want to override that
-find /usr /etc /opt -exec touch -h -a -m -d '1970-01-01T00:00:00Z' {} +
+find /usr /etc /opt -newermt '1970-01-01T00:00:00Z' -exec touch -h -a -m -d '1970-01-01T00:00:00Z' {} +
 
 # getfattr -R -d /usr 2> /dev/null || true
 # getfattr -R -d /etc 2> /dev/null || true
