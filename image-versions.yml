@@ -9,7 +9,7 @@ images:
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:409899f9bcf98b16c6c4f671fd7988406132be53dfadf8da55d5f985ccd00948
+    digest: sha256:7c45eba77e5d0dc53caf4f6808b9ca0f28a664a20ffce2dfa5f8af1251fe2bbd
 
   # https://github.com/ublue-os/brew
   - name: brew
