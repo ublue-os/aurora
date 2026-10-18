@@ -21,6 +21,7 @@ OVERRIDES=(
     "mesa-libEGL"
     "mesa-libGL"
     "mesa-libgbm"
+    "mesa-libOpenCL"
     "mesa-vulkan-drivers"
     "openh264"
 )
@@ -60,6 +61,7 @@ FEDORA_PACKAGES=(
     ifuse
     igt-gpu-tools
     input-remapper
+    intel-compute-runtime
     iwd
     just
     kate
@@ -83,6 +85,7 @@ FEDORA_PACKAGES=(
     plasma-oxygen
     plasma-union-"${PLASMA_VERS}"
     plasma-wallpapers-dynamic
+    pocl
     powertop
     rclone
     restic
