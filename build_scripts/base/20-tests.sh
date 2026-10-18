@@ -43,7 +43,7 @@ test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 
 # Is flathub enabled by default?
-test -f /etc/flatpak/remotes.d/flathub.flatpakrepo
+test -f /usr/share/flatpak/remotes.d/flathub.flatpakrepo
 
 # Make sure to not pull in the bazzite one
 rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
