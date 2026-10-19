@@ -11,24 +11,12 @@
 
   "packageRules": [
     {
-      "description": "Use merge commits when automerging into stable branches to match branch ruleset restrictions",
-      "matchBaseBranches": ["/^stable-f[0-9][0-9]$/"],
-      "automergeStrategy": "merge-commit"
-    },
-    {
       "automerge": true,
       "matchUpdateTypes": ["pin", "pinDigest"]
     },
     {
       "automerge": true,
       "matchManagers": ["dockerfile"],
-      "matchUpdateTypes": ["digest"]
-    },
-    {
-      // We always want to trigger a fresh build when we have a new base image on every branch
-      // so we get package and security updates
-      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
-      "automerge": true,
       "matchUpdateTypes": ["digest"]
     },
     {
@@ -63,6 +51,22 @@
         "!anchore/sbom-action"
       ],
       "schedule": ["on sunday"]
+    },
+    // these two are needed because we don't really run images based on a schedule
+    // :testing/main branch must be defined first or else it overwrites rules for stable
+    {
+      "description": "Automerge kinoite digest updates on main with default merge strategy",
+      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true
+    },
+    {
+      "description": "Use merge commits when automerging into stable branches to match branch ruleset restrictions",
+      "matchDepNames": ["quay.io/fedora-ostree-desktops/kinoite"],
+      "matchUpdateTypes": ["digest"],
+      "matchBaseBranches": ["/^stable-f[0-9][0-9]$/"],
+      "automergeStrategy": "merge-commit",
+      "automerge": true
     }
   ]
 }
