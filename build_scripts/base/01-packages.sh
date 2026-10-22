@@ -81,7 +81,6 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-firewall-"${PLASMA_VERS}"
     plasma-oxygen
-    plasma-union-"${PLASMA_VERS}"
     plasma-wallpapers-dynamic
     powertop
     rclone
