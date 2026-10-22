@@ -202,4 +202,9 @@ fi
 dnf -y swap fedora-logos generic-logos
 rpm --erase --nodeps --nodb generic-logos
 
+# https://bodhi.fedoraproject.org/updates/FEDORA-2026-e57d2527d5
+if [[ $(rpm -q --qf "%{VERSION}" ca-certificates) == "2026.2.90_v9.0.317" ]]; then
+  dnf -y upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e57d2527d5
+fi
+
 echo "::endgroup::"
