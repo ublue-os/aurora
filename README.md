@@ -22,6 +22,12 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 
 The `system_files`, `flatpak` and `logos` directory have been moved to [here](https://github.com/get-aurora-dev/common).
 
+## Built Images
+
+See: https://docs.getaurora.dev/guides/release-streams/
+
+Note: `:kde-nightly` images with the latest development versions of Plasma are built on a best-effort basis, with packages from [plasma-unstable copr](https://copr.fedorainfracloud.org/coprs/solopasha/plasma-unstable/). Thanks solopasha :).
+
 ### Secure Boot
 
 Secure Boot is supported by default on our systems, providing an additional layer of security. After the first installation, you will be prompted to enroll the secure boot key in the BIOS.
