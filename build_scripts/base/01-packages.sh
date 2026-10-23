@@ -21,6 +21,7 @@ OVERRIDES=(
     "mesa-libEGL"
     "mesa-libGL"
     "mesa-libgbm"
+    "mesa-libOpenCL"
     "mesa-vulkan-drivers"
     "openh264"
 )
@@ -60,10 +61,12 @@ FEDORA_PACKAGES=(
     ifuse
     igt-gpu-tools
     input-remapper
+    intel-compute-runtime
     iwd
     just
-    kate
+    kate{-krunner-plugin,-plugins}
     kcm-fcitx5
+    fzf # for just
     krb5-workstation
     ksystemlog
     libcamera-gstreamer
@@ -82,7 +85,10 @@ FEDORA_PACKAGES=(
     plasma-firewall-"${PLASMA_VERS}"
     plasma-oxygen
     plasma-union-"${PLASMA_VERS}"
-    plasma-wallpapers-dynamic
+    # TODO: look into removing this, plasma supports the transition feature of this natively
+    plasma-wallpapers-dynamic-builder
+    plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
+    pocl
     powertop
     rclone
     restic
@@ -126,7 +132,9 @@ if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
 fi
 
-dnf -y install --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
+dnf -y install \
+  --setopt=install_weak_deps=False \
+  --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
 
 COPR_UBLUE_OS_PACKAGES=(
     kcm_ublue
