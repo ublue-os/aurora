@@ -172,6 +172,8 @@ EXCLUDED_PACKAGES=(
     krfb{,-libs}
     plasma-discover{,-libs}
     plasma-welcome-fedora
+    # https://github.com/ublue-os/aurora/issues/3066
+    xwaylandvideobridge
 )
 
 dnf -y remove "${EXCLUDED_PACKAGES[@]}"
