@@ -285,7 +285,7 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
         BUILD_ARGS+=("--cpp-flag=-DNVIDIA")
     fi
 
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --file Containerfile.in)
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --tag "${image_name}:${tag}" --compression-format=zstd --file Containerfile.in)
 
     # So we always have the newest images when building locally
     if [[ "${ghcr}" == "false" ]]; then
