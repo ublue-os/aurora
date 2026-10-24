@@ -39,7 +39,6 @@ FEDORA_PACKAGES=(
     distrobox
     evtest
     fastfetch
-    fcitx5-{chewing,chinese-addons,configtool,gtk,hangul,libthai,m17n,mozc,qt,sayura,unikey}
     fish
     flatpak-spawn
     foo2zjs
@@ -65,7 +64,6 @@ FEDORA_PACKAGES=(
     iwd
     just
     kate{-krunner-plugin,-plugins}
-    kcm-fcitx5
     fzf # for just
     krb5-workstation
     ksystemlog
