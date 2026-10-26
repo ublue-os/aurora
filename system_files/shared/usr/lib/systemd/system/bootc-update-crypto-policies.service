@@ -1,0 +1,18 @@
+# Regenerate backend files preserved by the /etc three-way merge after image upgrades.
+[Unit]
+Description=Regenerate crypto-policies backend configuration
+Documentation=https://gitlab.com/fedora/bootc/base-images/-/merge_requests/663
+ConditionPathIsMountPoint=/sysroot
+ConditionPathExists=/usr/bin/update-crypto-policies
+DefaultDependencies=no
+Requires=local-fs.target
+After=local-fs.target
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -ec 'policy=$(/usr/bin/update-crypto-policies --show); exec /usr/bin/update-crypto-policies --set "$$policy"'
+
+[Install]
+WantedBy=sysinit.target
