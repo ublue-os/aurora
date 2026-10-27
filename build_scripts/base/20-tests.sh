@@ -129,6 +129,7 @@ UNWANTED_PACKAGES=(
     fedora-third-party
     firefox
     plasma-discover
+    xwaylandvideobridge
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
