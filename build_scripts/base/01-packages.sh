@@ -148,6 +148,7 @@ TERRA_PACKAGES=(
   uupd
   # used in motd, in general useful to have
   nerdfontssymbolsonly-nerd-fonts
+  game-devices-udev
 )
 
 # Fedora Tailscale is usually behind
