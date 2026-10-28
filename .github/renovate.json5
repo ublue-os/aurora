@@ -55,6 +55,7 @@
       "matchDepNames": [
         "!oras-project/setup-oras",
         "!sigstore/cosign-installer",
+        "!sigstore/cosign",
         "!anchore/sbom-action"
       ],
       "schedule": ["on sunday"]
