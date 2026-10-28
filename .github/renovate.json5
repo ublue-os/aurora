@@ -49,6 +49,7 @@
         "!oras-project/setup-oras",
         "!sigstore/cosign-installer",
         "!sigstore/cosign",
+        "!zizmorcore/zizmor-action",
         "!anchore/sbom-action"
       ],
       "schedule": ["on sunday"]
