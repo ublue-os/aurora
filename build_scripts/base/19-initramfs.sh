@@ -36,10 +36,6 @@ rm "${TMP_OS_RELEASE}"
 
 chmod 0600 "${INITRAMFS}"
 
-# for reproducibility
-# This is done globally now
-# touch -a -m -d "1970-01-01T00:00:00Z" "${INITRAMFS}"
-
 # for debugging
 sha256sum "${INITRAMFS}"
 
