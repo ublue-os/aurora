@@ -44,13 +44,6 @@
       "enabled": false
     },
     {
-      // Cooldown for 3 days as done with dependabot @ github:
-      // https://github.blog/changelog/2026-07-14-dependabot-version-updates-introduce-default-package-cooldown/
-      "description": "Delay GitHub Actions updates by 3 days",
-      "matchManagers": ["github-actions"],
-      "minimumReleaseAge": "3 days"
-    },
-    {
       "matchManagers": ["github-actions"],
       "matchDepNames": [
         "!oras-project/setup-oras",
