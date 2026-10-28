@@ -37,18 +37,18 @@ FRAMEWORK_ICC=(/usr/share/color/icc/colord/framework1{3,6}.icc)
 setfattr -n user.component -v "never-change" "${FRAMEWORK_ICC[@]}"
 setfattr -n user.update-interval -v "yearly" "${FRAMEWORK_ICC[@]}"
 
-# This is absolutely nasty, ideally we'd use SOURCE_DATE_EPOCH=0 on chunkah for
-# all the touch invocations but this (potentially) affects the layer plan
-# negatively
-# See: https://github.com/coreos/chunkah/issues/160
+# This is absolutely nasty, ideally we'd use SOURCE_DATE_EPOCH=0 on chunkah
+# instead of all the touch invocations but this (potentially) affects the layer
+# plan negatively See: https://github.com/coreos/chunkah/issues/160
 #
-# on the composefs backend this also makes it so that bootc (uupd notification)
-# flags the image as outdated with label org.opencontainers.image.created and
-# ".Created" (it's set to 1970 after all) this doesn't happen on ostree
+# on the composefs backend this also makes it so that bootc inconsistently gets
+# the image creation date across backends (uupd will send a notification) this
+# doesn't happen on ostree, but is an issue on composefs
 # https://github.com/bootc-dev/bootc/issues/2227
 
-# This shouldn't hurt anything, Epoch 0 is what RPMs are using, we don't want to override that
-find /usr /etc /opt -newermt '1970-01-01T00:00:00Z' -exec touch -h -a -m -d '1970-01-01T00:00:00Z' {} +
+# EPOCH=1 or else we may lose some of our changes due to native overay diff being set to false
+# https://github.com/ublue-os/aurora/issues/3093
+find /usr /etc /opt -newermt '1970-01-01T00:00:00Z' -exec touch -h -a -m -d '1970-01-01T00:00:01Z' {} +
 
 # getfattr -R -d /usr 2> /dev/null || true
 # getfattr -R -d /etc 2> /dev/null || true
