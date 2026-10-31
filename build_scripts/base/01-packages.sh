@@ -146,6 +146,7 @@ TERRA_PACKAGES=(
   uupd
   # used in motd, in general useful to have
   nerdfontssymbolsonly-nerd-fonts
+  game-devices-udev
 )
 
 # Fedora Tailscale is usually behind
@@ -178,6 +179,8 @@ EXCLUDED_PACKAGES=(
     krfb{,-libs}
     plasma-discover{,-libs}
     plasma-welcome-fedora
+    # https://github.com/ublue-os/aurora/issues/3066
+    xwaylandvideobridge
 )
 
 dnf -y remove "${EXCLUDED_PACKAGES[@]}"

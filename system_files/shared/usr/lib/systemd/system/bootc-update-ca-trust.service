@@ -1,0 +1,18 @@
+# Regenerate files preserved by the /etc three-way merge after image upgrades.
+[Unit]
+Description=Regenerate CA certificate trust store
+Documentation=https://gitlab.com/fedora/bootc/base-images/-/merge_requests/663
+ConditionPathIsMountPoint=/sysroot
+ConditionPathExists=/usr/bin/update-ca-trust
+DefaultDependencies=no
+Requires=local-fs.target
+After=local-fs.target
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/update-ca-trust extract
+
+[Install]
+WantedBy=sysinit.target
