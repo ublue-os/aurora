@@ -84,7 +84,6 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-firewall-"${PLASMA_VERS}"
     plasma-oxygen
-    plasma-union-"${PLASMA_VERS}"
     # TODO: look into removing this, plasma supports the transition feature of this natively
     plasma-wallpapers-dynamic-builder
     plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
