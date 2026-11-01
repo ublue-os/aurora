@@ -153,7 +153,7 @@ TERRA_PACKAGES=(
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
 
-dnf -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
+dnf-retry -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
 
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
