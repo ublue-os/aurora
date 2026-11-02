@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tries=5
+sleep=60
+
+for i in $(seq 1 "${tries}"); do
+    if [[ ${i} -gt 1 ]]; then
+        # echo "[+] Command failed. Waiting for ${sleep} seconds"
+        sleep "${sleep}"
+    fi
+    # echo "[+] Running (try: ${i}): dnf ${*}"
+    dnf "${@}" && r=0 && break || r=$?
+done
+exit "$r"
+

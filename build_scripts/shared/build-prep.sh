@@ -27,5 +27,6 @@ dnf config-manager disable fedora-cisco-openh264
 
 mkdir -p /tmp/scripts/helpers
 install -Dm0755 /ctx/build_scripts/shared/utils/ghcurl /tmp/scripts/helpers/ghcurl
+install -Dm0755 /ctx/build_scripts/shared/utils/dnf-retry /tmp/scripts/helpers/dnf-retry
 
 echo "::endgroup::"
