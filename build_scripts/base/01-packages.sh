@@ -149,17 +149,23 @@ TERRA_PACKAGES=(
   # used in motd, in general useful to have
   nerdfontssymbolsonly-nerd-fonts
   game-devices-udev
-  cardwire-gui
 )
+
+if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
+  TERRA_PACKAGES=( "${TERRA_PACKAGES[@]}" cardwire )
+  dnf-retry -y 'do' \
+    --from-repo="terra" \
+    --action install "${TERRA_PACKAGES[@]}" \
+    --action remove switcheroo-control
+else
+  dnf-retry -y 'do' \
+    --from-repo="terra" \
+    --action install "${TERRA_PACKAGES[@]}"
+fi
 
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
 
-# shellcheck disable=SC1010
-dnf-retry -y do \
-  --from-repo="terra" \
-  --action install "${TERRA_PACKAGES[@]}" \
-  --action remove switcheroo-control
 
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 

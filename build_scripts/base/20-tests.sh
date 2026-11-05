@@ -100,6 +100,10 @@ IMPORTANT_PACKAGES=(
     zsh
 )
 
+if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
+  TERRA_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire )
+fi
+
 for package in "${IMPORTANT_PACKAGES[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
 done
