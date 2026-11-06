@@ -4,6 +4,8 @@ echo "::group:: ===$(basename "$0")==="
 
 set -ouex pipefail
 
+dnf makecache --refresh
+
 # Prevent partial upgrading, major kde version updates black screened
 # https://github.com/ublue-os/aurora/issues/1227
 dnf versionlock add "qt6-*" "plasma-desktop"
@@ -39,7 +41,6 @@ FEDORA_PACKAGES=(
     distrobox
     evtest
     fastfetch
-    fcitx5-{chewing,chinese-addons,configtool,gtk,hangul,libthai,m17n,mozc,qt,sayura,unikey}
     fish
     flatpak-spawn
     foo2zjs
@@ -65,7 +66,6 @@ FEDORA_PACKAGES=(
     iwd
     just
     kate{-krunner-plugin,-plugins}
-    kcm-fcitx5
     fzf # for just
     krb5-workstation
     ksystemlog
@@ -84,7 +84,6 @@ FEDORA_PACKAGES=(
     pamu2fcfg
     plasma-firewall-"${PLASMA_VERS}"
     plasma-oxygen
-    plasma-union-"${PLASMA_VERS}"
     # TODO: look into removing this, plasma supports the transition feature of this natively
     plasma-wallpapers-dynamic-builder
     plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
@@ -154,7 +153,7 @@ TERRA_PACKAGES=(
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
 
-dnf -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
+dnf-retry -y install --from-repo="terra" "${TERRA_PACKAGES[@]}"
 
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
