@@ -13,9 +13,6 @@ rsync -rvKl /ctx/system_files/shared/ /
 # this removes the enablement for brew-up{d,gr}ade.timer, we use uupd
 rm -f /usr/lib/systemd/system-preset/01-homebrew.preset
 
-# this adds bootc and ostree to the initramfs
-cp /usr/share/doc/bootc/baseimage/dracut/usr/lib/dracut.conf.d/10-bootc-base.conf /usr/lib/dracut/dracut.conf.d/
-
 # Footgun, See: https://github.com/ublue-os/main/issues/598
 rm -f /usr/bin/chsh /usr/bin/lchsh
 
