@@ -32,6 +32,17 @@ setfattr -n user.update-interval -v "quarterly" "${BAZAAR[@]}"
 AURORA_DOCS_PDF="/usr/share/doc/aurora/aurora.pdf"
 setfattr -n user.component -v "aurora-offline-docs" "${AURORA_DOCS_PDF}"
 
+# Everything we know that always changes during the build that we don't want to
+# have in the rather big unpackaged layer
+# https://github.com/coreos/chunkah/issues/65 would be nice
+VOLATILE=(
+  # timestamps
+  /usr/lib/bootupd/updates/EFI.json
+)
+
+setfattr -n user.component -v "volatile" "${VOLATILE[@]}"
+setfattr -n user.update-interval -v "daily" "${VOLATILE[@]}"
+
 # TODO: everything else we can probably add here
 FRAMEWORK_ICC=(/usr/share/color/icc/colord/framework1{3,6}.icc)
 setfattr -n user.component -v "never-change" "${FRAMEWORK_ICC[@]}"
