@@ -99,6 +99,11 @@ IMPORTANT_PACKAGES=(
     zsh
 )
 
+# lets only have cardwire in testing for now
+if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
+  IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire )
+fi
+
 for package in "${IMPORTANT_PACKAGES[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
 done
