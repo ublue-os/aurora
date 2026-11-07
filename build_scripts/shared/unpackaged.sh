@@ -37,7 +37,7 @@ setfattr -n user.component -v "aurora-offline-docs" "${AURORA_DOCS_PDF}"
 # https://github.com/coreos/chunkah/issues/65 would be nice
 VOLATILE=(
   # timestamps
-  /usr/lib/bootupd/updates/EFI.json
+  /usr/lib/bootupd/updates/{EFI,BIOS}.json
 )
 
 setfattr -n user.component -v "volatile" "${VOLATILE[@]}"
