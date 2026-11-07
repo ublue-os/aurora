@@ -82,7 +82,6 @@ if [[ "$QT_VER" != "$QTFS_VER" ]]; then
 fi
 
 IMPORTANT_PACKAGES=(
-    cardwire
     distrobox
     fish
     flatpak
@@ -100,8 +99,9 @@ IMPORTANT_PACKAGES=(
     zsh
 )
 
+# lets only have cardwire in testing for now
 if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
-  TERRA_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire )
+  IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire )
 fi
 
 for package in "${IMPORTANT_PACKAGES[@]}"; do
