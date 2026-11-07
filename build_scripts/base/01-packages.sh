@@ -44,6 +44,7 @@ FEDORA_PACKAGES=(
     fish
     flatpak-spawn
     foo2zjs
+    fzf # for just
     gcc{,-c++}
     git-credential-libsecret
     glow
@@ -65,8 +66,8 @@ FEDORA_PACKAGES=(
     intel-compute-runtime
     iwd
     just
+    kate
     kate{-krunner-plugin,-plugins}
-    fzf # for just
     krb5-workstation
     ksystemlog
     libcamera-gstreamer
@@ -82,8 +83,6 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-firewall-"${PLASMA_VERS}"
-    plasma-oxygen
     # TODO: look into removing this, plasma supports the transition feature of this natively
     plasma-wallpapers-dynamic-builder
     plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
@@ -108,6 +107,12 @@ FEDORA_PACKAGES=(
     zsh
 )
 
+# on kde-nightly our specific version install breaks due to differing commit hashes
+PLASMA_PACKAGES=(
+    plasma-firewall
+    plasma-oxygen
+)
+
 FEDORA_PACKAGES_AMD64=(
     powerstat
   )
@@ -126,6 +131,12 @@ NEGATIVO_PACKAGES_AMD64=(
   )
 
 PACKAGES=( "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}" )
+
+if [[ "${UBLUE_IMAGE_TAG}" == "kde-nightly" ]]; then
+  dnf -y install --from-repo="copr:copr.fedorainfracloud.org:solopasha:plasma-unstable" "${PLASMA_PACKAGES[@]}"
+else
+  PACKAGES=( "${PACKAGES[@]}" "${PLASMA_PACKAGES[@]}" "${FCITX[@]}")
+fi
 
 if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
@@ -197,10 +208,12 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #fi
 
 # https://invent.kde.org/plasma/plasma-setup/-/issues/72
+if [[ "${UBLUE_IMAGE_TAG}" != "kde-nightly" ]]; then
 dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
+  dnf versionlock add plasma-setup
+fi
 
-dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then

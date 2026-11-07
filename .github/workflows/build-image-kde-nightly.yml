@@ -1,0 +1,44 @@
+name: KDE-Nightly Images
+on:
+   merge_group:
+   pull_request:
+     branches:
+       - main
+     paths-ignore:
+       - "**.md"
+       - ".github/workflows/moderator.yml"
+       - ".github/workflows/scorecard.yml"
+   workflow_call:
+   workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  build-image-kde-nightly:
+    name: Build KDE-Nightly Images
+    uses: $/.github/workflows/reusable-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets:
+      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+    with:
+      image_flavors: '["main", "nvidia-open"]'
+      stream_name: kde-nightly
+      # FIXME: MAIN has no arm builds in ublue-os/akmods yet
+      # https://github.com/ublue-os/akmods/pull/440
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
+      publish: ${{ github.event_name != 'pull_request' }}
+
+  generate-release:
+    name: Generate Release
+    needs: [build-image-kde-nightly]
+    permissions:
+      contents: write
+    uses: $/.github/workflows/generate-release.yml
+    with:
+      stream_name: '["kde-nightly"]'
