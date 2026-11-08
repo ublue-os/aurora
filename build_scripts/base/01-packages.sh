@@ -152,7 +152,7 @@ TERRA_PACKAGES=(
 )
 
 if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
-  TERRA_PACKAGES=( "${TERRA_PACKAGES[@]}" cardwire )
+  TERRA_PACKAGES=( "${TERRA_PACKAGES[@]}" cardwire-gui )
   dnf-retry -y 'do' \
     --from-repo="terra" \
     --action install "${TERRA_PACKAGES[@]}" \
