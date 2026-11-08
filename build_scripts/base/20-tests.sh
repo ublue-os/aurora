@@ -101,7 +101,7 @@ IMPORTANT_PACKAGES=(
 
 # lets only have cardwire in testing for now
 if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
-  IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire )
+  IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire-gui )
 fi
 
 for package in "${IMPORTANT_PACKAGES[@]}"; do
