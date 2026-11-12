@@ -9,6 +9,7 @@ for i in $(seq 1 "${tries}"); do
         # echo "[+] Command failed. Waiting for ${sleep} seconds"
         sleep "${sleep}"
     fi
+    dnf makecache --refresh
     # echo "[+] Running (try: ${i}): dnf ${*}"
     dnf "${@}" && r=0 && break || r=$?
 done
