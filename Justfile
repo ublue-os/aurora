@@ -3,8 +3,8 @@ export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
 export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
 export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
 
-stable_version := "44"
-latest_version := "44"
+stable_version := "45"
+latest_version := "45"
 testing_version := "45"
 
 images := '(
@@ -151,7 +151,7 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     ALL_IMAGES+=("${BASE_IMAGE_REF}")
 
     # Here we pin our kernels to workaround regressions!
-    # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
+    # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-45")))'
 
     ARCH=$(arch)
     if [[ -z "${kernel_pin:-}" ]]; then
@@ -485,7 +485,8 @@ akmods_flavor tag=default_tag:
     set -eou pipefail
 
     if [[ "{{ tag }}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
+        # Temporarily use coreos-testing until coreos-stable moves to Fedora 45
+        akmods_flavor="coreos-testing"
     elif [[ "{{ tag }}" =~ testing ]]; then
         akmods_flavor="main"
     else
