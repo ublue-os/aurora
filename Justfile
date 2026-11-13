@@ -485,7 +485,8 @@ akmods_flavor tag=default_tag:
     set -eou pipefail
 
     if [[ "{{ tag }}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
+        # Temporarily use coreos-testing until coreos-stable moves to Fedora 45
+        akmods_flavor="coreos-testing"
     elif [[ "{{ tag }}" =~ testing ]]; then
         akmods_flavor="main"
     else
