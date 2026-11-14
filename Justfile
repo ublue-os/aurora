@@ -338,6 +338,7 @@ rechunk $image=default_image $tag=default_tag $flavor=default_flavor:
     --compressed \
     --max-layers 256 \
     --prune /sysroot/ \
+    --prune /run/ \
     --label ostree.commit- --label ostree.final-diffid- \
     --config /chunkah-config.json \
     --output oci:/run/out/chunked
