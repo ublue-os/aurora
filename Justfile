@@ -1,7 +1,7 @@
 # Min just version 1.46.0 https://github.com/casey/just/issues/2290
-export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
-export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
-export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
+export repo_organization := lowercase(env("GITHUB_REPOSITORY_OWNER", "ublue-os"))
+export base_image_org := lowercase(env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops"))
+export base_image_name := lowercase(env("BASE_IMAGE_NAME", "kinoite"))
 
 stable_version := "45"
 latest_version := "45"
@@ -57,6 +57,17 @@ retry() {
         "${@}" && r=0 && break || r=$?
     done
     return $r
+}
+'
+
+# Define a lowercase function for use in recipes
+lowercase_function := '
+lowercase() {
+    if [[ "${#}" -ne 1 ]]; then
+        echo "lowercase usage: <string>"
+        return 1
+    fi
+    printf "%s" "${1,,}"
 }
 '
 
@@ -684,6 +695,10 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
     #!/usr/bin/env bash
     set -eoux pipefail
 
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
+
     {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
@@ -728,6 +743,10 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
 setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $pull="false" $push="false" $registry="" $github_event="":
     #!/usr/bin/env bash
     set -eoux pipefail
+
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
 
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
@@ -858,6 +877,10 @@ disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
 push-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
+
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
 
     PUSH_CMD_ARGS=()
     PUSH_CMD_ARGS+=("--digestfile=/tmp/digestfile")
