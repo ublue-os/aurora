@@ -11,6 +11,7 @@ dnf makecache --refresh
 dnf versionlock add "qt6-*" "plasma-desktop"
 
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
+COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
 OVERRIDES=(
     "intel-gmmlib"
@@ -44,6 +45,7 @@ FEDORA_PACKAGES=(
     fish
     flatpak-spawn
     foo2zjs
+    fzf # for just
     gcc{,-c++}
     git-credential-libsecret
     glow
@@ -65,10 +67,7 @@ FEDORA_PACKAGES=(
     intel-compute-runtime
     iwd
     just
-    kate{-krunner-plugin,-plugins}
-    fzf # for just
     krb5-workstation
-    ksystemlog
     libcamera-gstreamer
     libcamera-tools
     libimobiledevice-utils
@@ -82,8 +81,6 @@ FEDORA_PACKAGES=(
     pam-u2f
     pam_yubico
     pamu2fcfg
-    plasma-firewall-"${PLASMA_VERS}"
-    plasma-oxygen
     # TODO: look into removing this, plasma supports the transition feature of this natively
     plasma-wallpapers-dynamic-builder
     plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
@@ -108,6 +105,23 @@ FEDORA_PACKAGES=(
     zsh
 )
 
+# these should be fetched from solopasha copr on nightly images
+PLASMA_PACKAGES=(
+  plasma-firewall
+  plasma-oxygen
+)
+
+# on kde-nightly our specific version install breaks due to differing suffixes from commit hashes/versions
+if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+  PLASMA_PACKAGES=("${PLASMA_PACKAGES[@]/%/-${PLASMA_VERS}}")
+fi
+
+KDE_GEAR_PACKAGES=(
+  kate
+  kate{-krunner-plugin,-plugins}
+  ksystemlog
+)
+
 FEDORA_PACKAGES_AMD64=(
     powerstat
   )
@@ -125,7 +139,13 @@ NEGATIVO_PACKAGES_AMD64=(
     intel-vaapi-driver
   )
 
-PACKAGES=( "${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}" )
+PACKAGES=("${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}")
+
+KDE_PACKAGES=("${PLASMA_PACKAGES[@]}" "${KDE_GEAR_PACKAGES[@]}")
+
+if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+  PACKAGES+=("${FEDORA_PACKAGES[@]}" "${KDE_PACKAGES[@]}")
+fi
 
 if [[ $(arch) == x86_64 ]]; then
   PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
@@ -134,6 +154,13 @@ fi
 dnf -y install \
   --setopt=install_weak_deps=False \
   --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
+
+if [[ "${UBLUE_IMAGE_TAG}" == "testing-kde-nightly" ]]; then
+  dnf-retry -y install \
+    --enablerepo="${COPR_PREFIX}:solopasha:plasma-unstable" \
+    --enablerepo="${COPR_PREFIX}:solopasha:kde-gear-unstable" \
+    "${KDE_PACKAGES[@]}"
+fi
 
 COPR_UBLUE_OS_PACKAGES=(
     kcm_ublue
@@ -151,7 +178,7 @@ TERRA_PACKAGES=(
   game-devices-udev
 )
 
-if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
+if [[ "${UBLUE_IMAGE_TAG}" =~ "testing" ]]; then
   TERRA_PACKAGES=( "${TERRA_PACKAGES[@]}" cardwire-gui )
   dnf-retry -y 'do' \
     --from-repo="terra" \
@@ -167,7 +194,6 @@ fi
 TAILSCALE=(tailscale)
 
 
-COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
 dnf -y install --from-repo="${COPR_PREFIX}:ublue-os:packages" "${COPR_UBLUE_OS_PACKAGES[@]}"
 
@@ -208,11 +234,14 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #    dnf5 upgrade --refresh --advisory=FEDORA-2024-dd2e9fb225
 #fi
 
-# https://invent.kde.org/plasma/plasma-setup/-/issues/72
-dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
-  plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
+# we won't be building plasma-setup for nightly versions of KDE
+if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+  # https://invent.kde.org/plasma/plasma-setup/-/issues/72
+  dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
+    plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
+  dnf versionlock add plasma-setup
+fi
 
-dnf versionlock add plasma-setup
 
 # Install DX specific packages
 if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
