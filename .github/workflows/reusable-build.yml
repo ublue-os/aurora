@@ -243,7 +243,7 @@ jobs:
       - name: Create Bootable Image
         id: bootc-install
         # doing other images is not worth it
-        if: github.event_name == 'pull_request' && matrix.base_name == 'aurora' && matrix.stream_name == 'testing'
+        if: github.event_name == 'pull_request' && matrix.base_name == 'aurora' && matrix.stream_name == 'testing' && matrix.image_flavor == 'main'
         env:
           MATRIX_BASE_NAME: ${{ matrix.base_name }}
           MATRIX_STREAM_NAME: ${{ matrix.stream_name }}
