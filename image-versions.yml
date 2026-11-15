@@ -3,7 +3,7 @@ images:
   - name: kinoite
     image: quay.io/fedora-ostree-desktops/kinoite
     tag: 45
-    digest: sha256:752996b7783907e5862d8ccc790ffa144d3119368249a1e12184430c6ffac818
+    digest: sha256:67e5d5085f0cb16c0085938e09832c60308fb7fbb3f4f804a0c3c0a4710e4824
 
   # https://github.com/get-aurora-dev/common
   - name: common
