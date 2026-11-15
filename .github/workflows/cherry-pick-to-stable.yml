@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Generate a GitHub App Token
         id: generate-token
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        uses: actions/create-github-app-token@v3.3.0
         with:
           client-id: ${{ secrets.AURORABOT_APP_ID }}
           private-key: ${{ secrets.AURORABOT_PRIVATE_KEY }}
@@ -27,7 +27,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           # The backport action needs the creds to be available for pushing the backport PRs
           persist-credentials: true
@@ -46,7 +46,7 @@ jobs:
 
       - name: Create Backport Pull Requests
         id: backport
-        uses: korthout/backport-action@0ebd44f9c79a4a0a171200dcdcceec3ed9ca732f # v4.7.1
+        uses: korthout/backport-action@v5.0.0
         with:
           # Use the dynamically generated GitHub App token here too
           github_token: ${{ steps.generate-token.outputs.token }}

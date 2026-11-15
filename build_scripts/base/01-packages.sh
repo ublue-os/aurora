@@ -89,6 +89,7 @@ FEDORA_PACKAGES=(
     rclone
     restic
     samba-winbind{,-clients,-modules}
+	sbsigntools
     setools-console
     setroubleshoot-plugins
     solaar-udev
