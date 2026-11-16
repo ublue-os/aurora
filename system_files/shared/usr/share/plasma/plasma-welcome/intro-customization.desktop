@@ -1,7 +1,6 @@
 [Desktop Entry]
 # Customizes the first page of plasma-welcome, see:
 # https://invent.kde.org/plasma/plasma-welcome (README)
-# Also works around https://bugs.kde.org/show_bug.cgi?id=523540
 # Type is required by the format but ignored by plasma-welcome.
 Type=Application
 Name=Welcome to Aurora, a stable and low-maintenance desktop that keeps itself up to date.

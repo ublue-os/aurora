@@ -5,6 +5,6 @@
 # real nasty, this is the same ordering as without --pages
 # Distro pages from /usr/share/plasma/plasma-welcome/extra-pages/ are not picked up
 # automatically in --pages mode, so they have to be listed here (before Enjoy).
-# TODO: intro-customization.desktop is reported to avoid the crash too; if confirmed,
-# drop this wrapper and the mv in build_scripts/base/16-override-install.sh
+# Note: intro-customization.desktop does NOT avoid the crash on Aurora (tested),
+# so this wrapper is still needed.
 exec /usr/bin/plasma-welcome-original --pages Welcome,SimpleByDefault,PowerfulWhenNeeded,Feedback,01-Bazaar,Enjoy "$@"
