@@ -41,7 +41,8 @@ xmllint --noout \
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 
-# plasma-welcome customizations, the wrapper in /usr/bin/plasma-welcome lists 01-Bazaar explicitly
+# plasma-welcome customizations (pages come from get-aurora-dev/common),
+# the wrapper in /usr/bin/plasma-welcome lists 01-Bazaar and 02-Donate explicitly
 test -f /usr/share/plasma/plasma-welcome/intro-customization.desktop
 test -f /usr/share/plasma/plasma-welcome/extra-pages/01-Bazaar.qml
 test -f /usr/share/plasma/plasma-welcome/extra-pages/02-Donate.qml

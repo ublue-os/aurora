@@ -3,8 +3,9 @@
 # https://github.com/ublue-os/aurora/issues/2624
 # https://bugs.kde.org/show_bug.cgi?id=523540
 # real nasty, this is the same ordering as without --pages
-# Distro pages from /usr/share/plasma/plasma-welcome/extra-pages/ are not picked up
-# automatically in --pages mode, so they have to be listed here (before Enjoy).
+# Distro pages from /usr/share/plasma/plasma-welcome/extra-pages/ (shipped by
+# https://github.com/get-aurora-dev/common) are not picked up automatically in
+# --pages mode, so they have to be listed here (before Enjoy).
 # Note: intro-customization.desktop does NOT avoid the crash on Aurora (tested),
 # so this wrapper is still needed.
 exec /usr/bin/plasma-welcome-original --pages Welcome,SimpleByDefault,PowerfulWhenNeeded,Feedback,01-Bazaar,02-Donate,Enjoy "$@"
