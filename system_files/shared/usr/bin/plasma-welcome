@@ -7,4 +7,4 @@
 # automatically in --pages mode, so they have to be listed here (before Enjoy).
 # Note: intro-customization.desktop does NOT avoid the crash on Aurora (tested),
 # so this wrapper is still needed.
-exec /usr/bin/plasma-welcome-original --pages Welcome,SimpleByDefault,PowerfulWhenNeeded,Feedback,01-Bazaar,Enjoy "$@"
+exec /usr/bin/plasma-welcome-original --pages Welcome,SimpleByDefault,PowerfulWhenNeeded,Feedback,01-Bazaar,02-Donate,Enjoy "$@"

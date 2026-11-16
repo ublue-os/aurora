@@ -44,7 +44,9 @@ test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 # plasma-welcome customizations, the wrapper in /usr/bin/plasma-welcome lists 01-Bazaar explicitly
 test -f /usr/share/plasma/plasma-welcome/intro-customization.desktop
 test -f /usr/share/plasma/plasma-welcome/extra-pages/01-Bazaar.qml
+test -f /usr/share/plasma/plasma-welcome/extra-pages/02-Donate.qml
 test -x /usr/bin/plasma-welcome-original
+grep -qx "Icon=distributor-logo" /usr/share/applications/org.kde.plasma-welcome.desktop
 
 # Make sure this garbage never makes it to an image
 test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
