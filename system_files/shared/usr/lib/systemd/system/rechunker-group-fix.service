@@ -22,6 +22,7 @@ Before=systemd-user-sessions.service
 
 [Service]
 Type=oneshot
+SuccessExitStatus=DATAERR CANTCREAT
 ExecStart=bash -c 'touch /etc/gshadow && chmod 600 /etc/gshadow'
 ExecStart=bash -c 'rm /etc/gshadow'
 ExecStart=systemd-sysusers
