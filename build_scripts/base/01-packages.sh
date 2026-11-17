@@ -78,6 +78,7 @@ FEDORA_PACKAGES=(
     nvtop
     oddjob-mkhomedir
     openrgb-udev-rules
+    openssl3-libs
     pam-u2f
     pam_yubico
     pamu2fcfg
