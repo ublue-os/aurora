@@ -49,6 +49,13 @@ sudo mokutil --timeout -1
 sudo mokutil --import public_key.der
 ```
 
+## Aurora related git repositories
+
+- [Config](https://github.com/get-aurora-dev/common)
+- [Live ISO/Installation media](https://github.com/get-aurora-dev/iso)
+- [Website](https://github.com/get-aurora-dev/aurora-web)
+- [Docs](https://github.com/ublue-os/aurora-docs)
+
 ## Repobeats
 
 ![Alt](https://repobeats.axiom.co/api/embed/c86e98a6654e55f789375ff210dd4eb95f757906.svg "Repobeats analytics image")
