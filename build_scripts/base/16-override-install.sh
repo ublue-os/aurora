@@ -7,6 +7,12 @@ set -eoux pipefail
 # HACK for https://github.com/ublue-os/aurora/issues/2624 https://bugs.kde.org/show_bug.cgi?id=523540
 mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
 
+# HACK for https://github.com/ublue-os/aurora/issues/3269
+# fixes from https://github.com/89luca89/distrobox/pull/2086 and https://github.com/89luca89/distrobox/pull/2256
+# remove once there is a fixed release (either 1.8.x or 2.0.x)
+sed -i 's/:ro\${rslave}/:ro,rslave/' /usr/bin/distrobox-create
+sed -i 's#${container_manager} info 2> /dev/null | grep -q runc#${container_manager} info --format "{{.Host.OCIRuntime.Name}}" 2> /dev/null | grep -q runc#' /usr/bin/distrobox-create
+
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
