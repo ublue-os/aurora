@@ -246,6 +246,7 @@ fi
 
 # swap distrobox to the patched one from ublue-os copr
 # https://github.com/ublue-os/aurora/issues/3269
+# Needs a new release, either 1.8.x (legacy) or 2.0.x (go-rewrite) to be released
 dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   distrobox distrobox
 
