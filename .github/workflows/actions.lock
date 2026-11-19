@@ -14,7 +14,7 @@ workflows:
         - 'dataaxiom/ghcr-cleanup-action@v1.2.2'
     '.github/workflows/generate-release.yml':
         - 'actions/checkout@v7.0.1'
-        - 'oras-project/setup-oras@v2.0.3'
+        - 'oras-project/setup-oras@v2.0.4'
     '.github/workflows/needinfo-close.yml':
         - 'actions/stale@v11.0.0'
     '.github/workflows/reusable-build.yml':
@@ -23,7 +23,7 @@ workflows:
         - 'actions/upload-artifact@v7.0.2'
         - 'anchore/sbom-action@v0.24.3'
         - 'hastd/free-disk-space@v0.1.2'
-        - 'oras-project/setup-oras@v2.0.3'
+        - 'oras-project/setup-oras@v2.0.4'
         - 'sigstore/cosign-installer@v4.1.3'
     '.github/workflows/scorecard.yml':
         - 'actions/checkout@v7.0.1'
@@ -101,9 +101,9 @@ dependencies:
         commit: 'sha1-ad272ff24e4a8593bf18a951a154ae6af93b26b8'
         owner_id: 3511026
         repo_id: 312027768
-    'oras-project/setup-oras@v2.0.3':
-        ref: 'v2.0.3'
-        commit: 'sha1-5e2f2482b30b0cb3e14e67f89a80c88c659a7c63'
+    'oras-project/setup-oras@v2.0.4':
+        ref: 'v2.0.4'
+        commit: 'sha1-ac735097e22fe643015b0d19645f7c9a69942128'
         owner_id: 81890686
         repo_id: 590286646
     'ossf/scorecard-action@v2.5.0':
