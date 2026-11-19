@@ -93,7 +93,7 @@ jobs:
           cosign-release: 'v3.1.4'
 
       - name: Install ORAS
-        uses: oras-project/setup-oras@v2.0.3
+        uses: oras-project/setup-oras@v2.0.4
 
       - name: Check Just Syntax
         shell: bash
