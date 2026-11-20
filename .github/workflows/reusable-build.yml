@@ -318,15 +318,6 @@ jobs:
           # cosign gets credentials from docker
           just login-registry docker ghcr.io
 
-      # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
-      # https://github.com/macbre/push-to-ghcr/issues/12
-      - name: Lowercase Registry
-        if: inputs.publish
-        env:
-          IMAGE_REGISTRY: ${{ env.IMAGE_REGISTRY }}
-        run: |
-          echo "IMAGE_REGISTRY=${IMAGE_REGISTRY,,}" >> $GITHUB_OUTPUT
-
       # Workaround bugs caused by pushing images but not signing them because of CI flakes
       # FIXME: once https://github.com/containers/podman/issues/27796 resolved
       - name: Push Ephemeral Tag

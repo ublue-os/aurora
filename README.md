@@ -22,6 +22,12 @@ Aurora is a delightful KDE desktop experience for end-users that are looking for
 
 The `system_files`, `flatpak` and `logos` directory have been moved to [here](https://github.com/get-aurora-dev/common).
 
+## Built Images
+
+See [Release Stream docs](https://docs.getaurora.dev/guides/release-streams)
+
+Note: `:testing-kde-nightly` images with the newest development versions of Plasma (unstable and only suitable for enthusiasts!) are built on a best-effort basis. Using the packages from the [plasma-unstable copr](https://copr.fedorainfracloud.org/coprs/solopasha/plasma-unstable/) graciously provided by solopasha. Thanks! These will very likely not stick around forever and may be removed without notice.
+
 ### Secure Boot
 
 Secure Boot is supported by default on our systems, providing an additional layer of security. After the first installation, you will be prompted to enroll the secure boot key in the BIOS.
@@ -42,6 +48,13 @@ If you'd like to enroll this key prior to installation or rebase, download the k
 sudo mokutil --timeout -1
 sudo mokutil --import public_key.der
 ```
+
+## Aurora related git repositories
+
+- [Config](https://github.com/get-aurora-dev/common)
+- [Live ISO/Installation media](https://github.com/get-aurora-dev/iso)
+- [Website](https://github.com/get-aurora-dev/aurora-web)
+- [Docs](https://github.com/ublue-os/aurora-docs)
 
 ## Repobeats
 

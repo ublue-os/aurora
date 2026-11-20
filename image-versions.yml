@@ -9,13 +9,13 @@ images:
   - name: common
     image: ghcr.io/get-aurora-dev/common
     tag: latest
-    digest: sha256:da07d4a603fa8b57f4e87dd0aafb7d44704ecd554d5c984a86642d8257dc7fd3
+    digest: sha256:6dd59541628c1c077664567781ff243acf23a50558835a2a9c2fd5053aab8f4b
 
   # https://github.com/ublue-os/brew
   - name: brew
     image: ghcr.io/ublue-os/brew
     tag: latest
-    digest: sha256:a0ee6f2a9c64d476d06e6750d02dc847293a81c1eedfe9848eda1b7a79cf1cb8
+    digest: sha256:03c8d1c8a6f8dd65bccdd011feebaf436ad3da6c5e9c79093c825a8da4ada343
 
   # https://github.com/coreos/chunkah
   - name: chunkah

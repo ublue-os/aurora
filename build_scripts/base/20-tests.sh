@@ -10,8 +10,10 @@ set -eoux pipefail
 # https://github.com/ublue-os/main/blob/963609eaf01f7c2bb1a76821fe6d0ec269d2df25/build_files/install.sh#L56
 # https://github.com/ublue-os/packages/tree/1f77c7e7faa9ebad120609a10d79e0412376c3b7/packages/ublue-os-signing/src
 
-KEY1=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[0]' /etc/containers/policy.json)
-BACKUP_KEY=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[1]' /etc/containers/policy.json)
+POLICY_PATH="/usr/share/containers/policy.json"
+
+KEY1=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[0]' "${POLICY_PATH}")
+BACKUP_KEY=$(jq -r '.transports.docker."ghcr.io/ublue-os"[0].keyPaths[1]' "${POLICY_PATH}")
 KEY1_SHA256="af78ecfda6eb21c35195af3739341715e9cfc3f2f5911dd9c10b0670547bf6e8"
 BACKUP_KEY_SHA256="b723467015ba562d40b4645c98c51c65d8254bb59444f6e9962debcfe2315da0"
 
@@ -39,6 +41,14 @@ xmllint --noout \
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 test -f /usr/share/flatpak/preinstall.d/bazaar.preinstall
 
+# plasma-welcome customizations (pages come from get-aurora-dev/common),
+# the wrapper in /usr/bin/plasma-welcome lists 01-Bazaar and 02-Donate explicitly
+test -f /usr/share/plasma/plasma-welcome/intro-customization.desktop
+test -f /usr/share/plasma/plasma-welcome/extra-pages/01-Bazaar.qml
+test -f /usr/share/plasma/plasma-welcome/extra-pages/02-Donate.qml
+test -x /usr/bin/plasma-welcome-original
+grep -qx "Icon=distributor-logo" /usr/share/applications/org.kde.plasma-welcome.desktop
+
 # Make sure this garbage never makes it to an image
 test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 
@@ -46,7 +56,9 @@ test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 test -f /usr/share/flatpak/remotes.d/flathub.flatpakrepo
 
 # Make sure to not pull in the bazzite one
-rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
+if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+  rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
+fi
 
 test -f /usr/share/doc/aurora/aurora.pdf
 test -f /usr/share/homebrew.tar.zst
@@ -71,9 +83,11 @@ QT_VER="$(rpm -q --qf '%{VERSION}' qt6-qtbase)"
 # Not an important package in itself, just a good indicator
 QTFS_VER="$(rpm -q --qf '%{VERSION}' qt6-filesystem)"
 
-if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
-    echo "KDE Version mismatch"
-    exit 1
+if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+  if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
+      echo "KDE Version mismatch"
+      exit 1
+  fi
 fi
 
 if [[ "$QT_VER" != "$QTFS_VER" ]]; then
@@ -90,6 +104,7 @@ IMPORTANT_PACKAGES=(
     pipewire
     plasma-desktop
     podman
+    plasma-firewall
     plasma-login-manager
     Sunshine
     systemd
@@ -100,7 +115,7 @@ IMPORTANT_PACKAGES=(
 )
 
 # lets only have cardwire in testing for now
-if [[ "${UBLUE_IMAGE_TAG}" == "testing" ]]; then
+if [[ "${UBLUE_IMAGE_TAG}" =~ "testing" ]]; then
   IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire-gui )
 fi
 

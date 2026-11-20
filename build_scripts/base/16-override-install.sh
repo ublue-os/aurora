@@ -48,6 +48,9 @@ ln -s /usr/share/applications/dev.getaurora.offline-docs.desktop /usr/share/kglo
 desktop-file-edit --set-key=X-KDE-Shortcuts --set-value='Ctrl+Alt+T,Meta+Return' /usr/share/applications/org.kde.konsole.desktop
 ln -sf /usr/share/applications/org.kde.konsole.desktop /usr/share/kglobalaccel/org.kde.konsole.desktop
 
+# Show the Aurora logo instead of the KDE logo for plasma-welcome (window icon and app launcher)
+desktop-file-edit --set-icon=distributor-logo /usr/share/applications/org.kde.plasma-welcome.desktop
+
 # we don't want them to show up graphically
 for file in htop nvtop; do
     if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
