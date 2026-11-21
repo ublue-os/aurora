@@ -1,11 +1,12 @@
 # Min just version 1.46.0 https://github.com/casey/just/issues/2290
-export repo_organization := env("GITHUB_REPOSITORY_OWNER", "ublue-os")
-export base_image_org := env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops")
-export base_image_name := env("BASE_IMAGE_NAME", "kinoite")
+export repo_organization := lowercase(env("GITHUB_REPOSITORY_OWNER", "ublue-os"))
+export base_image_org := lowercase(env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops"))
+export base_image_name := lowercase(env("BASE_IMAGE_NAME", "kinoite"))
 
-stable_version := "44"
-latest_version := "44"
+stable_version := "45"
+latest_version := "45"
 testing_version := "45"
+testing_kde_nightly_version := "45"
 
 images := '(
     [aurora]=aurora
@@ -21,6 +22,7 @@ tags := '(
     [stable]=stable
     [latest]=latest
     [testing]=testing
+    [testing-kde-nightly]=testing-kde-nightly
 )'
 
 default_image := "aurora"
@@ -57,6 +59,17 @@ retry() {
         "${@}" && r=0 && break || r=$?
     done
     return $r
+}
+'
+
+# Define a lowercase function for use in recipes
+lowercase_function := '
+lowercase() {
+    if [[ "${#}" -ne 1 ]]; then
+        echo "lowercase usage: <string>"
+        return 1
+    fi
+    printf "%s" "${1,,}"
 }
 '
 
@@ -146,12 +159,16 @@ build $image=default_image $tag=default_tag $flavor=default_flavor $rechunk="fal
     akmods_flavor=$({{ just }} akmods_flavor --tag "${tag}")
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
+    if [[ "${tag}" == "testing-kde-nightly" ]]; then
+      base_image_name="kinoite-nightly"
+    fi
+
     BASE_IMAGE_REF="${base_image_org}/${base_image_name}:${fedora_version}"
     ALL_IMAGES=()
     ALL_IMAGES+=("${BASE_IMAGE_REF}")
 
     # Here we pin our kernels to workaround regressions!
-    # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-44")))'
+    # skopeo list-tags docker://ghcr.io/ublue-os/akmods | jq -r '.Tags | map(select(contains("coreos-stable-45")))'
 
     ARCH=$(arch)
     if [[ -z "${kernel_pin:-}" ]]; then
@@ -429,9 +446,7 @@ secureboot $image=default_image $tag=default_tag $flavor=default_flavor:
 
     # Get the Public Certificates
     curl --retry 3 -Lo /tmp/kernel-sign.der https://github.com/ublue-os/akmods/raw/main/certs/public_key.der
-    curl --retry 3 -Lo /tmp/akmods.der https://github.com/ublue-os/akmods/raw/main/certs/public_key_2.der
     openssl x509 -in /tmp/kernel-sign.der -out /tmp/kernel-sign.crt
-    openssl x509 -in /tmp/akmods.der -out /tmp/akmods.crt
 
     # Make sure we have sbverify
     CMD="$(command -v sbverify || true)"
@@ -441,7 +456,6 @@ secureboot $image=default_image $tag=default_tag $flavor=default_flavor:
             --entrypoint /bin/sh \
             --volume /tmp/vmlinuz:/tmp/vmlinuz:z \
             --volume /tmp/kernel-sign.crt:/tmp/kernel-sign.crt:z \
-            --volume /tmp/akmods.crt:/tmp/akmods.crt:z \
             --name ${temp_name} \
             docker.io/library/alpine:edge
         ${PODMAN} exec ${temp_name} apk add sbsigntool
@@ -451,7 +465,7 @@ secureboot $image=default_image $tag=default_tag $flavor=default_flavor:
     # Confirm that Signatures Are Good
     $CMD --list /tmp/vmlinuz
     returncode=0
-    if ! $CMD --cert /tmp/kernel-sign.crt /tmp/vmlinuz || ! $CMD --cert /tmp/akmods.crt /tmp/vmlinuz; then
+    if ! $CMD --cert /tmp/kernel-sign.crt /tmp/vmlinuz; then
         echo "Secureboot Signature Failed...."
         returncode=1
     fi
@@ -472,12 +486,14 @@ fedora_version image=default_image tag=default_tag flavor=default_flavor:
     {{ just }} validate --image {{ image }} --tag {{ tag }} --flavor {{ flavor }}
 
     # Determine Version
-    if [[ "{{ tag }}" =~ stable ]]; then
+    if [[ "{{ tag }}" == stable ]]; then
         VERSION="{{ stable_version }}"
-    elif [[ "{{ tag }}" =~ testing ]]; then
-        VERSION="{{ testing_version }}"
-    else
+    elif [[ "{{ tag }}" == latest ]]; then
         VERSION="{{ latest_version }}"
+    elif [[ "{{ tag }}" == testing ]]; then
+        VERSION="{{ testing_version }}"
+    elif [[ "{{ tag }}" == testing-kde-nightly ]]; then
+        VERSION="{{ testing_kde_nightly_version }}"
     fi
 
     echo "${VERSION}"
@@ -489,7 +505,8 @@ akmods_flavor tag=default_tag:
     set -eou pipefail
 
     if [[ "{{ tag }}" =~ stable ]]; then
-        akmods_flavor="coreos-stable"
+        # Temporarily use coreos-testing until coreos-stable moves to Fedora 45
+        akmods_flavor="coreos-testing"
     elif [[ "{{ tag }}" =~ testing ]]; then
         akmods_flavor="main"
     else
@@ -687,6 +704,10 @@ attach-sbom $image=default_image $tag=default_tag $flavor=default_flavor $regist
     #!/usr/bin/env bash
     set -eoux pipefail
 
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
+
     {{ just }} validate --image "${image}" --tag "${tag}" --flavor "${flavor}"
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
@@ -732,6 +753,10 @@ setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="
     #!/usr/bin/env bash
     set -eoux pipefail
 
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
+
     image_name=$({{ just }} image_name --image "${image}" --tag "${tag}" --flavor "${flavor}")
 
     fedora_version=$({{ just }} fedora_version --image "${image}" --tag "${tag}" --flavor "${flavor}")
@@ -766,6 +791,7 @@ setup-cache $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="
        [[ "${ghcr}" == "true" ]] && \
        [[ "${CURRENT_DAY}" == "${BLESSED_DAY}" ]] && \
        [[ "${POINT}" == "1" ]] && \
+       [[ "${tag}" != "testing-kde-nightly" ]] && \
        [[ ( "${github_event}" == "workflow_dispatch" || "${github_event}" == "merge_group" ) ]]; then
 
       {{ just }} login-registry oras ghcr.io
@@ -861,6 +887,10 @@ disk-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="f
 push-image $image=default_image $tag=default_tag $flavor=default_flavor $ghcr="false" $registry="" $temp_push="false" $temp_push_tag="":
     #!/usr/bin/env bash
     set -eoux pipefail
+
+    {{ lowercase_function }}
+
+    registry="$(lowercase "${registry}")"
 
     PUSH_CMD_ARGS=()
     PUSH_CMD_ARGS+=("--digestfile=/tmp/digestfile")

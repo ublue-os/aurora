@@ -1,6 +1,7 @@
 enable aurora-groups.service
 enable bootc-update-ca-trust.service
 enable bootc-update-crypto-policies.service
+enable cardwired.service
 enable brew-setup.service
 enable dconf-update.service
 enable flatpak-preinstall.service

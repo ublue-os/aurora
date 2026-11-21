@@ -1,6 +1,6 @@
 version: "1"
 rules:
-  - base: stable-f44
+  - base: stable-f45
     upstream: main
     mergeMethod: hardreset
     mergeUnstable: false

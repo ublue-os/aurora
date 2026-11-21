@@ -6,10 +6,7 @@ set -eoux pipefail
 
 KERNEL_PKGS_ORIG=(kernel kernel-{core,modules,modules-core,modules-extra,tools-libs,tools})
 
-# removing them all at once is slower
-for pkg in "${KERNEL_PKGS_ORIG[@]}"; do
-  rpm --erase "${pkg}" --nodeps
-done
+rpm --erase --noscripts --nodeps "${KERNEL_PKGS_ORIG[@]}"
 
 # cleanup leftovers that are not covered by kernel-* packages for some reason
 rm -rf /usr/lib/modules

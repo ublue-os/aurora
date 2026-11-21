@@ -12,7 +12,7 @@ If the bot is broken ([this action powers it](https://github.com/korthout/backpo
 
 ```
 <use things like git log to find the relevant commit>
-git switch stable-f44
+git switch stable-f45
 git switch -c backport-important-fix-xyz
 git cherry-pick -x deadbeef
 ```

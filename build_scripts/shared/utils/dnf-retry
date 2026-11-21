@@ -3,13 +3,16 @@ set -euo pipefail
 
 tries=5
 sleep=60
+r=0
 
 for i in $(seq 1 "${tries}"); do
     if [[ ${i} -gt 1 ]]; then
-        # echo "[+] Command failed. Waiting for ${sleep} seconds"
+        echo "[+] Command failed (exit ${r}). Waiting ${sleep}s and refreshing metadata..."
         sleep "${sleep}"
+        dnf clean metadata || true
+        dnf makecache --refresh || true
     fi
-    # echo "[+] Running (try: ${i}): dnf ${*}"
+    echo "[+] Running (try: ${i}/${tries}): dnf ${*}"
     dnf "${@}" && r=0 && break || r=$?
 done
 exit "$r"
