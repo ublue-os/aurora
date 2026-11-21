@@ -8,7 +8,7 @@ set -eoux pipefail
 curl --retry 3 -Lo /usr/share/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Offline Aurora documentation
-ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" --retry 3 -o /tmp/aurora.pdf
+ghcurl "https://github.com/ublue-os/aurora-docs/releases/download/0.1/aurora.pdf" -o /tmp/aurora.pdf
 install -Dm0644 -t /usr/share/doc/aurora/ /tmp/aurora.pdf
 
 # Weekly user count for fastfetch
@@ -21,12 +21,12 @@ curl -X 'GET' \
 -H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
 
 # Bash Preexec v0.6.0
-ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh --retry 3 -Lo /usr/share/bash-preexec
+ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh -Lo /usr/share/bash-preexec
 
 # use CoreOS' generator for emergency/rescue boot
 # see detail: https://github.com/ublue-os/main/issues/653
 mkdir -p /usr/lib/systemd/system-generators
-ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" --retry 3 -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator" -Lo /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 echo "::endgroup::"
