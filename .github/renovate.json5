@@ -69,6 +69,20 @@
       "matchBaseBranches": ["/^stable-f[0-9][0-9]$/"],
       "automergeStrategy": "merge-commit",
       "automerge": true
+    },
+     {
+      "description": "Only bump these actions on main, not on stable branches",
+      "matchManagers": ["github-actions"],
+      "matchBaseBranches": ["/^stable-f[0-9][0-9]$/"],
+      "matchPackageNames": [
+        "github/codeql-action",
+        "github/codeql-action/**",
+        "actions/create-github-app-token",
+        "dataaxiom/ghcr-cleanup-action",
+        "ossf/scorecard-action",
+        "korthout/backport-action"
+      ],
+      "enabled": false
     }
   ]
 }
