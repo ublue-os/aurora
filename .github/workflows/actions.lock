@@ -29,7 +29,7 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/upload-artifact@v7.0.2'
         - 'github/codeql-action@v4.39.3'
-        - 'ossf/scorecard-action@v2.5.0'
+        - 'ossf/scorecard-action@v2.6.0'
     '.github/workflows/trigger-schedule-stable-image.yml':
         - 'actions/checkout@v7.0.1'
     '.github/workflows/validate-just.yml':
@@ -106,9 +106,9 @@ dependencies:
         commit: 'sha1-ac735097e22fe643015b0d19645f7c9a69942128'
         owner_id: 81890686
         repo_id: 590286646
-    'ossf/scorecard-action@v2.5.0':
-        ref: 'v2.5.0'
-        commit: 'sha1-fa7117db83c52d787ae5a89f350999701505d78e'
+    'ossf/scorecard-action@v2.6.0':
+        ref: 'v2.6.0'
+        commit: 'sha1-23f22cd43608bae7a1f1fa2603d7314dee9538a5'
         owner_id: 67707773
         repo_id: 421101922
     'sigstore/cosign-installer@v4.1.3':
