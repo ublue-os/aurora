@@ -11,7 +11,7 @@ workflows:
         - 'actions/create-github-app-token@v3.4.0'
         - 'korthout/backport-action@v5.0.0'
     '.github/workflows/clean.yml':
-        - 'dataaxiom/ghcr-cleanup-action@v1.2.2'
+        - 'dataaxiom/ghcr-cleanup-action@v1.3.0'
     '.github/workflows/generate-release.yml':
         - 'actions/checkout@v7.0.1'
         - 'oras-project/setup-oras@v2.0.4'
@@ -76,9 +76,9 @@ dependencies:
         commit: 'sha1-66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c'
         owner_id: 16208487
         repo_id: 399925381
-    'dataaxiom/ghcr-cleanup-action@v1.2.2':
-        ref: 'v1.2.2'
-        commit: 'sha1-d52806a0dc70b430571a37da1fde39733ffd640f'
+    'dataaxiom/ghcr-cleanup-action@v1.3.0':
+        ref: 'v1.3.0'
+        commit: 'sha1-ac45a8c04b1eb4b27974ca79a0a74f344c93664b'
         owner_id: 131044173
         repo_id: 799711900
     'github/codeql-action@9b3254085494b55a0f7c4c2b3d2d52cc712ce370':
