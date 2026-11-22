@@ -16,7 +16,7 @@ jobs:
       packages: write
     steps:
       - name: Delete Images Older Than 90 Days
-        uses: dataaxiom/ghcr-cleanup-action@v1.2.2
+        uses: dataaxiom/ghcr-cleanup-action@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           packages: aurora,aurora-dx,aurora-nvidia-open,aurora-dx-nvidia-open
@@ -26,7 +26,7 @@ jobs:
           keep-n-untagged: 7
 
       - name: Delete All OCI Artifact Cache
-        uses: dataaxiom/ghcr-cleanup-action@v1.2.2
+        uses: dataaxiom/ghcr-cleanup-action@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           packages: aurora/cache/dnf
