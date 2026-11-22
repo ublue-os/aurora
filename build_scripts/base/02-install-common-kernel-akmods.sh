@@ -49,6 +49,6 @@ KERNEL_VERSIONLOCK=( "${KERNEL_PKGS_ORIG[@]}" kernel-devel{-matched,} )
 dnf versionlock add "${KERNEL_VERSIONLOCK[@]}"
 
 mkdir -p /etc/pki/akmods/certs
-ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.der" --retry 3 -Lo /etc/pki/akmods/certs/akmods-ublue.der
+ghcurl "https://github.com/ublue-os/akmods/raw/refs/heads/main/certs/public_key.der" -Lo /etc/pki/akmods/certs/akmods-ublue.der
 
 echo "::endgroup::"

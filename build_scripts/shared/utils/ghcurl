@@ -15,8 +15,10 @@ URL="$1"
 shift
 OPTIONS=("$@")
 
+SHARED_FLAGS=(-sSL --retry 10 --retry-delay 5)
+
 if [[ -n "$AUTH_HEADER" ]]; then
-  curl -sSL -H "$AUTH_HEADER" "${OPTIONS[@]}" "$URL"
+  curl "${SHARED_FLAGS[@]}" -H "$AUTH_HEADER" "${OPTIONS[@]}" "$URL"
 else
-  curl -sSL "${OPTIONS[@]}" "$URL"
+  curl "${SHARED_FLAGS[@]}" "${OPTIONS[@]}" "$URL"
 fi
