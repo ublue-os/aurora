@@ -187,7 +187,7 @@ jobs:
       - name: Setup Syft
         id: setup-syft
         if: inputs.publish
-        uses: anchore/sbom-action/download-syft@v0.24.3
+        uses: anchore/sbom-action/download-syft@v0.24.4
 
       - name: Generate SBOM
         if: inputs.publish
