@@ -20,7 +20,7 @@ rsync -rvKl "${BUILD_FILES[@]}" /
 
 # solopasha copr has no ARM
 if [[ "${UBLUE_IMAGE_TAG}" == "testing-kde-nightly" ]] && [[ $(arch) == x86_64 ]]; then
-  cat > /usr/share/dnf5/repos.d/copr:copr.fedorainfracloud.org:solopasha:plasma-unstable.repo << 'EOF'
+  cat > /usr/share/dnf5/repos.d/_copr:copr.fedorainfracloud.org:solopasha:plasma-unstable.repo << 'EOF'
 [copr:copr.fedorainfracloud.org:solopasha:plasma-unstable]
 name=Copr repo for plasma-unstable owned by solopasha
 baseurl=https://download.copr.fedorainfracloud.org/results/solopasha/plasma-unstable/fedora-$releasever-$basearch/
@@ -32,7 +32,7 @@ repo_gpgcheck=0
 enabled=0
 enabled_metadata=1
 EOF
-  cat > /usr/share/dnf5/repos.d/copr:copr.fedorainfracloud.org:solopasha:kde-gear-unstable.repo << 'EOF'
+  cat > /usr/share/dnf5/repos.d/_copr:copr.fedorainfracloud.org:solopasha:kde-gear-unstable.repo << 'EOF'
 [copr:copr.fedorainfracloud.org:solopasha:kde-gear-unstable]
 name=Copr repo for kde-gear-unstable owned by solopasha
 baseurl=https://download.copr.fedorainfracloud.org/results/solopasha/kde-gear-unstable/fedora-$releasever-$basearch/
