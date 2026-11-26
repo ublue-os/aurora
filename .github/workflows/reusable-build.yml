@@ -90,7 +90,7 @@ jobs:
         uses: sigstore/cosign-installer@v4.1.4
         # be careful when upgrading major versions
         with:
-          cosign-release: 'v3.1.5'
+          cosign-release: 'v3.1.6'
 
       - name: Install ORAS
         uses: oras-project/setup-oras@v2.0.4
