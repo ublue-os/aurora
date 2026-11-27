@@ -176,6 +176,14 @@ IMPORTANT_UNITS=(
     uupd.timer
   )
 
+NVIDIA_SERVICES=(
+    ublue-nvidia-flatpak-runtime-sync.service
+  )
+
+if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+  IMPORTANT_UNITS+=("${IMPORTANT_UNITS[@]}" "${NVIDIA_SERVICES[@]}")
+fi
+
 for unit in "${IMPORTANT_UNITS[@]}"; do
     if ! systemctl is-enabled "$unit" 2>/dev/null | grep -q "^enabled$"; then
         echo "${unit} is not enabled"
