@@ -12,6 +12,11 @@ kargs = ["rd.driver.blacklist=nouveau", "modprobe.blacklist=nouveau", "nvidia-dr
 EOF
 
 rsync -rvKl /ctx/system_files/nvidia/ /
-systemctl enable ublue-nvidia-flatpak-runtime-sync.service
+
+cat >> /usr/lib/systemd/system-preset/89-aurora-nvidia.preset << 'EOF'
+# workaround nvidia flatpak driver mismatch with host
+# https://github.com/flatpak/flatpak/issues/3907
+enable ublue-nvidia-flatpak-runtime-sync.service
+EOF
 
 echo "::endgroup::"
