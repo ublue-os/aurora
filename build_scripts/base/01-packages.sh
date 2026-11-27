@@ -10,6 +10,9 @@ dnf makecache --refresh
 # https://github.com/ublue-os/aurora/issues/1227
 dnf versionlock add "qt6-*" "plasma-desktop"
 
+# Keep libzstd in sync with the zstd binary, a mismatch breaks dracut
+dnf versionlock add zstd libzstd
+
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
