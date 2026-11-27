@@ -8,13 +8,13 @@ dnf makecache --refresh
 
 # Versionlocked packages
 VERSIONLOCK=(
-    # Prevent partial upgrading, major kde version updates black screened
-    # https://github.com/ublue-os/aurora/issues/1227
-    "qt6-*"
-    plasma-desktop
-    # Keep libzstd in sync with the zstd binary, a mismatch breaks dracut
-    zstd
-    libzstd
+  # Prevent partial upgrading, major kde version updates black screened
+  # https://github.com/ublue-os/aurora/issues/1227
+  "qt6-*"
+  plasma-desktop
+  # Keep libzstd in sync with the zstd binary, a mismatch breaks dracut
+  zstd
+  libzstd
 )
 
 dnf versionlock add "${VERSIONLOCK[@]}"
@@ -23,97 +23,90 @@ PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
 
 OVERRIDES=(
-    "intel-gmmlib"
-    "intel-mediasdk"
-    "libheif"
-    "libva"
-    "libva-intel-media-driver"
-    "mesa-dri-drivers"
-    "mesa-filesystem"
-    "mesa-libEGL"
-    "mesa-libGL"
-    "mesa-libgbm"
-    "mesa-libOpenCL"
-    "mesa-vulkan-drivers"
-    "openh264"
+  intel-gmmlib
+  intel-mediasdk
+  libheif
+  libva{-intel-media-driver,}
+  mesa-{dri-drivers,filesystem,libEGL,libGL,libgbm,libOpenCL,vulkan-drivers}
+  openh264
 )
 
 dnf5 distro-sync --skip-unavailable -y --repo='fedora-multimedia' "${OVERRIDES[@]}"
 dnf5 versionlock add "${OVERRIDES[@]}"
 
 FEDORA_PACKAGES=(
-    adcli
-    alsa-firmware
-    apr{,-util}
-    autofs
-    borgbackup
-    davfs2
-    distrobox
-    evtest
-    fastfetch
-    fish
-    flatpak-spawn
-    foo2zjs
-    fzf # for just
-    gcc{,-c++}
-    git-credential-libsecret
-    glow
-    google-noto-sans-balinese-fonts
-    google-noto-sans-cham-fonts
-    google-noto-sans-cjk-fonts
-    google-noto-sans-javanese-fonts
-    google-noto-sans-linear-a-fonts
-    google-noto-sans-linear-b-fonts
-    google-noto-sans-sundanese-fonts
-    grub2-tools-extra
-    gum
-    gvfs{,-fuse}
-    htop
-    icoutils
-    ifuse
-    igt-gpu-tools
-    input-remapper
-    intel-compute-runtime
-    iwd
-    just
-    krb5-workstation
-    libcamera-gstreamer
-    libcamera-tools
-    libimobiledevice-utils
-    libratbag-ratbagd
-    libxcrypt-compat
-    lm_sensors
-    lshw
-    nvtop
-    oddjob-mkhomedir
-    openrgb-udev-rules
-    openssl3-libs
-    pam-u2f
-    pam_yubico
-    pamu2fcfg
-    # TODO: look into removing this, plasma supports the transition feature of this natively
-    plasma-wallpapers-dynamic-builder
-    plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
-    pocl
-    powertop
-    rclone
-    restic
-    samba-winbind{,-clients,-modules}
-	sbsigntools
-    setools-console
-    setroubleshoot-plugins
-    solaar-udev
-    squashfs-tools
-    symlinks
-    tcpdump
-    tesseract-devel
-    tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
-    tmux
-    traceroute
-    vim
-    xdg-native-messaging-proxy
-    yubikey-manager
-    zsh
+  adcli
+  alsa-firmware
+  apr{,-util}
+  autofs
+  borgbackup
+  davfs2
+  distrobox
+  evtest
+  fastfetch
+  fish
+  flatpak-spawn
+  foo2zjs
+  fzf # for just
+  gcc{,-c++}
+  git-credential-libsecret
+  glow
+  google-noto-sans-balinese-fonts
+  google-noto-sans-cham-fonts
+  google-noto-sans-cjk-fonts
+  google-noto-sans-javanese-fonts
+  google-noto-sans-linear-a-fonts
+  google-noto-sans-linear-b-fonts
+  google-noto-sans-sundanese-fonts
+  grub2-tools-extra
+  gum
+  gvfs{,-fuse}
+  htop
+  icoutils
+  ifuse
+  igt-gpu-tools
+  input-remapper
+  intel-compute-runtime
+  iwd
+  just
+  krb5-workstation
+  libcamera-gstreamer
+  libcamera-tools
+  libimobiledevice-utils
+  libratbag-ratbagd
+  libxcrypt-compat
+  lm_sensors
+  lshw
+  nvtop
+  oddjob-mkhomedir
+  openrgb-udev-rules
+  openssl3-libs
+  pam-u2f
+  pam_yubico
+  pamu2fcfg
+  # TODO: look into removing this, plasma supports the transition feature of this natively
+  plasma-wallpapers-dynamic-builder
+  plasma-wallpapers-dynamic-builder{-bash,-fish,-zsh}-completion
+  pocl
+  powertop
+  rclone
+  restic
+  samba-winbind{,-clients,-modules}
+  sbsigntools
+  setools-console
+  setroubleshoot-plugins
+  solaar-udev
+  squashfs-tools
+  symlinks
+  tcpdump
+  tesseract-devel
+  tesseract-langpack-{deu,fra,spa,por,ita,pol,fin,nld,jpn,jpn_vert,hin,chi_sim,chi_sim_vert,chi_tra,chi_tra_vert}
+  tmux
+  traceroute
+  vim
+  xdg-native-messaging-proxy
+  yubikey-manager
+  zsh
 )
 
 # these should be fetched from solopasha copr on nightly images
@@ -123,7 +116,7 @@ PLASMA_PACKAGES=(
 )
 
 # on kde-nightly our specific version install breaks due to differing suffixes from commit hashes/versions
-if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} != "testing-kde-nightly" ]]; then
   PLASMA_PACKAGES=("${PLASMA_PACKAGES[@]/%/-${PLASMA_VERS}}")
 fi
 
@@ -134,39 +127,39 @@ KDE_GEAR_PACKAGES=(
 )
 
 FEDORA_PACKAGES_AMD64=(
-    powerstat
-  )
+  powerstat
+)
 
 NEGATIVO_PACKAGES=(
-    ffmpeg{,-libs}
-    libavcodec
-    libfdk-aac
-    libva-utils
-    pipewire-libs-extra
-    uld
-  )
+  ffmpeg{,-libs}
+  libavcodec
+  libfdk-aac
+  libva-utils
+  pipewire-libs-extra
+  uld
+)
 
 NEGATIVO_PACKAGES_AMD64=(
-    intel-vaapi-driver
-  )
+  intel-vaapi-driver
+)
 
 PACKAGES=("${FEDORA_PACKAGES[@]}" "${NEGATIVO_PACKAGES[@]}")
 
 KDE_PACKAGES=("${PLASMA_PACKAGES[@]}" "${KDE_GEAR_PACKAGES[@]}")
 
-if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} != "testing-kde-nightly" ]]; then
   PACKAGES+=("${FEDORA_PACKAGES[@]}" "${KDE_PACKAGES[@]}")
 fi
 
 if [[ $(arch) == x86_64 ]]; then
-  PACKAGES+=( "${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}" )
+  PACKAGES+=("${FEDORA_PACKAGES_AMD64[@]}" "${NEGATIVO_PACKAGES_AMD64[@]}")
 fi
 
 dnf -y install \
   --setopt=install_weak_deps=False \
   --enablerepo='fedora-multimedia' "${PACKAGES[@]}"
 
-if [[ "${UBLUE_IMAGE_TAG}" == "testing-kde-nightly" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} == "testing-kde-nightly" ]]; then
   dnf-retry -y install \
     --enablerepo="${COPR_PREFIX}:solopasha:plasma-unstable" \
     --enablerepo="${COPR_PREFIX}:solopasha:kde-gear-unstable" \
@@ -174,11 +167,11 @@ if [[ "${UBLUE_IMAGE_TAG}" == "testing-kde-nightly" ]]; then
 fi
 
 COPR_UBLUE_OS_PACKAGES=(
-    kcm_ublue
-    krunner-bazaar
-    oversteer-udev
-    # https://github.com/ublue-os/akmods/issues/537
-    ublue-os-selinux-workarounds
+  kcm_ublue
+  krunner-bazaar
+  oversteer-udev
+  # https://github.com/ublue-os/akmods/issues/537
+  ublue-os-selinux-workarounds
 )
 
 TERRA_PACKAGES=(
@@ -189,8 +182,8 @@ TERRA_PACKAGES=(
   game-devices-udev
 )
 
-if [[ "${UBLUE_IMAGE_TAG}" =~ "testing" ]]; then
-  TERRA_PACKAGES=( "${TERRA_PACKAGES[@]}" cardwire-gui )
+if [[ ${UBLUE_IMAGE_TAG} =~ "testing" ]]; then
+  TERRA_PACKAGES=("${TERRA_PACKAGES[@]}" cardwire-gui)
   dnf-retry -y 'do' \
     --from-repo="terra" \
     --action install "${TERRA_PACKAGES[@]}" \
@@ -204,8 +197,6 @@ fi
 # Fedora Tailscale is usually behind
 TAILSCALE=(tailscale)
 
-
-
 dnf -y install --from-repo="${COPR_PREFIX}:ublue-os:packages" "${COPR_UBLUE_OS_PACKAGES[@]}"
 
 # TODO: figure something out that works well across DX, nvidia with the ublue-os coprs
@@ -218,19 +209,19 @@ dnf do -y \
 
 # Packages to exclude - common to all versions
 EXCLUDED_PACKAGES=(
-    akonadi-server{,-mysql}
-    fedora-bookmarks
-    fedora-chromium-config{,-kde}
-    fedora-third-party
-    firefox
-    firewall-config
-    kcharselect
-    khelpcenter
-    krfb{,-libs}
-    plasma-discover{,-libs}
-    plasma-welcome-fedora
-    # https://github.com/ublue-os/aurora/issues/3066
-    xwaylandvideobridge
+  akonadi-server{,-mysql}
+  fedora-bookmarks
+  fedora-chromium-config{,-kde}
+  fedora-third-party
+  firefox
+  firewall-config
+  kcharselect
+  khelpcenter
+  krfb{,-libs}
+  plasma-discover{,-libs}
+  plasma-welcome-fedora
+  # https://github.com/ublue-os/aurora/issues/3066
+  xwaylandvideobridge
 )
 
 dnf -y remove "${EXCLUDED_PACKAGES[@]}"
@@ -246,7 +237,7 @@ dnf -y remove "${EXCLUDED_PACKAGES[@]}"
 #fi
 
 # we won't be building plasma-setup for nightly versions of KDE
-if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} != "testing-kde-nightly" ]]; then
   # https://invent.kde.org/plasma/plasma-setup/-/issues/72
   dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
     plasma-setup plasma-setup-"${PLASMA_VERS}"-*.aurora
@@ -260,7 +251,7 @@ dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:ublue-os:staging \
   distrobox distrobox
 
 # Install DX specific packages
-if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+if [[ ${IMAGE_FLAVOR} == "dx" ]]; then
   /ctx/build_scripts/dx/00-dx.sh
 fi
 

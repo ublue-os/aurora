@@ -56,7 +56,7 @@ test -f /usr/lib/systemd/system/flatpak-add-fedora-repos.service && false
 test -f /usr/share/flatpak/remotes.d/flathub.flatpakrepo
 
 # Make sure to not pull in the bazzite one
-if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} != "testing-kde-nightly" ]]; then
   rpm -q plasma-setup --qf "%{RELEASE}" | grep -q aurora
 fi
 
@@ -68,7 +68,7 @@ desktop-file-validate \
   /usr/share/applications/dev.getaurora.boot-to-windows.desktop \
   /usr/share/applications/dev.getaurora.offline-docs.desktop \
   /usr/share/applications/dev.getaurora.documentation.desktop \
-  /usr/share/applications/dev.getaurora.system-update.desktop 
+  /usr/share/applications/dev.getaurora.system-update.desktop
 
 # Check for KDE Plasma version mismatch
 # Fedora Repos have gotten the newer one, trying to upgrade
@@ -83,116 +83,126 @@ QT_VER="$(rpm -q --qf '%{VERSION}' qt6-qtbase)"
 # Not an important package in itself, just a good indicator
 QTFS_VER="$(rpm -q --qf '%{VERSION}' qt6-filesystem)"
 
-if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
-  if [[ "$KDE_VER" != "$KSCREEN_VERS" || "$KDE_VER" != "$KWIN_VERS" ]]; then
-      echo "KDE Version mismatch"
-      exit 1
+if [[ ${UBLUE_IMAGE_TAG} != "testing-kde-nightly" ]]; then
+  if [[ $KDE_VER != "$KSCREEN_VERS" && $KDE_VER != "$KWIN_VERS" ]]; then
+    echo "KDE Version mismatch"
+    exit 1
   fi
 fi
 
-if [[ "$QT_VER" != "$QTFS_VER" ]]; then
-    echo "QT Version mismatch"
-    exit 1
+if [[ $QT_VER != "$QTFS_VER" ]]; then
+  echo "QT Version mismatch"
+  exit 1
 fi
 
 IMPORTANT_PACKAGES=(
-    distrobox
-    fish
-    flatpak
-    krunner-bazaar
-    kwin
-    pipewire
-    plasma-desktop
-    podman
-    plasma-firewall
-    plasma-login-manager
-    Sunshine
-    systemd
-    tailscale
-    uupd
-    wireplumber
-    zsh
+  distrobox
+  fish
+  flatpak
+  krunner-bazaar
+  kwin
+  pipewire
+  plasma-desktop
+  podman
+  plasma-firewall
+  plasma-login-manager
+  Sunshine
+  systemd
+  tailscale
+  uupd
+  wireplumber
+  zsh
 )
 
 # lets only have cardwire in testing for now
-if [[ "${UBLUE_IMAGE_TAG}" =~ "testing" ]]; then
-  IMPORTANT_PACKAGES=( "${IMPORTANT_PACKAGES[@]}" cardwire-gui )
+if [[ ${UBLUE_IMAGE_TAG} =~ "testing" ]]; then
+  IMPORTANT_PACKAGES=("${IMPORTANT_PACKAGES[@]}" cardwire-gui)
 fi
 
 for package in "${IMPORTANT_PACKAGES[@]}"; do
-    rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}... Exiting"; exit 1 ; }
+  rpm -q "${package}" > /dev/null || {
+    echo "Missing package: ${package}... Exiting"
+    exit 1
+  }
 done
 
 # these should be sourced from negativo's fedora-multimedia repo
 # as Fedora can't ship patent encumbered video codecs
 NEGATIVO=(
-    ffmpeg
-    libheif
-    libva
-    mesa-filesystem
-    mesa-dri-drivers
-    pipewire-libs-extra
-    x264-libs
-    x265-libs
+  ffmpeg
+  libheif
+  libva
+  mesa-filesystem
+  mesa-dri-drivers
+  pipewire-libs-extra
+  x264-libs
+  x265-libs
 )
 
 for package in "${NEGATIVO[@]}"; do
-  rpm -q --qf "%{NAME} %{VENDOR}" "${package}" | grep -q "negativo17\.org" || { echo "${package} not from negativo... Exiting"; exit 1 ; }
+  rpm -q --qf "%{NAME} %{VENDOR}" "${package}" | grep -q "negativo17\.org" || {
+    echo "${package} not from negativo... Exiting"
+    exit 1
+  }
 done
 
 # these packages are supposed to be removed
 # and are considered footguns
 UNWANTED_PACKAGES=(
-    akonadi-server
-    fedora-flathub-remote
-    fedora-logos
-    fedora-third-party
-    firefox
-    plasma-discover
-    xwaylandvideobridge
+  akonadi-server
+  fedora-flathub-remote
+  fedora-logos
+  fedora-third-party
+  firefox
+  plasma-discover
+  xwaylandvideobridge
 )
 
 for package in "${UNWANTED_PACKAGES[@]}"; do
-    if rpm -q "${package}" >/dev/null 2>&1; then
-        echo "Unwanted package found: ${package}... Exiting"; exit 1
-    fi
+  if rpm -q "${package}" > /dev/null 2>&1; then
+    echo "Unwanted package found: ${package}... Exiting"
+    exit 1
+  fi
 done
 
-if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+if [[ ${IMAGE_NAME} =~ nvidia ]]; then
   NV_PACKAGES=(
-      kmod-nvidia
-      libnvidia-container-tools
-      nvidia-driver-cuda
-)
+    kmod-nvidia
+    libnvidia-container-tools
+    nvidia-driver-cuda
+  )
   for package in "${NV_PACKAGES[@]}"; do
-      rpm -q "${package}" >/dev/null || { echo "Missing NVIDIA package: ${package}... Exiting"; exit 1 ; }
+    rpm -q "${package}" > /dev/null || {
+      echo "Missing NVIDIA package: ${package}... Exiting"
+      exit 1
+    }
   done
 fi
 
 IMPORTANT_UNITS=(
-    rpm-ostree-countme.timer
-    tailscaled.service
-    ublue-system-setup.service
-    uupd.timer
-  )
+  rpm-ostree-countme.timer
+  tailscaled.service
+  ublue-system-setup.service
+  uupd.timer
+)
 
 NVIDIA_SERVICES=(
-    ublue-nvidia-flatpak-runtime-sync.service
-  )
+  ublue-nvidia-flatpak-runtime-sync.service
+)
 
-if [[ "${IMAGE_NAME}" =~ nvidia ]]; then
+if [[ ${IMAGE_NAME} =~ nvidia ]]; then
   IMPORTANT_UNITS+=("${IMPORTANT_UNITS[@]}" "${NVIDIA_SERVICES[@]}")
 fi
 
 for unit in "${IMPORTANT_UNITS[@]}"; do
-    if ! systemctl is-enabled "$unit" 2>/dev/null | grep -q "^enabled$"; then
-        echo "${unit} is not enabled"
-        exit 1
-    fi
+  if ! systemctl is-enabled "$unit" 2> /dev/null | grep -q "^enabled$"; then
+    echo "${unit} is not enabled"
+    exit 1
+  fi
 done
 
-if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
-  /ctx/build_scripts/dx/10-tests-dx.sh;
+if [[ ${IMAGE_FLAVOR} == "dx" ]]; then
+  /ctx/build_scripts/dx/10-tests-dx.sh
 fi
 
 /ctx/build_scripts/shared/validate-repos.sh

@@ -1,16 +1,18 @@
-name: Validate Justfiles
+name: Validate Just and Shell
 
 on:
   pull_request:
     paths:
       - "Justfile"
       - "just/*"
+      - "**.sh"
   push:
     branches:
       - main
     paths:
       - "Justfile"
       - "just/*"
+      - "**.sh"
 
 permissions: {}
 
@@ -23,12 +25,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Just
+      - name: Install just shellcheck shfmt
         run: |
-          /home/linuxbrew/.linuxbrew/bin/brew install just
+          /home/linuxbrew/.linuxbrew/bin/brew install just shellcheck shfmt
           echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
       - name: Check Just Syntax
         shell: bash
         run: |
-          just check
+          just lint::just-check
+
+      - name: Check Shell Syntax
+        shell: bash
+        run: |
+          just lint::shfmt-check
+          just lint::shellcheck
