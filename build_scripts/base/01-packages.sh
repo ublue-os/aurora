@@ -6,9 +6,18 @@ set -ouex pipefail
 
 dnf makecache --refresh
 
-# Prevent partial upgrading, major kde version updates black screened
-# https://github.com/ublue-os/aurora/issues/1227
-dnf versionlock add "qt6-*" "plasma-desktop"
+# Versionlocked packages
+VERSIONLOCK=(
+    # Prevent partial upgrading, major kde version updates black screened
+    # https://github.com/ublue-os/aurora/issues/1227
+    "qt6-*"
+    plasma-desktop
+    # Keep libzstd in sync with the zstd binary, a mismatch breaks dracut
+    zstd
+    libzstd
+)
+
+dnf versionlock add "${VERSIONLOCK[@]}"
 
 PLASMA_VERS=$(rpm -q --qf "%{VERSION}" plasma-desktop)
 COPR_PREFIX="copr:copr.fedorainfracloud.org"
