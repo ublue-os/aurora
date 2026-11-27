@@ -128,8 +128,6 @@ if [[ "${UBLUE_IMAGE_TAG}" != "testing-kde-nightly" ]]; then
 fi
 
 KDE_GEAR_PACKAGES=(
-  kate
-  kate{-krunner-plugin,-plugins}
   ksystemlog
 )
 
