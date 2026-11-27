@@ -10,6 +10,10 @@ mv /usr/bin/plasma-welcome /usr/bin/plasma-welcome-original
 # Copy Files to Container
 rsync -rvKl /ctx/system_files/shared/ /
 
+# refresh the icon cache so that the new icons are picked up
+# https://invent.kde.org/frameworks/kiconthemes/-/merge_requests/222
+gtk-update-icon-cache -f -t /usr/share/icons/hicolor
+
 # this removes the enablement for brew-up{d,gr}ade.timer, we use uupd
 rm -f /usr/lib/systemd/system-preset/01-homebrew.preset
 
