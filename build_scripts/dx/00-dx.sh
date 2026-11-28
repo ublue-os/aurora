@@ -9,55 +9,55 @@ sysctl -p
 
 # DX packages from Fedora repos - common to all versions
 FEDORA_PACKAGES=(
-    android-tools
-    bcc
-    bcvk
-    bpftop
-    bpftrace
-    cockpit-bridge
-    cockpit-machines
-    cockpit-networkmanager
-    cockpit-ostree
-    cockpit-podman
-    cockpit-selinux
-    cockpit-storaged
-    cockpit-system
-    edk2-ovmf
-    flatpak-builder
-    incus
-    incus-agent
-    iotop
-    libvirt
-    libvirt-nss
-    lxc
-    nicstat
-    numactl
-    osbuild-selinux
-    p7zip
-    p7zip-plugins
-    podman-compose
-    podman-machine
-    podman-tui
-    qemu
-    qemu-char-spice
-    qemu-device-display-virtio-gpu
-    qemu-device-display-virtio-vga
-    qemu-device-usb-redirect
-    qemu-img
-    qemu-system-x86-core
-    qemu-user-binfmt
-    qemu-user-static
-    sysprof
-    trace-cmd
-    udica
-    virt-manager
-    virt-v2v
-    virt-viewer
-    ydotool
+  android-tools
+  bcc
+  bcvk
+  bpftop
+  bpftrace
+  cockpit-bridge
+  cockpit-machines
+  cockpit-networkmanager
+  cockpit-ostree
+  cockpit-podman
+  cockpit-selinux
+  cockpit-storaged
+  cockpit-system
+  edk2-ovmf
+  flatpak-builder
+  incus
+  incus-agent
+  iotop
+  libvirt
+  libvirt-nss
+  lxc
+  nicstat
+  numactl
+  osbuild-selinux
+  p7zip
+  p7zip-plugins
+  podman-compose
+  podman-machine
+  podman-tui
+  qemu
+  qemu-char-spice
+  qemu-device-display-virtio-gpu
+  qemu-device-display-virtio-vga
+  qemu-device-usb-redirect
+  qemu-img
+  qemu-system-x86-core
+  qemu-user-binfmt
+  qemu-user-static
+  sysprof
+  trace-cmd
+  udica
+  virt-manager
+  virt-v2v
+  virt-viewer
+  ydotool
 )
 
 # rocm doesn't work well on nvidia
-if [[ ! "${IMAGE_NAME}" =~ nvidia ]]; then
+if [[ ! ${IMAGE_NAME} =~ nvidia ]]; then
   FEDORA_PACKAGES+=("rocm-hip" "rocm-opencl" "rocm-smi")
 fi
 
@@ -89,7 +89,7 @@ rsync -rvK /ctx/system_files/dx/ /
 #   - https://github.com/ublue-os/bluefin/issues/2365
 #   - https://github.com/devcontainers/features/issues/1235
 mkdir -p /etc/modules-load.d
-tee /etc/modules-load.d/ip_tables.conf <<EOF
+tee /etc/modules-load.d/ip_tables.conf << EOF
 iptable_nat
 EOF
 

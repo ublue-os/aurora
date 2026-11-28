@@ -10,16 +10,16 @@ dnf config-manager setopt keepcache=1 timeout=60
 # configuring dnf repos
 BUILD_FILES=(
   "/ctx/build_files/shared/"
-  )
+)
 
-if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+if [[ ${IMAGE_FLAVOR} == "dx" ]]; then
   BUILD_FILES+=("/ctx/build_files/dx/")
 fi
 
 rsync -rvKl "${BUILD_FILES[@]}" /
 
 # solopasha copr has no ARM
-if [[ "${UBLUE_IMAGE_TAG}" == "testing-kde-nightly" ]] && [[ $(arch) == x86_64 ]]; then
+if [[ ${UBLUE_IMAGE_TAG} == "testing-kde-nightly" ]] && [[ $(arch) == x86_64 ]]; then
   cat > /usr/share/dnf5/repos.d/_copr:copr.fedorainfracloud.org:solopasha:plasma-unstable.repo << 'EOF'
 [copr:copr.fedorainfracloud.org:solopasha:plasma-unstable]
 name=Copr repo for plasma-unstable owned by solopasha

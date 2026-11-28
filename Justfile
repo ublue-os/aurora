@@ -1,4 +1,9 @@
 # Min just version 1.46.0 https://github.com/casey/just/issues/2290
+just := just_executable()
+mod lint 'lint.just'
+
+check: lint::just-check
+
 export repo_organization := lowercase(env("GITHUB_REPOSITORY_OWNER", "ublue-os"))
 export base_image_org := lowercase(env("BASE_IMAGE_ORG", "quay.io/fedora-ostree-desktops"))
 export base_image_name := lowercase(env("BASE_IMAGE_NAME", "kinoite"))
@@ -38,7 +43,6 @@ export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-
 export SUDOIF := if `id -u` == "0" { "" } else { "sudo" }
 export PODMAN := "podman"
 export BUILDAH := "buildah"
-just := just_executable()
 
 # Define a retry function for use in recipes
 retry_function := '
@@ -76,28 +80,6 @@ lowercase() {
 [private]
 default:
     @{{ just }} --list
-
-# Check Just Syntax
-[group('Just')]
-check:
-    #!/usr/bin/env bash
-    find . -type f -name "*.just" | while read -r file; do
-      echo "Checking syntax: $file"
-      {{ just }} --fmt --check -f $file
-    done
-    echo "Checking syntax: Justfile"
-    {{ just }} --fmt --check -f Justfile
-
-# Fix Just Syntax
-[group('Just')]
-fix:
-    #!/usr/bin/env bash
-    find . -type f -name "*.just" | while read -r file; do
-      echo "Checking syntax: $file"
-      {{ just }} --fmt -f $file
-    done
-    echo "Checking syntax: Justfile"
-    {{ just }} --fmt -f Justfile || { exit 1; }
 
 # Clean Repo
 [group('Utility')]
