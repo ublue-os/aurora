@@ -17,8 +17,8 @@ ghcurl https://raw.githubusercontent.com/ublue-os/countme/main/badge-endpoints/a
 
 # bazaar weekly downloads used for fastfetch
 curl -X 'GET' \
-'https://flathub.org/api/v2/stats/io.github.kolunmi.Bazaar?all=false&days=1' \
--H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
+  'https://flathub.org/api/v2/stats/io.github.kolunmi.Bazaar?all=false&days=1' \
+  -H 'accept: application/json' | jq -r ".installs_last_7_days" | numfmt --to=si --round=nearest > /usr/share/ublue-os/bazaar-install-count
 
 # Bash Preexec v0.6.0
 ghcurl https://raw.githubusercontent.com/rcaloras/bash-preexec/b73ed5f7f953207b958f15b1773721dded697ac3/bash-preexec.sh -Lo /usr/share/bash-preexec
@@ -30,4 +30,3 @@ ghcurl "https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads
 chmod +x /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
 
 echo "::endgroup::"
-

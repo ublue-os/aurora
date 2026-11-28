@@ -57,9 +57,9 @@ desktop-file-edit --set-icon=distributor-logo /usr/share/applications/org.kde.pl
 
 # we don't want them to show up graphically
 for file in htop nvtop; do
-    if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
-        desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
-    fi
+  if [[ -f "/usr/share/applications/${file}.desktop" ]]; then
+    desktop-file-edit --set-key=Hidden --set-value=true /usr/share/applications/${file}.desktop
+  fi
 done
 
 echo "::endgroup::"

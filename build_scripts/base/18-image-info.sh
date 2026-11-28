@@ -18,11 +18,11 @@ IMAGE_REF="ostree-image-signed:docker://ghcr.io/$IMAGE_VENDOR/$IMAGE_NAME"
 
 # Image Flavor
 image_flavor="main"
-if [[ "${IMAGE_NAME}" =~ nvidia-open ]]; then
+if [[ ${IMAGE_NAME} =~ nvidia-open ]]; then
   image_flavor="nvidia-open"
 fi
 
-cat >$IMAGE_INFO <<EOF
+cat > $IMAGE_INFO << EOF
 {
   "image-name": "$IMAGE_NAME",
   "image-flavor": "$image_flavor",
@@ -38,7 +38,7 @@ EOF
 sed -i "s|^VARIANT_ID=.*|VARIANT_ID=$IMAGE_NAME|" /usr/lib/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"${IMAGE_PRETTY_NAME} (Version: ${VERSION})\"|" /usr/lib/os-release
 
-if [[ "${UBLUE_IMAGE_TAG}" == "beta" ]]; then
+if [[ ${UBLUE_IMAGE_TAG} == "beta" ]]; then
   sed -i "s|^RELEASE_TYPE=.*|RELEASE_TYPE=${UBLUE_IMAGE_TAG}|" /usr/lib/os-release
 fi
 
@@ -55,8 +55,8 @@ sed -i "s|^VERSION_CODENAME=.*|VERSION_CODENAME=\"$CODE_NAME\"|" /usr/lib/os-rel
 sed -i "s|^VERSION=.*|VERSION=\"${VERSION} (${BASE_IMAGE_NAME^})\"|" /usr/lib/os-release
 sed -i "s|^OSTREE_VERSION=.*|OSTREE_VERSION=\'${VERSION}\'|" /usr/lib/os-release
 
-if [[ -n "${SHA_HEAD_SHORT:-}" ]]; then
-echo "BUILD_ID=\"$SHA_HEAD_SHORT\"" >>/usr/lib/os-release
+if [[ -n ${SHA_HEAD_SHORT:-} ]]; then
+  echo "BUILD_ID=\"$SHA_HEAD_SHORT\"" >> /usr/lib/os-release
 fi
 
 # Added in systemd 249.
@@ -68,6 +68,6 @@ echo "IMAGE_VERSION=\"${VERSION}\"" >> /usr/lib/os-release
 cat /usr/lib/os-release
 
 # Fix issues caused by ID no longer being fedora
-sed -i "s|^EFIDIR=.*|EFIDIR=\"fedora\"|" /usr/sbin/grub2-switch-to-blscfg
+sed -i 's|^EFIDIR=.*|EFIDIR="fedora"|' /usr/sbin/grub2-switch-to-blscfg
 
 echo "::endgroup::"

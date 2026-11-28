@@ -22,29 +22,29 @@ KMODS=(
   /tmp/rpms/{common,kmods}/*v4l2loopback*.rpm
 )
 
-if [[ "${IMAGE_FLAVOR}" == "dx" ]]; then
+if [[ ${IMAGE_FLAVOR} == "dx" ]]; then
   KERNEL_PKGS+=(/tmp/kernel-rpms/kernel-devel-*.rpm)
 fi
 
-KERNEL_PKGS_ALL=( "${KERNEL_PKGS[@]}" "${KMODS[@]}" )
+KERNEL_PKGS_ALL=("${KERNEL_PKGS[@]}" "${KMODS[@]}")
 
 # shims to bypass kernel install triggering dracut/rpm-ostree
 # this is really ugly, skipping scriplets might be not a good idea
-cd /usr/lib/kernel/install.d \
-&& mv 05-rpmostree.install 05-rpmostree.install.bak \
-&& mv 50-dracut.install 50-dracut.install.bak \
-&& printf '%s\n' '#!/bin/sh' 'exit 0' > 05-rpmostree.install \
-&& printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install \
-&& chmod +x  05-rpmostree.install 50-dracut.install
+cd /usr/lib/kernel/install.d &&
+  mv 05-rpmostree.install 05-rpmostree.install.bak &&
+  mv 50-dracut.install 50-dracut.install.bak &&
+  printf '%s\n' '#!/bin/sh' 'exit 0' > 05-rpmostree.install &&
+  printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install &&
+  chmod +x 05-rpmostree.install 50-dracut.install
 
 dnf -y install "${KERNEL_PKGS_ALL[@]}"
 
 # restore original kernel install
-mv -f 05-rpmostree.install.bak 05-rpmostree.install \
-&& mv -f 50-dracut.install.bak 50-dracut.install
+mv -f 05-rpmostree.install.bak 05-rpmostree.install &&
+  mv -f 50-dracut.install.bak 50-dracut.install
 cd -
 
-KERNEL_VERSIONLOCK=( "${KERNEL_PKGS_ORIG[@]}" kernel-devel{-matched,} )
+KERNEL_VERSIONLOCK=("${KERNEL_PKGS_ORIG[@]}" kernel-devel{-matched,})
 
 dnf versionlock add "${KERNEL_VERSIONLOCK[@]}"
 

@@ -99,7 +99,7 @@ jobs:
         shell: bash
         run: |
           just --version
-          just check
+          just lint::just-check
 
       - name: Image Name
         shell: bash
